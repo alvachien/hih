@@ -588,14 +588,15 @@ function learn_object_combo() {
 	
 	// Check existence of the User ID
 	$objtable = array();
-	$query = "SELECT ID, NAME FROM " . MySqlLearnObjTable;
+	$query = "SELECT ID, CATEGORY_NAME, NAME FROM " . MySqlLearnObjListView;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$objtable[] = array (
-					"id" => $row [0],
-					"text" => $row [1]
+				"id" => $row [0],
+				"categoryname" => $row[1],
+				"name" => $row [2]
 			);
 		}
 	
@@ -1722,22 +1723,23 @@ function finance_documentitem_listread($docid) {
 					"itemid" => $row[1],
 					"accountid" => $row [2],
 					"accountname" => $row [3],
-					"trantype" => $row [4],
-					"trantypename" => $row [5],
-					"tranamount" => $row [6],
-					"controlcenterid" => $row[7],
-					"controlcentername" => $row[8],
-					"orderid" => $row[9],
-					"ordername" => $row[10],
-					"desp" => $row [11],
-					"trantypeexpense" => $row[12],
-					"accountcategory" => $row[13],
-					"accountcategoryname" => $row[14],
-					"doctype" => $row[15],
-					"doctypename" => $row[16],
-					"trandate" => $row[17],
-					"trancurr" => $row[18],
-					"trancurrname" => $row[19]
+					"categoryname" => $row[4],
+					"trantype" => $row [5],
+					"trantypename" => $row [6],
+					"tranamount" => $row [7],
+					"controlcenterid" => $row[8],
+					"controlcentername" => $row[9],
+					"orderid" => $row[10],
+					"ordername" => $row[11],
+					"desp" => $row [12],
+					"trantypeexpense" => $row[13],
+					"accountcategory" => $row[14],
+					"accountcategoryname" => $row[15],
+					"doctype" => $row[16],
+					"doctypename" => $row[17],
+					"trandate" => $row[18],
+					"trancurr" => $row[19],
+					"trancurrname" => $row[20]
 			);
 		}
 	
@@ -1772,22 +1774,23 @@ function finance_documentitem_listreadbyaccount($accountid) {
 					"itemid" => $row[1],
 					"accountid" => $row [2],
 					"accountname" => $row [3],
-					"trantype" => $row [4],
-					"trantypename" => $row [5],
-					"tranamount" => $row [6],
-					"controlcenterid" => $row[7],
-					"controlcentername" => $row[8],
-					"orderid" => $row[9],
-					"ordername" => $row[10],
-					"desp" => $row [11],
-					"trantypeexpense" => $row[12],
-					"accountcategory" => $row[13],
-					"accountcategoryname" => $row[14],
-					"doctype" => $row[15],
-					"doctypename" => $row[16],
-					"trandate" => $row[17],
-					"trancurr" => $row[18],
-					"trancurrname" => $row[19]
+					"categoryname" => $row[4],
+					"trantype" => $row [5],
+					"trantypename" => $row [6],
+					"tranamount" => $row [7],
+					"controlcenterid" => $row[8],
+					"controlcentername" => $row[9],
+					"orderid" => $row[10],
+					"ordername" => $row[11],
+					"desp" => $row [12],
+					"trantypeexpense" => $row[13],
+					"accountcategory" => $row[14],
+					"accountcategoryname" => $row[15],
+					"doctype" => $row[16],
+					"doctypename" => $row[17],
+					"trandate" => $row[18],
+					"trancurr" => $row[19],
+					"trancurrname" => $row[20]
 			);
 		}
 
@@ -1822,22 +1825,23 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 					"itemid" => $row[1],
 					"accountid" => $row [2],
 					"accountname" => $row [3],
-					"trantype" => $row [4],
-					"trantypename" => $row [5],
-					"tranamount" => $row [6],
-					"controlcenterid" => $row[7],
-					"controlcentername" => $row[8],
-					"orderid" => $row[9],
-					"ordername" => $row[10],
-					"desp" => $row [11],
-					"trantypeexpense" => $row[12],
-					"accountcategory" => $row[13],
-					"accountcategoryname" => $row[14],
-					"doctype" => $row[15],
-					"doctypename" => $row[16],
-					"trandate" => $row[17],
-					"trancurr" => $row[18],
-					"trancurrname" => $row[19]					
+					"categoryname" => $row[4],
+					"trantype" => $row [5],
+					"trantypename" => $row [6],
+					"tranamount" => $row [7],
+					"controlcenterid" => $row[8],
+					"controlcentername" => $row[9],
+					"orderid" => $row[10],
+					"ordername" => $row[11],
+					"desp" => $row [12],
+					"trantypeexpense" => $row[13],
+					"accountcategory" => $row[14],
+					"accountcategoryname" => $row[15],
+					"doctype" => $row[16],
+					"doctypename" => $row[17],
+					"trandate" => $row[18],
+					"trancurr" => $row[19],
+					"trancurrname" => $row[20]
 			);
 		}
 

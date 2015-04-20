@@ -113,7 +113,7 @@ class HIHDocument {
 							
 							if ($docdt >= $ordBg && $docdt <= $ordEd) {								
 							} else {
-								return "That order is not valid";
+								return "That order is not valid: ". $docdt. "; Bg:". $ordBg. "; End:". $ordEd;
 							}
 						}
 						

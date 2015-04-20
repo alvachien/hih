@@ -17,6 +17,7 @@
 		"New": "New",
 		"Change" : "Change",
 		"Delete": "Delete",
+		"Refresh": "Refresh",
 		
 		"ID": "ID",
 		"Category": "Category",
@@ -87,6 +88,7 @@
   	
   	"Finance": {
   		"Accounts": "Accounts",
+		"Account": "Account",
   		"AccountCategory": "Account Category",
   		"Documents": "Documents",
   		"PostDocument": "Post Document",

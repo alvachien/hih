@@ -142,28 +142,31 @@
 			return $(this).form('validate');
 		},
 		success : function(data) {
-			var jsonData;
+			var jsonData = {};
 			try {
-				var data2 = JSON.stringify(data);
-				jsonData = JSON && JSON.parse(data2) || $.parseJSON(data2);
+				//var data2 = JSON.stringify(data);
+				jsonData = JSON && JSON.parse(data) || $.parseJSON(data);
 			} catch (e) {
 				$.messager.alert('Error', e.description + data, 'Error');
 			}
 			if (jsonData.type === 'E') {
 				$.messager.alert('Error', jsonData.Message, 'error');
 			} else {
-				var newobject = jsonData.newobject[0];
-				// Add it into the list with the new id
 				$('#formCrtAward').form('clear');
 				$('#dlgAwardCreate').dialog('close');
-				$('#dg').datagrid('appendRow', {
-					id : newobject.id,
-					userid : newobject.userid,
-					displayas : newobject.displayas,
-					adate : newobject.adate,
-					score : newobject.score,
-					reason : newobject.reason,
-					});
+				
+				if (typeof(jsonData) === "object" && jsonData.newobject && jsonData.newobject.length >= 1) {
+					var newobject = jsonData.newobject[0];
+					// Add it into the list with the new id
+					$('#dg').datagrid('appendRow', {
+						id : newobject.id,
+						userid : newobject.userid,
+						displayas : newobject.displayas,
+						adate : newobject.adate,
+						score : newobject.score,
+						reason : newobject.reason,
+						});
+				}
 			}
 		}
 	});

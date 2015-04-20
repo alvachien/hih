@@ -17,6 +17,7 @@
 		"New": "新建",
 		"Change": "修改",
 		"Delete": "删除",
+		"Refresh": "刷新",
 		
 		"ID": "ID",
 		"Category": "类别",
@@ -87,6 +88,7 @@
   	
   	"Finance": {
   		"Accounts": "账户",
+		"Account": "账户",
   		"AccountCategory": "账户种类",
   		"Documents": "财务凭证",
   		"PostDocument": "记账",

@@ -3,8 +3,8 @@
 	<h2 style="clear: both;">Post a Document</h2>
 
 	<div>
-		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="postDocument()">Post</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="cancelDocument()">Cancel</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="postDocument()"><span data-i18n="Finance.PostDocument">Post</span></a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="cancelDocument()"><span data-i18n="Common.Cancel">Cancel</span></a>
 	</div>
 	
 	<!-- Layout -->
@@ -14,7 +14,7 @@
 			<form id="frmDocHeader" class="easyui-form" method="post">
 				<table style="width: 100%">
 					<tr>
-						<td>Document Type:</td>
+						<td data-i18n="Finance.DocumentType">Document Type:</td>
 						<td>
 							<div style="margin-bottom: 10px">
 								<select class="easyui-combogrid" style="width:98%" 
@@ -35,7 +35,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Calendar Date:</td>
+						<td data-i18n="Common.Date">Calendar Date:</td>
 						<td>
 							<div style="margin-bottom: 10px">
 								<div class="easyui-calendar" id="docdateCnlr" style="width:300px;height:150px;"></div>
@@ -43,7 +43,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Currency:</td>
+						<td data-i18n="Finance.Currency">Currency:</td>
 						<td>
 							<div style="margin-bottom: 20px">
 								<select class="easyui-combogrid" style="width:100%" 
@@ -81,20 +81,21 @@
 			<table id="dg" class="easyui-datagrid" title="Finance Documents"
 				style="width: 98%; height: 600px;"
 				data-options="singleSelect:true,
-						url:'finance_postdocument.php?TYPE=25',method:'get'"
+						url:'finance_postdocument.php?TYPE=25',method:'get',
+						noheader: true"
 				toolbar="#toolbar">
 				<thead>
 					<tr>
 						<th data-options="field:'ItemID', align:'right'" width="5%">Item ID</th>
 						<th data-options="field:'AccountID', align:'right'" width="5%">Account ID</th>
-						<th data-options="field:'AccountName', align:'center'" width="20%">Account Name</th>
+						<th data-options="field:'AccountName', align:'center'" width="20%"><span data-i18n="Finance.Account">Account Name</span></th>
 						<th data-options="field:'TranType', align:'right'" width="5%">Tran ID</th>
-						<th data-options="field:'TranTypeName', align:'center'" width="10%">Tran Type</th>
-						<th data-options="field:'TranAmount', align:'right'" width="10%">Amount</th>
+						<th data-options="field:'TranTypeName', align:'center'" width="10%"><span data-i18n="Finance.TransactionType">Tran Type</span></th>
+						<th data-options="field:'TranAmount', align:'right'" width="10%"><span data-i18n="Finance.Amount">Amount</span></th>
 						<th data-options="field:'ControlCenterID', align:'right'" width="5%">CC ID</th>
-						<th data-options="field:'ControlCenterName', align:'center'" width="10%">CC Name</th>
+						<th data-options="field:'ControlCenterName', align:'center'" width="10%"><span data-i18n="Finance.ControlCenter">CC Name</span></th>
 						<th data-options="field:'OrderID', align:'right'" width="5%">Order ID</th>
-						<th data-options="field:'OrderName', align:'center'" width="10%">Order Name</th>
+						<th data-options="field:'OrderName', align:'center'" width="10%"><span data-i18n="Finance.InternalOrder">Order Name</span></th>
 						<th data-options="field:'TranDesp', align:'center'" width="10%">Desp</th>
 					</tr>
 				</thead>
@@ -104,13 +105,13 @@
 		<!-- Toolbar of Datagrid -->
 		<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-add" plain="true" onclick="newItem()">New 
+				iconCls="icon-add" plain="true" onclick="newItem()"><span data-i18n="Common.New">New </span>
 			</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-remove" plain="true" onclick="destoryItem()">Destroy
+				iconCls="icon-remove" plain="true" onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
 			</a> 
 			<span> |</span>
 			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-reload" plain="true" onclick="refreshItem()">Refresh
+				iconCls="icon-reload" plain="true" onclick="refreshItem()"><span data-i18n="Common.Refresh">Refresh</span>
 			</a> 
 		</div>
 	</div>
@@ -123,7 +124,7 @@
 		<form id="formCrtObj" class="easyui-form" method="post">
 			<table style="width: 90%">
 				<tr>
-					<td>Account</td>
+					<td data-i18n="Finance.Account">Account</td>
 					<td>
 						<div style="margin-bottom: 10px"></div>
 						<select class="easyui-combogrid" style="width:100%" 
@@ -143,7 +144,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Tran. Type</td>
+					<td data-i18n="Finance.TransactionType">Tran. Type</td>
 					<td>
 						<div style="margin-bottom: 10px">
 						 	<input class="easyui-combotree" id="trantypeCombo"
@@ -154,7 +155,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Amount:</td>
+					<td data-i18n="Finance.Amount">Amount:</td>
 					<td>
 						<div style="margin-bottom: 20px">
 						<input class="easyui-numberbox" name="itemamount" id="itemamount"
@@ -174,7 +175,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Control Center:</td>
+					<td data-i18n="Finance.ControlCenter">Control Center:</td>
 					<td>
 						<div style="margin-bottom: 20px">
 						 	<input class="easyui-combotree" id="controlcenterCombo"
@@ -184,7 +185,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Order:</td>
+					<td data-i18n="Finance.InternalOrder">Order:</td>
 					<td>
 						<div style="margin-bottom: 20px">
 							<select style="width:100%" id="orderCombo"></select>
@@ -198,11 +199,11 @@
 							<a href="javascript:void(0)" class="easyui-linkbutton"
 								data-options="iconCls:'icon-ok'" onclick="submitForm()"
 								style="padding: 5px 0px; width: 30%;"> <span
-								style="font-size: 14px;">Submit</span>
+								style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
 							</a> <a href="javascript:void(0)" class="easyui-linkbutton"
 								data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
 								style="padding: 5px 0px; width: 30%;"> <span
-								style="font-size: 14px;">Cancel</span>
+								style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
 							</a>
 						</div>
 					</td>
@@ -300,7 +301,7 @@
 				ordID: ordID,
 				ordname: ordname,
 				ordvalidfrom: ordValidfrom,
-				orvalidto: ordValidto,
+				ordvalidto: ordValidto,
 				amt:amt,
 				itemdesp:itemdesp
 			}
@@ -418,11 +419,11 @@
 					textField: 'name',
 				    columns: [[
 	   					{field:'id',title:'ID',width:20, align:'right'},
-	   					{field:'name',title:'Name',width:50, align:'center'},
-	   					{field:'valid_from',title:'Valid from',width:40, align:'center'},
-	   					{field:'valid_to',title:'Valid to',width:40, align:'center'},
+	   					{field:'name',title:'Name',width:100, align:'center'},
+	   					{field:'valid_from',title:'Valid from',width:80, align:'center'},
+	   					{field:'valid_to',title:'Valid to',width:80, align:'center'},
 		                {field:'comment',title:'Comment',width:120,align:'center'}
-		            ]],
+		            ]],					
 		            data: []
 				};
 			options.data = data;

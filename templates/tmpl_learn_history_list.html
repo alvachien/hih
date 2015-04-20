@@ -74,14 +74,20 @@
 						<td data-i18n="Learn.LearningObject">Learn Object:</td>
 						<td>
 							<div style="margin-bottom: 20px">
-							<input class="easyui-combobox" name="learnobject" 
+							<select class="easyui-combogrid" name="learnobject" 
 									data-options="
 										url: 'script/learnobject_combo.php',
 										method: 'get',
-										valueField:'id',
-										textField:'text'"
-										id="cmbObject"
-										style="width: 100%; height: 30px; padding: 12px"></input>
+										idField:'id',
+										textField:'name',
+										columns: [[
+			                				{field:'id',title:'ID',width:50, align:'right'},
+			                				{field:'categoryname',title:'Category',width:120, align:'center'},
+								            {field:'name',title:'Name',width:120,align:'center'}
+								            ]],
+										fitColumns: true"
+									id="cmbObject"										
+									style="width: 100%; height: 30px; padding: 12px"></select>
 							</div>
 						</td>
 					</tr>
@@ -138,7 +144,7 @@
 									data-options="
 										url:'script/user_combo.php',
 										method: 'get',	
-										valueField:'id',
+										idField:'id',
 										textField:'text'"
 										id="cmbUser_edit"
 										style="width: 100%; height: 30px; padding: 12px"></input>							
@@ -149,14 +155,20 @@
 						<td data-i18n="Learn.LearningObject">Learn Object:</td>
 						<td>
 							<div style="margin-bottom: 20px">
-							<input class="easyui-combobox" name="learnobject_edit" 
+							<select class="easyui-combogrid" name="learnobject_edit" 
 									data-options="
 										url: 'script/learnobject_combo.php',
 										method: 'get',
 										valueField:'id',
-										textField:'text'"
-										id="cmbObject_edit"
-										style="width: 100%; height: 30px; padding: 12px"></input>
+										textField:'name',
+										columns: [[
+			                				{field:'id',title:'ID',width:50, align:'right'},
+			                				{field:'categoryname',title:'Category',width:120, align:'center'},
+								            {field:'name',title:'Name',width:120,align:'center'}
+								            ]],
+										fitColumns: true"
+									id="cmbObject"										
+									style="width: 100%; height: 30px; padding: 12px"></select>
 							</div>
 						</td>
 					</tr>
@@ -205,30 +217,34 @@
 				return $(this).form('validate');
 			},
 			success : function(data) {
-				var jsonData;
+				var jsonData = {};
 				try {
-					data2 = JSON.stringfy(data);
-					jsonData = JSON && JSON.parse(data2) || $.parseJSON(data2);
+					//data2 = JSON.stringfy(data);
+					jsonData = JSON && JSON.parse(data) || $.parseJSON(data);
 				} catch (e) {
 					$.messager.alert('Error', e.description + data, 'Error');
 				}
 				if (jsonData.type === 'E') {
 					$.messager.alert('Error', jsonData.Message, 'error');
-				} else if (jsonData.type === 'S') {
-					var newobject = jsonData.newobject[0];
-					// Add it into the list with the new id
+				} else {
 					$('#formCrtObj').form('clear');
 					$('#dlgCreate').dialog('close');
-					$('#dg').datagrid('appendRow', {
-						userid : newobject.userid,
-						displayas : newobject.displayas,
-						objectid : newobject.objectid,
-						objectname : newobject.objectname,
-						categoryid : newobject.categoryid,
-						categoryname : newobject.categoryname,
-						learndate : newobject.learndate,
-						objectcontent : newobject.objectcontent
-					});
+					
+					if (typeof(jsonData) === "object" && jsonData.newobject && jsonData.newobject.length >= 1)
+					{
+						var newobject = jsonData.newobject[0];
+						// Add it into the list with the new id
+						$('#dg').datagrid('appendRow', {
+							userid : newobject.userid,
+							displayas : newobject.displayas,
+							objectid : newobject.objectid,
+							objectname : newobject.objectname,
+							categoryid : newobject.categoryid,
+							categoryname : newobject.categoryname,
+							learndate : newobject.learndate,
+							objectcontent : newobject.objectcontent
+						});
+					}
 				}
 			}
 		});
@@ -238,16 +254,16 @@
 				return $(this).form('validate');
 			},
 			success : function(data) {
-				var jsonData;
+				var jsonData = {};
 				try {
-					data2 = JSON.stringfy(data);
-					jsonData = JSON && JSON.parse(data2) || $.parseJSON(data2);
+					//data2 = JSON.stringfy(data);
+					jsonData = JSON && JSON.parse(data) || $.parseJSON(data);
 				} catch (e) {
 					$.messager.alert('Error', e.description + data, 'Error');
 				}
 				if (jsonData.type === 'E') {
 					$.messager.alert('Error', jsonData.Message, 'error');
-				} else if (jsonData.type === 'S') {
+				} else {
 					//var newobject = jsonData.newobject[0];
 					// Update it into the list with the new id
 					//		Not possible, because it's hard to retrieve the new category name,
@@ -274,7 +290,7 @@
 						var row = $('#dg').datagrid('getSelected');
 						if (row) {
 							$("#cmbUser_edit").combobox('setValue', row.userid);
-							$("#cmbObject_edit").combobox('setValue', row.objectid);
+							$("#cmbObject_edit").combogrid('setValue', row.objectid);
 							$("#dateLearn_edit").datebox('setValue', row.learndate);
 							
 							$("#tbComment_edit").textbox('setValue', row.comment);

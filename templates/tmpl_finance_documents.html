@@ -34,11 +34,11 @@
 					<tr>
 						<th data-options="field:'docid', align:'right'" width="5%">Doc ID</th>
 						<th data-options="field:'doctype', align:'right'" width="5%">Doc Type</th>
-						<th data-options="field:'doctypename', align:'center'" width="20%">Doc Type Name</th>
-						<th data-options="field:'trandate', align:'right'" width="15%">Date</th>
+						<th data-options="field:'doctypename', align:'center'" width="20%"><span data-i18n="Finance.DocumentType">Doc Type Name</span></th>
+						<th data-options="field:'trandate', align:'right'" width="15%"><span data-i18n="Common.Date">Date</span></th>
 						<th data-options="field:'trancurr', align:'right'" width="10%">Currency</th>
-						<th data-options="field:'trancurrname', align:'center'" width="15%">Currency</th>
-						<th data-options="field:'tranamount', align:'right'" width="20%">Amount</th>
+						<th data-options="field:'trancurrname', align:'center'" width="15%"><span data-i18n="Finance.Currency">Currency</span></th>
+						<th data-options="field:'tranamount', align:'right'" width="20%"><span data-i18n="Finance.Amount">Amount</span></th>
 						<th data-options="field:'desp', align:'center'" width="20%">Desp</th>
 					</tr>
 				</thead>
@@ -49,11 +49,11 @@
 	<!-- Toolbar of Datagrid -->
 	<div id="toolbar">
 		<a href="finance_postdocument.php" class="easyui-linkbutton"
-			iconCls="icon-add" plain="true">New 
+			iconCls="icon-add" plain="true"><span data-i18n="Common.New">New </span>
 		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-edit" plain="true" onclick="changeItem()">Change 
+			iconCls="icon-edit" plain="true" onclick="changeItem()"><span data-i18n="Common.Change">Change</span>
 		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-remove" plain="true" onclick="destoryItem()">Destroy
+			iconCls="icon-remove" plain="true" onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
 		</a> 
 	</div>
     
@@ -126,6 +126,7 @@
 					{field:'itemid',title:'Item ID',width:'5%',align:'right'},
 					{field:'accountid',title:'Account ID',width:'5%',align:'right'},
 					{field:'accountname',title:'Account',width:'10%',align:'center'},
+					{field:'categoryname',title:'Category',width:'10%',align:'center'},
 					{field:'trantype',title:'Trantype',width:'5%',align:'right'},
 					{field:'trantypename',title:'Tran Type',width:'10%',align:'center'},
 					{field:'tranamount',title:'Amount',width:'10%',align:'right'},

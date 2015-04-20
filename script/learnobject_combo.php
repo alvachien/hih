@@ -16,8 +16,8 @@ if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	if (!IsNullOrEmptyString ( $rtnarray[0] )) {
 		header('HTTP/1.1 500 Internal Server Error');
 		echo json_encode(array(
-				'type'=>'E',
-				'Message'=>$rtnarray[0]
+			'type'=>'E',
+			'Message'=>$rtnarray[0]
 		));
 	} else {
 		echo json_encode($rtnarray[1]);
