@@ -1,0 +1,187 @@
+	<!-- Content area of Learn Category Page begins -->
+	<h2 style="clear: both">Learn Category</h2>
+
+	<div>
+		<p>Learn category defines the hierarchy of all available categories
+			in the learning part.</p>
+	</div>
+	<div class="easyui-panel" style="padding:5px">
+		<ul id="learn-ctgy-tree" class="easyui-tree" data-options="
+				url: 'learn_category.php?TYPE=10',
+				method: 'get',
+				animate: true,
+				onContextMenu: function(e,node){
+					e.preventDefault();
+					$(this).tree('select',node.target);
+					$('#mmLearnCategory').menu('show',{
+						left: e.pageX,
+						top: e.pageY
+					});
+				}
+			"></ul>
+    </div>
+    
+    <!-- Context menu -->    
+	<div id="mmLearnCategory" class="easyui-menu" style="width:160px;">
+		<div onclick="append()">Append</div>
+		<div onclick="removeit()">Remove</div>
+		<div class="menu-sep"></div>
+		<div onclick="expand()">Expand</div>
+		<div onclick="collapse()">Collapse</div>
+	</div>
+	
+	<!-- Dialog for create category -->
+	<div id="dlgCtgyCreate" class="easyui-dialog"
+		title="Create a new category" style="width: 600px; height: 300px;"
+		data-options="resizable:true,modal:true,closed:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formCtgyCreate" class="easyui-form" method="post">
+		<table style="width: 90%">
+			<tr>
+				<td>Parent Category</td>
+				<td>
+					<div style="margin-bottom: 10px"></div>
+					<select class="easyui-combotree" id="cmbParentCategory"
+							url="learn_category.php?TYPE=10" name="category"
+							data-options="prompt:'Parent Category', required: true"
+							style="width: 100%; height: 30px; padding: 12px">
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>名称</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input id="tbName" class="easyui-textbox"
+							name="name"
+							style="width: 100%; height: 30px; padding: 12px"
+							data-options="prompt:'Name of Category', required: true, validType:'length[1,45]'"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Comment</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input class="easyui-textbox" name="comment" id="tbComment"
+							style="width: 100%; height: 30px; padding: 12px"
+							data-options="prompt:'Comment'"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div align="right">
+						<a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ok'" onclick="submitForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;">Submit</span>
+						</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;">Cancel</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+		var ctgyTreeSelectedNode;
+		$('#formCtgyCreate').form({
+			url : 'script/learncategory_create.php',
+			onSubmit : function() {
+				return $(this).form('validate');
+			},
+			success : function(data) {
+				var jsonData;
+				try {
+					jsonData = JSON && JSON.parse(data) || $.parseJSON(data);
+				} catch (e) {
+					$.messager.alert('Error', e.description + data, 'Error');
+				}
+				if (jsonData.type === 'E') {
+					$.messager.alert('Error', jsonData.Message, 'error');
+				} else if (jsonData.type === 'S') {
+					var newobject = jsonData.newobject[0];
+					// Add it into the list with the new id
+					$('#formCtgyCreate').form('clear');
+					$('#dlgCtgyCreate').dialog('close');
+					
+					var t = $('#learn-ctgy-tree');
+					var parnode = null;
+					if (newobject.parent) {
+						parnode = t.tree('find', newobject.parent)						
+					}
+		 			t.tree('append', {
+	 					parent: parnode ? parnode.target : null,
+	 					data: [{
+	 						id : newobject.id,
+	 						text: newobject.text
+	 					}]
+	 				});
+				}
+			}
+		});
+		$('#dlgCtgyCreate').dialog({
+			closed : true,
+			onOpen : function() {
+				if (ctgyTreeSelectedNode != null) {
+					$('#cmbParentCategory').combotree('setValue', ctgyTreeSelectedNode.id);
+				}
+			}
+		});
+		function append(){
+ 			var t = $('#learn-ctgy-tree');
+ 			ctgyTreeSelectedNode = t.tree('getSelected');
+ 			$('#dlgCtgyCreate').dialog('open');
+ 			
+// 			t.tree('append', {
+// 				parent: (node?node.target:null),
+// 				data: [{
+// 					text: 'new item1'
+// 				},{
+// 					text: 'new item2'
+// 				}]
+// 			});
+		}
+		function removeit(){
+			var node = $('#learn-ctgy-tree').tree('getSelected');
+			if (node) {
+				$.messager.confirm('Delete', 'Are you confirm to delete ' + node.text + '?', function(r){
+					if (r){
+						$.ajax({
+							type: "POST",
+							url: "script/learncategory_delete.php",
+							data: { ctgyid: node.id }
+						})
+						.done(function( ) {
+							$('#learn-ctgy-tree').tree('remove', node.target);
+						})
+						.fail(function(msg) {
+							 $.messager.alert('Error', msg, 'error');
+						});					
+					}
+				});
+			}
+		}
+		function collapse(){
+			var node = $('#learn-ctgy-tree').tree('getSelected');
+			$('#learn-ctgy-tree').tree('collapse',node.target);
+		}
+		function expand(){
+			var node = $('#learn-ctgy-tree').tree('getSelected');
+			$('#learn-ctgy-tree').tree('expand',node.target);
+		}
+		function submitForm() {
+			$('#formCtgyCreate').form('submit');
+		}
+		function cancelForm() {
+			$('#formCtgyCreate').dialog('close');
+		}
+	</script>
+	<!-- Content area of Learn Category Page ends -->
+	

@@ -1,0 +1,115 @@
+{
+	"Common": {
+		"OK" : "OK",
+		"Cancel" : "取消",
+		"Language" : "语言",
+		"Clear": "清除",
+		"Submit": "提交",
+		"Copyright": "版权所有",
+		"Confirm": "确认",
+		"Date": "日期",
+		"Precent": "百分比",
+		
+		"ListView": "列表视图",
+		"HierarchyView": "树形视图",
+		"Themes": "主题",
+
+		"New": "新建",
+		"Change": "修改",
+		"Delete": "删除",
+		
+		"ID": "ID",
+		"Category": "类别",
+		"Name": "名称",
+		"Content": "内容",
+		"Comment": "备注",
+		"CategoryID": "类别ID",
+		
+		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？"		
+	},
+	
+  	"Login": {
+    	"User": "用户",
+    	"Password" : "密码",
+    	"Register": "注册",
+    	"Login": "登陆",
+    	"Logout": "登出",
+		"ConfirmToLogout": "即将登出系统。请确认继续？",
+    	"LoginTitle": "登陆到系统",
+    	"RegisterTitle": "注册新用户",
+    	"Email": "电子邮箱",
+    	"Gender": "性别",
+    	"DisplayAs": "显示为",
+    	"ConfirmedPassword": "确认密码",
+    	"Male": "男",
+    	"Female": "女"    	
+ 	},
+ 	
+ 	"Nav": {
+ 		"Home": "主页",
+ 		"Users": "用户信息",
+ 		"LearningTrace": "学习记录系统",
+ 		"FinanceTrace": "财务记录系统",
+ 		"About": "关于",
+ 		"Acknowledgements": "致谢",
+ 		"Version": "版本"
+ 	},
+ 	
+ 	"Learn": {
+ 		"LearningCategory": "学习种类",
+ 		"LearningObject": "学习目标",
+ 		"LearningHistory": "学习记录",
+ 		"LearningAward": "学习成绩",
+ 		
+ 		"LearningObjectListTitle": "学习目标 - 列表视图",
+ 		"LearningObjectListDesp": "学习目标的列表视图，通过列表的方式将所有学习目标呈现出来。",
+ 		"LearningHistoryListTitle": "学习记录 - 列表视图",
+ 		"LearningHistoryListDesp" : "学习记录的列表视图，通过列表的方式将所有学习记录呈现出来。",
+ 		"LearningAwardListTitle": "学习成绩 - 列表视图",
+ 		"LearningAwardListDesp" : "学习成绩的列表视图，通过列表的方式将学习成绩呈现出来。",
+
+ 		"CreateLearningObjectTitle": "创建学习目标",
+ 		"EditLearningObjectTitle": "修改学习目标",
+ 		"LearningObjectList": "学习目标列表",
+ 		"Score": "分数",
+ 		"Reason": "获取原因",
+ 		"CreateLearningHistoryTitle": "创建学习记录",
+ 		"EditLearningHistoryTitle": "修改学习记录",
+ 		"CreateLearningAwardTitle": "创建学习成绩",
+ 		"EditLearningAwardTitle": "修改学习成绩",
+ 		"FilterByUser": "根据用户过滤",
+ 		"ObjectID": "学习目标ID"
+ 	},
+
+  	"Mainpage": {
+  		"WelcomeBack": "欢迎回来"
+  	},
+  	
+  	"Finance": {
+  		"Accounts": "账户",
+  		"AccountCategory": "账户种类",
+  		"Documents": "财务凭证",
+  		"PostDocument": "记账",
+  		"Controlling": "财务控制",
+  		"ControlCenter": "控制中心",
+  		"InternalOrder": "内部订单",
+  		"ConfigObjects": "可配置对象",
+  		"Currency": "货币",
+  		"TransactionType": "交易类型",
+  		"DocumentType": "凭证类型",
+  		"Reports": "报表",
+  		"BalanceReport": "资产负债报表",
+  		"ControlCenterReport": "控制中心报表",
+  		"InternalOrderReport": "内部订单报表",
+  		"DailyBalanceReport": "日常开支表",
+
+  		"AccountsDesp": "当前系统中所有的账户以列表形式呈现。",
+  		"Asset": "资产",
+  		"Amount": "金额",
+  		"ExpenseFlag": "收支",
+  		"Incoming": "收入",
+  		"Outgoing": "开支",
+
+  		"CreateAccountTitle": "创建账户"
+  	}
+}

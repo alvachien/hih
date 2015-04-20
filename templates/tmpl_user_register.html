@@ -1,0 +1,161 @@
+<body>
+	<div id="content">
+		<link href="css/themes/default/easyui.css" rel="stylesheet">
+
+		<div style="margin: 50px 0;"></div>
+		<div style="min-height: 200px;" align="center">
+			<div style="margin: 20px 0;"></div>
+
+			<div class="easyui-panel" title="Register a new user" id="registerPanel"
+				style="width: 70%; padding: 30px 70px 20px 70px">
+				<form id="formRegister" class="easyui-form" method="post">
+					<table style="width: 70%">
+						<tr>
+							<td data-i18n="Login.User">User</td>
+							<td>
+								<div style="margin-bottom: 10px">
+									<input class="easyui-textbox" name="loginuser"
+										style="width: 100%; height: 30px; padding: 12px"
+										data-options="prompt:'User',iconCls:'icon-man',iconWidth:38, required: true,validType:'length[6,25]'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="Login.Password">Password:</td>
+							<td>
+								<div style="margin-bottom: 20px">
+									<input class="easyui-validatebox" type="password" id="pwd"
+										name="pwd" style="width: 100%; height: 30px; padding: 12px"
+										data-options="prompt:'Password',iconCls:'icon-lock',iconWidth:38, required: true,validType:'length[6,50]'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="Login.ConfirmedPassword">Confirm Password:</td>
+							<td>
+								<div style="margin-bottom: 20px">
+									<input class="easyui-validatebox" type="password" id="cpwd"
+										name="cpwd" style="width: 100%; height: 30px; padding: 12px"
+										data-options="prompt:'Input Password again',iconCls:'icon-lock',iconWidth:38, required: true, validType: 'equals[\'#pwd\']'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="Login.DisplayAs">Display As:</td>
+							<td>
+								<div style="margin-bottom: 20px">
+									<input class="easyui-textbox" name="displayas"
+										style="width: 100%; height: 30px; padding: 12px"
+										data-options="prompt:'Display As',iconWidth:38, required: true,validType:'length[6,50]'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="Login.Gender">Gender:</td>
+							<td>
+								<div style="margin-bottom: 20px">
+									<select class="easyui-combobox" id="genderSelectMenu" style="width: 100%; height: 30px; padding: 12px"
+										name="gender" required="required">
+										<option value="1" selected="selected">male</option>
+										<option value="0">female</option>
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="Login.Email">Email:</td>
+							<td>
+								<div style="margin-bottom: 20px">
+									<input class="easyui-textbox" name="email"
+										style="width: 100%; height: 30px; padding: 12px"
+										data-options="prompt:'Email',iconCls:'icon-lock',iconWidth:38, required: true,validType:'email'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div align="right">
+									<a href="javascript:void(0)" class="easyui-linkbutton"
+										style="padding: 5px 0px; width: 30%;"
+										onclick="submitForm()"> <span data-i18n="Common.Submit" 
+										style="font-size: 14px;">Submit</span>
+									</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+										data-options="iconCls:'icon-cancel'" onclick="clearForm()"
+										style="padding: 5px 0px; width: 30%;"> <span data-i18n="Common.Clear" 
+										style="font-size: 14px;">Clear</span>
+									</a>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="footer" align="center">
+		<div>Copyright © 2014 - 2015 Alva Chien</div>
+	</div>
+
+	<script>
+		$('#formRegister').form({
+			url : 'user_register.php',
+			onSubmit : function() {
+				return $(this).form('validate');
+			},
+			success : function(data) {
+				var jsonData;
+				try {
+					jsonData = JSON && JSON.parse(data) || $.parseJSON(data);
+				} catch (e) {
+					$.messager.alert('Error', e.description + data, 'Error');
+				}
+				if (jsonData.type === 'E') {
+					$.messager.alert('Error', jsonData.Message, 'error');
+				} else {
+					window.location.href = "index.php" + location.search;
+				}
+			}
+		});
+		function submitForm() {
+			$('#formRegister').form('submit');
+		}
+		function clearForm() {
+			$('#formRegister').form('clear');
+		}
+		function close_window() {
+			// Try 0. Not working!!!!
+			//window.close();
+			// Try 1. Not working!!!!!!!
+			//window.open("", "_self").close();
+			// Try 2. Not working either!!!!!!
+			//window.top.close();
+			// Try 3. Not working, again!!!!!!
+			// window.open('','_parent','').close();
+		}
+		// extend the 'equals' rule
+		$.extend($.fn.validatebox.defaults.rules, {
+			equals : {
+				validator : function(value, param) {
+					return value == $(param[0]).val();
+				},
+				message : 'Field do not match.'
+			}
+		});
+		
+		var i18n_option = { 
+			ns: { 
+				namespaces: ['resource'], 
+				defaultNs: 'resource'
+			} 
+		};
+				 
+		i18n.init(i18n_option, function(t) {
+			$("body").i18n();
+			var titlestr = t('Login.RegisterTitle');
+			$('#registerPanel').panel('setTitle', titlestr);
+		});
+	</script>
+</body>
+</html>

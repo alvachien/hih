@@ -1,0 +1,115 @@
+{
+	"Common": {
+		"OK" : "OK",
+		"Cancel" : "Cancel",
+		"Language" : "Language",
+		"Clear": "Clear",
+		"Submit": "Submit",
+		"Copyright": "Copyright",
+		"Confirm": "Confirm",
+		"Date": "Date",
+		"Precent": "Precentage",
+
+		"ListView": "List View",
+		"HierarchyView": "Hierarchy View",
+		"Themes": "Themes",
+		
+		"New": "New",
+		"Change" : "Change",
+		"Delete": "Delete",
+		
+		"ID": "ID",
+		"Category": "Category",
+		"Name": "Name",
+		"Content": "Content",
+		"Comment": "Comment",
+		"CategoryID": "Category ID",
+		
+		"ConfirmToDeleteSelectedItem": "The selected item will be deleted. Do you confirm to continue?"
+	},
+	
+  	"Login": {
+    	"User": "User",
+    	"Password": "Password",
+    	"Register": "Register",
+    	"Login": "Login",
+    	"Logout": "Logout",
+		"ConfirmToLogout": "You can currently log out. Do you confirm to continue?",
+    	"LoginTitle": "Login into the System",
+    	"RegisterTitle": "Register a new User",
+    	"Email": "Email",
+    	"Gender": "Gender",
+    	"DisplayAs": "Display As",
+    	"ConfirmedPassword": "Confirm Password",
+    	"Male": "Male",
+    	"Female": "Female"    	
+ 	},
+ 	
+ 	"Nav": {
+ 		"Home": "Home",
+ 		"Users": "Users",
+ 		"LearningTrace": "Learning Trace",
+ 		"FinanceTrace": "Finance Trace",
+ 		"About": "About",
+ 		"Acknowledgements": "Acknowledgements",
+ 		"Version": "Version"
+ 	},
+ 	
+ 	"Learn": {
+ 		"LearningCategory": "Learning Category",
+ 		"LearningObject": "Learning Object",
+ 		"LearningHistory": "Learning History",
+ 		"LearningAward": "Learning Award",
+ 		
+ 		"LearningObjectListTitle": "Learning Object in List View",
+ 		"LearningObjectListDesp" : "Learn objects in List view show all the objects in the list view.",
+ 		"LearningHistoryListTitle": "Learning History in List View",
+ 		"LearningHistoryListDesp" : "Learn histories in List view show all the learn history records in the list view.",
+ 		"LearningAwardListTitle": "Learning Award in List View",
+ 		"LearningAwardListDesp" : "Learn awards in List view show all the learn award scores in the list view.",
+ 		
+ 		"CreateLearningObjectTitle": "Create Learning Object",
+ 		"EditLearningObjectTitle": "Edit Learning Object",
+ 		"LearningObjectList": "Learning Objects List",
+ 		"Score": "Score",
+ 		"Reason": "Reason",
+ 		"CreateLearningHistoryTitle": "Create Learning History",
+ 		"EditLearningHistoryTitle": "Edit Learning History",
+ 		"CreateLearningAwardTitle": "Create Learning Award",
+ 		"EditLearningAwardTitle": "Edit Learning Award",
+ 		"FilterByUser": "Filter by User",
+ 		"ObjectID": "Object ID"
+  	},
+  	
+  	"Mainpage": {
+  		"WelcomeBack": "Welcome Back"
+  	},
+  	
+  	"Finance": {
+  		"Accounts": "Accounts",
+  		"AccountCategory": "Account Category",
+  		"Documents": "Documents",
+  		"PostDocument": "Post Document",
+  		"Controlling": "Controlling",
+  		"ControlCenter": "Control Center",
+  		"InternalOrder": "Internal Order",
+  		"ConfigObjects": "Config Objects",
+  		"Currency": "Currency",
+  		"TransactionType": "Transaction Type",
+  		"DocumentType": "Document Type",
+  		"Reports": "Reports",
+  		"BalanceReport": "Balance Report",
+  		"ControlCenterReport": "Control Center Report",
+  		"InternalOrderReport": "Internal Order Report",
+  		"DailyBalanceReport": "The Daily Balance Sheet",
+  		
+  		"AccountsDesp": "Finance accounts show all accounts in the list view.",
+  		"Asset": "Asset",
+  		"Amount": "Amount",
+  		"ExpenseFlag": "Revenue/Expense",
+  		"Incoming": "Incoming",
+  		"Outgoing": "Outgoing",
+  		
+  		"CreateAccountTitle": "Create an Account"
+  	}
+ }

@@ -1,0 +1,232 @@
+
+	<!-- Content area of Learn Award Page begins -->
+	<h2 style="clear: both;" data-i18n="Learn.LearningAwardListTitle">Learn Awards</h2>
+
+	<div>
+		<p data-i18n="Learn.LearningAwardListDesp">Learn Awards: Award scores on the users.</p>
+	</div>
+
+	<!-- Datagrid -->
+	<table id="dg" class="easyui-datagrid" title="Learn Awards"
+		style="width: 98%; height: 600px;"
+		data-options="singleSelect:true,
+				url:'learn_award.php?TYPE=10', method:'get', 
+				rownumbers: true,
+				showFooter: true,
+				noheader: true"
+		toolbar="#toolbar">
+	<!-- 
+                rowStyler: function(index,row){
+                    if (row.score < 60) {
+                        return 'background-color: rgb(181,68,52);color:#fff;font-weight:bold;';
+                    }
+                }	 -->		
+		<thead>
+			<tr>
+			<th data-options="field:'id', align:'right'" width="5%"><span data-i18n="Common.ID">ID</span></th>
+			<th data-options="field:'userid'" width="10%"><span data-i18n="Login.User">User Name</span></th>
+			<th data-options="field:'displayas', align:'center'" width="15%"><span data-i18n="Login.DisplayAs">Display As</span></th>
+			<th data-options="field:'adate',align:'center'" width="10%"><span data-i18n="Common.Date">Date</span></th>
+			<th data-options="field:'score', align:'right',styler:scoreCellStyler" width="10%"><span data-i18n="Learn.Score">Score</span></th>
+			<th data-options="field:'reason', align:'center'" width="50%"><span data-i18n="Learn.Reason">Reason</span></th>
+			</tr>
+		</thead>
+	</table>
+
+	<!-- Toolbar of Datagrid -->
+	<div id="toolbar">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-add" plain="true" onclick="newItem()"> <span data-i18n="Common.New">New</span>
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-edit" plain="true" onclick="changeItem()"> <span data-i18n="Common.Change">Change</span> 
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span data-i18n="Common.Delete">Destroy</span>
+		</a> 
+		<span> |</span>
+		<span data-i18n="Learn.FilterByUser">Filter by user: </span>
+		<input class="easyui-combobox"
+				data-options="url:'script/user_combo.php',
+								method: 'get',	
+								valueField:'id',
+								textField:'text',
+								onSelect:onFilterUser,
+								onChange:onFilterUserChanged"
+				id="cmbFilterUser" style="line-height:26px;border:1px solid #ccc"></input>
+	</div>
+
+	<!-- Dialog for creating the award -->
+	<div id="dlgAwardCreate" class="easyui-dialog"
+		title="Create a new Award" style="width: 600px; height: 400px;"
+		data-options="resizable:true,modal:true,closed:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formCrtAward" class="easyui-form" method="post">
+		<table style="width: 90%">
+			<tr>
+				<td data-i18n="Login.User">User</td>
+				<td>
+					<div style="margin-bottom: 10px">
+						<input class="easyui-combobox" name="user"
+							data-options="
+									url:'script/user_combo.php',
+									method: 'get',	
+									valueField:'id',
+									textField:'text',
+									required: true"
+							id="cmbUser" style="width: 100%; height: 30px; padding: 12px"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Common.Date">Date</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input id="dateAward" class="easyui-datebox"
+							name="awarddate"
+							style="width: 100%; height: 30px; padding: 12px"
+							data-options="formatter:dateformatter, parser:dateparser, required: true"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Learn.Score">Score</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input class="easyui-numberbox" name="awardscore" id="score"
+							style="width: 100%; height: 30px; padding: 12px"
+							data-options="prompt:'Score',required: true"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Learn.Reason">Reason</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input class="easyui-textbox" name="awardreason"
+							style="width: 100%; height: 30px; padding: 12px"
+							data-options="prompt:'Reason',required: true,validType:'length[1,45]'"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div align="right">
+						<a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ok'" onclick="submitForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
+						</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+	$("#dlgAwardCreate").dialog(
+		{
+			closed : true,
+			onOpen : function() {
+				$("#dateAward").datebox('setValue',
+						(new Date()).toLocaleDateString());
+			}
+		});
+	$('#formCrtAward').form({
+		url : 'script/learnaward_create.php',
+		onSubmit : function() {
+			return $(this).form('validate');
+		},
+		success : function(data) {
+			var jsonData;
+			try {
+				var data2 = JSON.stringify(data);
+				jsonData = JSON && JSON.parse(data2) || $.parseJSON(data2);
+			} catch (e) {
+				$.messager.alert('Error', e.description + data, 'Error');
+			}
+			if (jsonData.type === 'E') {
+				$.messager.alert('Error', jsonData.Message, 'error');
+			} else {
+				var newobject = jsonData.newobject[0];
+				// Add it into the list with the new id
+				$('#formCrtAward').form('clear');
+				$('#dlgAwardCreate').dialog('close');
+				$('#dg').datagrid('appendRow', {
+					id : newobject.id,
+					userid : newobject.userid,
+					displayas : newobject.displayas,
+					adate : newobject.adate,
+					score : newobject.score,
+					reason : newobject.reason,
+					});
+			}
+		}
+	});
+	function onFilterUser(rec) {
+		if (rec.id) {
+			$('#dg').datagrid('load',{
+		        userid: rec.id
+		    });
+		}
+	}
+	function onFilterUserChanged(newvalue, oldvalue) {
+		if (!newvalue) {
+			$('#dg').datagrid('load',{
+		        userid: null
+		    });			
+		}
+	}
+	function scoreCellStyler(value,row,index){
+        if (value < 60){
+            return 'background-color:#ffee00;color:red;';
+        }
+    }
+	function newItem() {
+		$("#dlgAwardCreate").dialog('open');
+	}
+	function changeItem() {
+		if (notreadyNvgClick) {
+			notreadyNvgClick();
+		}
+	}
+	function destroyItem() {
+		var row = $('#dg').datagrid('getSelected');
+		if (row) {
+			var msgtitle = i18n.t("Common.Confirm");
+			var msgtxt = i18n.t("Common.ConfirmToDeleteSelectedItem");
+			$.messager.confirm(msgtitle,
+				msgtxt,
+				function(r) {
+					if (r) {
+						var index = $('#dg').datagrid('getRowIndex', row);
+						$.post('script/learnaward_delete.php', {
+							id : row.id
+						}, function() {
+							$('#dg').datagrid('deleteRow', index);
+						});
+					}
+				});
+		}
+	}
+	function submitForm() {
+		$('#formCrtAward').form('submit');
+	}
+	function cancelForm() {
+		$("#dlgAwardCreate").dialog('close');
+	}
+	
+	// For multiple languages
+	function i18npostprocess(lang) {
+		// Titles for dialogs
+		var titleStr = i18n.t("Learn.CreateLearningAwardTitle");
+		$('#dlgAwardCreate').dialog("setTitle", titleStr);
+		//titleStr = i18n.t("Learn.EditLearningObjectTitle");
+		//$('#dlgEdit').dialog("setTitle", titleStr);
+	}
+	</script>
+	<!-- Content area of Learn Award Page ends -->
