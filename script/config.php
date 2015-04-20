@@ -36,8 +36,7 @@ define('HIH_I18N_DOMAIN_PATH', 'locale/', false);
 // 1.1 Database connection part -- need change when setup the website
 define('MySqlHost', 'localhost', false);
 define('MySqlUser', 'root', false);
-define('MySqlPwd', 'i035707', false);
-define('MySqlDB', 'actest2', false);
+
 // 1.2 Tables, views, procedures
 define('MySqlUserTabel', 't_user', false);
 define('MySqlLearnCatgTable', 't_learn_ctg', false);
