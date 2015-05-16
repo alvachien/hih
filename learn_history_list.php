@@ -8,6 +8,7 @@ else
 session_start ();
 require_once 'script/utility.php';
 
+
 if ($_SERVER ["REQUEST_METHOD"] == "POST") {
 } else {
 	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {

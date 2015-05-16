@@ -17,6 +17,7 @@ require_once 'config.php';
  *  	MSG: TEXT 
  */
 
+
 //
 // 0. Utility part
 //

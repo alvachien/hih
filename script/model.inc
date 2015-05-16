@@ -1,5 +1,6 @@
 <?php
 
+
 class HIHUser {
 	public $ID;
 	public $DisplayAs;

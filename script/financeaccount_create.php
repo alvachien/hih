@@ -9,6 +9,7 @@ else
 session_start ();
 require_once 'utility.php';
 
+
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		header('Content-type: application/json');

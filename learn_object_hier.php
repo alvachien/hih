@@ -8,6 +8,7 @@ else
 session_start ();
 require_once 'script/utility.php';
 
+
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	$reqtype = $_GET ["TYPE"];
 	

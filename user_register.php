@@ -9,6 +9,7 @@ else
 session_start ();
 require_once 'script/utility.php';
 
+
 if ($_SERVER ["REQUEST_METHOD"] == "POST") {
 	// User register page
 	$sLogin = escape ( $_POST ['loginuser'] );

@@ -5,6 +5,7 @@ if (version_compare ( phpversion (), '5.3.0', '>=' ) == 1)
 else
 	error_reporting ( E_ALL & ~ E_NOTICE );
 
+
 session_start ();
 require_once 'script/utility.php';
 

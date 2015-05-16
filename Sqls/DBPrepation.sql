@@ -1,12 +1,14 @@
 /* 
  * SQL file for preparing HIH running on MySql
- * Version
- * Updated:
+ * Version: 0.1
+ * Updated: 2015/05/16
+ *
+ * == Version Histories
  */
 
 /* Tables */
 -- Table Creation: Finance part
-CREATE TABLE `t_fin_account` (
+CREATE TABLE IF NOT EXISTS `t_fin_account` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `CTGYID` int(11) NOT NULL,
   `NAME` varchar(30) NOT NULL,
@@ -14,7 +16,7 @@ CREATE TABLE `t_fin_account` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Account';
 
-CREATE TABLE `t_fin_account_ctgy` (
+CREATE TABLE IF NOT EXISTS `t_fin_account_ctgy` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(30) NOT NULL,
   `ASSETFLAG` tinyint(4) NOT NULL DEFAULT '1',
@@ -22,7 +24,7 @@ CREATE TABLE `t_fin_account_ctgy` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Account Category';
 
-CREATE TABLE `t_fin_controlcenter` (
+CREATE TABLE IF NOT EXISTS `t_fin_controlcenter` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(30) NOT NULL,
   `PARID` int(11) DEFAULT NULL,
@@ -30,21 +32,21 @@ CREATE TABLE `t_fin_controlcenter` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Cost Center';
 
-CREATE TABLE `t_fin_currency` (
+CREATE TABLE IF NOT EXISTS `t_fin_currency` (
   `CURR` varchar(5) NOT NULL,
   `NAME` varchar(45) NOT NULL,
   `Symbo` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`CURR`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Currency';
 
-CREATE TABLE `t_fin_doc_type` (
+CREATE TABLE IF NOT EXISTS `t_fin_doc_type` (
   `ID` smallint(6) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(30) NOT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Document Type';
 
-CREATE TABLE `t_fin_document` (
+CREATE TABLE IF NOT EXISTS `t_fin_document` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `DOCTYPE` smallint(6) NOT NULL,
   `TRANDATE` date NOT NULL,
@@ -53,7 +55,7 @@ CREATE TABLE `t_fin_document` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Document';
 
-CREATE TABLE `t_fin_document_item` (
+CREATE TABLE IF NOT EXISTS `t_fin_document_item` (
   `DOCID` int(11) NOT NULL,
   `ITEMID` int(11) NOT NULL,
   `ACCOUNTID` int(11) NOT NULL,
@@ -65,8 +67,7 @@ CREATE TABLE `t_fin_document_item` (
   PRIMARY KEY (`DOCID`,`ITEMID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Document Item';
 
-
-CREATE TABLE `t_fin_intorder` (
+CREATE TABLE IF NOT EXISTS `t_fin_intorder` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(30) NOT NULL,
   `VALID_FROM` date NOT NULL,
@@ -75,8 +76,7 @@ CREATE TABLE `t_fin_intorder` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Internal Order';
 
-
-CREATE TABLE `t_fin_intorder_settrule` (
+CREATE TABLE IF NOT EXISTS `t_fin_intorder_settrule` (
   `INTORDID` int(11) NOT NULL,
   `RULEID` int(11) NOT NULL,
   `CONTROLCENTERID` int(11) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE `t_fin_intorder_settrule` (
   PRIMARY KEY (`INTORDID`,`RULEID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Settlement Rule of Internal Order';
 
-CREATE TABLE `t_fin_tran_type` (
+CREATE TABLE IF NOT EXISTS `t_fin_tran_type` (
   `ID` smallint(6) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(30) NOT NULL,
   `EXPENSE` tinyint(4) NOT NULL DEFAULT '0',
@@ -95,7 +95,7 @@ CREATE TABLE `t_fin_tran_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='Transaction Type';
 
 -- Table Creation: Learning part
-CREATE TABLE `t_learn_award` (
+CREATE TABLE IF NOT EXISTS `t_learn_award` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `USERID` varchar(25) NOT NULL,
   `ADATE` date NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `t_learn_award` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='Learn award';
 
-CREATE TABLE `t_learn_ctg` (
+CREATE TABLE IF NOT EXISTS `t_learn_ctg` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `PARENT_ID` int(11) DEFAULT NULL,
   `NAME` varchar(45) NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE `t_learn_ctg` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='Learn category';
 
-CREATE TABLE `t_learn_hist` (
+CREATE TABLE IF NOT EXISTS `t_learn_hist` (
   `USERID` varchar(25) NOT NULL,
   `OBJECTID` int(11) NOT NULL,
   `LEARNDATE` date NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE `t_learn_hist` (
   PRIMARY KEY (`USERID`,`OBJECTID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learning history';
 
-CREATE TABLE `t_learn_obj` (
+CREATE TABLE IF NOT EXISTS `t_learn_obj` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `CATEGORY` int(11) DEFAULT NULL,
   `NAME` varchar(45) DEFAULT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `t_learn_obj` (
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='Learn Object';
 
 -- User part
-CREATE TABLE `t_user` (
+CREATE TABLE IF NOT EXISTS `t_user` (
   `USERID` varchar(25) NOT NULL,
   `DISPLAYAS` varchar(50) NOT NULL,
   `PASSWORD` varchar(150) NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE `t_user` (
 
 /* View */
 -- Finance part
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -158,7 +158,7 @@ VIEW `v_fin_account` AS
         (`t_fin_account` `tab_a`
         left join `t_fin_account_ctgy` `tab_b` ON ((`tab_a`.`CTGYID` = `tab_b`.`ID`)));
 
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -185,7 +185,7 @@ VIEW `v_fin_document_item1` AS
         left join `t_fin_controlcenter` ON ((`t_fin_document_item`.`CONTROLCENTERID` = `t_fin_controlcenter`.`ID`)))
         left join `t_fin_intorder` ON ((`t_fin_document_item`.`ORDERID` = `t_fin_intorder`.`ID`)));
 	
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -208,7 +208,7 @@ VIEW `v_fin_document` AS
 	
 		
 
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -232,7 +232,7 @@ VIEW `v_fin_document_item2` AS
         (`v_fin_document_item1` `tab_a`
         left join `t_fin_account` `tab_b` ON ((`tab_a`.`accountid` = `tab_b`.`ID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -265,7 +265,7 @@ VIEW `v_fin_document_item3` AS
         join `t_fin_doc_type` `tab_d` ON ((`tab_c`.`DOCTYPE` = `tab_d`.`ID`)))
         join `t_fin_currency` `tab_e` ON ((`tab_c`.`TRANCURR` = `tab_e`.`CURR`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -286,7 +286,7 @@ VIEW `v_fin_internalorder_srule` AS
         left join `t_fin_controlcenter` `tab_c` ON ((`tab_b`.`CONTROLCENTERID` = `tab_c`.`ID`)));
 
 -- Learing part		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -302,7 +302,7 @@ VIEW `v_learn_award` AS
         (`t_learn_award`
         left join `t_user` ON ((`t_learn_award`.`USERID` = `t_user`.`USERID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -322,7 +322,7 @@ VIEW `v_learn_histhier` AS
         left join `v_learn_histobj` `histobj` ON ((`ctgy`.`ID` = `histobj`.`categoryid`)))
         left join `t_user` `user` ON ((`histobj`.`userid` = `user`.`USERID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -343,7 +343,7 @@ VIEW `v_learn_histlist` AS
         left join `t_learn_ctg` `ctgy` ON ((`obj`.`CATEGORY` = `ctgy`.`ID`)))
         left join `t_user` `user` ON ((`hist`.`USERID` = `user`.`USERID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -359,7 +359,7 @@ VIEW `v_learn_histobj` AS
         (`t_learn_hist` `hist`
         join `t_learn_obj` `obj` ON ((`hist`.`OBJECTID` = `obj`.`ID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -374,7 +374,7 @@ VIEW `v_learn_obj` AS
         (`t_learn_obj` `a`
         join `t_learn_ctg` `b` ON ((`a`.`CATEGORY` = `b`.`ID`)));
 		
-CREATE 
+CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
@@ -707,6 +707,73 @@ INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (
 INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (27,'固定电话/宽带',1,26,'固定电话和宽带');
 INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (28,'手机费',1,26,'手机、流量等');
 INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (29,'彩票支出',1,24,'彩票');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (2,'主业收入',0,NULL,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (3,'工资',0,2,'工资');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (4,'奖金',0,2,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (5,'投资类收入',0,NULL,'投资类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (6,'股票收益',0,5,'股票收益');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (7,'基金收益',0,5,'基金类收益');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (8,'利息收入',0,5,'银行利息收入');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (9,'生活类开支',1,NULL,'生活类开支');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (10,'其它收入',0,NULL,'其它收入');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (11,'物业类支出',1,9,'物业类支出');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (12,'私家车支出',1,9,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (13,'彩票奖金',0,10,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (14,'小区物业费',1,11,'小区的物业费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (15,'水费',1,11,'水费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (16,'电费',1,11,'电费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (17,'天然气费',1,11,'天然气费用');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (18,'物业维修费',1,11,'物业维修费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (19,'车辆保养',1,12,'保养');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (20,'汽油费',1,12,'汽车加油');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (21,'车辆保险费',1,12,'保险');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (22,'停车费',1,12,'停车费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (23,'车辆维修',1,12,'车辆维修');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (24,'其它支出',1,NULL,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (25,'银行保险类',1,NULL,'保险类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (26,'通讯费',1,9,'通讯费用');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (27,'固定电话/宽带',1,26,'固定电话和宽带');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (28,'手机费',1,26,'手机、流量等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (29,'彩票支出',1,24,'彩票');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (30,'人情交往类',0,NULL,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (31,'人际交往',1,NULL,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (32,'红包支出',1,31,'红包支出');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (33,'红包收入',0,30,'红包收入');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (34,'保单缴费',1,25,'保险保单缴费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (35,'津贴',0,2,'津贴类，如加班等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (36,'保险报销收入',0,5,'保险报销收入');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (37,'转账收入',0,10,'转账收入');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (38,'衣服饰品',1,9,'衣服饰品等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (39,'食品酒水',1,9,'食品酒水类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (40,'衣服鞋帽',1,38,'衣服鞋帽');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (41,'化妆饰品',1,38,'化妆品等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (42,'水果类',1,39,'水果');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (43,'零食类',1,39,'零食类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (44,'烟酒茶类',1,39,'烟酒茶等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (45,'咖啡外卖类',1,39,'咖啡与快餐');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (46,'早中晚餐',1,39,'正餐类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (47,'请客送礼',1,31,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (48,'孝敬家长',1,31,NULL);
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (49,'休闲娱乐',1,9,'休闲娱乐类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (50,'旅游度假',1,49,'旅游度假');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (51,'电影演出',1,49,'看电影，看演出等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (52,'摄影外拍类',1,49,'摄影外拍');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (53,'腐败聚会类',1,49,'KTV之类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (54,'学习进修',1,9,'学习进修');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (55,'银行利息',1,25,'银行利息');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (56,'银行手续费',1,25,'银行手续费');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (57,'违章付款类',1,12,'违章付款等');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (58,'书刊杂志',1,54,'书刊和杂志');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (59,'培训进修',1,54,'培训进修类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (60,'转账支出',1,24,'转账');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (61,'日常用品',1,9,'日常用品');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (62,'日用品',1,61,'日用品类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (63,'电子产品类',1,61,'电子产品类');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (64,'厨房用具',1,61,'厨房用具');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (65,'洗涤用品',1,61,'洗涤用品');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (66,'大家电类',1,61,'大家电');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (67,'保健护理用品',1,61,'保健护理');
+INSERT INTO `t_fin_tran_type` (`ID`,`NAME`,`EXPENSE`,`PARID`,`COMMENT`) VALUES (68,'喂哺用品',1,61,NULL);
 
 -- Learning part
 INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (1,NULL,'语文','语文');
