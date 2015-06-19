@@ -7,7 +7,6 @@ else
 	error_reporting ( E_ALL & ~ E_NOTICE );
 
 session_start ();
-
 ?>
 
 <!DOCTYPE html>
@@ -47,4 +46,3 @@ session_start ();
 	<!-- Footer area ends -->
 </body>
 </html>
-
