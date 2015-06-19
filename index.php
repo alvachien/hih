@@ -16,7 +16,16 @@ session_start ();
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Home Info Hub, Version 0.4</title>
 	
-		<script src="http://apps.bdimg.com/libs/angular.js/1.1.5/angular.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-route.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-animate.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-aria.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-cookies.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-loader.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-messages.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-resource.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-sanitize.min.js"></script>
+		
     	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     	<script src="app\js\app.js"></script>
 </head>

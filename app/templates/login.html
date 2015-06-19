@@ -36,7 +36,7 @@
 									<select id="langCombo" class="easyui-combobox" name="lang" 
 										data-options="onSelect: langComboSelect" style="width:100%;">
 									    <option value="en" selected="selected">English</option>
-									    <option value="zh">¼òÌåÖÐÎÄ</option>
+									    <option value="zh">ç®€ä½“ä¸­æ–‡</option>
 									</select>
 								</div>
 							</td>
@@ -45,11 +45,11 @@
 							<td></td>
 							<td>
 								<div align="right">
-									<a href="javascript:void(0)" class="easyui-linkbutton" onclick="registerClick()"
+									<a href="javascript:void(0)" class="easyui-linkbutton" ng-click="register()"
 										style="padding: 5px 0px; width: 30%;"> <span
 										style="font-size: 14px;" data-i18n="Login.Register">Register</span>
 									</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-										data-options="iconCls:'icon-ok'" onclick="submitForm()"
+										data-options="iconCls:'icon-ok'" ng-click="login()"
 										style="padding: 5px 0px; width: 30%;"> <span
 										style="font-size: 14px;" data-i18n="Login.Login">Login</span>
 									</a> <a href="javascript:void(0)" class="easyui-linkbutton"

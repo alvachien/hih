@@ -1,10 +1,18 @@
-(function() {
+//(function() {
 	'use strict';
-	var app = angular.module('hihApp', []).config(function($routeProvider) {
+	var app = angular.module('hihApp', ["ngRoute"]);
+	
+	app.config(function($routeProvider) {
 		$routeProvider.when('/login', {
 			templateUrl: 'app/templates/login.html',
 			controller: 'LoginController'
 		});
+		
+		$routeProvider.when('/register', {
+			templateUrl: 'app/templates/register.html',
+			controller: 'RegisterController'
+		});
+		
 		$routeProvider.when('/home', {
 			templateUrl: 'app/templates/home.html',
 			controller: 'HomeController'
@@ -15,20 +23,43 @@
 		});
 	});
 	
-	app.controller('LoginController', function($scope) {
+	app.controller('LoginController', function($scope, $location) {
 		$scope.credentials = {
 			username: "",
 			password: ""
 		};
 		
 		$scope.login = function() {
-			if ($scope.credentials.username.length <= 0) {
-				
+			if ($scope.credentials.username.length > 0) {
+				// Redirect to home page
+				$location.path('/home');
 			}
+		}
+		
+		$scope.register = function() {
+			$location.path('/register');
 		}
 	});
 	
-	app.controller('HomeController', function($scope) {
-		$scope.currentUser = "";			
+	app.controller('RegisterController', function($scope, $location) {
+		$scope.registerInfo = {
+			username: "",
+			password: "",
+			confirmpassword: ""
+		};
+		
+		$scope.submitRegister = function() {
+			
+		}
 	});
-})();
+	
+	app.controller('HomeController', function($scope, $location) {
+		$scope.currentUser = "";
+		$scope.title = "";
+		
+		$scope.logout = function() {
+			$location.path('/login');
+		}
+	});
+	
+//})();
