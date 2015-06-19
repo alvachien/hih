@@ -2,11 +2,11 @@
 	'use strict';
 	var app = angular.module('hihApp', []).config(function($routeProvider) {
 		$routeProvider.when('/login', {
-			templateUrl: 'login.html',
+			templateUrl: 'app/templates/login.html',
 			controller: 'LoginController'
 		});
 		$routeProvider.when('/home', {
-			templateUrl: 'home.html',
+			templateUrl: 'app/templates/home.html',
 			controller: 'HomeController'
 		});
 		
@@ -16,11 +16,19 @@
 	});
 	
 	app.controller('LoginController', function($scope) {
-		this.loginName = "";
-		this.loginPassword = "";
+		$scope.credentials = {
+			username: "",
+			password: ""
+		};
+		
+		$scope.login = function() {
+			if ($scope.credentials.username.length <= 0) {
+				
+			}
+		}
 	});
 	
-	app.controller('HomeController', function() {
-		this.currentUser = "";			
+	app.controller('HomeController', function($scope) {
+		$scope.currentUser = "";			
 	});
 })();
