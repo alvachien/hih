@@ -1,7 +1,7 @@
-//(function() {
+(function() {
 	'use strict';
 	var app = angular.module('hihApp', ["ngRoute"]);
-	
+
 	app.config(function($routeProvider) {
 		$routeProvider.when('/login', {
 			templateUrl: 'app/templates/login.html',
@@ -62,4 +62,4 @@
 		}
 	});
 	
-//})();
+})();

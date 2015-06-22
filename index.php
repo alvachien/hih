@@ -18,12 +18,8 @@ session_start ();
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-route.min.js"></script>
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-animate.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-aria.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-cookies.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-loader.min.js"></script>
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-messages.min.js"></script>
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-resource.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-sanitize.min.js"></script>
 		
     	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     	<script src="app\js\app.js"></script>
@@ -32,7 +28,7 @@ session_start ();
 <body ng-app="hihApp">
 	<!-- Main content area begins -->
 	<div id="divMainContent" >
-		<!--  Login part first -->
+		<!-- Views -->
 		<div ng-view>
 		</div>
 	</div>
