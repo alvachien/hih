@@ -33,6 +33,7 @@ session_start ();
 		<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     	<!-- Application part -->
     	<script src="app\controllers\app.js"></script>
+    	<script src="app\controllers\login.js"></script>
 		
 		<!-- CSS part -->
 		<!-- Bootstrap -->
@@ -46,7 +47,7 @@ session_start ();
 
 <body ng-app="hihApp">
 	<!-- Navigation area begins -->
-	<nav class="navbar navbar-default navbar-fixed-top">
+	<nav class="navbar navbar-default navbar-fixed-top"  ng-controller="NavController" ng-show="isLogin">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -76,9 +77,8 @@ session_start ();
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
-            <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
+            <li>Language</li>
+            <li>Themes</li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -95,7 +95,7 @@ session_start ();
       <div class="container">
         <p class="text-muted">
         	<div><span data-i18n="Common.Copyright">Copyright</span> © 2014 - 2015 Alva Chien</div>
-        	<div>Open source project on GitHub: <a href="https://github.com/alvachien/hih">HIH</a></div>
+        	<div>An open source project on GitHub: <a href="https://github.com/alvachien/hih">HIH</a></div>
         </p>
       </div>
     </footer>
