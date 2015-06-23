@@ -66,6 +66,8 @@ session_start ();
             	<a href="#/learnobject" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Learning Part<span class="caret"></span></a>
             	<ul class="dropdown-menu">
             		<li><a href="#/learnobject">Learn Object</a></li>
+            		<li><a href="#/learnhistory">Learn History</a></li>
+            		<li><a href="#/learnaward">Learn Award</a></li>
             	</ul>
             </li>
             <li><a href="#about">About</a></li>
