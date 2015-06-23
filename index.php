@@ -34,6 +34,7 @@ session_start ();
     	<!-- Application part -->
     	<script src="app\controllers\app.js"></script>
     	<script src="app\controllers\login.js"></script>
+    	<script src="app\controllers\learn.js"></script>
 		
 		<!-- CSS part -->
 		<!-- Bootstrap -->
@@ -56,11 +57,17 @@ session_start ();
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Home Info . Hub</a>
+          <a class="navbar-brand" href="#/home">Home Info . Hub</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="#/home">Home</a></li>
+            <li class="dropdown">
+            	<a href="#/learnobject" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Learning Part<span class="caret"></span></a>
+            	<ul class="dropdown-menu">
+            		<li><a href="#/learnobject">Learn Object</a></li>
+            	</ul>
+            </li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
@@ -77,7 +84,13 @@ session_start ();
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li>Language</li>
+            <li class="dropdown">
+	            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Language <span class="caret"></span></a>	            	
+              	<ul class="dropdown-menu">
+              		<li><a href="#">English</a></li>
+              		<li><a href="#">Chinese</a></li>
+              	</ul>
+	          </li>
             <li>Themes</li>
           </ul>
         </div><!--/.nav-collapse -->
