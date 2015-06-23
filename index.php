@@ -48,7 +48,7 @@ session_start ();
 
 <body ng-app="hihApp">
 	<!-- Navigation area begins -->
-	<nav class="navbar navbar-default navbar-fixed-top"  ng-controller="NavController" ng-show="isLogin">
+	<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavController" ng-show="isLogin">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,13 +61,25 @@ session_start ();
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#/home">Home</a></li>
+          	<li class="dropdown">
+            	<a href="#/home" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a>
+            	<ul class="dropdown-menu">
+            		<li><a ng-click="logout()">Logout</a></li>
+            	</ul>
+          	</li>
             <li class="dropdown">
             	<a href="#/learnobject" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Learning Part<span class="caret"></span></a>
             	<ul class="dropdown-menu">
             		<li><a href="#/learnobject">Learn Object</a></li>
             		<li><a href="#/learnhistory">Learn History</a></li>
             		<li><a href="#/learnaward">Learn Award</a></li>
+            	</ul>
+            </li>
+            <li class="dropdown">
+            	<a href="#/finance" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance Part<span class="caret"></span></a>
+            	<ul class="dropdown-menu">
+            		<li><a href="#/financeaccount">Accounts</a></li>
+            		<li><a href="#/financedocument">Document</a></li>
             	</ul>
             </li>
             <li><a href="#about">About</a></li>

@@ -24,6 +24,15 @@ var app = angular.module('hihApp', ["ngRoute"]);
 			controller: 'LearnObjectController'
 		});
 
+		$routeProvider.when('/notready', {
+			templateUrl: 'app/views/notready.html',
+			controller: 'NotReadyController'
+		});
+		
+		$routeProvider.when('/fin*', {
+			redirectTo: '/notready'
+		});
+		
 		$routeProvider.otherwise({
 			redirectTo: '/login'
 		});
@@ -99,5 +108,11 @@ var app = angular.module('hihApp', ["ngRoute"]);
 			    // or server returns response with an error status.
 			  });
 		}
+	}]);	
+	
+	// Not ready controller
+	app.controller('NotReadyController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
+		$scope.title = "";
+		
 	}]);	
 })();
