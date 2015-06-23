@@ -4,17 +4,17 @@
 
 	app.config(function($routeProvider) {
 		$routeProvider.when('/login', {
-			templateUrl: 'app/templates/login.html',
+			templateUrl: 'app/views/login.html',
 			controller: 'LoginController'
 		});
 		
 		$routeProvider.when('/register', {
-			templateUrl: 'app/templates/register.html',
+			templateUrl: 'app/views/register.html',
 			controller: 'RegisterController'
 		});
 		
 		$routeProvider.when('/home', {
-			templateUrl: 'app/templates/home.html',
+			templateUrl: 'app/views/home.html',
 			controller: 'HomeController'
 		});
 		
