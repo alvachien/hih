@@ -43,7 +43,13 @@
 			$scope.LearnObject = {};
 			
 			if ($routeParams.learnobjectid) {
-				
+				var objs = hihSharedInfo.getLearnObjects($http, $rootScope);
+				$.each(objs, function(idx, obj) {
+					if (obj.id === $routeParams.learnobjectid) {
+						$scope.LearnObject = obj;
+						return false;
+					}
+				});				
 			}
 		}]);
 	
