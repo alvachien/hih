@@ -48,7 +48,7 @@ session_start ();
 
 <body ng-app="hihApp">
 	<!-- Navigation area begins -->
-	<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavController" ng-show="isLogin">
+	<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavController as navctrl" ng-show="isLogin">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -64,11 +64,11 @@ session_start ();
           	<li class="dropdown">
             	<a href="#/home" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a>
             	<ul class="dropdown-menu">
-            		<li><a ng-click="logout()">Logout</a></li>
+            		<li><a href="" ng-click="logout()">Logout</a></li>
             	</ul>
           	</li>
             <li class="dropdown">
-            	<a href="#/learnobject" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Learning Part<span class="caret"></span></a>
+            	<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Learning Part<span class="caret"></span></a>
             	<ul class="dropdown-menu">
             		<li><a href="#/learnobject">Learn Object</a></li>
             		<li><a href="#/learnhistory">Learn History</a></li>
@@ -76,7 +76,7 @@ session_start ();
             	</ul>
             </li>
             <li class="dropdown">
-            	<a href="#/finance" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance Part<span class="caret"></span></a>
+            	<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Finance Part<span class="caret"></span></a>
             	<ul class="dropdown-menu">
             		<li><a href="#/financeaccount">Accounts</a></li>
             		<li><a href="#/financedocument">Document</a></li>
@@ -116,6 +116,27 @@ session_start ();
 	<div class="container" ng-view>	
 	</div>
 	<!-- Main content area ends -->
+	
+	<!-- Dialog for showing info/error/warning begins -->
+	<div class="container" ng-controller="MessageBoxController">
+		<div class="modal fade" id="dlgMessage">
+	  		<div class="modal-dialog">
+	    		<div class="modal-content">
+	      			<div class="modal-header">
+	        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        			<h4 class="modal-title">{{MessageHeader}}</h4>
+	      			</div>
+	      			<div class="modal-body">
+	        			<p>{{MessageDetail}}</p>
+	      			</div>
+	      			<div class="modal-footer">
+	        			<button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Close</button>
+	      			</div>
+	    		</div><!-- /.modal-content -->
+	  		</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- Dialog for showing info/error/warning ends -->
 	
 	<!-- Footer area begins -->
     <footer class="footer">

@@ -7,8 +7,6 @@
 			username: "",
 			password: ""
 		};
-		$scope.ErrorHeader = "";
-		$scope.ErrorDetail = "";		
 		
 		$scope.login = function() {
 			// Verify the inputs first!
@@ -29,16 +27,12 @@
 				$location.path('/home');
 			  }).
 			  error(function(data, status, headers, config) {
-			    // called asynchronously if an error occurs or server returns response with an error status.
-				  $scope.ErrorHeader = "Error";
-				  $scope.ErrorDetail = data.Message;
-				  var dlg = $('#dlgLoginError');
-				  if (dlg)
-					  dlg.modal('show');
+				  // called asynchronously if an error occurs or server returns response with an error status.
+				  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
 			  });
 		}
 		
-		$scope.register = function() {			
+		$scope.register = function() {
 			$location.path('/register');
 		}
 	}]);

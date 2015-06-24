@@ -1,10 +1,11 @@
 <?php
 
 // set error reporting level
-if (version_compare ( phpversion (), '5.3.0', '>=' ) == 1)
-	error_reporting ( E_ALL & ~ E_NOTICE & ~ E_DEPRECATED );
-else
-	error_reporting ( E_ALL & ~ E_NOTICE );
+//if (version_compare ( phpversion (), '5.3.0', '>=' ) == 1)
+//	error_reporting ( E_ALL & ~ E_NOTICE & ~ E_DEPRECATED );
+//else
+//	error_reporting ( E_ALL & ~ E_NOTICE );
+error_reporting(E_ERROR);
 
 session_start ();
 require_once 'utility.php';
@@ -55,7 +56,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "USERLOGOUT": {
 				session_destroy();			
 			}
-		break;
+			break;
 			
 		default:
 			$sErrors = "Input object cannot be handle: ". $realParamArr['objecttype']. " Users: ". $realParamArr['loginuser'];
