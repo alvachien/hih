@@ -28,6 +28,23 @@
 			    	$scope.rowCollection.splice(index, 1);
 			    }
 			 }
+			
+			// Edit
+			$scope.editItem = function (row) {
+				var index = $scope.rowCollection.indexOf(row);
+			    if (index !== -1) {
+			    	//$scope.rowCollection.splice(index, 1);
+			    	$location.path('/learnobject/' + row.id);
+			    }
+			}
+		}]);
+		app.controller('LearnObjectMaintainController', ['$scope', '$rootScope', '$routeParams', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $routeParams, $location, $http, hihSharedInfo) {
+			$scope.params = $routeParams;
+			$scope.LearnObject = {};
+			
+			if ($routeParams.learnobjectid) {
+				
+			}
 		}]);
 	
 		// Learn histories

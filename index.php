@@ -51,7 +51,7 @@ session_start ();
 
 <body ng-app="hihApp">
 	<!-- Navigation area begins -->
-	<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavController as navctrl" ng-show="isLogin">
+	<nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="NavController as navctrl" ng-show="isLogin">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -65,7 +65,7 @@ session_start ();
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
           	<li class="dropdown">
-            	<a href="#/home" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a>
+            	<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a>
             	<ul class="dropdown-menu">
             		<li><a href="#/userdetail">User Detail</a></li>
             		<li role="separator" class="divider"></li>

@@ -33,6 +33,10 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			templateUrl: 'app/views/learnobject.html',
 			controller: 'LearnObjectController'
 		});
+		$routeProvider.when('/learnobject/:learnobjectid', {
+			templateUrl: 'app/views/learnobjectmaintain.html',
+			controller: 'LearnObjectMaintainController'
+		});
 		
 		$routeProvider.when('/learnhistory', {
 			templateUrl: 'app/views/learnhistory.html',
@@ -111,6 +115,9 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		}
 		var getLearnObjects = function($http, $rootScope) {
 			return that.arLearnObject;
+		}
+		var getLearnObject = function(idx) {
+			
 		}
 
 		var isLearnHistoryLoaded = function() { return that.bLearnHistory; }
