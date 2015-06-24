@@ -1,4 +1,4 @@
-var app = angular.module('hihApp', ["ngRoute"]);
+var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 
 (function() {
 	'use strict';	
@@ -31,13 +31,13 @@ var app = angular.module('hihApp', ["ngRoute"]);
 		});
 		
 		$routeProvider.when('/learnhistory', {
-			templateUrl: 'app/views/learnobject.html',
-			controller: 'LearnObjectController'
+			templateUrl: 'app/views/learnhistory.html',
+			controller: 'LearnHistoryController'
 		});
 		
 		$routeProvider.when('/learnaward', {
 			templateUrl: 'app/views/learnaward.html',
-			controller: 'LearnObjectController'
+			controller: 'LearnAwardController'
 		});
 
 		$routeProvider.when('/learn', {
@@ -67,24 +67,77 @@ var app = angular.module('hihApp', ["ngRoute"]);
 	
 	// Sevice: shared information
 	app.factory('hihSharedInfo', function() {
+		var that = this;
 		var currentUser = {};
 		var bLogin = false;
+		var arLearnObject = [];
+		var bLearnObject = false;
+		var arLearnHistory = [];
+		var bLearnHistory = false;
 		
-		var getCurrentUser = function() { return this.currentUser; }
-		var setCurrentUser = function(usr) { this.currentUser = usr; }
-		var Login = function() { this.bLogin = true; }
+		var getCurrentUser = function() { return that.currentUser; }
+		var setCurrentUser = function(usr) { that.currentUser = usr; }
+		var Login = function() { that.bLogin = true; }
 		var Logout = function() { 
-			this.bLogin = false;
-			this.currentUser = {}; // Clear the current user information.
+			that.bLogin = false;
+			that.currentUser = {}; // Clear the current user information.
 		}
-		var isLogin = function() { return this.bLogin; }
+		var isLogin = function() { return that.bLogin; }
 		
+		var isLearnObjectLoaded = function() { return that.bLearnObject; }
+		var loadLearnObjects = function($http, $rootScope) {
+			if (!that.bLearnObject) {
+				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNOBJECTLIST' } ).
+				  success(function(data, status, headers, config) {
+					  	that.arLearnObject = data;
+					  	that.bLearnObject = true;
+					  	
+					  	$rootScope.$broadcast("LearnObjectLoaded");
+					  }).
+					  error(function(data, status, headers, config) {
+						  // called asynchronously if an error occurs or server returns response with an error status.
+						  $rootScope.$broadcast("ShowMessage", "Error", data.Message);						  
+					  });				
+			}
+		}
+		var getLearnObjects = function($http, $rootScope) {
+			return that.arLearnObject;
+		}
+
+		var isLearnHistoryLoaded = function() { return that.bLearnHistory; }
+		var loadLearnHistories = function($http, $rootScope) {
+			if (!that.bLearnHistory) {
+				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNHISTORYLIST' } ).
+				  success(function(data, status, headers, config) {
+					  	that.arLearnHistory = data;
+					  	that.bLearnHistory = true;
+					  	
+					  	$rootScope.$broadcast("LearnHistoryLoaded");
+					  }).
+					  error(function(data, status, headers, config) {
+						  // called asynchronously if an error occurs or server returns response with an error status.
+						  $rootScope.$broadcast("ShowMessage", "Error", data.Message);						  
+					  });				
+			}
+		}
+		var getLearnHistories = function($http, $rootScope) {
+			return that.arLearnHistory;
+		}
+
 		return {
 			getCurrentUser: getCurrentUser,
 			setCurrentUser: setCurrentUser,
 			Login: Login,
 			Logout: Logout,			
-			isLogin: isLogin
+			isLogin: isLogin,
+			
+			isLearnObjectLoaded: isLearnObjectLoaded,
+			getLearnObjects: getLearnObjects,
+			loadLearnObjects: loadLearnObjects,
+			
+			isLearnHistoryLoaded: isLearnHistoryLoaded,
+			getLearnHistories: getLearnHistories,
+			loadLearnHistories: loadLearnHistories 
 		}
 	});
 	

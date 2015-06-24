@@ -1,4 +1,37 @@
 <div id="viewLearnHistory">
 	<h2>It's a Learn History page!</h2>
 	
+	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+			<thead>
+			<tr>
+				<th st-sort="userid">User ID</th>
+				<th st-sort="displayas">User Name</th>
+				<th st-sort="objectid">Object ID</th>
+				<th st-sort="objectname">Object Name</th>
+				<th st-sort="categoryid">Category ID</th>
+				<th st-sort="categoryname">Category Name</th>
+				<th st-sort="learndate">Learn Date </th>
+			</tr>
+			<tr>
+				<th colspan="7"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.userid}}</td>
+				<td>{{row.displayas}}</td>
+				<td>{{row.objectid}}</td>
+				<td>{{row.objectname}}</td>
+				<td>{{row.categoryid}}</td>
+				<td>{{row.categoryname}}</td>
+				<td>{{row.learndate}}</td>
+				<td>
+				<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+					<i class="glyphicon glyphicon-remove-circle">
+					</i>
+				</button>
+				</td>
+			</tr>
+			</tbody>
+	</table>	
 </div>

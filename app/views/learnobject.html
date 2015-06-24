@@ -1,4 +1,33 @@
 <div id="viewLearnObject">
 	<h2>It's a Learn Object page!</h2>
 	
+	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+			<thead>
+			<tr>
+				<th st-sort="ID">ID</th>
+				<th st-sort="ctgyID">Category ID</th>
+				<th st-sort="ctgyName">Category Name</th>
+				<th st-sort="Name">Name</th>
+				<th st-sort="content">Content</th>
+			</tr>
+			<tr>
+				<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.id}}</td>
+				<td>{{row.categoryid}}</td>
+				<td>{{row.categoryname}}</td>
+				<td>{{row.name}}</td>
+				<td>{{row.content}}</td>
+				<td>
+				<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+					<i class="glyphicon glyphicon-remove-circle">
+					</i>
+				</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 </div>

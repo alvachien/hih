@@ -17,6 +17,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 	$realParamArr = json_decode(file_get_contents('php://input'),true);	
 	$sObject = escape( $realParamArr['objecttype'] );
 	$sErrors = "";
+	$arRst = array();
 	
 	switch ($sObject)
 	{
@@ -58,24 +59,56 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETLEARNOBJECTLIST": {
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$arRst = learn_object_listread ();
+					$sErrors = $lrnobjrst [0];
+					
+					if (! IsNullOrEmptyString ( $arRst[0] )) {
+						export_error($arRst[0]);
+					} else {
+						echo json_encode ($arRst[1] );
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error(sErrors);
+				}
+			}
+			break;
+			
+		case "GETLEARNHISTORYLIST": {
+			if (isset($_SESSION['HIH_CurrentUser'])) {
+				$username = $realParamArr["userid"];
+					
+				// Get list				
+				if (IsNullOrEmptyString($username)) {
+					$arRst = learn_hist_listread ();
+				} else {
+					$arRst = learn_hist_listread_byuser ($username);
+				}
+				
+				if (! IsNullOrEmptyString ($arRst[0] )) {
+					export_error($arRst[0]);
+				} else {
+					echo json_encode ( $arRst[1] );
+				}				
+			}	else {
+				$sErrors = "User not login yet";
+				export_error(sErrors);
+			}			
+		}
+		break;
+			
 		default:
 			$sErrors = "Input object cannot be handle: ". $realParamArr['objecttype']. " Users: ". $realParamArr['loginuser'];
 			break;
 	}
 	
 	if (!empty ( $sErrors )) {
-		header('HTTP/1.1 500 Internal Server Error');
-		echo json_encode(array(
-				'type'=>'E',
-				'Message'=>$sErrors
-		));
+		export_error($sErrors);
 	}
 } else {
-	header('HTTP/1.1 500 Internal Server Error');
-	echo json_encode(array(
-			'type'=>'E',
-			'Message'=>"Wrong request method: ". $_SERVER ["REQUEST_METHOD"]
-	));	
+	export_error("Wrong request method: ". $_SERVER ["REQUEST_METHOD"]);	
 }
 
 ?>
