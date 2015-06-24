@@ -37,6 +37,7 @@ session_start ();
     	<script src="app\controllers\app.js"></script>
     	<script src="app\controllers\login.js"></script>
     	<script src="app\controllers\learn.js"></script>
+    	<script src="app\controllers\finance.js"></script>
 		
 		<!-- CSS part -->
 		<!-- Bootstrap -->
@@ -66,6 +67,8 @@ session_start ();
           	<li class="dropdown">
             	<a href="#/home" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a>
             	<ul class="dropdown-menu">
+            		<li><a href="#/userdetail">User Detail</a></li>
+            		<li role="separator" class="divider"></li>
             		<li><a href="" ng-click="logout()">Logout</a></li>
             	</ul>
           	</li>
@@ -85,7 +88,6 @@ session_start ();
             	</ul>
             </li>
             <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
               <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Acknowledges<span class="caret"></span></a>
               <ul class="dropdown-menu">

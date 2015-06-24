@@ -21,7 +21,7 @@
 			    }
 		    });
 		    
-			//remove to the real data holder
+			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
 				var index = $scope.rowCollection.indexOf(row);
 			    if (index !== -1) {
@@ -30,7 +30,7 @@
 			 }
 		}]);
 	
-		// Learn history
+		// Learn histories
 		app.controller('LearnHistoryController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
 		    hihSharedInfo.loadLearnHistories($http, $rootScope);
 		    $scope.rowCollection = [];     
@@ -49,7 +49,7 @@
 			    }
 		    });
 		    
-			//remove to the real data holder
+			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
 				var index = $scope.rowCollection.indexOf(row);
 			    if (index !== -1) {
@@ -60,8 +60,30 @@
 		
 		// Learn award
 		app.controller('LearnAwardController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
-			$scope.title = "";
-			
+		    hihSharedInfo.loadLearnAwards($http, $rootScope);
+		    $scope.rowCollection = [];     
+		    $scope.displayedCollection = [];
+		    
+		    $scope.rowCollection = hihSharedInfo.getLearnAwards($http, $rootScope);
+		    $scope.displayedCollection = [].concat($scope.rowCollection);
+		    
+		    $scope.$on("LearnAwardLoaded", function() {
+		    	console.log("HIH LearnAward: Loaded event fired!");
+		    	
+		    	$scope.rowCollection = hihSharedInfo.getLearnAwards($http, $rootScope);
+			    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+					//copy the references (you could clone ie angular.copy but then have to go through a dirty checking for the matches)
+			    	$scope.displayedCollection = [].concat($scope.rowCollection);
+			    }
+		    });
+		    
+			// Remove to the real data holder
+			$scope.removeItem = function removeItem(row) {
+				var index = $scope.rowCollection.indexOf(row);
+			    if (index !== -1) {
+			    	$scope.rowCollection.splice(index, 1);
+			    }
+			 }
 		}]);
 	}
 })();

@@ -1,4 +1,35 @@
 <div id="viewLearnAward">
 	<h2>It's a Learn Award page!</h2>
 	
+	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+			<thead>
+			<tr>
+				<th st-sort="id">ID</th>
+				<th st-sort="userid">User ID</th>
+				<th st-sort="displayas">Display As</th>
+				<th st-sort="adate">Date</th>
+				<th st-sort="score">Score</th>
+				<th st-sort="reason">Reason</th>
+			</tr>
+			<tr>
+				<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.id}}</td>
+				<td>{{row.userid}}</td>
+				<td>{{row.displayas}}</td>
+				<td>{{row.adate}}</td>
+				<td>{{row.score}}</td>
+				<td>{{row.reason}}</td>
+				<td>
+				<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+					<i class="glyphicon glyphicon-remove-circle">
+					</i>
+				</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 </div>

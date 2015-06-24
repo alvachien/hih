@@ -18,7 +18,9 @@
 				hihSharedInfo.Login();
 				hihSharedInfo.setCurrentUser({
 					userid:data.UserID,
-					userdisplayas: data.UserDisplayAs
+					userdisplayas: data.UserDisplayAs,
+					usercreatedon: data.UserCreatedOn,
+					usergender: data.UserGender
 				});
 				
 				// Broadcast event

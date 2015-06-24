@@ -1,5 +1,10 @@
 # HIH (website version)
-HIH V6.0;
+HIH Website Version 0.4;
+Switch to AngularJS, BootStrap, Smart-Table
+
+Sine 0.1 to 0.3
+Using: jQuery, jEasyUI.
+
 
 Version history
 1. Version 1.0, named as PIH, built with MFC, Visual C++;

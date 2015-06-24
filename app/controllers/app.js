@@ -22,6 +22,10 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			templateUrl: 'app/views/home.html',
 			controller: 'HomeController'
 		});
+		$routeProvider.when('/userdetail', {
+			templateUrl: 'app/views/userdetail.html',
+			controller: 'UserDetailController'
+		});
 
 		// ============================================
 		// Learn part
@@ -52,6 +56,9 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		$routeProvider.when('/financeaccount', {
 			redirectTo: '/notready'
 		});
+		$routeProvider.when('/financedocument', {
+			redirectTo: '/notready'
+		});
 		
 		// ============================================
 		// Others
@@ -74,6 +81,8 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		var bLearnObject = false;
 		var arLearnHistory = [];
 		var bLearnHistory = false;
+		var arLearnAward = [];
+		var bLearnAward = false;
 		
 		var getCurrentUser = function() { return that.currentUser; }
 		var setCurrentUser = function(usr) { that.currentUser = usr; }
@@ -123,6 +132,26 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		var getLearnHistories = function($http, $rootScope) {
 			return that.arLearnHistory;
 		}
+		
+		var isLearnAwardLoaded = function() { return that.bLearnAward; }
+		var loadLearnAwards = function($http, $rootScope) {
+			if (!that.bLearnAward) {
+				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNAWARDLIST' } ).
+				  success(function(data, status, headers, config) {
+					  	that.arLearnAward = data;
+					  	that.bLearnAward = true;
+					  	
+					  	$rootScope.$broadcast("LearnAwardLoaded");
+					  }).
+					  error(function(data, status, headers, config) {
+						  // called asynchronously if an error occurs or server returns response with an error status.
+						  $rootScope.$broadcast("ShowMessage", "Error", data.Message);						  
+					  });				
+			}			
+		}
+		var getLearnAwards = function($http, $rootScope) {
+			return that.arLearnAward;
+		}
 
 		return {
 			getCurrentUser: getCurrentUser,
@@ -137,7 +166,11 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			
 			isLearnHistoryLoaded: isLearnHistoryLoaded,
 			getLearnHistories: getLearnHistories,
-			loadLearnHistories: loadLearnHistories 
+			loadLearnHistories: loadLearnHistories,
+			
+			isLearnAwardLoaded: isLearnAwardLoaded,
+			getLearnAwards: getLearnAwards,
+			loadLearnAwards: loadLearnAwards
 		}
 	});
 	
@@ -193,6 +226,16 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 	app.controller('HomeController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
 		$scope.currentUser = hihSharedInfo.getCurrentUser();
 		$scope.title = "";
+	}]);	
+	
+	app.controller('UserDetailController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
+		$scope.currentUser = hihSharedInfo.getCurrentUser();
+		$scope.displayedCollection = [
+		                 {userobj: 'ID', 			usercont: $scope.currentUser.userid},
+		                 {userobj: 'Display As', 	usercont: $scope.currentUser.userdisplayas},
+		                 {userobj: 'Gender',		usercont: $scope.currentUser.usergender},
+		                 {userobj: 'Created On', usercont: $scope.currentUser.usercreatedon}
+		];
 	}]);	
 
 	app.controller('MessageBoxController', ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {

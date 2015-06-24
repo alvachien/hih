@@ -18,6 +18,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 	$sObject = escape( $realParamArr['objecttype'] );
 	$sErrors = "";
 	$arRst = array();
+	$username = "";
 	
 	switch ($sObject)
 	{
@@ -48,7 +49,9 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					echo json_encode(array(
 						'type'=>'S',
 						'UserID'=>$objUser->ID,
-						'UserDisplayAs'=>$objUser->DisplayAs
+						'UserDisplayAs'=>$objUser->DisplayAs,
+						'UserCreatedOn'=>$objUser->CreatedOn,
+						'UserGender'=>$objUser->Gender
 					));
 				}
 			}				
@@ -96,6 +99,28 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				$sErrors = "User not login yet";
 				export_error(sErrors);
 			}			
+		}
+		break;
+		
+		case "GETLEARNAWARDLIST": {
+			if (isset($_SESSION['HIH_CurrentUser'])) {
+				$username = $realParamArr["userid"];
+				
+				if (IsNullOrEmptyString($username)) {
+					$arRst = learn_award_listread ( );
+				} else {
+					$arRst = learn_award_listread_byuser ( $username );
+				}
+				
+				if (! IsNullOrEmptyString ($arRst[0] )) {
+					export_error($arRst[0]);
+				} else {
+					echo json_encode ( $arRst[1] );
+				}								
+			} else {
+				$sErrors = "User not login yet";
+				export_error(sErrors);				
+			}
 		}
 		break;
 			
