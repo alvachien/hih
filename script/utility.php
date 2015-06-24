@@ -49,6 +49,13 @@ function SetLanguage($lan) {
 	//bind_textdomain_codeset(HIH_I18N_DOMAIN ,  'UTF-8' );  //设置mo文件的编码为UTF-8
 	//textdomain(HIH_I18N_DOMAIN );
 }
+function export_error($error) {
+	header('HTTP/1.1 500 Internal Server Error');
+	echo json_encode(array(
+			'type'=>'E',
+			'Message'=>$error
+	));	
+}
 
 //
 // 1. Database part
