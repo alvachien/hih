@@ -129,7 +129,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		
 		case "GETLEARNCATEGORYLIST": {
 			if (isset($_SESSION['HIH_CurrentUser'])) {
-				$arRst = learn_category_readex ( );
+				$arRst = learn_category_read ( );
 				
 				if (! IsNullOrEmptyString ($arRst[0] )) {
 					export_error($arRst[0]);

@@ -33,6 +33,10 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			templateUrl: 'app/views/learnobjectlist.html',
 			controller: 'LearnObjectListController'
 		});
+		$routeProvider.when('/learnobject', {
+			templateUrl: 'app/views/learnobject.html',
+			controller: 'LearnObjectController'
+		});
 		$routeProvider.when('/learnobject/:learnobjectid', {
 			templateUrl: 'app/views/learnobject.html',
 			controller: 'LearnObjectController'
@@ -115,7 +119,7 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 					  });				
 			}
 		}
-		var getLearnObjects = function($http, $rootScope) {
+		var getLearnObjects = function() {
 			return that.arLearnObject;
 		}
 		var getLearnObject = function(idx) {
@@ -138,7 +142,7 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 					  });				
 			}
 		}
-		var getLearnHistories = function($http, $rootScope) {
+		var getLearnHistories = function() {
 			return that.arLearnHistory;
 		}
 		
@@ -158,14 +162,14 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 					  });				
 			}			
 		}
-		var getLearnAwards = function($http, $rootScope) {
+		var getLearnAwards = function() {
 			return that.arLearnAward;
 		}
 		
 		var isLearnCategoryLoaded = function() { return that.bLearnCategory; }
 		var loadLearnCategories = function($http, $rootScope) {
 			if (!that.bLearnCategory) {
-				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNCategoryLIST' } ).
+				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNCATEGORYLIST' } ).
 				  success(function(data, status, headers, config) {
 					  	that.arLearnCategory = data;
 					  	that.bLearnCategory = true;
@@ -178,7 +182,7 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 					  });				
 			}			
 		}
-		var getLearnCategories = function($http, $rootScope) {
+		var getLearnCategories = function() {
 			return that.arLearnCategory;
 		}
 
