@@ -1,0 +1,42 @@
+<div id="viewLearnObjectList">
+	<div class="page-header">
+  		<h2>Learn Objects <small> List View </small></h2> 
+  		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+	</div>
+	
+	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+			<thead>
+			<tr>
+				<th st-sort="ID">ID</th>
+				<th st-sort="ctgyID">Category ID</th>
+				<th st-sort="ctgyName">Category Name</th>
+				<th st-sort="Name">Name</th>
+				<th st-sort="content">Content</th>
+			</tr>
+			<tr>
+				<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.id}}</td>
+				<td>{{row.categoryid}}</td>
+				<td>{{row.categoryname}}</td>
+				<td>{{row.name}}</td>
+				<td>{{row.content}}</td>
+				<td>
+					<button type="button" ng-click="editItem(row)" class="btn btn-sm btn-warning">
+						<i class="glyphicon glyphicon-pencil">
+						</i>
+					</button>
+				</td>
+				<td>	
+					<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+						<i class="glyphicon glyphicon-trash">
+						</i>
+					</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+</div>

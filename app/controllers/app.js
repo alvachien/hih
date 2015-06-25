@@ -29,23 +29,23 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 
 		// ============================================
 		// Learn part
-		$routeProvider.when('/learnobject', {
+		$routeProvider.when('/learnobjectlist', {
+			templateUrl: 'app/views/learnobjectlist.html',
+			controller: 'LearnObjectListController'
+		});
+		$routeProvider.when('/learnobject/:learnobjectid', {
 			templateUrl: 'app/views/learnobject.html',
 			controller: 'LearnObjectController'
 		});
-		$routeProvider.when('/learnobject/:learnobjectid', {
-			templateUrl: 'app/views/learnobjectmaintain.html',
-			controller: 'LearnObjectMaintainController'
+		
+		$routeProvider.when('/learnhistorylist', {
+			templateUrl: 'app/views/learnhistorylist.html',
+			controller: 'LearnHistoryListController'
 		});
 		
-		$routeProvider.when('/learnhistory', {
-			templateUrl: 'app/views/learnhistory.html',
-			controller: 'LearnHistoryController'
-		});
-		
-		$routeProvider.when('/learnaward', {
-			templateUrl: 'app/views/learnaward.html',
-			controller: 'LearnAwardController'
+		$routeProvider.when('/learnawardlist', {
+			templateUrl: 'app/views/learnawardlist.html',
+			controller: 'LearnAwardListController'
 		});
 
 		$routeProvider.when('/learn', {
