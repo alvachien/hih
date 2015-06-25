@@ -62,6 +62,9 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		// ===========================================================================================
+		//	Learn Part
+		// ===========================================================================================			
 		case "GETLEARNOBJECTLIST": {
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 					$arRst = learn_object_listread ();
@@ -123,7 +126,31 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 		}
 		break;
-			
+		
+		case "GETLEARNCATEGORYLIST": {
+			if (isset($_SESSION['HIH_CurrentUser'])) {
+				$arRst = learn_category_readex ( );
+				
+				if (! IsNullOrEmptyString ($arRst[0] )) {
+					export_error($arRst[0]);
+				} else {
+					echo json_encode ( $arRst[1] );
+				}
+			} else {
+				$sErrors = "User not login yet";
+				export_error(sErrors);
+			}
+		}
+		break;
+		
+		
+		// ===========================================================================================
+		//	Finance Part
+		// ===========================================================================================
+		
+		// ===========================================================================================
+		//	Others
+		// ===========================================================================================
 		default:
 			$sErrors = "Input object cannot be handle: ". $realParamArr['objecttype']. " Users: ". $realParamArr['loginuser'];
 			break;

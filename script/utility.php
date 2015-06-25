@@ -285,7 +285,8 @@ function learn_category_read() {
 			$ctgytable [] = array (
 					"id" => $row [0],
 					"parent" => $sParent,
-					"text" => $row [2]
+					"text" => $row [2],
+					"comment" => $row[3]
 			);
 		}
 		

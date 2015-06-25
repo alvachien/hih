@@ -87,6 +87,8 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		var bLearnHistory = false;
 		var arLearnAward = [];
 		var bLearnAward = false;
+		var arLearnCategory = [];
+		var bLearnCategory = false;
 		
 		var getCurrentUser = function() { return that.currentUser; }
 		var setCurrentUser = function(usr) { that.currentUser = usr; }
@@ -159,6 +161,26 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		var getLearnAwards = function($http, $rootScope) {
 			return that.arLearnAward;
 		}
+		
+		var isLearnCategoryLoaded = function() { return that.bLearnCategory; }
+		var loadLearnCategories = function($http, $rootScope) {
+			if (!that.bLearnCategory) {
+				$http.post('script/hihsrv.php', { objecttype: 'GETLEARNCategoryLIST' } ).
+				  success(function(data, status, headers, config) {
+					  	that.arLearnCategory = data;
+					  	that.bLearnCategory = true;
+					  	
+					  	$rootScope.$broadcast("LearnCategoryLoaded");
+					  }).
+					  error(function(data, status, headers, config) {
+						  // called asynchronously if an error occurs or server returns response with an error status.
+						  $rootScope.$broadcast("ShowMessage", "Error", data.Message);						  
+					  });				
+			}			
+		}
+		var getLearnCategories = function($http, $rootScope) {
+			return that.arLearnCategory;
+		}
 
 		return {
 			getCurrentUser: getCurrentUser,
@@ -177,7 +199,11 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			
 			isLearnAwardLoaded: isLearnAwardLoaded,
 			getLearnAwards: getLearnAwards,
-			loadLearnAwards: loadLearnAwards
+			loadLearnAwards: loadLearnAwards,
+			
+			isLearnCategoryLoaded: isLearnCategoryLoaded,
+			loadLearnCategories: loadLearnCategories,
+			getLearnCategories: getLearnCategories
 		}
 	});
 	
