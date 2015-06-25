@@ -43,37 +43,41 @@
 			
 			// Create
 			$scope.newItem = function() {
-				$location.path('/learnobject/0');
+				$location.path('/learnobject');
 			}
 		}]);
 		
 		app.controller('LearnObjectController', ['$scope', '$rootScope', '$routeParams', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $routeParams, $location, $http, hihSharedInfo) {			
-			$("#areaAlert").alert('close');
-			$scope.Activity = "";
-			$scope.LearnObject = {};
-			$scope.isDirty = false;
+			//$("#areaAlert").alert('close');
 			
-			if ($routeParams.learnobjectid) {
+			$scope.Activity = "";
+			$scope.ErrorDetail = "";
+			$scope.CategoryIDs = hihSharedInfo.getLearnCategories();
+			$scope.ObjectContent = "";
+			$scope.ObjectName = "";
+			$scope.ObjectCategoryID = -1;
+			$scope.ObjectID = 0;
+			
+			if (angular.isDefined($routeParams.learnobjectid)) {
 				$scope.Activity = "Edit";
 				var objs = hihSharedInfo.getLearnObjects($http, $rootScope);
 				$.each(objs, function(idx, obj) {
 					if (obj.id === $routeParams.learnobjectid) {
-						$scope.LearnObject = obj;
+						$scope.ObjectContent = obj.content;
+						$scope.ObjectName = obj.name;
+						$scope.ObjectCategoryID = obj.categoryid;
+						$scope.ObjectID = obj.id;
 						return false;
 					}
 				});				
 			} else {
 				$scope.Activity = "Create";
-				$scope.isDirty = true;
 			}
-			$scope.ErrorDetail = "";
-			$scope.CategoryIDs = hihSharedInfo.getLearnCategories();
-			$scope.setDirty = function() {
-				$scope.isDirty = true;
-			}
+			
 			$scope.submit = function() {
 				// Let's do the checks first!!!!
-				$("#areaAlert").alert();
+				$scope.ErrorDetail = "Please input the name!";
+				//$("#areaAlert").alert();
 				
 				if ($scope.LearnObject ) {
 					
@@ -81,6 +85,7 @@
 					
 				}
 			}
+			
 			$scope.close = function() {
 				$location.path('/learnobjectlist');
 			}
@@ -115,7 +120,7 @@
 			
 			// Create
 			$scope.newItem = function() {
-				$location.path('/learnobject/0');
+				$location.path('/learnobject');
 			}
 		}]);
 		
@@ -148,7 +153,7 @@
 			
 			// Create
 			$scope.newItem = function() {
-				$location.path('/learnobject/0');
+				$location.path('/learnobject');
 			}
 		}]);
 	}

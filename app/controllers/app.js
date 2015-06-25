@@ -81,10 +81,9 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 	});
 	
 	// Sevice: shared information
-	app.factory('hihSharedInfo', function() {
+	app.factory('hihSharedInfo', ['$rootScope', function($rootScope) {
 		var that = this;
-		var currentUser = {};
-		var bLogin = false;
+
 		var arLearnObject = [];
 		var bLearnObject = false;
 		var arLearnHistory = [];
@@ -94,14 +93,14 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 		var arLearnCategory = [];
 		var bLearnCategory = false;
 		
-		var getCurrentUser = function() { return that.currentUser; }
-		var setCurrentUser = function(usr) { that.currentUser = usr; }
-		var Login = function() { that.bLogin = true; }
+		var getCurrentUser = function() { return $rootScope.currentUser; }
+		var setCurrentUser = function(usr) { $rootScope.currentUser = usr; }
+		var Login = function() { $rootScope.bLogin = true; }
 		var Logout = function() { 
-			that.bLogin = false;
-			that.currentUser = {}; // Clear the current user information.
+			$rootScope.bLogin = false;
+			$rootScope.currentUser = {}; // Clear the current user information.
 		}
-		var isLogin = function() { return that.bLogin; }
+		var isLogin = function() { return $rootScope.bLogin; }
 		
 		var isLearnObjectLoaded = function() { return that.bLearnObject; }
 		var loadLearnObjects = function($http, $rootScope) {
@@ -209,7 +208,7 @@ var app = angular.module('hihApp', ["ngRoute", "smart-table"]);
 			loadLearnCategories: loadLearnCategories,
 			getLearnCategories: getLearnCategories
 		}
-	});
+	}]);
 	
 	// Navigation controller
 	app.controller("NavController", ['$scope', '$rootScope', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $location, $http, hihSharedInfo) {
