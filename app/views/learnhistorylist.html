@@ -1,5 +1,8 @@
 <div id="viewLearnHistory">
-	<h2>It's a Learn History page!</h2>
+	<div class="page-header">
+  		<h2>Learn Histories <small> List View </small></h2> 
+  		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+	</div>
 	
 	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
 			<thead>

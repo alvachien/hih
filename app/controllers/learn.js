@@ -47,6 +47,7 @@
 		app.controller('LearnObjectController', ['$scope', '$rootScope', '$routeParams', '$location', '$http', 'hihSharedInfo', function($scope, $rootScope, $routeParams, $location, $http, hihSharedInfo) {
 			$scope.Activity = "";
 			$scope.LearnObject = {};
+			$scope.isDirty = false;
 			
 			if ($routeParams.learnobjectid !== "0") {
 				$scope.Activity = "Edit";
@@ -59,8 +60,13 @@
 				});				
 			} else {
 				$scope.Activity = "Create";
+				$scope.isDirty = true;
 			}
 			
+			$scope.CategoryIDs = [];
+			$scope.setDirty = function() {
+				$scope.isDirty = true;
+			}
 			$scope.submit = function() {
 				
 			}
@@ -95,6 +101,11 @@
 			    	$scope.rowCollection.splice(index, 1);
 			    }
 			 }
+			
+			// Create
+			$scope.newItem = function() {
+				$location.path('/learnobject/0');
+			}
 		}]);
 		
 		// Learn award
@@ -123,6 +134,11 @@
 			    	$scope.rowCollection.splice(index, 1);
 			    }
 			 }
+			
+			// Create
+			$scope.newItem = function() {
+				$location.path('/learnobject/0');
+			}
 		}]);
 	}
 })();
