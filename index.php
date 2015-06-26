@@ -23,16 +23,18 @@ session_start ();
 		<!-- JS part -->
 		<!-- Angular JS -->
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-route.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-animate.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-messages.min.js"></script>
-		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-resource.min.js"></script>
+<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-route.min.js"></script> -->
+<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-animate.min.js"></script> -->
+<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-messages.min.js"></script> -->
+<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-resource.min.js"></script> -->
 		<!-- jQuery -->
     	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 		<!-- Bootstrap -->
 		<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<!-- Smart-Table -->
 		<Script src="app\3rdparty\smart-table.min.js"></Script>
+		<!-- Angular UI - UIRoute -->
+		<Script src="app\3rdparty\angular-ui-router.min.js"></Script>
     	<!-- Application part -->
     	<script src="app\controllers\app.js"></script>
     	<script src="app\controllers\login.js"></script>
