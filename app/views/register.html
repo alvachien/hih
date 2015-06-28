@@ -1,6 +1,6 @@
 <div id="login">	
-	<form class="form-register">
-        <h2 class="form-register-heading">User Register</h2>
+	<form class="form-register" name="registerForm">
+        <h2 class="form-register-heading">Register an user</h2>
         
         <label for="inputUser" class="sr-only">User name</label>
         <input id="inputUser" class="form-control" placeholder="User name" ng-model="registerInfo.username" required autofocus>
@@ -14,6 +14,7 @@
         <label for="inputMail" class="sr-only">Mailbox</label>
         <input type="email" id="inputMail" class="form-control" ng-model="registerInfo.mailbox" placeholder="Mailbox"  required>
         
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="submitRegister()">Register</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="registerForm.$invalid" ng-click="submitRegister()">Register</button>
+        <button class="btn btn-lg btn-block" ui-sref="login">Cancel</button>
 	</form>
 </div>

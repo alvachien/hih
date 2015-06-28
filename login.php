@@ -7,6 +7,11 @@ else
 	error_reporting ( E_ALL & ~ E_NOTICE );
 
 session_start ();
+
+if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+	header ( "location: index.php" );
+	exit ();
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,47 +28,51 @@ session_start ();
 		<!-- JS part -->
 		<!-- Angular JS -->
 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
-<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-route.min.js"></script> -->
  		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-animate.min.js"></script>
-<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-messages.min.js"></script> -->
-<!-- 		<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular-resource.min.js"></script> -->
 		<!-- jQuery -->
     	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 		<!-- Bootstrap -->
 		<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<!-- Smart-Table -->
-		<Script src="app\3rdparty\smart-table.min.js"></Script>
 		<!-- Angular UI - UIRoute -->
 		<Script src="app\3rdparty\angular-ui-router.min.js"></Script>
-		<!-- Angular UI - Grid -->
-		<Script src="app\3rdparty\ui-grid.min.js"></Script>
-		<!-- Tiny MCE -->
-		<script src="app\3rdparty\tinymce.min.js"></script>
-		<!-- Angular UI - UI Tiny MCE -->
-		<script type="app\3rdparty\ui-tinymce.js"></script>
     	<!-- Application part -->
-    	<script src="app\controllers\app.js"></script>
     	<script src="app\controllers\login.js"></script>
-<!--     	<script src="app\controllers\learn.js"></script> -->
-<!--     	<script src="app\controllers\finance.js"></script> -->
 		
 		<!-- CSS part -->
 		<!-- Bootstrap -->
 		<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap-theme.min.css" rel="stylesheet">
-		<!-- 3rd party part -->
-		<link href="app\3rdparty\ui-grid.min.css" rel="stylesheet">
 		<!-- Application part -->
-		<link href="app\css\app.css" rel="stylesheet">
 		<link href="app\css\login.css" rel="stylesheet">
 		<link href="app\css\register.css" rel="stylesheet">
 </head>
 
-<body ng-app="hihApp">
+<body ng-app="hihLogin">
 	<!-- Main content area begins -->
 	<div class="container" ui-view>	
 	</div>
 	<!-- Main content area ends -->
+	
+	<!-- Dialog for showing info/error/warning begins -->
+	<div class="container" ng-controller="MessageBoxController">
+		<div class="modal fade" id="dlgMessage">
+	  		<div class="modal-dialog">
+	    		<div class="modal-content">
+	      			<div class="modal-header">
+	        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        			<h4 class="modal-title">{{MessageHeader}}</h4>
+	      			</div>
+	      			<div class="modal-body">
+	        			<p>{{MessageDetail}}</p>
+	      			</div>
+	      			<div class="modal-footer">
+	        			<button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Close</button>
+	      			</div>
+	    		</div><!-- /.modal-content -->
+	  		</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- Dialog for showing info/error/warning ends -->
 	
 	<!-- Footer area begins -->
     <footer class="footer">
@@ -77,3 +86,4 @@ session_start ();
 	<!-- Footer area ends -->
 </body>
 </html>
+
