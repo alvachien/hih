@@ -32,19 +32,20 @@ session_start ();
 		<!-- Bootstrap -->
 		<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<!-- Smart-Table -->
-		<Script src="app\3rdparty\smart-table.min.js"></Script>
+		<script src="app\3rdparty\smart-table.min.js"></Script>
 		<!-- Angular UI - UIRoute -->
-		<Script src="app\3rdparty\angular-ui-router.min.js"></Script>
+		<script src="app\3rdparty\angular-ui-router.min.js"></Script>
 		<!-- Angular UI - Grid -->
-		<Script src="app\3rdparty\ui-grid.min.js"></Script>
+<!-- 		<Script src="app\3rdparty\ui-grid.min.js"></Script> -->
 		<!-- Tiny MCE -->
 		<script src="app\3rdparty\tinymce.min.js"></script>
 		<!-- Angular UI - UI Tiny MCE -->
-		<script type="app\3rdparty\ui-tinymce.js"></script>
+		<script src="app\3rdparty\ui.tinymce.js"></script>
     	<!-- Application part -->
     	<script src="app\controllers\app.js"></script>
     	<script src="app\controllers\login.js"></script>
-<!--     	<script src="app\controllers\learn.js"></script> -->
+    	<script src="app\controllers\utility.js"></script>
+     	<script src="app\controllers\learn.js"></script>
 <!--     	<script src="app\controllers\finance.js"></script> -->
 		
 		<!-- CSS part -->
@@ -52,7 +53,7 @@ session_start ();
 		<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap-theme.min.css" rel="stylesheet">
 		<!-- 3rd party part -->
-		<link href="app\3rdparty\ui-grid.min.css" rel="stylesheet">
+<!-- 		<link href="app\3rdparty\ui-grid.min.css" rel="stylesheet"> -->
 		<!-- Application part -->
 		<link href="app\css\app.css" rel="stylesheet">
 		<link href="app\css\login.css" rel="stylesheet">
@@ -75,5 +76,26 @@ session_start ();
       </div>
     </footer>
 	<!-- Footer area ends -->
+	
+	<!-- Dialog for showing info/error/warning begins -->
+	<div class="container" ng-controller="MessageBoxController">
+		<div class="modal fade" id="dlgMessage">
+	  		<div class="modal-dialog">
+	    		<div class="modal-content">
+	      			<div class="modal-header">
+	        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        			<h4 class="modal-title">{{MessageHeader}}</h4>
+	      			</div>
+	      			<div class="modal-body">
+	        			<p>{{MessageDetail}}</p>
+	      			</div>
+	      			<div class="modal-footer">
+	        			<button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Close</button>
+	      			</div>
+	    		</div><!-- /.modal-content -->
+	  		</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- Message dialog ends -->
 </body>
 </html>

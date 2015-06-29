@@ -1,23 +1,46 @@
 (function() {
 	"use strict";	
 	
-	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login"])
-	.run(['$rootScope', '$state', '$stateParams',
-	      function ($rootScope,   $state,   $stateParams) {
-
-			    // It's very handy to add references to $state and $stateParams to the $rootScope
-			    // so that you can access them from any scope within your applications.For example,
-			    // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
-			    // to active whenever 'contacts.list' or one of its decendents is active.
+	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn'])
+		.run(['$rootScope', '$state', '$stateParams', function ($rootScope,   $state,   $stateParams) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;
-			    }
-			  ]
-			)
+			    
+			    $rootScope.$on('$stateChangeStart', 
+			    		function(event, toState, toParams, fromState, fromParams) {
+			    			console.log('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
+			    			
+			    			if (toState.name === 'login' || toState.name === 'register') {
+			    				if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
+			    					console.log('HIH: state change failed: already login but ask for login page, redirect to home page...');
+			    					event.preventDefault();
+			    					$state.go("home.welcome");
+			    				} 
+			    				return;
+			    			}  
+			    			
+			    			if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
+			    				return;
+			    			}
 
+			    			console.log('HIH: state change failed: not login, redirect to login page...');
+		    		    	event.preventDefault();
+		    		    	$state.go("login");
+//			    			if (!angular.isDefined(toState.data) || !angular.isDefined(toState.data.rule)) return;
+//			    			if (!angular.isFunction(toState.data.rule)) return;
+//			    			
+//			    		    var result = toState.data.rule($rootScope);
+//			    		    if (result !== true) {
+//			    		    	console.log('HIH: state change failed: not login, redirect to login page...');
+//			    		    	event.preventDefault();
+//			    		    	$state.go("login");
+//			    		    }
+			    	}
+			    );
+			}
+		])
 
-	.config(['$stateProvider', '$urlRouterProvider',
-	      function ($stateProvider,   $urlRouterProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
       /////////////////////////////
       // Redirects and Otherwise //
@@ -27,17 +50,21 @@
       $urlRouterProvider
 
         // The `when` method says if the url is ever the 1st param, then redirect to the 2nd param
-        // Here we are just setting up some convenience urls.
         .when('/welcome', '/home')
         .when('/about', '/home/about')
+        .when('/userdetail', '/home/userdetail')
+        .when('/learn', '/home/learn')
+        .when('/learnobject', '/home/learn/object')
+        .when('/learnhistory', '/home/learn/history')
+        .when('/learnaward', '/home/learn/award')
+        .when('/finance', '/home/finance')
 
         // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
-        .otherwise('/login');
+        .otherwise('/home');
 
-
-      //////////////////////////
+      //////////////////////
       // State Configurations //
-      //////////////////////////
+      //////////////////////
 
       // Use $stateProvider to configure your states.
       $stateProvider
@@ -45,23 +72,22 @@
         //////////
         // Home //
         //////////
-
         .state("home", {
-          abstract: true,
-          // Use a url of "/" to set a states as the "index".
           url: "/home",
+          abstract: true,
+          templateUrl: 'app/views/home.html',
+          controller: 'HomeController',
+          data: {
+        	rule: function($rootScope) {
+        		if (!angular.isDefined($rootScope.isLogin)) return false;
+        		
+        		return $rootScope.isLogin;
+        	}  
+          },
           
-          views: {      	  
-              "": {
-            	  templateUrl: 'app/views/home.html',
-                  controller: 'HomeController'  
-              },
-              
-        	  "NavMenuView": {
-                  templateUrl: 'app/views/navmenu.html',
-                  controller: 'NavController' 
-                }
-          	}
+          onEnter: function($rootScope) {
+        	  console.log('HIH Home: Entering page!');
+          }
         })
         
         ////////////////////
@@ -71,32 +97,78 @@
         	url: '',
         	templateUrl: 'app/views/welcome.html'
         })
-        
-        ///////////
-        // About //
-        ///////////
+        ////////////////////
+        // Home > User Detail //
+        ////////////////////
+        .state('home.userdetail', {
+        	url: '/userdetail',
+        	templateUrl: 'app/views/userdetail.html'
+        })
 
+        /////////////////
+        // Home > Learn //
+        /////////////////
+        
+        //////////////////////////////
+        // Home > Learn > Learn Object//
+        //////////////////////////////
+
+        ///////////////////////////////////
+        // Home > Learn > Learn Object > List//
+        ///////////////////////////////////
+
+        /////////////////
+        // Home > About //
+        /////////////////
         .state('home.about', {
           url: '/about',
           templateUrl: 'app/views/about.html'
         });
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', function($scope, $rootScope, $state, $http) {
-		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
+		$scope.displayedCollection = [
+			{userobj: 'ID', 			usercont: $scope.CurrentUser.userid},
+			{userobj: 'Display As', 	usercont: $scope.CurrentUser.userdisplayas},
+			{userobj: 'Gender',		usercont: $scope.CurrentUser.usergender},
+			{userobj: 'Created On', usercont: $scope.CurrentUser.usercreatedon}
+			];
 		
-		$scope.$on("LoginSuccess", function() {
-	    	console.log("HIH LoginSuccess event fired!");
-	    	
-	    	$state.go("home");
-	    });
+		$scope.logout = function() {
+			console.log("HIH: Logout triggerd!");
+			utils.sendRequest( { objecttype: 'USERLOGOUT' }, function (data, status, headers, config) {
+				
+				// Clear the current user information
+				$rootScope.isLogin = false;
+				$rootScope.CurrentUser = {};
+				$scope.CurrentUser = {};
+				
+				// Redirect to login page
+				$state.go('login');
+			}, function(data, status, headers, config) {
+				// Throw out error message				
+				$rootScope.$broadcast('ShowMessage', 'Error', 'Failed to logout!');
+			})
+		}
 	}])
 	
-	.controller('NavController', ['$scope', '$stateParams', '$rootScope',
-        function (  $scope,   $stateParams,   $rootScope) {
-          
-        }])
+	.controller('MessageBoxController', ['$scope', function($scope) {
+		$scope.MessageHeader = "";
+		$scope.MessageDetail = "";
+		
+		$('#dlgMessage').modal('hide');
+		
+		$scope.$on("ShowMessage",function (oEvent, msgHeader, msgDetail) {
+			console.log('HIH MessageBox Controller: ShowMessage event occurred');
+			$scope.MessageHeader = msgHeader;
+			$scope.MessageDetail = msgDetail;
+			
+			var dlg = $('#dlgMessage');
+			if (dlg)
+				dlg.modal('show');
+		});
+	}])	
 	;
 
 })();
