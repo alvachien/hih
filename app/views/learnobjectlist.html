@@ -1,4 +1,5 @@
 <div id="viewLearnObjectList">
+
 	<div class="page-header">
 		<h2>
 			Learn Objects <small> List View </small>
@@ -17,7 +18,7 @@
 				<th st-sort="content">Content</th>
 			</tr>
 			<tr>
-				<th colspan="5"><input st-search="" class="form-control"
+				<th colspan="6"><input st-search="" class="form-control"
 					placeholder="global search ..." type="text" /></th>
 			</tr>
 		</thead>
@@ -29,16 +30,20 @@
 				<td>{{row.name}}</td>
 				<td>{{row.content}}</td>
 				<td>
-					<button type="button" ng-click="editItem(row)"
-						class="btn btn-sm btn-warning">
-						<i class="glyphicon glyphicon-pencil"> </i>
-					</button>
-				</td>
-				<td>
-					<button type="button" ng-click="removeItem(row)"
-						class="btn btn-sm btn-danger">
-						<i class="glyphicon glyphicon-trash"> </i>
-					</button>
+					<div class="btn-group" role="group">
+						<button type="button" ng-click="displayItem(row)"
+							class="btn-group btn-primary" role="group">
+							<i class="glyphicon glyphicon-share"> </i>
+						</button>
+						<button type="button" ng-click="editItem(row)"
+							class="btn-group btn-warning" role="group">
+							<i class="glyphicon glyphicon-edit"> </i>
+						</button>
+						<button type="button" ng-click="removeItem(row)"
+							class="btn-group btn-danger" role="group">
+							<i class="glyphicon glyphicon-trash"> </i>
+						</button>
+					</div>					
 				</td>
 			</tr>
 		</tbody>

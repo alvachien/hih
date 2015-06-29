@@ -1,7 +1,7 @@
-<div id="viewLearnObject">
+<div id="viewLearnHistory">
 	<div class="page-header">
 		<h2>
-			Learn Object<small> {{Activity}}</small>
+			Learn History<small> {{Activity}}</small>
 		</h2>
 	</div>
 
@@ -14,9 +14,9 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptCtgy">Category:</label>
+			<label class="control-label col-sm-2" for="iptUser">User:</label>
 			<div class="col-sm-10">
-				<select id="iptCtgy" ng-model="ObjectCategoryID" ng-disabled="isReadonly"
+				<select id="iptUser" ng-model="UserID" ng-disabled="isReadonly"
 					ng-options="ctgy.id as ctgy.text for ctgy in CategoryIDs">
 					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
       					Example 2: usertype.value as usertype.text for usertype in userTypes 
@@ -25,17 +25,24 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptName">Name</label>
+			<label class="control-label col-sm-2" for="iptObject">Learn Objects</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
+				<input type="text" class="form-control" id="iptObject" ng-readonly="isReadonly"
 					placeholder="Name" ng-model="ObjectName" required>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptContent">Content</label>
+			<label class="control-label col-sm-2" for="iptDate">Date</label>
 			<div class="col-sm-10">
-				<textarea ui-tinymce="tinymceOptions" rows="20" ng-readonly="isReadonly"
-					ng-model="ObjectContent"></textarea>
+				<textarea rows="5" id="iptDate" ng-readonly="isReadonly"
+					ng-model="Comment"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptComment">Comment</label>
+			<div class="col-sm-10">
+				<textarea rows="5" id="iptComment" ng-readonly="isReadonly"
+					ng-model="Comment"></textarea>
 			</div>
 		</div>
 

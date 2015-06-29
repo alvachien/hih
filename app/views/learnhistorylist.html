@@ -33,10 +33,20 @@
 				<td>{{row.categoryname}}</td>
 				<td>{{row.learndate}}</td>
 				<td>
-					<button type="button" ng-click="removeItem(row)"
-						class="btn btn-sm btn-danger">
-						<i class="glyphicon glyphicon-remove-circle"> </i>
-					</button>
+					<div class="btn-group" role="group">
+						<button type="button" ng-click="displayItem(row)"
+							class="btn-group btn-primary" role="group">
+							<i class="glyphicon glyphicon-share"> </i>
+						</button>
+						<button type="button" ng-click="editItem(row)"
+							class="btn-group btn-warning" role="group">
+							<i class="glyphicon glyphicon-edit"> </i>
+						</button>
+						<button type="button" ng-click="removeItem(row)"
+							class="btn-group btn-danger" role="group">
+							<i class="glyphicon glyphicon-trash"> </i>
+						</button>
+					</div>					
 				</td>
 			</tr>
 		</tbody>

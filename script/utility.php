@@ -107,6 +107,11 @@ function user_login($userid, $userpwd) {
 				null 
 		);
 	}
+
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	$query = "SELECT * FROM " . MySqlUserTabel . " WHERE USERID = '" . $userid . "'";
 	$sErrorString = "";
@@ -190,6 +195,11 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 	$sError = "";
 	$bExist = false;
 	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+
 	// Check existence of the User ID
 	$query = "SELECT COUNT(*) FROM " . MySqlUserTabel . " WHERE USERID = '" . $userid . "'";
 	
@@ -235,6 +245,11 @@ function user_combo() {
 	}
 	$sError = "";
 	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+
 	// Check existence of the User ID
 	$usertable = array ();
 	$query = "SELECT USERID, DISPLAYAS FROM " . MySqlUserTabel;
@@ -273,6 +288,11 @@ function learn_category_read() {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Read catregory
 	$ctgytable = array ();
@@ -319,6 +339,11 @@ function learn_category_readex() {
 	}
 	$sError = "";
 	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$ctgytable = array ();
 	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . MySqlLearnCatgTable;
@@ -360,6 +385,11 @@ function learn_category_create($parctgy, $name, $comment) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nCode = 0;
 	$nNewid = 0;
@@ -439,6 +469,11 @@ function learn_category_delete($ctgyid) {
 	$sError = "";
 	$sSuccess = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Check existence of the User ID
 	$query = "DELETE FROM " . MySqlLearnCatgTable . " WHERE ID = '$id';";
 	
@@ -467,6 +502,11 @@ function learn_object_listread() {
 		);
 	}
 	$sError = "";
+	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
 	$objtable = array ();
@@ -508,6 +548,11 @@ function learn_object_create($ctgyid, $name, $content) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nCode = 0;
 	$nNewid = 0;
@@ -583,6 +628,11 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 	$sError = "";
 	$sSuccess = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Check existence of the User ID
 	$name = mysqli_real_escape_string ( $link, $name );
 	$content = mysqli_real_escape_string ( $link, $content );
@@ -611,6 +661,12 @@ function learn_object_delete($id) {
 				null 
 		);
 	}
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	$sError = "";
 	$sSuccess = "";
 	
@@ -639,6 +695,11 @@ function learn_object_combo() {
 	}
 	$sError = "";
 	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+
 	// Check existence of the User ID
 	$objtable = array ();
 	$query = "SELECT ID, CATEGORY_NAME, NAME FROM " . MySqlLearnObjListView;
@@ -675,6 +736,11 @@ function learn_object_hierread() {
 	}
 	$sError = "";
 	
+	// Set language	
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+
 	// Check existence of the User ID
 	$objtable = array ();
 	$parhavechld = array ();
@@ -734,6 +800,11 @@ function learn_hist_listread() {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Check existence of the User ID
 	$objtable = array ();
 	$query = "SELECT USERID, DISPLAYAS, OBJECTID, OBJECTNAME, CATEGORYID, CATEGORYNAME, LEARNDATE, OBJECTCONTENT, COMMENT FROM " . MySqlLearnHistListView;
@@ -778,6 +849,11 @@ function learn_hist_listread_byuser($username) {
 		);
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
 	$objtable = array ();
@@ -824,6 +900,10 @@ function learn_hist_listreadbyid($username, $objid) {
 	}
 	
 	$sError = "";
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
 	$objtable = array ();
@@ -866,6 +946,11 @@ function learn_hist_hierread() {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
 	$objtable = array ();
@@ -929,6 +1014,11 @@ function learn_hist_exist($username, $objid) {
 	$sError = "";
 	$bExist = false;
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Check existence of the User ID
 	// $rsttable = array();
 	$query = "SELECT COUNT(*) FROM " . MySqlLearnHistTable . " WHERE USERID = '" . $username . "' AND OBJECTID = '" . $objid . "';";
@@ -979,6 +1069,11 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 		);
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
 	// $learndate = date( 'Y-m-d', $learndate );
@@ -1036,6 +1131,11 @@ function learn_hist_delete($userid, $objid) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	$query = "DELETE FROM " . MySqlLearnHistTable . " WHERE USERID = '" . $userid . "' AND OBJECTID = '" . $objid . "';";
 	
 	if (false === mysqli_query ( $link, $query )) {
@@ -1063,6 +1163,11 @@ function learn_award_listread() {
 		);
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Perform the query
 	$rsttable = array ();
@@ -1133,6 +1238,11 @@ function learn_award_listread_byuser($username) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlLearnAwardView . " WHERE userid = '" . $username . "' ORDER BY ADATE desc";
@@ -1201,6 +1311,11 @@ function learn_award_create($userid, $adate, $score, $reason) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nCode = 0;
 	$nNewid = 0;
@@ -1280,6 +1395,11 @@ function learn_award_delete($id) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	$query = "DELETE FROM " . MySqlLearnAwardTable . " WHERE ID = '" . $id . "';";
 	
 	if (false === mysqli_query ( $link, $query )) {
@@ -1307,6 +1427,11 @@ function finance_account_listread() {
 		);
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Perform the query
 	$rsttable = array ();
@@ -1349,6 +1474,11 @@ function finance_account_hierread() {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$acntctg = array ();
 	$acnts = array ();
@@ -1484,6 +1614,11 @@ function finance_account_create($name, $ctgyid, $comment) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nCode = 0;
 	$nNewid = 0;
@@ -1564,6 +1699,11 @@ function finance_account_category_listread() {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinAccountCtgyTable;
@@ -1605,6 +1745,11 @@ function finance_currency_listread() {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinCurrencyTable;
@@ -1643,6 +1788,11 @@ function finance_trantype_listread($usetext) {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Read category
 	$rsttable = array ();
@@ -1697,6 +1847,11 @@ function finance_doctype_listread() {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$rsttable = array ();
 	$query = "SELECT ID, NAME, COMMENT FROM " . MySqlFinDocumentTypeTable;
@@ -1733,6 +1888,11 @@ function finance_document_listread() {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Read category
 	$rsttable = array ();
@@ -1778,6 +1938,11 @@ function finance_document_post($docobj) {
 	}
 	$mysqli->autocommit ( false );
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nDocID = 0;
 	
@@ -1838,6 +2003,11 @@ function finance_document_delete($docid) {
 	}
 	$mysqli->autocommit ( false );
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
@@ -1893,6 +2063,11 @@ function finance_documentitem_listread($docid) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinDocumentItemView3 . " WHERE docid = '" . $docid . "';";
@@ -1947,6 +2122,11 @@ function finance_documentitem_listreadbyaccount($accountid) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinDocumentItemView3 . " WHERE accountid = '" . $accountid . "';";
@@ -2000,6 +2180,11 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Read category
 	$rsttable = array ();
@@ -2056,6 +2241,11 @@ function finance_internalorder_listread() {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinInternalOrderTable;
@@ -2093,6 +2283,11 @@ function finance_internalordersr_listread($ordid) {
 		return "Connect failed: %s\n" . mysqli_connect_error ();
 	}
 	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Read category
 	$rsttable = array ();
@@ -2139,6 +2334,11 @@ function finance_internalorder_create($objIO) {
 	}
 	$mysqli->autocommit ( false );
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nOrdID = 0;
 	
@@ -2201,6 +2401,11 @@ function finance_internalorder_delete($ordid) {
 	}
 	$mysqli->autocommit ( false );
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
@@ -2256,6 +2461,11 @@ function finance_controlcenter_listread($usetext) {
 	}
 	$sError = "";
 	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
 	// Read category
 	$rsttable = array ();
 	$query = "SELECT * FROM " . MySqlFinControlCenterTable;
@@ -2304,6 +2514,11 @@ function finance_controlcenter_create($name, $parent, $comment) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$nCode = 0;
 	$nNewid = 0;
@@ -2398,6 +2613,11 @@ function finance_report_dailybalance($fromdate, $todate) {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$docid = 0;
 	$docitemid = 0;
@@ -2465,6 +2685,11 @@ function finance_report_balancesheet() {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$accountid = 0;
 	$accountname = "";
@@ -2535,6 +2760,11 @@ function finance_report_internalorder() {
 		);
 	}
 	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
 	$sError = "";
 	$ordid = 0;
 	$ordname = "";
@@ -2611,6 +2841,11 @@ function finance_report_controlcenter($fromdate, $todate) {
 				null 
 		);
 	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	$sError = "";
 	$ccid = 0;
