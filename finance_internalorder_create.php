@@ -9,27 +9,26 @@ else
 session_start ();
 require_once 'script/utility.php';
 
-
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	
 	$reqtype = $_GET ["TYPE"];
 	
 	if (! IsNullOrEmptyString ( $reqtype )) {
-		switch($reqtype)
-		{
-			case HIH_ACTIVITY_GET_INTORDSRULE:
+		switch ($reqtype) {
+			case HIH_ACTIVITY_GET_INTORDSRULE :
 				{
-					header('Content-type: application/json');
+					header ( 'Content-type: application/json' );
 					
 					if (isset ( $_SESSION ['HIH_NewIO'] )) {
-						$objNewIO = unserialize( $_SESSION['HIH_NewIO']);
-	
-						echo json_encode(array_values($objNewIO->ItemsArray ));
+						$objNewIO = unserialize ( $_SESSION ['HIH_NewIO'] );
+						
+						echo json_encode ( array_values ( $objNewIO->ItemsArray ) );
 					}
 				}
 				break;
-	
-			default: break;
+			
+			default :
+				break;
 		}
 	} else {
 		// Show finance transaction type
@@ -39,14 +38,14 @@ if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 		}
 		
 		$curTheme = 'default';
-		if (isset($_SESSION[HIH_Theme])) {
-			$curTheme = $_SESSION[HIH_Theme];
+		if (isset ( $_SESSION [HIH_Theme] )) {
+			$curTheme = $_SESSION [HIH_Theme];
 		}
 		
 		echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagenav.html' ), array (
 				"{currentuser}" => $objUser->DisplayAs,
-				"{currenttheme}" => $curTheme
+				"{currenttheme}" => $curTheme 
 		) );
 		echo strtr ( file_get_contents ( 'templates/tmpl_finance_createio.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagefooter.html' ), array () );
@@ -55,7 +54,7 @@ if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	// $_SESSION [ 'HIH_Location '] = 'Login';
 	header ( "location: user_login.php" );
 	exit ();
-	}
-	
+}
+
 ?>
 		

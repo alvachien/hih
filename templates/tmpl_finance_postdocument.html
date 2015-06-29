@@ -1,26 +1,30 @@
 
-	<!-- Content area of Finance Post Document Page begins -->
-	<h2 style="clear: both;">Post a Document</h2>
+<!-- Content area of Finance Post Document Page begins -->
+<h2 style="clear: both;">Post a Document</h2>
 
-	<div>
-		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="postDocument()"><span data-i18n="Finance.PostDocument">Post</span></a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="cancelDocument()"><span data-i18n="Common.Cancel">Cancel</span></a>
-	</div>
-	
-	
-	<!-- Layout -->
-	<div class="easyui-accordion" style="width:100%;height:800px;">
-		<!-- Header -->
-		<div title="Header" data-options="iconCls:'icon-search', collapsed:false,collapsible:false" style="overflow:auto;padding:10px;">
-			<form id="frmDocHeader" class="easyui-form" method="post">
-				<table style="width: 100%">
-					<tr>
-						<td data-i18n="Finance.DocumentType">Document Type:</td>
-						<td>
-							<div style="margin-bottom: 10px">
-								<select class="easyui-combogrid" style="width:98%" 
-									id="doctypeCombo"
-									data-options="panelWidth: 500,
+<div>
+	<a href="javascript:void(0)" class="easyui-linkbutton"
+		onclick="postDocument()"><span data-i18n="Finance.PostDocument">Post</span></a>
+	<a href="javascript:void(0)" class="easyui-linkbutton"
+		onclick="cancelDocument()"><span data-i18n="Common.Cancel">Cancel</span></a>
+</div>
+
+
+<!-- Layout -->
+<div class="easyui-accordion" style="width: 100%; height: 800px;">
+	<!-- Header -->
+	<div title="Header"
+		data-options="iconCls:'icon-search', collapsed:false,collapsible:false"
+		style="overflow: auto; padding: 10px;">
+		<form id="frmDocHeader" class="easyui-form" method="post">
+			<table style="width: 100%">
+				<tr>
+					<td data-i18n="Finance.DocumentType">Document Type:</td>
+					<td>
+						<div style="margin-bottom: 10px">
+							<select class="easyui-combogrid" style="width: 98%"
+								id="doctypeCombo"
+								data-options="panelWidth: 500,
 			            					idField: 'id',
 			            					textField: 'name',
 			            					url: 'finance_doctype.php?TYPE=10',
@@ -32,24 +36,25 @@
 								                {field:'comment',title:'Comment',width:80,align:'center'}
 								            ]],
 								            fitColumns: true"></select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Common.Date">Calendar Date:</td>
-						<td>
-							<div style="margin-bottom: 10px">
-								<div class="easyui-calendar" id="docdateCnlr" style="width:300px;height:150px;"></div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Finance.Currency">Currency:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-								<select class="easyui-combogrid" style="width:100%" 
-									id="currCombo"
-									data-options="prompt:'Currency', panelWidth: 500,
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Common.Date">Calendar Date:</td>
+					<td>
+						<div style="margin-bottom: 10px">
+							<div class="easyui-calendar" id="docdateCnlr"
+								style="width: 300px; height: 150px;"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Finance.Currency">Currency:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<select class="easyui-combogrid" style="width: 100%"
+								id="currCombo"
+								data-options="prompt:'Currency', panelWidth: 500,
 			            					idField: 'curr',
 			            					textField: 'name',
 			            					required:true,
@@ -61,76 +66,88 @@
 								                {field:'symbol',title:'Symbol',width:80,align:'center'}
 								            ]],
 								            fitColumns: true"></select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>Description:</td>
-						<td>
-							<div style="margin-bottom: 10px">
-								<input class="easyui-textbox" id="docdesp" data-options="multiline:true, required: true" 
-										style="width:98%; height:60px">
-							</div>
-						</td>
-					</tr>
-				</table>	
-			</form>		
-		</div>
-		
-		<!-- Datagrid for Item -->
-		<div title="Items" data-options="iconCls:'icon-help', collapsed:false" style="padding:10px;">
-			<table id="dg" class="easyui-datagrid" title="Finance Documents"
-				style="width: 98%; height: 600px;"
-				data-options="singleSelect:true,
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>
+						<div style="margin-bottom: 10px">
+							<input class="easyui-textbox" id="docdesp"
+								data-options="multiline:true, required: true"
+								style="width: 98%; height: 60px">
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<!-- Datagrid for Item -->
+	<div title="Items" data-options="iconCls:'icon-help', collapsed:false"
+		style="padding: 10px;">
+		<table id="dg" class="easyui-datagrid" title="Finance Documents"
+			style="width: 98%; height: 600px;"
+			data-options="singleSelect:true,
 						url:'finance_postdocument.php?TYPE=25',method:'get',
 						noheader: true"
-				toolbar="#toolbar">
-				<thead>
-					<tr>
-						<th data-options="field:'ItemID', align:'right'" width="5%">Item ID</th>
-						<th data-options="field:'AccountID', align:'right'" width="5%">Account ID</th>
-						<th data-options="field:'AccountName', align:'center'" width="20%"><span data-i18n="Finance.Account">Account Name</span></th>
-						<th data-options="field:'TranType', align:'right'" width="5%">Tran ID</th>
-						<th data-options="field:'TranTypeName', align:'center'" width="10%"><span data-i18n="Finance.TransactionType">Tran Type</span></th>
-						<th data-options="field:'TranAmount', align:'right'" width="10%"><span data-i18n="Finance.Amount">Amount</span></th>
-						<th data-options="field:'ControlCenterID', align:'right'" width="5%">CC ID</th>
-						<th data-options="field:'ControlCenterName', align:'center'" width="10%"><span data-i18n="Finance.ControlCenter">CC Name</span></th>
-						<th data-options="field:'OrderID', align:'right'" width="5%">Order ID</th>
-						<th data-options="field:'OrderName', align:'center'" width="10%"><span data-i18n="Finance.InternalOrder">Order Name</span></th>
-						<th data-options="field:'TranDesp', align:'center'" width="10%">Desp</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-		
-		<!-- Toolbar of Datagrid -->
-		<div id="toolbar">
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-add" plain="true" onclick="newItem()"><span data-i18n="Common.New">New </span>
-			</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-remove" plain="true" onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
-			</a> 
-			<span> |</span>
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-reload" plain="true" onclick="refreshItem()"><span data-i18n="Common.Refresh">Refresh</span>
-			</a> 
-		</div>
-	</div>
-	
-	<!-- Dialog for creating item -->
-	<div id="dlgCreate" class="easyui-dialog" title="Create New Document Item"
-		style="width: 600px; height: 400px;"
-		data-options="resizable:true,modal:true,closed:true">
-		<div style="margin: 10px 0;"></div>
-		<form id="formCrtObj" class="easyui-form" method="post">
-			<table style="width: 90%">
+			toolbar="#toolbar">
+			<thead>
 				<tr>
-					<td data-i18n="Finance.Account">Account</td>
-					<td>
-						<div style="margin-bottom: 10px"></div>
-						<select class="easyui-combogrid" style="width:100%" 
-								id="accountCombo"
-								data-options="prompt:'Account', panelWidth: 500,
+					<th data-options="field:'ItemID', align:'right'" width="5%">Item
+						ID</th>
+					<th data-options="field:'AccountID', align:'right'" width="5%">Account
+						ID</th>
+					<th data-options="field:'AccountName', align:'center'" width="20%"><span
+						data-i18n="Finance.Account">Account Name</span></th>
+					<th data-options="field:'TranType', align:'right'" width="5%">Tran
+						ID</th>
+					<th data-options="field:'TranTypeName', align:'center'" width="10%"><span
+						data-i18n="Finance.TransactionType">Tran Type</span></th>
+					<th data-options="field:'TranAmount', align:'right'" width="10%"><span
+						data-i18n="Finance.Amount">Amount</span></th>
+					<th data-options="field:'ControlCenterID', align:'right'"
+						width="5%">CC ID</th>
+					<th data-options="field:'ControlCenterName', align:'center'"
+						width="10%"><span data-i18n="Finance.ControlCenter">CC
+							Name</span></th>
+					<th data-options="field:'OrderID', align:'right'" width="5%">Order
+						ID</th>
+					<th data-options="field:'OrderName', align:'center'" width="10%"><span
+						data-i18n="Finance.InternalOrder">Order Name</span></th>
+					<th data-options="field:'TranDesp', align:'center'" width="10%">Desp</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+	<!-- Toolbar of Datagrid -->
+	<div id="toolbar">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-add" plain="true" onclick="newItem()"><span
+			data-i18n="Common.New">New </span> </a> <a href="javascript:void(0)"
+			class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+			onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
+		</a> <span> |</span> <a href="javascript:void(0)"
+			class="easyui-linkbutton" iconCls="icon-reload" plain="true"
+			onclick="refreshItem()"><span data-i18n="Common.Refresh">Refresh</span>
+		</a>
+	</div>
+</div>
+
+<!-- Dialog for creating item -->
+<div id="dlgCreate" class="easyui-dialog"
+	title="Create New Document Item" style="width: 600px; height: 400px;"
+	data-options="resizable:true,modal:true,closed:true">
+	<div style="margin: 10px 0;"></div>
+	<form id="formCrtObj" class="easyui-form" method="post">
+		<table style="width: 90%">
+			<tr>
+				<td data-i18n="Finance.Account">Account</td>
+				<td>
+					<div style="margin-bottom: 10px"></div> <select
+					class="easyui-combogrid" style="width: 100%" id="accountCombo"
+					data-options="prompt:'Account', panelWidth: 500,
 		            					idField: 'id',
 		            					textField: 'name',
 		            					required:true,
@@ -142,78 +159,79 @@
 							                {field:'comment',title:'Comment',width:120,align:'center'}
 							            ]],
 							            fitColumns: true"></select>
-					</td>
-				</tr>
-				<tr>
-					<td data-i18n="Finance.TransactionType">Tran. Type</td>
-					<td>
-						<div style="margin-bottom: 10px">
-						 	<input class="easyui-combotree" id="trantypeCombo"
-						 		data-options="prompt:'Transaction type',
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Finance.TransactionType">Tran. Type</td>
+				<td>
+					<div style="margin-bottom: 10px">
+						<input class="easyui-combotree" id="trantypeCombo"
+							data-options="prompt:'Transaction type',
 						 		url:'finance_trantype.php?TYPE=16',method:'get',
-								required:true, formatter:trantypeformatter" style="width:100%;">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td data-i18n="Finance.Amount">Amount:</td>
-					<td>
-						<div style="margin-bottom: 20px">
+								required:true, formatter:trantypeformatter"
+							style="width: 100%;">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Finance.Amount">Amount:</td>
+				<td>
+					<div style="margin-bottom: 20px">
 						<input class="easyui-numberbox" name="itemamount" id="itemamount"
 							style="width: 100%; height: 30px; padding: 12px"
 							data-options="prompt:'Amount',required: true, precision:2"></input>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>Description:</td>
-					<td>
-						<div style="margin-bottom: 20px">
-							<input class="easyui-textbox" data-options="multiline:true" 
-									id="itemDesp"
-									style="width:100%; height:60px">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td data-i18n="Finance.ControlCenter">Control Center:</td>
-					<td>
-						<div style="margin-bottom: 20px">
-						 	<input class="easyui-combotree" id="controlcenterCombo"
-						 		data-options="prompt:'Control Center',
-						 		url:'finance_controlcenter.php?TYPE=16',method:'get'" style="width:100%;">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td data-i18n="Finance.InternalOrder">Order:</td>
-					<td>
-						<div style="margin-bottom: 20px">
-							<select style="width:100%" id="orderCombo"></select>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<div align="right">
-							<a href="javascript:void(0)" class="easyui-linkbutton"
-								data-options="iconCls:'icon-ok'" onclick="submitForm()"
-								style="padding: 5px 0px; width: 30%;"> <span
-								style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
-							</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-								data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
-								style="padding: 5px 0px; width: 30%;"> <span
-								style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
-							</a>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</form>
-	</div>
-	
-	<script>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Description:</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input class="easyui-textbox" data-options="multiline:true"
+							id="itemDesp" style="width: 100%; height: 60px">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Finance.ControlCenter">Control Center:</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<input class="easyui-combotree" id="controlcenterCombo"
+							data-options="prompt:'Control Center',
+						 		url:'finance_controlcenter.php?TYPE=16',method:'get'"
+							style="width: 100%;">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="Finance.InternalOrder">Order:</td>
+				<td>
+					<div style="margin-bottom: 20px">
+						<select style="width: 100%" id="orderCombo"></select>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div align="right">
+						<a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ok'" onclick="submitForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
+						</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+							data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
+							style="padding: 5px 0px; width: 30%;"> <span
+							style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<script>
 	var docdate = new Date();
 	var ordersData = []; // Array of JSON objects
 	
@@ -436,6 +454,5 @@
 			 $.messager.alert('Error', jsonData.Message, 'error');
 		});		
 	</script>
-	<!-- Content area of Finance Post Document Page begins -->
+<!-- Content area of Finance Post Document Page begins -->
 
-	

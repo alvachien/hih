@@ -1,13 +1,15 @@
-	<!-- Content area of Learn Category Page begins -->
-	<h2 style="clear: both">Learn Category</h2>
 
-	<div>
-		<p>Learn category defines the hierarchy of all available categories
-			in the learning part.</p>
-	</div>
-	
-	<div class="easyui-panel" style="padding:5px">
-		<ul id="learn-ctgy-tree" class="easyui-tree" data-options="
+<!-- Content area of Learn Category Page begins -->
+<h2 style="clear: both">Learn Category</h2>
+
+<div>
+	<p>Learn category defines the hierarchy of all available categories
+		in the learning part.</p>
+</div>
+
+<div class="easyui-panel" style="padding: 5px">
+	<ul id="learn-ctgy-tree" class="easyui-tree"
+		data-options="
 				url: 'learn_category.php?TYPE=10',
 				method: 'get',
 				animate: true,
@@ -20,41 +22,40 @@
 					});
 				}
 			"></ul>
-    </div>
-    
-    <!-- Context menu -->    
-	<div id="mmLearnCategory" class="easyui-menu" style="width:160px;">
-		<div onclick="append()">Append</div>
-		<div onclick="removeit()">Remove</div>
-		<div class="menu-sep"></div>
-		<div onclick="expand()">Expand</div>
-		<div onclick="collapse()">Collapse</div>
-	</div>
-	
-	<!-- Dialog for create category -->
-	<div id="dlgCtgyCreate" class="easyui-dialog"
-		title="Create a new category" style="width: 600px; height: 300px;"
-		data-options="resizable:true,modal:true,closed:true">
-		<div style="margin: 10px 0;"></div>
-		<form id="formCtgyCreate" class="easyui-form" method="post">
+</div>
+
+<!-- Context menu -->
+<div id="mmLearnCategory" class="easyui-menu" style="width: 160px;">
+	<div onclick="append()">Append</div>
+	<div onclick="removeit()">Remove</div>
+	<div class="menu-sep"></div>
+	<div onclick="expand()">Expand</div>
+	<div onclick="collapse()">Collapse</div>
+</div>
+
+<!-- Dialog for create category -->
+<div id="dlgCtgyCreate" class="easyui-dialog"
+	title="Create a new category" style="width: 600px; height: 300px;"
+	data-options="resizable:true,modal:true,closed:true">
+	<div style="margin: 10px 0;"></div>
+	<form id="formCtgyCreate" class="easyui-form" method="post">
 		<table style="width: 90%">
 			<tr>
 				<td>Parent Category</td>
 				<td>
-					<div style="margin-bottom: 10px"></div>
-					<select class="easyui-combotree" id="cmbParentCategory"
-							url="learn_category.php?TYPE=10" name="category"
-							data-options="prompt:'Parent Category', required: true"
-							style="width: 100%; height: 30px; padding: 12px">
-					</select>
+					<div style="margin-bottom: 10px"></div> <select
+					class="easyui-combotree" id="cmbParentCategory"
+					url="learn_category.php?TYPE=10" name="category"
+					data-options="prompt:'Parent Category', required: true"
+					style="width: 100%; height: 30px; padding: 12px">
+				</select>
 				</td>
 			</tr>
 			<tr>
 				<td>名称</td>
 				<td>
 					<div style="margin-bottom: 20px">
-						<input id="tbName" class="easyui-textbox"
-							name="name"
+						<input id="tbName" class="easyui-textbox" name="name"
 							style="width: 100%; height: 30px; padding: 12px"
 							data-options="prompt:'Name of Category', required: true, validType:'length[1,45]'"></input>
 					</div>
@@ -87,10 +88,10 @@
 				</td>
 			</tr>
 		</table>
-		</form>
-	</div>
+	</form>
+</div>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 		var ctgyTreeSelectedNode;
 		$('#formCtgyCreate').form({
 			url : 'script/learncategory_create.php',
@@ -184,5 +185,4 @@
 			$('#formCtgyCreate').dialog('close');
 		}
 	</script>
-	<!-- Content area of Learn Category Page ends -->
-	
+<!-- Content area of Learn Category Page ends -->

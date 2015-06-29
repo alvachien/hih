@@ -1,4 +1,14 @@
 eclipse.preferences.version=1
+encoding//app/views/home.html=UTF-8
+encoding//app/views/learnawardlist.html=UTF-8
+encoding//app/views/learnhistorylist.html=UTF-8
+encoding//app/views/learnobject.html=UTF-8
+encoding//app/views/learnobjectlist.html=UTF-8
+encoding//app/views/login.html=UTF-8
+encoding//app/views/notready.html=UTF-8
+encoding//app/views/register.html=UTF-8
+encoding//app/views/userdetail.html=UTF-8
+encoding//app/views/welcome.html=UTF-8
 encoding//templates/tmpl_finance_account.html=UTF-8
 encoding//templates/tmpl_finance_account_ctgy.html=UTF-8
 encoding//templates/tmpl_finance_controlcenter.html=UTF-8

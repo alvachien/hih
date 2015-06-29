@@ -1,47 +1,50 @@
 
-	<!-- Content area of Finance Report: Control Center Page begins -->
-	<h2 style="clear: both;">Finance Report: Control Center</h2>
+<!-- Content area of Finance Report: Control Center Page begins -->
+<h2 style="clear: both;">Finance Report: Control Center</h2>
 
-	<div>
-		<p>Finance Report, based on the control center, and you can select the period as well.</p>
-	</div>
-	
-	
-	<!-- Data grid -->
-	<table id="dg" class="easyui-datagrid" title="Finance Internal Order Report"
-			style="width: 100%; height: 600px;"
-			data-options="singleSelect:true,
+<div>
+	<p>Finance Report, based on the control center, and you can select
+		the period as well.</p>
+</div>
+
+
+<!-- Data grid -->
+<table id="dg" class="easyui-datagrid"
+	title="Finance Internal Order Report"
+	style="width: 100%; height: 600px;"
+	data-options="singleSelect:true,
 					url:'finance_report_cc.php?TYPE=10', method:'get', 
 					rownumbers: true,
 					noheader: true"
-			toolbar="#toolbar"
-			>
-		<thead>
-			<tr>
-			<th data-options="field:'ccid', align:'right'" width="5%"><span data-i18n="Common.ID">ID</span></th>
-			<th data-options="field:'ccname', align:'center'" width="10%"><span data-i18n="Common.Name">Name</span></th>
-			<th data-options="field:'ccparid', align:'right'" width="10%">Parent ID</th>
-			<th data-options="field:'tranamt',align:'right'" width="20%"><span >Amount</span></th>
+	toolbar="#toolbar">
+	<thead>
+		<tr>
+			<th data-options="field:'ccid', align:'right'" width="5%"><span
+				data-i18n="Common.ID">ID</span></th>
+			<th data-options="field:'ccname', align:'center'" width="10%"><span
+				data-i18n="Common.Name">Name</span></th>
+			<th data-options="field:'ccparid', align:'right'" width="10%">Parent
+				ID</th>
+			<th data-options="field:'tranamt',align:'right'" width="20%"><span>Amount</span></th>
 			<th data-options="field:'trancurrname',align:'right'" width="15%">Currency</th>
-			</tr>
-		</thead>
-	</table>
-	
-	<!-- Toolbar of Datagrid -->
-	<div id="toolbar">
-		<input id="dateValidfrom" type="text" class="easyui-datebox" name="validfrom"
-			style="width: 120px; height: 30px; padding: 12px"
-			data-options="formatter:dateformatter, parser:dateparser"></input>
-		<input id="dateValidto" type="text" class="easyui-datebox" name="validfrom"
-			style="width: 120px; height: 30px; padding: 12px"
-			data-options="formatter:dateformatter, parser:dateparser"></input>
-		<a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-reload" plain="true" onclick="refreshItem()"><span data-i18n="Common.Refresh">Refresh</span>
-		</a> 
-		<span> |</span>
-	</div>
-	
-	<script>
+		</tr>
+	</thead>
+</table>
+
+<!-- Toolbar of Datagrid -->
+<div id="toolbar">
+	<input id="dateValidfrom" type="text" class="easyui-datebox"
+		name="validfrom" style="width: 120px; height: 30px; padding: 12px"
+		data-options="formatter:dateformatter, parser:dateparser"></input> <input
+		id="dateValidto" type="text" class="easyui-datebox" name="validfrom"
+		style="width: 120px; height: 30px; padding: 12px"
+		data-options="formatter:dateformatter, parser:dateparser"></input> <a
+		href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-reload" plain="true" onclick="refreshItem()"><span
+		data-i18n="Common.Refresh">Refresh</span> </a> <span> |</span>
+</div>
+
+<script>
 	function formatExpenseFlag(val, row){
         return finExpenseFlag(val);
 	}
@@ -62,5 +65,4 @@
 		//$('#dlgCreate').dialog("setTitle", titleStr);
 	}
 	</script>
-	<!-- Content area of Finance Report: Control Center Page ends -->
-	
+<!-- Content area of Finance Report: Control Center Page ends -->

@@ -1,56 +1,67 @@
 
-	<!-- Content area of Finance Account Page begins -->
-	<h2 style="clear: both;" data-i18n="Finance.Accounts">Finance Accounts</h2>
+<!-- Content area of Finance Account Page begins -->
+<h2 style="clear: both;" data-i18n="Finance.Accounts">Finance
+	Accounts</h2>
 
-	<div>
-		<p data-i18n="Finance.AccountsDesp">Accounts: All finance accounts.</p>
-	</div>
-	
+<div>
+	<p data-i18n="Finance.AccountsDesp">Accounts: All finance accounts.</p>
+</div>
 
-	<!-- Datagrid -->
-	<table id="dg" class="easyui-datagrid" title="Finance Accounts"
-			style="width: 98%; height: 600px;"
-			data-options="singleSelect:true,
+
+<!-- Datagrid -->
+<table id="dg" class="easyui-datagrid" title="Finance Accounts"
+	style="width: 98%; height: 600px;"
+	data-options="singleSelect:true,
 					url:'finance_account.php?TYPE=10', method:'get', 
 					rownumbers: true,
 					showFooter: true,
 					noheader: true"
-			toolbar="#toolbar">
-		<thead>
-			<tr>
-			<th data-options="field:'id', align:'right'" width="5%"><span data-i18n="Common.ID">ID</span></th>
-			<th data-options="field:'ctgyid'" width="5%"><span data-i18n="Common.CategoryID">Category ID</span></th>
-			<th data-options="field:'name', align:'center'" width="30%"><span data-i18n="Common.Name">Name</span></th>
-			<th data-options="field:'ctgyname',align:'center'" width="15%"><span data-i18n="Common.Category">Category Name</span></th>
-			<th data-options="field:'assetflag', align:'center', formatter:formatAssetFlag" width="10%"><span data-i18n="Finance.Asset">Asset</span></th>
-			<th data-options="field:'comment', align:'center'" width="15%"><span data-i18n="Common.Comment">Comment</span></th>
-			</tr>
-		</thead>
-	</table>
+	toolbar="#toolbar">
+	<thead>
+		<tr>
+			<th data-options="field:'id', align:'right'" width="5%"><span
+				data-i18n="Common.ID">ID</span></th>
+			<th data-options="field:'ctgyid'" width="5%"><span
+				data-i18n="Common.CategoryID">Category ID</span></th>
+			<th data-options="field:'name', align:'center'" width="30%"><span
+				data-i18n="Common.Name">Name</span></th>
+			<th data-options="field:'ctgyname',align:'center'" width="15%"><span
+				data-i18n="Common.Category">Category Name</span></th>
+			<th
+				data-options="field:'assetflag', align:'center', formatter:formatAssetFlag"
+				width="10%"><span data-i18n="Finance.Asset">Asset</span></th>
+			<th data-options="field:'comment', align:'center'" width="15%"><span
+				data-i18n="Common.Comment">Comment</span></th>
+		</tr>
+	</thead>
+</table>
 
-	<!-- Toolbar of Datagrid -->
-	<div id="toolbar">
-		<a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-add" plain="true" onclick="newItem()"> <span data-i18n="Common.New">New</span> 
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-edit" plain="true" onclick="changeItem()"> <span data-i18n="Common.Change">Change</span>
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span data-i18n="Common.Delete">Destroy</span>
-		</a> 
-	</div>
-	
-	<!-- Account Create Dialog -->
-	<div id="dlgAccountCreate" class="easyui-dialog"
-		title="Create an account" style="width: 600px; height: 400px;"
-		data-options="resizable:true,modal:true,closed:true">
-		<div style="margin: 10px 0;"></div>
-		<form id="formCrtAccount" class="easyui-form" method="post">
+<!-- Toolbar of Datagrid -->
+<div id="toolbar">
+	<a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-add" plain="true" onclick="newItem()"> <span
+		data-i18n="Common.New">New</span>
+	</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-edit" plain="true" onclick="changeItem()"> <span
+		data-i18n="Common.Change">Change</span>
+	</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span
+		data-i18n="Common.Delete">Destroy</span>
+	</a>
+</div>
+
+<!-- Account Create Dialog -->
+<div id="dlgAccountCreate" class="easyui-dialog"
+	title="Create an account" style="width: 600px; height: 400px;"
+	data-options="resizable:true,modal:true,closed:true">
+	<div style="margin: 10px 0;"></div>
+	<form id="formCrtAccount" class="easyui-form" method="post">
 		<table style="width: 90%">
 			<tr>
 				<td data-i18n="Common.Category">Category</td>
 				<td>
 					<div style="margin-bottom: 10px">
-					<input class="easyui-combobox" name="ctgy"
+						<input class="easyui-combobox" name="ctgy"
 							data-options="url:'finance_account_category.php?TYPE=10',
 								method: 'get',	
 								valueField:'id',
@@ -64,8 +75,7 @@
 				<td data-i18n="Common.Name">Name</td>
 				<td>
 					<div style="margin-bottom: 20px">
-					<input id="tbName" class="easyui-textbox"
-							name="name"
+						<input id="tbName" class="easyui-textbox" name="name"
 							style="width: 100%; height: 30px; padding: 12px"
 							data-options="prompt:'Name',required: true, validType: 'length[1, 30]'"></input>
 					</div>
@@ -86,9 +96,8 @@
 				<td>
 					<div align="right">
 						<a href="javascript:void(0)" class="easyui-linkbutton"
-							onclick="clearForm()"
-							style="padding: 5px 0px; width: 30%;"> <span
-							style="font-size: 14px;" data-i18n="Common.Clear">Clear</span>
+							onclick="clearForm()" style="padding: 5px 0px; width: 30%;">
+							<span style="font-size: 14px;" data-i18n="Common.Clear">Clear</span>
 						</a> <a href="javascript:void(0)" class="easyui-linkbutton"
 							data-options="iconCls:'icon-ok'" onclick="submitForm()"
 							style="padding: 5px 0px; width: 30%;"> <span
@@ -102,11 +111,11 @@
 				</td>
 			</tr>
 		</table>
-		</form>
-	</div>
-	
-	<!-- Scripts -->
-	<script type="text/javascript">
+	</form>
+</div>
+
+<!-- Scripts -->
+<script type="text/javascript">
 	$('#formCrtAccount').form({
 		url : 'script/financeaccount_create.php',
 		onSubmit : function() {
@@ -185,5 +194,4 @@
 		$('#dlgAccountCreate').dialog("setTitle", titleStr);
 	}
 	</script>
-	<!-- Content area of Finance Accounts Page ends -->
-	
+<!-- Content area of Finance Accounts Page ends -->

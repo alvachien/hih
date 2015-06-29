@@ -1,65 +1,75 @@
 
-	<!-- Content area of Learn Award Page begins -->
-	<h2 style="clear: both;" data-i18n="Learn.LearningAwardListTitle">Learn Awards</h2>
+<!-- Content area of Learn Award Page begins -->
+<h2 style="clear: both;" data-i18n="Learn.LearningAwardListTitle">Learn
+	Awards</h2>
 
-	<div>
-		<p data-i18n="Learn.LearningAwardListDesp">Learn Awards: Award scores on the users.</p>
-	</div>
-	
-	<!-- Datagrid -->
-	<table id="dg" class="easyui-datagrid" title="Learn Awards"
-		style="width: 98%; height: 600px;"
-		data-options="singleSelect:true,
+<div>
+	<p data-i18n="Learn.LearningAwardListDesp">Learn Awards: Award
+		scores on the users.</p>
+</div>
+
+<!-- Datagrid -->
+<table id="dg" class="easyui-datagrid" title="Learn Awards"
+	style="width: 98%; height: 600px;"
+	data-options="singleSelect:true,
 				url:'learn_award.php?TYPE=10', method:'get', 
 				rownumbers: true,
 				showFooter: true,
 				noheader: true"
-		toolbar="#toolbar">
+	toolbar="#toolbar">
 	<!-- 
                 rowStyler: function(index,row){
                     if (row.score < 60) {
                         return 'background-color: rgb(181,68,52);color:#fff;font-weight:bold;';
                     }
-                }	 -->		
-		<thead>
-			<tr>
-			<th data-options="field:'id', align:'right'" width="5%"><span data-i18n="Common.ID">ID</span></th>
-			<th data-options="field:'userid'" width="10%"><span data-i18n="Login.User">User Name</span></th>
-			<th data-options="field:'displayas', align:'center'" width="15%"><span data-i18n="Login.DisplayAs">Display As</span></th>
-			<th data-options="field:'adate',align:'center'" width="10%"><span data-i18n="Common.Date">Date</span></th>
-			<th data-options="field:'score', align:'right',styler:scoreCellStyler" width="10%"><span data-i18n="Learn.Score">Score</span></th>
-			<th data-options="field:'reason', align:'center'" width="50%"><span data-i18n="Learn.Reason">Reason</span></th>
-			</tr>
-		</thead>
-	</table>
+                }	 -->
+	<thead>
+		<tr>
+			<th data-options="field:'id', align:'right'" width="5%"><span
+				data-i18n="Common.ID">ID</span></th>
+			<th data-options="field:'userid'" width="10%"><span
+				data-i18n="Login.User">User Name</span></th>
+			<th data-options="field:'displayas', align:'center'" width="15%"><span
+				data-i18n="Login.DisplayAs">Display As</span></th>
+			<th data-options="field:'adate',align:'center'" width="10%"><span
+				data-i18n="Common.Date">Date</span></th>
+			<th
+				data-options="field:'score', align:'right',styler:scoreCellStyler"
+				width="10%"><span data-i18n="Learn.Score">Score</span></th>
+			<th data-options="field:'reason', align:'center'" width="50%"><span
+				data-i18n="Learn.Reason">Reason</span></th>
+		</tr>
+	</thead>
+</table>
 
-	<!-- Toolbar of Datagrid -->
-	<div id="toolbar">
-		<a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-add" plain="true" onclick="newItem()"> <span data-i18n="Common.New">New</span>
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-edit" plain="true" onclick="changeItem()"> <span data-i18n="Common.Change">Change</span> 
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span data-i18n="Common.Delete">Destroy</span>
-		</a> 
-		<span> |</span>
-		<span data-i18n="Learn.FilterByUser">Filter by user: </span>
-		<input class="easyui-combobox"
-				data-options="url:'script/user_combo.php',
+<!-- Toolbar of Datagrid -->
+<div id="toolbar">
+	<a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-add" plain="true" onclick="newItem()"> <span
+		data-i18n="Common.New">New</span>
+	</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-edit" plain="true" onclick="changeItem()"> <span
+		data-i18n="Common.Change">Change</span>
+	</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span
+		data-i18n="Common.Delete">Destroy</span>
+	</a> <span> |</span> <span data-i18n="Learn.FilterByUser">Filter by
+		user: </span> <input class="easyui-combobox"
+		data-options="url:'script/user_combo.php',
 								method: 'get',	
 								valueField:'id',
 								textField:'text',
 								onSelect:onFilterUser,
 								onChange:onFilterUserChanged"
-				id="cmbFilterUser" style="line-height:26px;border:1px solid #ccc"></input>
-	</div>
+		id="cmbFilterUser" style="line-height: 26px; border: 1px solid #ccc"></input>
+</div>
 
-	<!-- Dialog for creating the award -->
-	<div id="dlgAwardCreate" class="easyui-dialog"
-		title="Create a new Award" style="width: 600px; height: 400px;"
-		data-options="resizable:true,modal:true,closed:true">
-		<div style="margin: 10px 0;"></div>
-		<form id="formCrtAward" class="easyui-form" method="post">
+<!-- Dialog for creating the award -->
+<div id="dlgAwardCreate" class="easyui-dialog"
+	title="Create a new Award" style="width: 600px; height: 400px;"
+	data-options="resizable:true,modal:true,closed:true">
+	<div style="margin: 10px 0;"></div>
+	<form id="formCrtAward" class="easyui-form" method="post">
 		<table style="width: 90%">
 			<tr>
 				<td data-i18n="Login.User">User</td>
@@ -80,8 +90,7 @@
 				<td data-i18n="Common.Date">Date</td>
 				<td>
 					<div style="margin-bottom: 20px">
-						<input id="dateAward" class="easyui-datebox"
-							name="awarddate"
+						<input id="dateAward" class="easyui-datebox" name="awarddate"
 							style="width: 100%; height: 30px; padding: 12px"
 							data-options="formatter:dateformatter, parser:dateparser, required: true"></input>
 					</div>
@@ -124,10 +133,10 @@
 				</td>
 			</tr>
 		</table>
-		</form>
-	</div>
+	</form>
+</div>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 	$("#dlgAwardCreate").dialog(
 		{
 			closed : true,
@@ -232,4 +241,4 @@
 		//$('#dlgEdit').dialog("setTitle", titleStr);
 	}
 	</script>
-	<!-- Content area of Learn Award Page ends -->
+<!-- Content area of Learn Award Page ends -->

@@ -1,30 +1,30 @@
 
-	<!-- Content area of Finance Transaction Type Page begins -->
-	<h2 style="clear: both;">Transaction Types</h2>
+<!-- Content area of Finance Transaction Type Page begins -->
+<h2 style="clear: both;">Transaction Types</h2>
 
-	<div>
-		<p>Transaction types: All allowed transaction types in finance part.</p>
-	</div>
-	
-	
-	<!-- Tree grid  -->
-	<table id="tg" title="Finance Transaction Type" class="easyui-treegrid" style="width:98%;height:400px"
-			url="finance_trantype.php?TYPE=15"
-			rownumbers="true"
-			idField="id" treeField="name">
-		<thead>
-			<tr>
-				<th field="name" width="40%">Name</th>
-				<th field="expense" width="20%" align="right" data-options="formatter:formatExpenseFlag">Expense Flag</th>
-				<th field="comment" width="38%">Comment</th>
-			</tr>
-		</thead>
-	</table>
-	
-	<script>
+<div>
+	<p>Transaction types: All allowed transaction types in finance
+		part.</p>
+</div>
+
+
+<!-- Tree grid  -->
+<table id="tg" title="Finance Transaction Type" class="easyui-treegrid"
+	style="width: 98%; height: 400px" url="finance_trantype.php?TYPE=15"
+	rownumbers="true" idField="id" treeField="name">
+	<thead>
+		<tr>
+			<th field="name" width="40%">Name</th>
+			<th field="expense" width="20%" align="right"
+				data-options="formatter:formatExpenseFlag">Expense Flag</th>
+			<th field="comment" width="38%">Comment</th>
+		</tr>
+	</thead>
+</table>
+
+<script>
 	function formatExpenseFlag(val, row){
         return finExpenseFlag(val);
 	}
 	</script>
-	<!-- Content area of Finance Transaction Type Page ends -->
-	
+<!-- Content area of Finance Transaction Type Page ends -->

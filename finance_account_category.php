@@ -8,57 +8,56 @@ else
 session_start ();
 require_once 'script/utility.php';
 
-
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-
+	
 	$reqtype = $_GET ["TYPE"];
-
+	
 	if (! IsNullOrEmptyString ( $reqtype )) {
 		switch ($reqtype) {
-			case HIH_ACTIVITY_GETLIST:
+			case HIH_ACTIVITY_GETLIST :
 				{
-					header('Content-type: application/json');
+					header ( 'Content-type: application/json' );
 					
 					// Get list
-					$readdbrst = finance_account_category_listread ( );
-						
-					if (! IsNullOrEmptyString ($readdbrst[0])) {
-						echo json_encode(array(
-								'type'=>'E',
-								'Message'=>$readdbrst[0]
-						));
+					$readdbrst = finance_account_category_listread ();
+					
+					if (! IsNullOrEmptyString ( $readdbrst [0] )) {
+						echo json_encode ( array (
+								'type' => 'E',
+								'Message' => $readdbrst [0] 
+						) );
 					} else {
-						echo json_encode($readdbrst[1]);
+						echo json_encode ( $readdbrst [1] );
 					}
 				}
 				break;
-
-			case HIH_ACTIVITY_CREATE: {
-
-			}
-			break;
-				
+			
+			case HIH_ACTIVITY_CREATE :
+				{
+				}
+				break;
+			
 			default :
 				break;
 		}
 	} else {
-
+		
 		// Show learn category
 		$objUser = unserialize ( $_SESSION ['HIH_CurrentUser'] );
 		if (HIH_DEBUGMODE_USER) {
 			var_dump ( $objUser );
 		}
 		$curTheme = 'default';
-		if (isset($_SESSION[HIH_Theme])) {
-			$curTheme = $_SESSION[HIH_Theme];
+		if (isset ( $_SESSION [HIH_Theme] )) {
+			$curTheme = $_SESSION [HIH_Theme];
 		}
-
+		
 		echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagenav.html' ), array (
 				"{currentuser}" => $objUser->DisplayAs,
-				"{currenttheme}" => $curTheme
+				"{currenttheme}" => $curTheme 
 		) );
-
+		
 		echo strtr ( file_get_contents ( 'templates/tmpl_finance_account_ctgy.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagefooter.html' ), array () );
 	}

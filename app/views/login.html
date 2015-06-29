@@ -1,16 +1,19 @@
-<div id="viewLogin">	
+<div id="viewLogin">
 	<form class="form-signin" name="loginForm">
-        <h2 class="form-signin-heading">Sign in</h2>
-        
-        <label for="inputUser" class="sr-only">User</label>
-        <input id="inputUser" class="form-control" placeholder="User name" required autofocus ng-model="credentials.username"
-        	ng-minlength="6" />
-        
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="credentials.password" required
-        	ng-minlength="6">
-        
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="loginForm.$invalid" ng-click="login()">Sign in</button>
-        <button class="btn btn-lg btn-block" ui-sref="register">Sign up</button>
+		<h2 class="form-signin-heading">Sign in</h2>
+
+		<label for="inputUser" class="sr-only">User</label> <input
+			id="inputUser" class="form-control" placeholder="User name" required
+			autofocus ng-model="credentials.username" ng-minlength="6" /> <label
+			for="inputPassword" class="sr-only">Password</label> <input
+			type="password" id="inputPassword" class="form-control"
+			placeholder="Password" ng-model="credentials.password" required
+			ng-minlength="6">
+
+		<button class="btn btn-lg btn-primary btn-block" type="submit"
+			ng-disabled="loginForm.$invalid" ng-click="login()">Sign in</button>
+		<button class="btn btn-lg btn-block" ui-sref="register">Sign
+			up</button>
 	</form>
 </div>
+

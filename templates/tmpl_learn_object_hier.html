@@ -1,108 +1,115 @@
 
-	<!-- Content area of Learn Objects (Hierarchy) Page begins -->
-	<h2 style="clear: both;" data-i18n="Learn.LearningObjectListTitle">Learn Object in List View</h2>
+<!-- Content area of Learn Objects (Hierarchy) Page begins -->
+<h2 style="clear: both;" data-i18n="Learn.LearningObjectListTitle">Learn
+	Object in List View</h2>
 
-	<div>
-	
-		<p data-i18n="Learn.LearningObjectListDesp">Learn objects in List view show all the objects.</p>
-		<div style="margin: 20px 0;"></div>
+<div>
 
-		<!-- Datagrid -->
-		<table id="dg" class="easyui-datagrid" title="Learn Objects"
-			style="width: 80%; height: 400px;"
-			data-options="singleSelect:true,collapsible:true,url:'learn_object_list.php?TYPE=10',method:'get'"
-			toolbar="#toolbar" pagination="false" fit="true">
-			<thead>
+	<p data-i18n="Learn.LearningObjectListDesp">Learn objects in List
+		view show all the objects.</p>
+	<div style="margin: 20px 0;"></div>
+
+	<!-- Datagrid -->
+	<table id="dg" class="easyui-datagrid" title="Learn Objects"
+		style="width: 80%; height: 400px;"
+		data-options="singleSelect:true,collapsible:true,url:'learn_object_list.php?TYPE=10',method:'get'"
+		toolbar="#toolbar" pagination="false" fit="true">
+		<thead>
+			<tr>
+				<th data-options="field:'id'" width="10%"><span
+					data-i18n="Common.ID">ID</span></th>
+				<th data-options="field:'categoryname'" width="20%"><span
+					data-i18n="Common.Category">Category</span></th>
+				<th data-options="field:'name',align:'center'" width="20%"><span
+					data-i18n="Common.Name">Name</span></th>
+				<th data-options="field:'content', align:'center'" width="50%"><span
+					data-i18n="Common.Content">Content</span></th>
+			</tr>
+		</thead>
+	</table>
+
+	<!-- Toolbar of Datagrid -->
+	<div id="toolbar">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-add" plain="true" onclick="newItem()"> <span
+			data-i18n="Common.New">New</span>
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-edit" plain="true" onclick="changeItem()"> <span
+			data-i18n="Common.Change">Change</span>
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span
+			data-i18n="Common.Delete">Destroy</span>
+		</a>
+	</div>
+
+	<!-- Dialog for new item -->
+	<div id="dlgCreate" class="easyui-dialog" title="Create Learn Object"
+		style="width: 600px; height: 400px;"
+		data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formCrtObj" class="easyui-form" method="post">
+			<table style="width: 90%">
 				<tr>
-					<th data-options="field:'id'" width="10%" ><span data-i18n="Common.ID">ID</span></th>
-					<th data-options="field:'categoryname'" width="20%"><span data-i18n="Common.Category">Category</span></th>
-					<th data-options="field:'name',align:'center'" width="20%"><span data-i18n="Common.Name">Name</span></th>
-					<th data-options="field:'content', align:'center'" width="50%"><span data-i18n="Common.Content">Content</span></th>
-				</tr>
-			</thead>
-		</table>
-
-		<!-- Toolbar of Datagrid -->
-		<div id="toolbar">
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-add" plain="true" onclick="newItem()"> <span data-i18n="Common.New">New</span> 
-			</a> <a
-				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-edit" plain="true" onclick="changeItem()"> <span data-i18n="Common.Change">Change</span>
-			</a> <a
-				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span data-i18n="Common.Delete">Destroy</span>
-			</a>
-		</div>
-
-		<!-- Dialog for new item -->
-		<div id="dlgCreate" class="easyui-dialog" title="Create Learn Object"
-			style="width: 600px; height: 400px;"
-			data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
-			<div style="margin: 10px 0;"></div>
-			<form id="formCrtObj" class="easyui-form" method="post">
-				<table style="width: 90%">
-					<tr>
-						<td data-i18n="Common.Category">Category</td>
-						<td>
-							<div style="margin-bottom: 10px"></div> <!--  <select
+					<td data-i18n="Common.Category">Category</td>
+					<td>
+						<div style="margin-bottom: 10px"></div> <!--  <select
 							class="easyui-combobox" id="cmbCategory"
 							style="width: 100%; height: 30px; padding: 12px" name="gender"
 							required="required">
 							<option value="1" selected="selected">male</option>
 							<option value="0">female</option>							
 							</select>
-							!--> 
-							<select class="easyui-combotree" id="cmbCategory"
-								url="learn_category.php?TYPE=10" name="category"
-								style="width: 100%; height: 30px; padding: 12px">
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>Name:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-								<input class="easyui-textbox" name="name" id="tbName"
-									style="width: 100%; height: 30px; padding: 12px"
-									data-options="prompt:'Name of object', required: true,validType:'length[2,50]'">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>Content:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-								<input class="easyui-textbox" style="width:100%; height: 120px;" name="content" id="taContent" data-options="multiline:true"></input>								
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<div align="right">
-								<a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-ok'" onclick="submitForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;">Submit</span>
-								</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;">Cancel</span>
-								</a>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</div>
+							!--> <select class="easyui-combotree" id="cmbCategory"
+						url="learn_category.php?TYPE=10" name="category"
+						style="width: 100%; height: 30px; padding: 12px">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input class="easyui-textbox" name="name" id="tbName"
+								style="width: 100%; height: 30px; padding: 12px"
+								data-options="prompt:'Name of object', required: true,validType:'length[2,50]'">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Content:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input class="easyui-textbox" style="width: 100%; height: 120px;"
+								name="content" id="taContent" data-options="multiline:true"></input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<div align="right">
+							<a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ok'" onclick="submitForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;">Submit</span>
+							</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;">Cancel</span>
+							</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 
-		<!-- Dialog for editting item -->
-		<div id="dlgEdit" class="easyui-dialog" title="Edit Learn Object"
-			style="width: 600px; height: 420px;"
-			data-options="iconCls:'icon-save',resizable:true,modal:true">
-			<div style="margin: 10px 0;"></div>
-			<form id="formEdtObj" class="easyui-form" method="post">
+	<!-- Dialog for editting item -->
+	<div id="dlgEdit" class="easyui-dialog" title="Edit Learn Object"
+		style="width: 600px; height: 420px;"
+		data-options="iconCls:'icon-save',resizable:true,modal:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formEdtObj" class="easyui-form" method="post">
 			<table style="width: 90%">
 				<tr>
 					<td>ID</td>
@@ -273,7 +280,6 @@
 			$('#formEdtObj').dialog('close');
 		}
 	</script>
-	</div>
-	<!-- Content area of Learn Objects (List) Page ends -->
+</div>
+<!-- Content area of Learn Objects (List) Page ends -->
 
-	

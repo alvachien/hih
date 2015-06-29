@@ -1,163 +1,172 @@
 
-	<!-- Content area of Learn Objects (List) Page begins -->
-	<h2 style="clear: both;" data-i18n="Learn.LearningHistoryListTitle">Learn History in List View</h2>
-	
-	<div>
-	
-		<p data-i18n="Learn.LearningHistoryListDesp">Learn histories in List view show all the learned history information in the list view.</p>
-		<div style="margin: 20px 0;"></div>
+<!-- Content area of Learn Objects (List) Page begins -->
+<h2 style="clear: both;" data-i18n="Learn.LearningHistoryListTitle">Learn
+	History in List View</h2>
 
-		<!-- Datagrid -->
-		<table id="dg" class="easyui-datagrid" title="Learn Histories in List View"
-			style="width: 100%; height: 400px;"
-			data-options="singleSelect:true,collapsible:true,url:'learn_history_list.php?TYPE=10',method:'get', noheader: true"
-			toolbar="#toolbar" pagination="false" fitColumns="true" >
-			<thead>
-				<tr>
-					<th data-options="field:'userid',align:'right'" width="5%"><span data-i18n="Login.User">User ID</span></th>
-					<th data-options="field:'displayas',align:'center'" width="20%"><span data-i18n="Login.DisplayAs">Display As</span></th>
-					<th data-options="field:'objectid',align:'right'" width="5%"><span data-i18n="Learn.ObjectID">Object ID</span></th>
-					<th data-options="field:'objectname', align:'center'" width="20%"><span data-i18n="Learn.LearningObject">Object Name</span></th>
-					<th data-options="field:'categoryid', align:'right'" width="5%"><span data-i18n="Common.CategoryID">Category ID</span></th>
-					<th data-options="field:'categoryname',align:'center'" width="20%"><span data-i18n="Common.Category">Category</span></th>
-					<th data-options="field:'learndate',align:'center'" width="20%"><span data-i18n="Common.Date">Learn Date</span></th>
-<!-- 					<th data-options="field:'objectcontent', align:'center'" width="45%">Content</th> -->
-				</tr>
-			</thead>
-		</table>
+<div>
 
-		<!-- Toolbar of Datagrid -->
-		<div id="toolbar">
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-add" plain="true" onclick="newItem()"> <span data-i18n="Common.New">New</span> 
-			</a> <a
-				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-edit" plain="true" onclick="changeItem()"> <span data-i18n="Common.Change">Change</span>
-			</a> <a
-				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span data-i18n="Common.Delete">Destroy</span>
-			</a>
-			<span>|</span>
-			<span data-i18n="Learn.FilterByUser">Filter by user: </span>
-			<input class="easyui-combobox"
-					data-options="url:'script/user_combo.php',
+	<p data-i18n="Learn.LearningHistoryListDesp">Learn histories in
+		List view show all the learned history information in the list view.</p>
+	<div style="margin: 20px 0;"></div>
+
+	<!-- Datagrid -->
+	<table id="dg" class="easyui-datagrid"
+		title="Learn Histories in List View"
+		style="width: 100%; height: 400px;"
+		data-options="singleSelect:true,collapsible:true,url:'learn_history_list.php?TYPE=10',method:'get', noheader: true"
+		toolbar="#toolbar" pagination="false" fitColumns="true">
+		<thead>
+			<tr>
+				<th data-options="field:'userid',align:'right'" width="5%"><span
+					data-i18n="Login.User">User ID</span></th>
+				<th data-options="field:'displayas',align:'center'" width="20%"><span
+					data-i18n="Login.DisplayAs">Display As</span></th>
+				<th data-options="field:'objectid',align:'right'" width="5%"><span
+					data-i18n="Learn.ObjectID">Object ID</span></th>
+				<th data-options="field:'objectname', align:'center'" width="20%"><span
+					data-i18n="Learn.LearningObject">Object Name</span></th>
+				<th data-options="field:'categoryid', align:'right'" width="5%"><span
+					data-i18n="Common.CategoryID">Category ID</span></th>
+				<th data-options="field:'categoryname',align:'center'" width="20%"><span
+					data-i18n="Common.Category">Category</span></th>
+				<th data-options="field:'learndate',align:'center'" width="20%"><span
+					data-i18n="Common.Date">Learn Date</span></th>
+				<!-- 					<th data-options="field:'objectcontent', align:'center'" width="45%">Content</th> -->
+			</tr>
+		</thead>
+	</table>
+
+	<!-- Toolbar of Datagrid -->
+	<div id="toolbar">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-add" plain="true" onclick="newItem()"> <span
+			data-i18n="Common.New">New</span>
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-edit" plain="true" onclick="changeItem()"> <span
+			data-i18n="Common.Change">Change</span>
+		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+			iconCls="icon-remove" plain="true" onclick="destroyItem()"> <span
+			data-i18n="Common.Delete">Destroy</span>
+		</a> <span>|</span> <span data-i18n="Learn.FilterByUser">Filter by
+			user: </span> <input class="easyui-combobox"
+			data-options="url:'script/user_combo.php',
 								method: 'get',	
 								valueField:'id',
 								textField:'text',
 								onSelect:onFilterUser,
 								onChange:onFilterUserChanged"
-					id="cmbFilterUser" style="line-height:26px;border:1px solid #ccc"></input>
-		</div>
+			id="cmbFilterUser" style="line-height: 26px; border: 1px solid #ccc"></input>
+	</div>
 
-		<!-- Dialog for new item -->
-		<div id="dlgCreate" class="easyui-dialog" title="Create Learn History"
-			style="width: 600px; height: 400px;"
-			data-options="resizable:true,modal:true,closed:true">
-			<div style="margin: 10px 0;"></div>
-			<form id="formCrtObj" class="easyui-form" method="post">
-				<table style="width: 90%">
-					<tr>
-						<td data-i18n="Login.User">User</td>
-						<td>
-							<div style="margin-bottom: 10px">
-							<input class="easyui-combobox" name="user"
-									data-options="
-										url:'script/user_combo.php',
-										method: 'get',	
-										valueField:'id',
-										textField:'text'"
-										id="cmbUser"
-										style="width: 100%; height: 30px; padding: 12px"></input>							
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Learn.LearningObject">Learn Object:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-							<select class="easyui-combogrid" name="learnobject" 
-									data-options="
-										url: 'script/learnobject_combo.php',
-										method: 'get',
-										idField:'id',
-										textField:'name',
-										columns: [[
-			                				{field:'id',title:'ID',width:50, align:'right'},
-			                				{field:'categoryname',title:'Category',width:120, align:'center'},
-								            {field:'name',title:'Name',width:120,align:'center'}
-								            ]],
-										fitColumns: true"
-									id="cmbObject"										
-									style="width: 100%; height: 30px; padding: 12px"></select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Common.Date">Learn Date:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-								<input id="dateLearn" type="text" class="easyui-datebox" required="required" name="learndate"
-									style="width: 100%; height: 30px; padding: 12px"
-									data-options="formatter:dateformatter, parser:dateparser"></input>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Common.Comment">Comment:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-							<input class="easyui-textbox" style="width:100%" name="comment" id="tbComment" data-options="multiline:true"></input>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<div align="right">
-								<a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-ok'" onclick="submitForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
-								</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
-								</a>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</div>
-
-		<!-- Dialog for editting item -->
-		<div id="dlgEdit" class="easyui-dialog" title="Edit Learn History"
-			style="width: 600px; height: 420px;"
-			data-options="resizable:true,modal:true">
-			<div style="margin: 10px 0;"></div>
-			<form id="formEdtObj" class="easyui-form" method="post">
+	<!-- Dialog for new item -->
+	<div id="dlgCreate" class="easyui-dialog" title="Create Learn History"
+		style="width: 600px; height: 400px;"
+		data-options="resizable:true,modal:true,closed:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formCrtObj" class="easyui-form" method="post">
 			<table style="width: 90%">
-					<tr>
-						<td data-i18n="Login.User">User</td>
-						<td>
-							<div style="margin-bottom: 10px">
+				<tr>
+					<td data-i18n="Login.User">User</td>
+					<td>
+						<div style="margin-bottom: 10px">
+							<input class="easyui-combobox" name="user"
+								data-options="
+										url:'script/user_combo.php',
+										method: 'get',	
+										valueField:'id',
+										textField:'text'"
+								id="cmbUser" style="width: 100%; height: 30px; padding: 12px"></input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Learn.LearningObject">Learn Object:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<select class="easyui-combogrid" name="learnobject"
+								data-options="
+										url: 'script/learnobject_combo.php',
+										method: 'get',
+										idField:'id',
+										textField:'name',
+										columns: [[
+			                				{field:'id',title:'ID',width:50, align:'right'},
+			                				{field:'categoryname',title:'Category',width:120, align:'center'},
+								            {field:'name',title:'Name',width:120,align:'center'}
+								            ]],
+										fitColumns: true"
+								id="cmbObject" style="width: 100%; height: 30px; padding: 12px"></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Common.Date">Learn Date:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input id="dateLearn" type="text" class="easyui-datebox"
+								required="required" name="learndate"
+								style="width: 100%; height: 30px; padding: 12px"
+								data-options="formatter:dateformatter, parser:dateparser"></input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Common.Comment">Comment:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input class="easyui-textbox" style="width: 100%" name="comment"
+								id="tbComment" data-options="multiline:true"></input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<div align="right">
+							<a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ok'" onclick="submitForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
+							</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-cancel'" onclick="cancelForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
+							</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<!-- Dialog for editting item -->
+	<div id="dlgEdit" class="easyui-dialog" title="Edit Learn History"
+		style="width: 600px; height: 420px;"
+		data-options="resizable:true,modal:true">
+		<div style="margin: 10px 0;"></div>
+		<form id="formEdtObj" class="easyui-form" method="post">
+			<table style="width: 90%">
+				<tr>
+					<td data-i18n="Login.User">User</td>
+					<td>
+						<div style="margin-bottom: 10px">
 							<input class="easyui-combobox" name="user_edit"
-									data-options="
+								data-options="
 										url:'script/user_combo.php',
 										method: 'get',	
 										idField:'id',
 										textField:'text'"
-										id="cmbUser_edit"
-										style="width: 100%; height: 30px; padding: 12px"></input>							
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Learn.LearningObject">Learn Object:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-							<select class="easyui-combogrid" name="learnobject_edit" 
-									data-options="
+								id="cmbUser_edit"
+								style="width: 100%; height: 30px; padding: 12px"></input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Learn.LearningObject">Learn Object:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<select class="easyui-combogrid" name="learnobject_edit"
+								data-options="
 										url: 'script/learnobject_combo.php',
 										method: 'get',
 										valueField:'id',
@@ -168,50 +177,52 @@
 								            {field:'name',title:'Name',width:120,align:'center'}
 								            ]],
 										fitColumns: true"
-									id="cmbObject"										
-									style="width: 100%; height: 30px; padding: 12px"></select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Common.Date">Learn Date:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-							<input id="dateLearn_edit" type="text" class="easyui-datebox" required="required" 
-								name="learndate_edit" style="width: 100%; height: 30px; padding: 12px"
+								id="cmbObject" style="width: 100%; height: 30px; padding: 12px"></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Common.Date">Learn Date:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input id="dateLearn_edit" type="text" class="easyui-datebox"
+								required="required" name="learndate_edit"
+								style="width: 100%; height: 30px; padding: 12px"
 								data-options="formatter:dateformatter, parser:dateparser"></input>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n="Common.Comment">Comment:</td>
-						<td>
-							<div style="margin-bottom: 20px">
-							<input class="easyui-textbox" style="width:100%; height: 60px" name="comment_edit" id="tbComment_edit" data-options="multiline:true">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<div align="right">
-								<a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-ok'" onclick="submitEditForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
-								</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-									data-options="iconCls:'icon-cancel'" onclick="cancelEditForm()"
-									style="padding: 5px 0px; width: 30%;"> <span
-									style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
-								</a>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-i18n="Common.Comment">Comment:</td>
+					<td>
+						<div style="margin-bottom: 20px">
+							<input class="easyui-textbox" style="width: 100%; height: 60px"
+								name="comment_edit" id="tbComment_edit"
+								data-options="multiline:true">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<div align="right">
+							<a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ok'" onclick="submitEditForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;" data-i18n="Common.Submit">Submit</span>
+							</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+								data-options="iconCls:'icon-cancel'" onclick="cancelEditForm()"
+								style="padding: 5px 0px; width: 30%;"> <span
+								style="font-size: 14px;" data-i18n="Common.Cancel">Cancel</span>
+							</a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 
-		<script>
+	<script>
 		$('#formCrtObj').form({
 			url : 'script/learnhistory_create.php',
 			onSubmit : function() {
@@ -369,7 +380,6 @@
 			$('#dlgEdit').dialog("setTitle", titleStr);
 		}
 		</script>
-	</div>
-	<!-- Content area of Learn Objects (List) Page ends -->
+</div>
+<!-- Content area of Learn Objects (List) Page ends -->
 
-		

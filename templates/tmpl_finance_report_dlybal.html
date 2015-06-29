@@ -1,57 +1,66 @@
 
-	<!-- Content area of Finance Report: Daily balance Page begins -->
-	<h2 style="clear: both;" data-i18n="Finance.DailyBalanceReport">Finance Report: Daily Balance Report</h2>
+<!-- Content area of Finance Report: Daily balance Page begins -->
+<h2 style="clear: both;" data-i18n="Finance.DailyBalanceReport">Finance
+	Report: Daily Balance Report</h2>
 
-	<div>
-		<p>Daily Balance Report, and you can select the period as well.</p>
-	</div>
-	
-	
-	<div id="p" class="easyui-panel" title="Grpahics" noheader="true"
-        style="width:100%; height:400px; padding:10px; background:#fafafa;">
-		<div style="float:left; width:50%;">
-			<div id="inPiecontainer" style="min-width: 310px; height: 360px; max-width: 600px; margin: 0 auto"></div>
-		</div>
+<div>
+	<p>Daily Balance Report, and you can select the period as well.</p>
+</div>
 
-		<div style="float:left;width:50%;">
-			<div id="outPiecontainer" style="min-width: 310px; height: 360px; max-width: 600px; margin: 0 auto"></div>
-		</div>
+
+<div id="p" class="easyui-panel" title="Grpahics" noheader="true"
+	style="width: 100%; height: 400px; padding: 10px; background: #fafafa;">
+	<div style="float: left; width: 50%;">
+		<div id="inPiecontainer"
+			style="min-width: 310px; height: 360px; max-width: 600px; margin: 0 auto"></div>
 	</div>
-	
-	<!-- Data grid  -->
-	<table id="dg" class="easyui-datagrid" title="Finance Daily Balance Sheet"
-			style="width: 100%; height: 600px;"
-			data-options="singleSelect:true,
+
+	<div style="float: left; width: 50%;">
+		<div id="outPiecontainer"
+			style="min-width: 310px; height: 360px; max-width: 600px; margin: 0 auto"></div>
+	</div>
+</div>
+
+<!-- Data grid  -->
+<table id="dg" class="easyui-datagrid"
+	title="Finance Daily Balance Sheet" style="width: 100%; height: 600px;"
+	data-options="singleSelect:true,
 <!-- 							url:'finance_report_dailybalance.php?TYPE=10', method:'get',  -->
 							rownumbers: true,
 							noheader: true"
-			toolbar="#toolbar">
-		<thead>
-			<tr>
-			<th data-options="field:'trantypeid', align:'right'" width="5%"><span data-i18n="Common.ID">Tran Type</span></th>
-			<th data-options="field:'trantypeexpense', align:'right', formatter:formatExpenseFlag" width="5%"><span data-i18n="Finance.ExpenseFlag">Expense flag</span></th>
-			<th data-options="field:'trantypename', align:'center'" width="30%"><span data-i18n="Finance.TransactionType">Tran Type</span></th>
-			<th data-options="field:'trantamount', align:'right'" width="30%"><span data-i18n="Finance.Amount">Amount</span></th>
-			<th data-options="field:'precent',align:'right'" width="20%"><span data-i18n="Common.Precent">Precent</span></th>
-			</tr>
-		</thead>
-	</table>
-			
-	<!-- Toolbar of Datagrid -->
-	<div id="toolbar">
-		<input id="dateValidfrom" type="text" class="easyui-datebox" name="validfrom"
-			style="width: 120px; height: 30px; padding: 12px"
-			data-options="formatter:dateformatter, parser:dateparser"></input>
-		<input id="dateValidto" type="text" class="easyui-datebox" name="validfrom"
-			style="width: 120px; height: 30px; padding: 12px"
-			data-options="formatter:dateformatter, parser:dateparser"></input>
-		<a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-reload" plain="true" onclick="refreshItem()"><span data-i18n="Common.Refresh">Refresh</span>
-		</a> 
-		<span> |</span>
-	</div>
-	
-	<script>
+	toolbar="#toolbar">
+	<thead>
+		<tr>
+			<th data-options="field:'trantypeid', align:'right'" width="5%"><span
+				data-i18n="Common.ID">Tran Type</span></th>
+			<th
+				data-options="field:'trantypeexpense', align:'right', formatter:formatExpenseFlag"
+				width="5%"><span data-i18n="Finance.ExpenseFlag">Expense
+					flag</span></th>
+			<th data-options="field:'trantypename', align:'center'" width="30%"><span
+				data-i18n="Finance.TransactionType">Tran Type</span></th>
+			<th data-options="field:'trantamount', align:'right'" width="30%"><span
+				data-i18n="Finance.Amount">Amount</span></th>
+			<th data-options="field:'precent',align:'right'" width="20%"><span
+				data-i18n="Common.Precent">Precent</span></th>
+		</tr>
+	</thead>
+</table>
+
+<!-- Toolbar of Datagrid -->
+<div id="toolbar">
+	<input id="dateValidfrom" type="text" class="easyui-datebox"
+		name="validfrom" style="width: 120px; height: 30px; padding: 12px"
+		data-options="formatter:dateformatter, parser:dateparser"></input> <input
+		id="dateValidto" type="text" class="easyui-datebox" name="validfrom"
+		style="width: 120px; height: 30px; padding: 12px"
+		data-options="formatter:dateformatter, parser:dateparser"></input> <a
+		href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-reload" plain="true" onclick="refreshItem()"><span
+		data-i18n="Common.Refresh">Refresh</span> </a> <span> |</span>
+</div>
+
+<script>
 	function formatExpenseFlag(val, row){
         return finExpenseFlag(val);
 	}
@@ -174,6 +183,6 @@
 		$('#outPiecontainer').highcharts(options2);
 	}
 	</script>
-	<!-- Content area of Finance Report: Daily balance Page ends -->
-	
+<!-- Content area of Finance Report: Daily balance Page ends -->
+
 

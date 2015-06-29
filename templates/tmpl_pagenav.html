@@ -1,14 +1,17 @@
 <body>
 
-	<link href="css/themes/default/easyui.css" rel="stylesheet">	
+	<link href="css/themes/default/easyui.css" rel="stylesheet">
 
 	<!-- Header area begins -->
 	<div>
-		<h1><span data-i18n="Mainpage.WelcomeBack">Welcome back</span>, {currentuser}</h1>
+		<h1>
+			<span data-i18n="Mainpage.WelcomeBack">Welcome back</span>,
+			{currentuser}
+		</h1>
 	</div>
 	<div align="right">
-		<span style="color: #999" data-i18n="Common.Themes">Themes:</span> 
-		<select id="cb-theme" style="width: 120px"></select>
+		<span style="color: #999" data-i18n="Common.Themes">Themes:</span> <select
+			id="cb-theme" style="width: 120px"></select>
 	</div>
 	<script>
 		var themes = [ {
@@ -97,77 +100,129 @@
 
 	<!-- Menu area begins -->
 	<div style="margin: 10px 0;"></div>
-	<div class="easyui-panel" style="padding: 2px; width='90%';" align="left" >
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true" onclick="subpageNvgClick('index.php')"><span data-i18n="Nav.Home">Home</span></a>
-		<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mmUser'"><span data-i18n="Nav.Users">Users</span></a>
-		<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mmLearn'"><span data-i18n="Nav.LearningTrace">Learning Trace</span></a>
-		<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mmFinance'"><span data-i18n="Nav.FinanceTrace">Finance Trace</span></a>
-		<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mmAbout'"><span data-i18n="Nav.About">About</span></a>
+	<div class="easyui-panel" style="padding: 2px;" align="left">
+		<a href="javascript:void(0)" class="easyui-linkbutton"
+			data-options="plain:true" onclick="subpageNvgClick('index.php')"><span
+			data-i18n="Nav.Home">Home</span></a> <a href="javascript:void(0)"
+			class="easyui-menubutton" data-options="menu:'#mmUser'"><span
+			data-i18n="Nav.Users">Users</span></a> <a href="javascript:void(0)"
+			class="easyui-menubutton" data-options="menu:'#mmLearn'"><span
+			data-i18n="Nav.LearningTrace">Learning Trace</span></a> <a
+			href="javascript:void(0)" class="easyui-menubutton"
+			data-options="menu:'#mmFinance'"><span
+			data-i18n="Nav.FinanceTrace">Finance Trace</span></a> <a
+			href="javascript:void(0)" class="easyui-menubutton"
+			data-options="menu:'#mmAbout'"><span data-i18n="Nav.About">About</span></a>
 	</div>
 	<div id="mmUser" style="width: 200px;">
 		<div onclick="userDetailClick()">User Detail</div>
 		<div class="menu-sep"></div>
 		<div onclick="notreadyNvgClick()">User List</div>
-		<div onclick="subpageNvgClick('user_register.php')"><span data-i18n="Login.RegisterTitle">Register New User</span></div>
+		<div onclick="subpageNvgClick('user_register.php')">
+			<span data-i18n="Login.RegisterTitle">Register New User</span>
+		</div>
 		<div class="menu-sep"></div>
-		<div onclick="logoutClick()"><span data-i18n="Login.Logout">Logout</span></div>
+		<div onclick="logoutClick()">
+			<span data-i18n="Login.Logout">Logout</span>
+		</div>
 	</div>
 	<div id="mmLearn" style="width: 200px;">
-		<div onclick="subpageNvgClick('learn_category.php')"><span data-i18n="Learn.LearningCategory">Learning Categories</span></div>
+		<div onclick="subpageNvgClick('learn_category.php')">
+			<span data-i18n="Learn.LearningCategory">Learning Categories</span>
+		</div>
 		<div class="menu-sep"></div>
 		<div>
 			<span data-i18n="Learn.LearningObject">Learning Objects</span>
 			<div>
-				<div onclick="subpageNvgClick('learn_object_list.php')"><span data-i18n="Common.ListView">List View</span></div>
-				<div onclick="notreadyNvgClick()"><span data-i18n="Common.HierarchyView">Hierarchy View</span></div>
+				<div onclick="subpageNvgClick('learn_object_list.php')">
+					<span data-i18n="Common.ListView">List View</span>
+				</div>
+				<div onclick="notreadyNvgClick()">
+					<span data-i18n="Common.HierarchyView">Hierarchy View</span>
+				</div>
 			</div>
 		</div>
 		<div class="menu-sep"></div>
 		<div>
 			<span data-i18n="Learn.LearningHistory">Learning Histories</span>
 			<div>
-				<div onclick="subpageNvgClick('learn_history_list.php')"><span data-i18n="Common.ListView">List View</span></div>
-				<div onclick="notreadyNvgClick()"><span data-i18n="Common.HierarchyView">Hierarchy View</span></div>
+				<div onclick="subpageNvgClick('learn_history_list.php')">
+					<span data-i18n="Common.ListView">List View</span>
+				</div>
+				<div onclick="notreadyNvgClick()">
+					<span data-i18n="Common.HierarchyView">Hierarchy View</span>
+				</div>
 			</div>
 		</div>
 		<div class="menu-sep"></div>
-		<div onclick="subpageNvgClick('learn_award.php')"><span data-i18n="Learn.LearningAward">Learning Awards</span></div>
+		<div onclick="subpageNvgClick('learn_award.php')">
+			<span data-i18n="Learn.LearningAward">Learning Awards</span>
+		</div>
 	</div>
 	<div id="mmFinance" style="width: 200px;">
-		<div onclick="subpageNvgClick('finance_postdocument.php')"><span data-i18n="Finance.PostDocument">Post Document</span></div>
+		<div onclick="subpageNvgClick('finance_postdocument.php')">
+			<span data-i18n="Finance.PostDocument">Post Document</span>
+		</div>
 		<div class="menu-sep"></div>
-		<div onclick="subpageNvgClick('finance_account.php')"><span data-i18n="Finance.Accounts">Accounts</span></div>
+		<div onclick="subpageNvgClick('finance_account.php')">
+			<span data-i18n="Finance.Accounts">Accounts</span>
+		</div>
 		<div class="menu-sep"></div>
-		<div onclick="subpageNvgClick('finance_documents.php')"><span data-i18n="Finance.Documents">Documents</span></div>
+		<div onclick="subpageNvgClick('finance_documents.php')">
+			<span data-i18n="Finance.Documents">Documents</span>
+		</div>
 		<div class="menu-sep"></div>
 		<div>
 			<span data-i18n="Finance.Controlling">Controlling</span>
 			<div>
-				<div onclick="subpageNvgClick('finance_controlcenter.php')"><span data-i18n="Finance.ControlCenter">Control Center</span></div>
-				<div onclick="subpageNvgClick('finance_internalorder.php')"><span data-i18n="Finance.InternalOrder">Internal Order</span></div>
+				<div onclick="subpageNvgClick('finance_controlcenter.php')">
+					<span data-i18n="Finance.ControlCenter">Control Center</span>
+				</div>
+				<div onclick="subpageNvgClick('finance_internalorder.php')">
+					<span data-i18n="Finance.InternalOrder">Internal Order</span>
+				</div>
 			</div>
 		</div>
 		<div class="menu-sep"></div>
 		<div>
 			<span data-i18n="Finance.ConfigObjects">Config Objects</span>
 			<div>
-				<div onclick="subpageNvgClick('finance_currency.php')"><span data-i18n="Finance.Currency">Currency</span></div>
+				<div onclick="subpageNvgClick('finance_currency.php')">
+					<span data-i18n="Finance.Currency">Currency</span>
+				</div>
 				<div class="menu-sep"></div>
-				<div onclick="subpageNvgClick('finance_account_category.php')"><span data-i18n="Finance.AccountCategory">Account Categories</span></div>
+				<div onclick="subpageNvgClick('finance_account_category.php')">
+					<span data-i18n="Finance.AccountCategory">Account Categories</span>
+				</div>
 				<div class="menu-sep"></div>
-				<div onclick="subpageNvgClick('finance_trantype.php')"><span data-i18n="Finance.TransactionType">Transaction Types</span></div>
-				<div onclick="subpageNvgClick('finance_doctype.php')"><span data-i18n="Finance.DocumentType">Document Types</span></div>
+				<div onclick="subpageNvgClick('finance_trantype.php')">
+					<span data-i18n="Finance.TransactionType">Transaction Types</span>
+				</div>
+				<div onclick="subpageNvgClick('finance_doctype.php')">
+					<span data-i18n="Finance.DocumentType">Document Types</span>
+				</div>
 			</div>
 		</div>
 		<div class="menu-sep"></div>
 		<div>
 			<span data-i18n="Finance.Reports">Reports</span>
 			<div>
-				<div onclick="subpageNvgClick('finance_report_dailybalance.php')"><span data-i18n="Finance.DailyBalanceReport">The Daily Balance Sheet</span></div>
+				<div onclick="subpageNvgClick('finance_report_dailybalance.php')">
+					<span data-i18n="Finance.DailyBalanceReport">The Daily
+						Balance Sheet</span>
+				</div>
 				<div class="menu-sep"></div>
-				<div onclick="subpageNvgClick('finance_report_balance.php')"><span data-i18n="Finance.BalanceReport">Balance</span></div>
-				<div onclick="subpageNvgClick('finance_report_cc.php')"><span data-i18n="Finance.ControlCenterReport">Conctrol Center View</span></div>
-				<div onclick="subpageNvgClick('finance_report_io.php')"><span data-i18n="Finance.InternalOrderReport">Internal Order View</span></div>
+				<div onclick="subpageNvgClick('finance_report_balance.php')">
+					<span data-i18n="Finance.BalanceReport">Balance</span>
+				</div>
+				<div onclick="subpageNvgClick('finance_report_cc.php')">
+					<span data-i18n="Finance.ControlCenterReport">Conctrol
+						Center View</span>
+				</div>
+				<div onclick="subpageNvgClick('finance_report_io.php')">
+					<span data-i18n="Finance.InternalOrderReport">Internal Order
+						View</span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -178,16 +233,20 @@
 			build your modern, interactive, javascript applications.</p>
 	</div>
 	-->
-	<div id="mmAbout" style="width:200px">
+	<div id="mmAbout" style="width: 200px">
 		<div>
 			<span data-i18n="Nav.Acknowledgements">Acknowledgements</span>
 			<div>
 				<div onclick="acknowledgeClick('http://www.jquery.com')">jQuery</div>
 				<div onclick="acknowledgeClick('http://www.jeasyui.com')">jeasyui</div>
 				<div class="menu-sep"></div>
-				<div onclick="acknowledgeClick('http://ckeditor.com')">CK editor</div>
-				<div onclick="acknowledgeClick('http://www.tinymce.com')">Tiny MCE</div>
-				<div onclick="acknowledgeClick('https://msdn.microsoft.com/en-us/library/ms537834(VS.85).aspx')">MSDN: How to Create an HTML Editor Application</div>
+				<div onclick="acknowledgeClick('http://ckeditor.com')">CK
+					editor</div>
+				<div onclick="acknowledgeClick('http://www.tinymce.com')">Tiny
+					MCE</div>
+				<div
+					onclick="acknowledgeClick('https://msdn.microsoft.com/en-us/library/ms537834(VS.85).aspx')">MSDN:
+					How to Create an HTML Editor Application</div>
 				<div class="menu-sep"></div>
 				<div onclick="acknowledgeClick('http://www.jstree.com')">jstree</div>
 				<div class="menu-sep"></div>
@@ -195,18 +254,22 @@
 				<div class="menu-sep"></div>
 				<div onclick="acknowledgeClick('http://www.chartjs.org/')">Chart.js</div>
 				<div onclick="acknowledgeClick('http://www.jqplot.com/')">jqPlot</div>
-				<div onclick="acknowledgeClick('https://google-developers.appspot.com/chart/')">Google Chart</div>
+				<div
+					onclick="acknowledgeClick('https://google-developers.appspot.com/chart/')">Google
+					Chart</div>
 				<div onclick="acknowledgeClick('http://www.highcharts.com/')">HighCharts</div>
-			</div>			
+			</div>
 		</div>
-		<div onclick="versionClick()"><span data-i18n="Nav.Version">Version</span></div>
+		<div onclick="versionClick()">
+			<span data-i18n="Nav.Version">Version</span>
+		</div>
 	</div>
-	
+
 	<!-- Dialog for User Detail -->
 	<div id="dlgUserDetail" class="easyui-dialog" title="User Detail"
-			style="width: 600px; height: 420px;"
-			data-options="iconCls:'icon-save',resizable:true,modal:true">
-			<div style="margin: 10px 0;"></div>
+		style="width: 600px; height: 420px;"
+		data-options="iconCls:'icon-save',resizable:true,modal:true">
+		<div style="margin: 10px 0;"></div>
 		<table>
 			<tr>
 				<td data-i18n="Login.User">User Name:</td>
@@ -230,15 +293,14 @@
 			</tr>
 		</table>
 	</div>
-	
+
 	<!-- Dialog for version -->
 	<div id="dlgVersion" class="easyui-dialog" title="Version Information"
-			style="width: 400px; height: 200px; "
-			data-options="resizable:true,modal:true">
+		style="width: 400px; height: 200px;"
+		data-options="resizable:true,modal:true">
 		<div style="margin: 10px 0;"></div>
-		<p> Versions
-		</p>
-		<table style="width:98%;" border="1">
+		<p>Versions</p>
+		<table style="width: 98%;" border="1">
 			<tr>
 				<th style="width: 50px;">Version:</th>
 				<td>0.5</td>
@@ -308,5 +370,3 @@
 	});
 	</script>
 	<!-- Menu area ends -->
-
-	

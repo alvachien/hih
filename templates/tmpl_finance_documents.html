@@ -1,64 +1,73 @@
 
-	<!-- Content area of Finance Doucments Page begins -->
-	<h2 style="clear: both;">Finance Documents</h2>
+<!-- Content area of Finance Doucments Page begins -->
+<h2 style="clear: both;">Finance Documents</h2>
 
-	<div>
-		<p>Finance documents: All documents in finance part.</p>
-	</div>
-	
-	
-	<!-- Layout -->
-	<div class="easyui-layout" style="width:98%; height:600px;">
-		<!-- Account plus Category Hierarchy -->
-        <div id="panelAccount" data-options="region:'west'" title="Accounts" style="width:30%;padding:10px">
-			<ul id="treeAcnts" class="easyui-tree" data-options="
+<div>
+	<p>Finance documents: All documents in finance part.</p>
+</div>
+
+
+<!-- Layout -->
+<div class="easyui-layout" style="width: 98%; height: 600px;">
+	<!-- Account plus Category Hierarchy -->
+	<div id="panelAccount" data-options="region:'west'" title="Accounts"
+		style="width: 30%; padding: 10px">
+		<ul id="treeAcnts" class="easyui-tree"
+			data-options="
 				url: 'finance_account.php?TYPE=11',
 				method: 'get',
 				animate: true,
 				onClick: accountHierarchyClick,
 				onLoadSuccess: accountHierarchyLoadSuccess"></ul>
-        </div>
-        
-        <!-- Document Table -->
-        <div data-options="region:'center'" title="Corresponding Documents">
-        	<table id="dgDocu" class="easyui-datagrid" title="Finance Documents"
-					style="width: 98%; height: 600px;"
-					data-options="singleSelect:true,
+	</div>
+
+	<!-- Document Table -->
+	<div data-options="region:'center'" title="Corresponding Documents">
+		<table id="dgDocu" class="easyui-datagrid" title="Finance Documents"
+			style="width: 98%; height: 600px;"
+			data-options="singleSelect:true,
 						url:'finance_documents.php?TYPE=10', 
 						method:'get', 
 						fitColumns: true,
 						rownumbers: true,
 						showFooter: true,
 						noheader: true"
-					toolbar="#toolbar">
-				<thead>
-					<tr>
-						<th data-options="field:'docid', align:'right'" width="5%">Doc ID</th>
-						<th data-options="field:'doctype', align:'right'" width="5%">Doc Type</th>
-						<th data-options="field:'doctypename', align:'center'" width="20%"><span data-i18n="Finance.DocumentType">Doc Type Name</span></th>
-						<th data-options="field:'trandate', align:'right'" width="15%"><span data-i18n="Common.Date">Date</span></th>
-						<th data-options="field:'trancurr', align:'right'" width="10%">Currency</th>
-						<th data-options="field:'trancurrname', align:'center'" width="15%"><span data-i18n="Finance.Currency">Currency</span></th>
-						<th data-options="field:'tranamount', align:'right'" width="20%"><span data-i18n="Finance.Amount">Amount</span></th>
-						<th data-options="field:'desp', align:'center'" width="20%">Desp</th>
-					</tr>
-				</thead>
-        	</table>
-        </div>
-    </div>	
-
-	<!-- Toolbar of Datagrid -->
-	<div id="toolbar">
-		<a href="finance_postdocument.php" class="easyui-linkbutton"
-			iconCls="icon-add" plain="true"><span data-i18n="Common.New">New </span>
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-edit" plain="true" onclick="changeItem()"><span data-i18n="Common.Change">Change</span>
-		</a> <a href="javascript:void(0)" class="easyui-linkbutton"
-			iconCls="icon-remove" plain="true" onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
-		</a> 
+			toolbar="#toolbar">
+			<thead>
+				<tr>
+					<th data-options="field:'docid', align:'right'" width="5%">Doc
+						ID</th>
+					<th data-options="field:'doctype', align:'right'" width="5%">Doc
+						Type</th>
+					<th data-options="field:'doctypename', align:'center'" width="20%"><span
+						data-i18n="Finance.DocumentType">Doc Type Name</span></th>
+					<th data-options="field:'trandate', align:'right'" width="15%"><span
+						data-i18n="Common.Date">Date</span></th>
+					<th data-options="field:'trancurr', align:'right'" width="10%">Currency</th>
+					<th data-options="field:'trancurrname', align:'center'" width="15%"><span
+						data-i18n="Finance.Currency">Currency</span></th>
+					<th data-options="field:'tranamount', align:'right'" width="20%"><span
+						data-i18n="Finance.Amount">Amount</span></th>
+					<th data-options="field:'desp', align:'center'" width="20%">Desp</th>
+				</tr>
+			</thead>
+		</table>
 	</div>
-    
-	<script>
+</div>
+
+<!-- Toolbar of Datagrid -->
+<div id="toolbar">
+	<a href="finance_postdocument.php" class="easyui-linkbutton"
+		iconCls="icon-add" plain="true"><span data-i18n="Common.New">New
+	</span> </a> <a href="javascript:void(0)" class="easyui-linkbutton"
+		iconCls="icon-edit" plain="true" onclick="changeItem()"><span
+		data-i18n="Common.Change">Change</span> </a> <a href="javascript:void(0)"
+		class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+		onclick="destoryItem()"><span data-i18n="Common.Delete">Destroy</span>
+	</a>
+</div>
+
+<script>
 	function accountHierarchyLoadSuccess(node, data) {
 		console.log('Account Hierarchy Load Successfully:' + node);
 		var nodeRoots = $('#treeAcnts').tree('getRoots');
@@ -151,5 +160,4 @@
 		}
 	});
 	</script>
-	<!-- Content area of Finance Documents Page ends -->
-	
+<!-- Content area of Finance Documents Page ends -->

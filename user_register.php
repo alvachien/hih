@@ -9,7 +9,6 @@ else
 session_start ();
 require_once 'script/utility.php';
 
-
 if ($_SERVER ["REQUEST_METHOD"] == "POST") {
 	// User register page
 	$sLogin = escape ( $_POST ['loginuser'] );
@@ -28,7 +27,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST") {
 						if (ereg ( '^[a-zA-Z0-9\-\.\_]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$', $sEmail )) {
 							if ($iGender == '1' xor $iGender == '0') {
 								// Save it to DB
-								$sErrors = user_register($sLogin, $sPass, $sAlias, $iGender, $sEmail);
+								$sErrors = user_register ( $sLogin, $sPass, $sAlias, $iGender, $sEmail );
 							} else {
 								$sErrors = 'Gender is wrong';
 							}
@@ -51,33 +50,33 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST") {
 		$sErrors = 'Login is too long';
 	}
 	
-	header('Content-type: application/json');
+	header ( 'Content-type: application/json' );
 	if (! empty ( $sErrors )) {
-		echo json_encode(array(
-				'type'=>'E',
-				'Message'=>$sErrors
-		));
-		exit();		
+		echo json_encode ( array (
+				'type' => 'E',
+				'Message' => $sErrors 
+		) );
+		exit ();
 	} else {
 		// Fill the user object
-		$objUser = new HIHUser();
+		$objUser = new HIHUser ();
 		$objUser->ID = $sLogin;
 		$objUser->DisplayAs = $sAlias;
-		$objUser->CreatedOn = $_SERVER['SERVER_TIME'];
+		$objUser->CreatedOn = $_SERVER ['SERVER_TIME'];
 		$objUser->Gender = $iGender;
-	
-		// 1. Set current user
-		$_SESSION ['HIH_CurrentUser'] = serialize($objUser);
 		
-		echo json_encode(array(
-				'type'=>'S',
-				'Message'=>'Succeed'
-		));
-		exit();		
-	}	
+		// 1. Set current user
+		$_SESSION ['HIH_CurrentUser'] = serialize ( $objUser );
+		
+		echo json_encode ( array (
+				'type' => 'S',
+				'Message' => 'Succeed' 
+		) );
+		exit ();
+	}
 } else {
 	// Default: empty page
-	echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array() );
+	echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array () );
 	echo strtr ( file_get_contents ( 'templates/tmpl_user_register.html' ), array () );
 }
 

@@ -8,7 +8,6 @@ else
 session_start ();
 require_once 'script/utility.php';
 
-
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	$reqtype = $_GET ["TYPE"];
 	
@@ -21,24 +20,22 @@ if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 		}
 		
 		$curTheme = 'default';
-		if (isset($_GET[HIH_Theme])) {
-			$curTheme = $_GET[HIH_Theme];
+		if (isset ( $_GET [HIH_Theme] )) {
+			$curTheme = $_GET [HIH_Theme];
 		}
-
+		
 		echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagenav.html' ), array (
 				"{currentuser}" => $objUser->DisplayAs,
-				"{currenttheme}" => $curTheme
+				"{currenttheme}" => $curTheme 
 		) );
 		echo strtr ( file_get_contents ( 'templates/tmpl_learn_object_hier.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagefooter.html' ), array () );
-		
 	}
 } else {
 	// $_SESSION [ 'HIH_Location '] = 'Login';
 	header ( "location: user_login.php" );
 	exit ();
-	
 }
 
 ?>

@@ -1,11 +1,14 @@
 <div id="viewLearnAward">
 	<div class="page-header">
-  		<h2>Learn Awards <small> List View </small></h2> 
-  		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+		<h2>
+			Learn Awards <small> List View </small>
+		</h2>
+		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
 	</div>
-	
-	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
-			<thead>
+
+	<table st-table="displayedCollection" st-safe-src="rowCollection"
+		class="table table-striped">
+		<thead>
 			<tr>
 				<th st-sort="id">ID</th>
 				<th st-sort="userid">User ID</th>
@@ -15,10 +18,11 @@
 				<th st-sort="reason">Reason</th>
 			</tr>
 			<tr>
-				<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+				<th colspan="5"><input st-search="" class="form-control"
+					placeholder="global search ..." type="text" /></th>
 			</tr>
-			</thead>
-			<tbody>
+		</thead>
+		<tbody>
 			<tr ng-repeat="row in displayedCollection">
 				<td>{{row.id}}</td>
 				<td>{{row.userid}}</td>
@@ -27,12 +31,12 @@
 				<td>{{row.score}}</td>
 				<td>{{row.reason}}</td>
 				<td>
-				<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
-					<i class="glyphicon glyphicon-remove-circle">
-					</i>
-				</button>
+					<button type="button" ng-click="removeItem(row)"
+						class="btn btn-sm btn-danger">
+						<i class="glyphicon glyphicon-remove-circle"> </i>
+					</button>
 				</td>
 			</tr>
-			</tbody>
-		</table>
+		</tbody>
+	</table>
 </div>

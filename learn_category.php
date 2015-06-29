@@ -8,39 +8,38 @@ else
 session_start ();
 require_once 'script/utility.php';
 
-
 if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 	
 	$reqtype = $_GET ["TYPE"];
 	
 	if (! IsNullOrEmptyString ( $reqtype )) {
 		switch ($reqtype) {
-			case HIH_ACTIVITY_GETLIST:
+			case HIH_ACTIVITY_GETLIST :
 				{
-					header('Content-type: application/json');
+					header ( 'Content-type: application/json' );
 					
 					// Get list
-					$lrnctgyrst = learn_category_readex ( );
-					$ctgytable = $lrnctgyrst[1];
+					$lrnctgyrst = learn_category_readex ();
+					$ctgytable = $lrnctgyrst [1];
 					
-					if (! IsNullOrEmptyString ($lrnctgyrst[0])) {
-						echo json_encode(array(
-								'type'=>'E',
-								'Message'=>$lrnctgyrst[0]
-						));
+					if (! IsNullOrEmptyString ( $lrnctgyrst [0] )) {
+						echo json_encode ( array (
+								'type' => 'E',
+								'Message' => $lrnctgyrst [0] 
+						) );
 					} else {
 						// Parse the data into new format
-						$newctgytable = build_learnctgy_tree($ctgytable);
+						$newctgytable = build_learnctgy_tree ( $ctgytable );
 						
-						echo json_encode($newctgytable);
-					}					
+						echo json_encode ( $newctgytable );
+					}
 				}
 				break;
-				
-			case HIH_ACTIVITY_CREATE: {
-				
-			}
-			break;
+			
+			case HIH_ACTIVITY_CREATE :
+				{
+				}
+				break;
 			
 			default :
 				break;
@@ -54,14 +53,14 @@ if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 		}
 		
 		$curTheme = 'default';
-		if (isset($_SESSION[HIH_Theme])) {
-			$curTheme = $_SESSION[HIH_Theme];
+		if (isset ( $_SESSION [HIH_Theme] )) {
+			$curTheme = $_SESSION [HIH_Theme];
 		}
-
+		
 		echo strtr ( file_get_contents ( 'templates/tmpl_pageheader.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagenav.html' ), array (
 				"{currentuser}" => $objUser->DisplayAs,
-				"{currenttheme}" => $curTheme
+				"{currenttheme}" => $curTheme 
 		) );
 		echo strtr ( file_get_contents ( 'templates/tmpl_learn_category.html' ), array () );
 		echo strtr ( file_get_contents ( 'templates/tmpl_pagefooter.html' ), array () );
