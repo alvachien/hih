@@ -38,25 +38,24 @@
 			    	}
 			    );
 			    
-//			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail) {
-//					console.log('HIH: ShowMessage event occurred');
-//					
-//					var modalInstance = $modal.open({
-//					      animation: true,
-//					      templateUrl: 'hihMessageDialog.html',
-//					      controller: 'MessageBoxController',
-//					      resolve: {
-//					          msgHeader: function () { return msgHeader; },
-//					          msgDetail: function() { return msgDetail; }
-//					        }
-//				      });
-//					
-//					modalInstance.result.then(function (selectedItem) {
-//					      //$scope.selected = selectedItem;
-//					    }, function () {
-//					      $log.info('HIH: Message dialog dismissed at: ' + new Date());
-//					    });
-//				});
+			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail) {
+					console.log('HIH: ShowMessage event occurred');
+					
+					$rootScope.MessageHeader = msgHeader;
+					$rootScope.MessageDetail = msgDetail;
+					
+					var modalInstance = $modal.open({
+					      animation: true,
+					      templateUrl: 'hihMessageDialog.html',
+					      controller: 'MessageBoxController'
+				      });
+					
+					modalInstance.result.then(function () {
+					      //$scope.selected = selectedItem;
+					    }, function () {
+					      $log.info('HIH: Message dialog dismissed at: ' + new Date());
+					    });
+				});
 			}
 		])
 
@@ -161,9 +160,9 @@
 		}
 	}])
 	
-	.controller('MessageBoxController', ['$scope', function($scope, $modalInstance, msgHeader, msgDetail) {
-		$scope.MessageHeader = msgHeader;
-		$scope.MessageDetail = msgDetail;
+	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {
+		$scope.MessageHeader = $rootScope.MessageHeader;
+		$scope.MessageDetail = $rootScope.MessageDetail;
 		
 		$scope.ok = function () {
 		    $modalInstance.close();
@@ -172,31 +171,31 @@
 		    $modalInstance.dismiss('cancel');
 		  };
 		  
-		$scope.$on("ShowMessage",function (oEvent, msgHeader, msgDetail) {
-			console.log('HIH MessageBox Controller: ShowMessage event occurred');
-			$scope.MessageHeader = msgHeader;
-			$scope.MessageDetail = msgDetail;
-
-			var modalInstance = $modal.open({
-			      animation: true,
-			      templateUrl: 'hihMessageDialog.html',
-			      resolve: {
-			          msgHeader: $scope.msgHeader,
-			          msgDetail: $scope.msgDetail			          
-			        }
-		      });
-		
-			modalInstance.result.then(function () {
-		      //$scope.selected = selectedItem;
-		    }, function () {
-		      $log.info('HIH: Message dialog dismissed at: ' + new Date());
-		    });			
-			
-//			$('#dlgMessage').modal('hide');
-//			var dlg = $('#dlgMessage');
-//			if (dlg)
-//				dlg.modal('show');
-		});
+//		$scope.$on("ShowMessage",function (oEvent, msgHeader, msgDetail) {
+//			console.log('HIH MessageBox Controller: ShowMessage event occurred');
+//			$scope.MessageHeader = msgHeader;
+//			$scope.MessageDetail = msgDetail;
+//
+//			var modalInstance = $modal.open({
+//			      animation: true,
+//			      templateUrl: 'hihMessageDialog.html',
+//			      resolve: {
+//			          msgHeader: $scope.msgHeader,
+//			          msgDetail: $scope.msgDetail			          
+//			        }
+//		      });
+//		
+//			modalInstance.result.then(function () {
+//		      //$scope.selected = selectedItem;
+//		    }, function () {
+//		      $log.info('HIH: Message dialog dismissed at: ' + new Date());
+//		    });			
+//			
+////			$('#dlgMessage').modal('hide');
+////			var dlg = $('#dlgMessage');
+////			if (dlg)
+////				dlg.modal('show');
+//		});
 	}])	
 	;
 

@@ -1,15 +1,3 @@
-<?php
-
-// set error reporting level
-if (version_compare ( phpversion (), '5.3.0', '>=' ) == 1)
-	error_reporting ( E_ALL & ~ E_NOTICE & ~ E_DEPRECATED );
-else
-	error_reporting ( E_ALL & ~ E_NOTICE );
-
-session_start ();
-
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,10 +40,8 @@ session_start ();
 	<!--     	<script src="app\controllers\finance.js"></script> -->
 	
 	<!-- CSS part -->
-	<!-- Bootstrap -->
-	<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-	<link href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap-theme.min.css" rel="stylesheet">
 	<!-- 3rd party part -->
+	<link href="app\3rdparty\bootstrap.min.css" rel="stylesheet">
 	<!-- 		<link href="app\3rdparty\ui-grid.min.css" rel="stylesheet"> -->
 	<!-- Application part -->
 	<link href="app\css\app.css" rel="stylesheet">
@@ -88,7 +74,7 @@ session_start ();
             <h3 class="modal-title">{{MessageHeader}}</h3>
         </div>
         <div class="modal-body">
-            <<p>{{MessageDetail}}</p>
+            <p>{{MessageDetail}}</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
