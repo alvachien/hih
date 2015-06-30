@@ -29,6 +29,36 @@
 								} while (randKey == currentKey);
 								return randKey;
 							},
+							
+							// User part
+							loadUserList: function loadUserList() {
+								if (!$rootScope.isUserListLoad) {
+									$http
+											.post(
+													'script/hihsrv.php',
+													{
+														objecttype : 'GETUSERLIST'
+													})
+											.success(
+													function(data, status,
+															headers, config) {
+														$rootScope.arUserList = data;
+														$rootScope.isUserListLoad = true;
+
+														$rootScope
+																.$broadcast("UserListLoaded");
+													}).error(
+													function(data, status,
+															headers, config) {
+														// called asynchronously if an error occurs or server returns response with an error status.
+														$rootScope.$broadcast(
+																"ShowMessage",
+																"Error",
+																data.Message);
+													});
+								}
+								
+							},
 
 							// Learn part
 							loadLearnObjects : function loadLearnObjects() {

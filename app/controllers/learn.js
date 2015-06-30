@@ -221,6 +221,7 @@
 		
 		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
 			utils.loadLearnHistories();
+			utils.loadUserList();
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
 		    
@@ -286,7 +287,16 @@
 			 $scope.ObjectName = "";
 			 $scope.ObjectCategoryID = -1;
 			 $scope.ObjectID = 0;
+			 $scope.LearnDate = new Date();
 			 $scope.isReadonly = false;
+			 $scope.isDateOpened = false;
+			 
+			 $scope.openDate = function($event) {
+				    $event.preventDefault();
+				    $event.stopPropagation();
+
+				    $scope.isDateOpened = true;
+			};
 			 
 			 if (angular.isDefined($stateParams.objid)) {
 				 $scope.ObjectID = $stateParams.objid;
@@ -310,20 +320,6 @@
 			 } else {
 				 $scope.Activity = "Create";
 			 };
-			 
-			 $scope.tinymceOptions = {
-			    onChange: function(e) {
-			      // put logic here for keypress and cut/paste changes
-			    	
-			    },
-			    inline: false,
-			    menubar: false,
-			    statusbar: false,
-			    toolbar: "bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat",
-			    plugins : 'advlist autolink link image lists charmap print preview',
-			    skin: 'lightgray',
-			    theme : 'modern'
-			  };
 			 
 			 $scope.submit = function() {
 				 // Let's do the checks first!!!!

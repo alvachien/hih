@@ -62,6 +62,24 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				session_destroy ();
 			}
 			break;
+			
+		case "GETUSERLIST":
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$arRst = user_combo ();
+					$sErrors = $arRst [0];
+					
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}				
+			}
+			break;
 		
 		// ===========================================================================================
 		// Learn Part
@@ -70,7 +88,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			{
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 					$arRst = learn_object_listread ();
-					$sErrors = $lrnobjrst [0];
+					$sErrors = $arRst[0];
 					
 					if (! IsNullOrEmptyString ( $arRst [0] )) {
 						export_error ( $arRst [0] );

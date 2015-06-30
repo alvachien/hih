@@ -33,10 +33,12 @@
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptDate">Date</label>
-			<div class="col-sm-10">
-				<textarea rows="5" id="iptDate" ng-readonly="isReadonly"
-					ng-model="Comment"></textarea>
-			</div>
+			<div class="input-group col-sm-10">
+              <input type="text" class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="LearnDate" is-open="isDateOpened" datepicker-options="dateOptions" date-disabled="isReadonly" ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptComment">Comment</label>
