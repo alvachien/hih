@@ -224,6 +224,7 @@
 		
 		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
 			utils.loadLearnHistories();
+			utils.loadLearnObjects();
 			utils.loadUserList();
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
@@ -287,7 +288,8 @@
 			 $scope.ErrorDetail = "";
 			 
 			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.UserIDs = $rootScope.arUserList;
+			 $scope.UserIDs = $rootScope.arUserList;			 
+			 $scope.LearnObjects = $rootScope.arLearnObject;
 			 
 			 $scope.UserID = "";
 			 $scope.ObjectID = -1;
