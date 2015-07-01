@@ -1,4 +1,4 @@
-<div id="viewLearnHistory">
+<div id="viewLearnHistory" class="container">
 	<div class="page-header">
 		<h2>
 			Learn History<small> {{Activity}}</small>
@@ -7,43 +7,51 @@
 
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptID">ID:</label>
-			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptID"
-					readonly="readonly" placeholder="ID" ng-model="ObjectID">
-			</div>
-		</div>
-		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptUser">User:</label>
 			<div class="col-sm-10">
 				<select id="iptUser" ng-model="UserID" ng-disabled="isReadonly"
-					ng-options="ctgy.id as ctgy.text for ctgy in CategoryIDs">
+					ng-options="usr.id as usr.text for usr in UserIDs">
 					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
-      					Example 2: usertype.value as usertype.text for usertype in userTypes 
+      					  Example 2: usertype.value as usertype.text for usertype in userTypes 
       				-->
 				</select>
 			</div>
 		</div>
+		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptObject">Learn Objects</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptObject" ng-readonly="isReadonly"
+<!-- 				<input type="text" class="form-control" id="iptObject" ng-readonly="isReadonly"
 					placeholder="Name" ng-model="ObjectName" required>
-			</div>
+ -->		
+				<ui-select ng-model="person.selected" theme="select2" ng-disabled="isReadonly" style="min-width: 300px;">
+			    	<ui-select-match placeholder="Select a learn object or search via the name...">{{$select.selected.name}}</ui-select-match>
+			    	<ui-select-choices repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
+			      		<div ng-bind-html="person.name | highlight: $select.search"></div>
+			      		<small>
+			        		email: {{person.email}}
+			        		age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
+			      		</small>
+			    	</ui-select-choices>
+				</ui-select>		 	
+ 			</div>
 		</div>
+		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptDate">Date</label>
 			<div class="input-group col-sm-10">
-              <input type="text" class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="LearnDate" is-open="isDateOpened" datepicker-options="dateOptions" date-disabled="isReadonly" ng-required="true" close-text="Close" />
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
+            	<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="LearnDate" is-open="isDateOpened"            		
+            		datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
+              	<span class="input-group-btn">
+                	<button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              	</span>
             </div>
 		</div>
+		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptComment">Comment</label>
 			<div class="col-sm-10">
-				<textarea rows="5" id="iptComment" ng-readonly="isReadonly"
+				<textarea rows="5" id="iptComment" ng-readonly="isReadonly" cols="50"
 					ng-model="Comment"></textarea>
 			</div>
 		</div>
@@ -55,5 +63,6 @@
 				<button class="btn btn-danger" ng-click="close()">Cancel</button>
 			</div>
 		</div>
+		
 	</form>
 </div>

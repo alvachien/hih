@@ -7,185 +7,223 @@
 			.factory(
 					'utils',
 					function($rootScope, $http) {
-						return {
-							// Util for finding an object by its 'id' property
-							// among an array
-							findById : function findById(a, id) {
-								for (var i = 0; i < a.length; i++) {
-									if (a[i].id == id)
-										return a[i];
-								}
-								return null;
-							},
-
-							// Util for returning a random key from a collection
-							// that also isn't the current key
-							newRandomKey : function newRandomKey(coll, key,
-									currentKey) {
-								var randKey;
-								do {
-									randKey = coll[Math.floor(coll.length
-											* Math.random())][key];
-								} while (randKey == currentKey);
-								return randKey;
-							},
-							
-							// User part
-							loadUserList: function loadUserList() {
-								if (!$rootScope.isUserListLoad) {
-									$http
-											.post(
-													'script/hihsrv.php',
-													{
-														objecttype : 'GETUSERLIST'
-													})
-											.success(
-													function(data, status,
-															headers, config) {
-														$rootScope.arUserList = data;
-														$rootScope.isUserListLoad = true;
-
-														$rootScope
-																.$broadcast("UserListLoaded");
-													}).error(
-													function(data, status,
-															headers, config) {
-														// called asynchronously if an error occurs or server returns response with an error status.
-														$rootScope.$broadcast(
-																"ShowMessage",
-																"Error",
-																data.Message);
-													});
-								}
-								
-							},
-
-							// Learn part
-							loadLearnObjects : function loadLearnObjects() {
-								if (!$rootScope.isLearnObjectLoad) {
-									$http
-											.post(
-													'script/hihsrv.php',
-													{
-														objecttype : 'GETLEARNOBJECTLIST'
-													})
-											.success(
-													function(data, status,
-															headers, config) {
-														$rootScope.arLearnObject = data;
-														$rootScope.isLearnObjectLoad = true;
-
-														$rootScope
-																.$broadcast("LearnObjectLoaded");
-													}).error(
-													function(data, status,
-															headers, config) {
-														// called asynchronously if an error occurs or server returns response with an error status.
-														$rootScope.$broadcast(
-																"ShowMessage",
-																"Error",
-																data.Message);
-													});
-								}
-							},
-							loadLearnHistories : function loadLearnHistories() {
-								if (!$rootScope.isLearnHistoryLoaded) {
-									$http
-											.post(
-													'script/hihsrv.php',
-													{
-														objecttype : 'GETLEARNHISTORYLIST'
-													})
-											.success(
-													function(data, status,
-															headers, config) {
-														$rootScope.arLearnHistory = data;
-														$rootScope.isLearnHistoryLoaded = true;
-
-														$rootScope
-																.$broadcast("LearnHistoryLoaded");
-													}).error(
-													function(data, status,
-															headers, config) {
-														// called asynchronously if an error occurs or server returns response with an error status.
-														$rootScope.$broadcast(
-																"ShowMessage",
-																"Error",
-																data.Message);
-													});
-								}
-							},
-							loadLearnAwards : function loadLearnAwards() {
-								if (!$rootScope.isLearnAwardLoaded) {
-									$http
-											.post(
-													'script/hihsrv.php',
-													{
-														objecttype : 'GETLEARNAWARDLIST'
-													})
-											.success(
-													function(data, status,
-															headers, config) {
-														$rootScope.arLearnAward = data;
-														$rootScope.isLearnAwardLoaded = true;
-
-														$rootScope
-																.$broadcast("LearnAwardLoaded");
-													}).error(
-													function(data, status,
-															headers, config) {
-														// called asynchronously if an error occurs or server returns response with an error status.
-														$rootScope.$broadcast(
-																"ShowMessage",
-																"Error",
-																data.Message);
-													});
-								}
-							},
-							loadLearnCategories : function loadLearnCategories() {
-								if (!$rootScope.isLearnCategoryLoaded) {
-									$http
-											.post(
-													'script/hihsrv.php',
-													{
-														objecttype : 'GETLEARNCATEGORYLIST'
-													})
-											.success(
-													function(data, status,
-															headers, config) {
-														$rootScope.arLearnCategory = data;
-														$rootScope.isLearnCategoryLoaded = true;
-
-														$rootScope
-																.$broadcast("LearnCategoryLoaded");
-													}).error(
-													function(data, status,
-															headers, config) {
-														// called asynchronously if an error occurs or server returns response with an error status.
-														$rootScope.$broadcast(
-																"ShowMessage",
-																"Error",
-																data.Message);
-													});
-								}
-							},
-
-							// Util for communicate with backend
-							sendRequest : function sendRequest(reqData,
-									funcSucc, funcErr) {
-								$http.post('script/hihsrv.php', reqData)
+						
+						var rtnObj = {};
+						
+						rtnObj.findById = function (a, id) {
+							for (var i = 0; i < a.length; i++) {
+								if (a[i].id == id)
+									return a[i];
+							}
+							return null;
+						};
+						rtnObj.newRandomKey = function (coll, key, currentKey) {
+							var randKey;
+							do {
+								randKey = coll[Math.floor(coll.length
+										* Math.random())][key];
+							} while (randKey == currentKey);
+							return randKey;
+						};
+						rtnObj.dateformatter = function (date) {
+							var y = date.getFullYear();
+							var m = date.getMonth() + 1;
+							var d = date.getDate();
+							return y + '-' + (m < 10 ? ('0' + m) : m) + '-' + (d < 10 ? ('0' + d) : d);
+						};
+						rtnObj.datefromdbtoui = function (s) {
+//							var dt1 = new Date();
+//							if (!s) {}
+//							else 
+//							{
+//								var ss = (s.split('-'));
+//								var y = parseInt(ss[0], 10);
+//								var m = parseInt(ss[1], 10);
+//								var d = parseInt(ss[2], 10);
+//								if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+//									dt1 = new Date(y, m - 1, d);
+//								} else {
+//									dt1 =  new Date();
+//								}									
+//							}
+//							
+//							return this.dateformatter(dt1);
+						};
+						
+						rtnObj.dateparser = function(s) {
+							if (!s)
+								return new Date();
+							var ss = (s.split('-'));
+							var y = parseInt(ss[0], 10);
+							var m = parseInt(ss[1], 10);
+							var d = parseInt(ss[2], 10);
+							if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+								return new Date(y, m - 1, d);
+							} else {
+								return new Date();
+							}
+						};
+						
+						// User part
+						rtnObj.loadUserList = function () {
+							if (!$rootScope.isUserListLoad) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETUSERLIST'
+												})
 										.success(
-												function(data, status, headers,
-														config) {
-													funcSucc(data, status,
-															headers, config);
-												}).error(
-												function(data, status, headers,
-														config) {
-													funcErr(data, status,
-															headers, config);
+												function(data, status,
+														headers, config) {
+													$rootScope.arUserList = data;
+													$rootScope.isUserListLoad = true;
+
+													$rootScope
+															.$broadcast("UserListLoaded");
+												})
+										.error(
+												function(data, status,
+														headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}
+							
+						};
+						// Learn part
+						rtnObj.loadLearnObjects = function () {
+							if (!$rootScope.isLearnObjectLoad) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETLEARNOBJECTLIST'
+												})
+										.success(
+												function(data, status,
+														headers, config) {
+													$rootScope.arLearnObject = data;
+													$rootScope.isLearnObjectLoad = true;
+
+													$rootScope
+															.$broadcast("LearnObjectLoaded");
+												})												
+											.error(
+												function(data, status,
+														headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
 												});
 							}
 						};
+						rtnObj.loadLearnHistories = function () {
+							if (!$rootScope.isLearnHistoryLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETLEARNHISTORYLIST'
+												})
+										.success(
+												function(data, status,
+														headers, config) {
+													$rootScope.arLearnHistory = data;
+													$rootScope.isLearnHistoryLoaded = true;
+
+													$rootScope
+															.$broadcast("LearnHistoryLoaded");
+												}).error(
+												function(data, status,
+														headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}
+						};
+						rtnObj.loadLearnAwards = function () {
+							if (!$rootScope.isLearnAwardLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETLEARNAWARDLIST'
+												})
+										.success(
+												function(data, status,
+														headers, config) {
+													$rootScope.arLearnAward = data;
+													$rootScope.isLearnAwardLoaded = true;
+
+													$rootScope
+															.$broadcast("LearnAwardLoaded");
+												})
+										.error(
+												function(data, status,
+														headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}
+						};
+						rtnObj.loadLearnCategories = function () {
+							if (!$rootScope.isLearnCategoryLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETLEARNCATEGORYLIST'
+												})
+										.success(
+												function(data, status,
+														headers, config) {
+													$rootScope.arLearnCategory = data;
+													$rootScope.isLearnCategoryLoaded = true;
+
+													$rootScope
+															.$broadcast("LearnCategoryLoaded");
+												})
+										 .error(
+												function(data, status,
+														headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}
+						};
+
+						// Util for communicate with backend
+						rtnObj.sendRequest = function (reqData, funcSucc, funcErr) {
+							$http.post('script/hihsrv.php', reqData)
+									.success(
+											function(data, status, headers,
+													config) {
+												funcSucc(data, status,
+														headers, config);
+											})
+									.error(
+											function(data, status, headers,
+													config) {
+												funcErr(data, status,
+														headers, config);
+											});
+						};
+
+						return rtnObj;
 					});
 })();

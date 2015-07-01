@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce"])
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', "ui.select", 'ngSanitize'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -50,12 +50,12 @@
 	        	controller: 'LearnHistoryController'
 	        })
 	        .state("home.learn.history.display", {
-	        	url: '/display/:objid',
+	        	url: '/display/:histid',
 	        	templateUrl: 'app/views/learnhistory.html',
 	        	controller: 'LearnHistoryController'
 	        })
 	        .state("home.learn.history.maintain", {
-	        	url: '/maintain/:objid',
+	        	url: '/maintain/:histid',
 	        	templateUrl: 'app/views/learnhistory.html',
 	        	controller: 'LearnHistoryController'
 	        })
@@ -172,6 +172,9 @@
 				 }
  				 
 				 $.each($rootScope.arLearnObject, function(idx, obj) {
+					 if ($scope.ObjectID === 0 || $scope.ObjectID === -1) 
+						 return false;
+					 
 					 if (obj.id === $scope.ObjectID) {
 						 $scope.ObjectContent = obj.content;
 						 $scope.ObjectName = obj.name;
@@ -258,7 +261,7 @@
 			    if (index !== -1) {
 			    	// $scope.rowCollection.splice(index, 1);
 			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.history.display",  { objid : row.id });
+			    	$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			    }
 			}
 			
@@ -268,7 +271,7 @@
 			    if (index !== -1) {
 			    	// $scope.rowCollection.splice(index, 1);
 			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.history.maintain",  { objid : row.id });
+			    	$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			    }
 			}
 			
@@ -282,25 +285,35 @@
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 			 $scope.Activity = "";
 			 $scope.ErrorDetail = "";
-			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.ObjectContent = "";
-			 $scope.ObjectName = "";
-			 $scope.ObjectCategoryID = -1;
-			 $scope.ObjectID = 0;
-			 $scope.LearnDate = new Date();
-			 $scope.isReadonly = false;
-			 $scope.isDateOpened = false;
 			 
-			 $scope.openDate = function($event) {
-				    $event.preventDefault();
-				    $event.stopPropagation();
+			 $scope.CategoryIDs = $rootScope.arLearnCategory;
+			 $scope.UserIDs = $rootScope.arUserList;
+			 
+			 $scope.UserID = "";
+			 $scope.ObjectID = -1;
+			 $scope.ObjectName = "";
+			 $scope.ObjectContent = "";
+			 $scope.Comment = "";
+			 $scope.CategoryID = -1;
+			 $scope.CategoryName = "";
+			 $scope.LearnDate = new Date();
 
-				    $scope.isDateOpened = true;
+			 $scope.isReadonly = false;
+			 $scope.isDateOpened = false;	
+			 $scope.DateFormat = "yyyy-MM-dd";
+			 $scope.dateOptions = {
+				formatYear: 'yyyy',
+				startingDay: 1
+			};
+			 $scope.openDate = function($event) {
+				$event.preventDefault();
+				$event.stopPropagation();
+				
+				if (!$scope.isReadonly)
+					$scope.isDateOpened = true;
 			};
 			 
-			 if (angular.isDefined($stateParams.objid)) {
-				 $scope.ObjectID = $stateParams.objid;
-				 
+			 if (angular.isDefined($stateParams.histid)) {
 				 if ($state.current.name === "home.learn.history.maintain") {
 					 $scope.Activity = "Edit";					 
 				 } else if ($state.current.name === "home.learn.history.display") {
@@ -308,15 +321,25 @@
 					 $scope.isReadonly = true;
 				 }
  				 
-				 $.each($rootScope.arLearnObject, function(idx, obj) {
-					 if (obj.id === $scope.ObjectID) {
-						 $scope.ObjectContent = obj.content;
-						 $scope.ObjectName = obj.name;
-						 $scope.ObjectCategoryID = obj.categoryid;
-						 //$scope.ObjectID = obj.id;
-						 return false;
-					 }
-				 });
+				 var arrID = $stateParams.histid.split('_');
+				 if (arrID.length >= 2) {
+					 $.each($rootScope.arLearnHistory, function(idx, obj) {
+						 if (obj.userid === arrID[1] && parseInt(obj.objectid) === parseInt(arrID[0])) {
+							 $scope.UserID = obj.userid;
+							 $scope.DisplayAs = obj.displayas;
+							 $scope.ObjectID = obj.objectid;
+							 $scope.ObjectName = obj.objectname;						 
+							 $scope.CategoryID = obj.categoryid;
+							 $scope.CategoryName = obj.categoryname;
+							 $scope.LearnDate = utils.dateparser(obj.learndate);
+							 //$scope.LearnDate = utils.datefromdbtoui(obj.learndate);
+							 $scope.ObjectContent = obj.objectcontent;
+							 $scope.Comment = obj.comment;
+							 
+							 return false;
+						 }
+					 }); 
+				 }
 			 } else {
 				 $scope.Activity = "Create";
 			 };
@@ -325,12 +348,6 @@
 				 // Let's do the checks first!!!!
 				 $scope.ErrorDetail = "Please input the name!";
 				 //$("#areaAlert").alert();
-							
-				 if ($scope.LearnObject ) {
-									
-				 } else {
-									
-				 }
 			 }
 			 
 			 $scope.close = function() {
@@ -338,7 +355,7 @@
 				 
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
-				 $state.go("home.learn.object.list");
+				 $state.go("home.learn.history.list");
 			 }
 		}])
 
@@ -409,7 +426,7 @@
 			 $scope.ObjectName = "";
 			 $scope.ObjectCategoryID = -1;
 			 $scope.ObjectID = 0;
-			 $scope.isReadonly = false;
+			 $scope.isReadonly = false;			 
 			 
 			 if (angular.isDefined($stateParams.objid)) {
 				 $scope.ObjectID = $stateParams.objid;
@@ -434,20 +451,6 @@
 				 $scope.Activity = "Create";
 			 };
 			 
-			 $scope.tinymceOptions = {
-			    onChange: function(e) {
-			      // put logic here for keypress and cut/paste changes
-			    	
-			    },
-			    inline: false,
-			    menubar: false,
-			    statusbar: false,
-			    toolbar: "bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat",
-			    plugins : 'advlist autolink link image lists charmap print preview',
-			    skin: 'lightgray',
-			    theme : 'modern'
-			  };
-			 
 			 $scope.submit = function() {
 				 // Let's do the checks first!!!!
 				 $scope.ErrorDetail = "Please input the name!";
@@ -465,7 +468,7 @@
 				 
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
-				 $state.go("home.learn.object.list");
+				 $state.go("home.learn.award.list");
 			 }
 		}])
 		;

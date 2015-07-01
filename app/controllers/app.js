@@ -1,7 +1,7 @@
 (function() {
 	"use strict";	
 	
-	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap'])
+	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize'])
 		.run(['$rootScope', '$state', '$stateParams', '$modal', '$log', function ($rootScope,   $state,   $stateParams, $modal, $log) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;
@@ -46,7 +46,7 @@
 					
 					var modalInstance = $modal.open({
 					      animation: true,
-					      templateUrl: 'hihMessageDialog.html',
+					      templateUrl: 'app/views/messagedialog.html',
 					      controller: 'MessageBoxController'
 				      });
 					

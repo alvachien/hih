@@ -27,11 +27,13 @@
 	<!-- Angular UI - Grid -->
 	<!-- 		<Script src="app\3rdparty\ui-grid.min.js"></Script> -->
 	<!-- Tiny MCE -->
-	<script src="app\3rdparty\tinymce.min.js"></script>
+	<script src="app\3rdparty\tinymce\tinymce.min.js"></script>
 	<!-- Angular UI - UI Tiny MCE -->
 	<script src="app\3rdparty\ui.tinymce.js"></script>
 	<!-- Angular UI - UI bootstrap -->
 	<script src="app\3rdparty\ui-bootstrap-tpls-0.13.0.min.js"></script>
+	<!-- Angular UI - UI Select -->
+	<script src="app\3rdparty\select.min.js"></script>
 	<!-- Application part -->
 	<script src="app\controllers\app.js"></script>
 	<script src="app\controllers\login.js"></script>
@@ -41,7 +43,10 @@
 	
 	<!-- CSS part -->
 	<!-- 3rd party part -->
-	<link href="app\3rdparty\bootstrap.min.css" rel="stylesheet">
+	<!-- Bootstrap -->
+	<link href="app\3rdparty\bootstrap\css\bootstrap.min.css" rel="stylesheet">
+	<link href="app\3rdparty\bootstrap\css\bootstrap-theme.min.css" rel="stylesheet">
+	<link href="app\3rdparty\select.min.css" rel="stylesheet">
 	<!-- 		<link href="app\3rdparty\ui-grid.min.css" rel="stylesheet"> -->
 	<!-- Application part -->
 	<link href="app\css\app.css" rel="stylesheet">
@@ -55,32 +60,17 @@
 	<!-- Main content area ends -->
 
 	<!-- Footer area begins -->
-	<footer class="footer">
+	<footer class="footer navbar-inverse">
 		<div class="container">
 			<p class="text-muted">
 				<div><span data-i18n="Common.Copyright">Copyright</span> © 2014 - 2015 Alva Chien</div>
-				<div>An open source project on GitHub: <a href="https://github.com/alvachien/hih">HIH</a></div>
+				<div>An open source project on GitHub: <a target="_blank" href="https://github.com/alvachien/hih">HIH</a></div>
 			</p>
 		</div>
 	</footer>
 	<!-- Footer area ends -->
 
 	<!-- Dialog for showing info/error/warning begins -->
-	<script type="text/ng-template" id="hihMessageDialog.html">
-        <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-	 		</button>
-            <h3 class="modal-title">{{MessageHeader}}</h3>
-        </div>
-        <div class="modal-body">
-            <p>{{MessageDetail}}</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-    </script>
 <!-- 	<div class="container" ng-controller="MessageBoxController"> -->
 <!-- 		<div class="modal fade" id="dlgMessage"> -->
 <!-- 			<div class="modal-dialog"> -->
