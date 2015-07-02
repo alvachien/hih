@@ -109,9 +109,10 @@
 		}
 	}])
 
-	.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
-			 $scope.Activity = "";
-			 $scope.ErrorDetail = "";
+	.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
+	                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		$scope.Activity = "";
+		$scope.ErrorDetail = "";
 	}])
 	
 	;
