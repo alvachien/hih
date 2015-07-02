@@ -1,7 +1,7 @@
 (function() {
 	"use strict";	
 	
-	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize'])
+	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 'hihApp.Finance'])
 		.run(['$rootScope', '$state', '$stateParams', '$modal', '$log', function ($rootScope,   $state,   $stateParams, $modal, $log) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;
@@ -88,48 +88,36 @@
       // Use $stateProvider to configure your states.
       $stateProvider
 	      
-        //////////
-        // Home //
-        //////////
         .state("home", {
-          url: "/home",
-          abstract: true,
-          templateUrl: 'app/views/home.html',
-          controller: 'HomeController',
-          data: {
-        	rule: function($rootScope) {
-        		if (!angular.isDefined($rootScope.isLogin)) return false;
+        	url: "/home",
+        	abstract: true,
+        	templateUrl: 'app/views/home.html',
+        	controller: 'HomeController',
+        	data: {
+        		rule: function($rootScope) {
+        			if (!angular.isDefined($rootScope.isLogin)) return false;
         		
-        		return $rootScope.isLogin;
-        	}  
-          },
+        			return $rootScope.isLogin;
+        		}  
+        	},
           
-          onEnter: function($rootScope) {
-        	  console.log('HIH Home: Entering page!');
-          }
+        	onEnter: function($rootScope) {
+        		console.log('HIH Home: Entering page!');
+        	}
         })
         
-        ////////////////////
-        // Home > Welcome //
-        ////////////////////
         .state('home.welcome', {
         	url: '',
         	templateUrl: 'app/views/welcome.html'
         })
-        ////////////////////
-        // Home > User Detail //
-        ////////////////////
         .state('home.userdetail', {
         	url: '/userdetail',
         	templateUrl: 'app/views/userdetail.html'
         })
-
-        /////////////////
-        // Home > About //
-        /////////////////
         .state('home.about', {
           url: '/about',
-          templateUrl: 'app/views/about.html'
+          templateUrl: 'app/views/about.html',
+          controller: 'AboutController'
         });
 	}])
 	
@@ -138,7 +126,7 @@
 		$scope.displayedCollection = [
 			{userobj: 'ID', 			usercont: $scope.CurrentUser.userid},
 			{userobj: 'Display As', 	usercont: $scope.CurrentUser.userdisplayas},
-			{userobj: 'Gender',		usercont: $scope.CurrentUser.usergender},
+			{userobj: 'Gender',		usercont: utils.genderFormatter($scope.CurrentUser.usergender)},
 			{userobj: 'Created On', usercont: $scope.CurrentUser.usercreatedon}
 			];
 		
@@ -197,6 +185,24 @@
 ////				dlg.modal('show');
 //		});
 	}])	
+	
+	.controller('AboutController', ['$scope', '$rootScope', function($scope, $rootScope) {
+		$scope.myInterval = 5000;
+		
+		var slides = $scope.slides = [];
+		$scope.addSlide = function(url, infotxt) {
+		    slides.push({
+		    	image: url,
+		    	text: infotxt
+		    });
+		 };
+		 
+		 $scope.addSlide('app/img/Duoduo2013.jpg', 'Duoduo @ 2013');
+		 $scope.addSlide('app/img/JiaotongUniversity.jpg', 'Jiaotong University');
+		 $scope.addSlide('app/img/LD.jpg', 'LD @ 2013');
+		 $scope.addSlide('app/img/SpeedOfShanghai.jpg', 'Speed of Shanghai');
+		 $scope.addSlide('app/img/TheAutumn.jpg', 'The Autumn');
+	}])
 	;
 
 })();

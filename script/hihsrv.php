@@ -169,12 +169,45 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================
-		
+		case "GETFINANCEACCOUNTLIST": 
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$arRst = finance_account_listread ();
+					
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}
+			}
+			break;
+			
+		case "GETFINANCEACCOUNTCATEGORYLIST":
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$arRst = finance_account_category_listread ();
+					
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}				
+			}
+			break;
+			
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================
 		default :
-			$sErrors = "Input object cannot be handle: " . $realParamArr ['objecttype'] . " Users: " . $realParamArr ['loginuser'];
+			$sErrors = "Input object cannot be handle: " . $realParamArr ['objecttype'] . "; Users: " . $realParamArr ['loginuser'];
 			break;
 	}
 	

@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', "ui.select", 'ngSanitize'])
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -299,6 +299,8 @@
 			 $scope.CategoryID = -1;
 			 $scope.CategoryName = "";
 			 $scope.LearnDate = new Date();
+			 $scope.SelectedLearnObject = {};
+			 $scope.selectsearchenable = false;
 
 			 $scope.isReadonly = false;
 			 $scope.isDateOpened = false;	
@@ -329,6 +331,14 @@
 						 if (obj.userid === arrID[1] && parseInt(obj.objectid) === parseInt(arrID[0])) {
 							 $scope.UserID = obj.userid;
 							 $scope.DisplayAs = obj.displayas;
+							 
+							 $.each($scope.LearnObjects, function(idx2, obj2) {
+								 if (obj.objectid === obj2.id) {
+									 $scope.SelectedLearnObject.selected = obj2;
+									 return false;
+								 }
+							 });
+							 
 							 $scope.ObjectID = obj.objectid;
 							 $scope.ObjectName = obj.objectname;						 
 							 $scope.CategoryID = obj.categoryid;
@@ -423,29 +433,56 @@
 		.controller('LearnAwardController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 			 $scope.Activity = "";
 			 $scope.ErrorDetail = "";
-			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.ObjectContent = "";
-			 $scope.ObjectName = "";
-			 $scope.ObjectCategoryID = -1;
-			 $scope.ObjectID = 0;
-			 $scope.isReadonly = false;			 
 			 
+			 $scope.AwardID = -1;
+			 $scope.isReadonly = false;
+			 $scope.UserIDs = $rootScope.arUserList;			 
+			 $scope.AwardDate = new Date();
+			 $scope.SelectedUser = {};
+			 $scope.Score = 0;
+			 $scope.Reason = "";
+			 
+			 $scope.isDateOpened = false;	
+			 $scope.DateFormat = "yyyy-MM-dd";
+			 $scope.dateOptions = {
+				formatYear: 'yyyy',
+				startingDay: 1
+			};
+			 $scope.openDate = function($event) {
+					$event.preventDefault();
+					$event.stopPropagation();
+					
+					if (!$scope.isReadonly)
+						$scope.isDateOpened = true;
+				};
+ 
 			 if (angular.isDefined($stateParams.objid)) {
-				 $scope.ObjectID = $stateParams.objid;
+				 $scope.AwardID = $stateParams.objid;
 				 
-				 if ($state.current.name === "home.learn.history.maintain") {
+				 if ($state.current.name === "home.learn.award.maintain") {
 					 $scope.Activity = "Edit";					 
-				 } else if ($state.current.name === "home.learn.history.display") {
+					 
+				 } else if ($state.current.name === "home.learn.award.display") {
 					 $scope.Activity = "Display";
 					 $scope.isReadonly = true;
 				 }
  				 
-				 $.each($rootScope.arLearnObject, function(idx, obj) {
-					 if (obj.id === $scope.ObjectID) {
-						 $scope.ObjectContent = obj.content;
-						 $scope.ObjectName = obj.name;
-						 $scope.ObjectCategoryID = obj.categoryid;
-						 //$scope.ObjectID = obj.id;
+				 $.each($rootScope.arLearnAward, function(idx, obj) {
+					 // Learn Award example: {"id":"23","userid":"du","displayas":"Du","adate":"2015-02-22","score":"56","reason":"test"}
+					 if (obj.id === $scope.AwardID) {
+						 if (angular.isArray($scope.UserIDs)) {
+							 $.each($scope.UserIDs, function (idx2, obj2) {
+								 // User ID example: {"id":"ac","text":"AC"}
+								 if (obj2.id === obj.userid) {
+									 $scope.SelectedUser.selected = obj2;
+									 return false;
+								 }
+							 });								 
+						 }
+						 
+						 $scope.AwardDate = obj.adate;
+						 $scope.Score = obj.score;
+						 $scope.Reason = obj.reason;
 						 return false;
 					 }
 				 });
@@ -456,13 +493,6 @@
 			 $scope.submit = function() {
 				 // Let's do the checks first!!!!
 				 $scope.ErrorDetail = "Please input the name!";
-				 //$("#areaAlert").alert();
-							
-				 if ($scope.LearnObject ) {
-									
-				 } else {
-									
-				 }
 			 }
 			 
 			 $scope.close = function() {
@@ -474,43 +504,4 @@
 			 }
 		}])
 		;
-// if (app) {
-//			
-
-// // Learn award
-// app.controller('LearnAwardListController', ['$scope', '$rootScope',
-// '$location', '$http', 'hihSharedInfo', function($scope, $rootScope,
-// $location, $http, hihSharedInfo) {
-// hihSharedInfo.loadLearnAwards($http, $rootScope);
-// $scope.rowCollection = [];
-// $scope.displayedCollection = [];
-//		    
-// $scope.rowCollection = hihSharedInfo.getLearnAwards($http, $rootScope);
-// $scope.displayedCollection = [].concat($scope.rowCollection);
-//		    
-// $scope.$on("LearnAwardLoaded", function() {
-// console.log("HIH LearnAward List: Loaded event fired!");
-//		    	
-// $scope.rowCollection = hihSharedInfo.getLearnAwards();
-// if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-// //copy the references (you could clone ie angular.copy but then have to go
-// through a dirty checking for the matches)
-// $scope.displayedCollection = [].concat($scope.rowCollection);
-// }
-// });
-//		    
-// // Remove to the real data holder
-// $scope.removeItem = function removeItem(row) {
-// var index = $scope.rowCollection.indexOf(row);
-// if (index !== -1) {
-// $scope.rowCollection.splice(index, 1);
-// }
-// }
-//			
-// // Create
-// $scope.newItem = function() {
-// $location.path('/learnobject');
-// }
-// }]);
-// }
 })();

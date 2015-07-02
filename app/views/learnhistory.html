@@ -24,13 +24,13 @@
 <!-- 				<input type="text" class="form-control" id="iptObject" ng-readonly="isReadonly"
 					placeholder="Name" ng-model="ObjectName" required>
  -->		
-				<ui-select ng-model="ObjectID" theme="select2" ng-disabled="isReadonly" style="min-width: 300px;">
-			    	<ui-select-match placeholder="Select a learn object or search via the name...">{{$select.selected.id}}</ui-select-match>
-			    	<ui-select-choices repeat="lrnobj in LearnObjects | propsFilter: {name: $select.search, content: $select.search}">
-			      		<div ng-bind-html="lrnobj | highlight: $select.search"></div>
+				<ui-select ng-model="SelectedLearnObject.selected" theme="select2"  search-enabled="selectsearchenable" ng-disabled="isReadonly" style="min-width: 300px;">
+			    	<ui-select-match placeholder="Select a learn object or search via the name...">{{$select.selected.name}}</ui-select-match>
+			    	<ui-select-choices repeat="lrnobj in LearnObjects">
+			      		<div ng-bind-html="lrnobj.name | highlight: $select.search"></div>
 			      		<small>
-			        		Name: {{lrnobj.name}}
-			        		Content: <span ng-bind-html="''+lrnobj.content | highlight: $select.search"></span>
+			      			ID: {{lrnobj.id}}
+			        		Name <span ng-bind-html="''+lrnobj.name | highlight: $select.search"></span>
 			      		</small>
 			    	</ui-select-choices>
 				</ui-select>		 	

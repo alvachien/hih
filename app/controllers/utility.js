@@ -25,6 +25,12 @@
 							} while (randKey == currentKey);
 							return randKey;
 						};
+						
+						rtnObj.genderFormatter = function(gender) {
+							var nGen = parseInt(gender);
+							if (nGen === 1) return "Male";
+							return "Female";
+						};
 						rtnObj.dateformatter = function (date) {
 							var y = date.getFullYear();
 							var m = date.getMonth() + 1;
@@ -94,7 +100,10 @@
 							}
 							
 						};
-						// Learn part
+						
+////////////////////////////////////////////////////////////////////						
+// Learn part
+////////////////////////////////////////////////////////////////////						
 						rtnObj.loadLearnObjects = function () {
 							if (!$rootScope.isLearnObjectLoad) {
 								$http
@@ -187,17 +196,14 @@
 													objecttype : 'GETLEARNCATEGORYLIST'
 												})
 										.success(
-												function(data, status,
-														headers, config) {
+												function(data, status, headers, config) {
 													$rootScope.arLearnCategory = data;
 													$rootScope.isLearnCategoryLoaded = true;
 
-													$rootScope
-															.$broadcast("LearnCategoryLoaded");
+													$rootScope.$broadcast("LearnCategoryLoaded");
 												})
 										 .error(
-												function(data, status,
-														headers, config) {
+												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
 															"ShowMessage",
@@ -207,6 +213,64 @@
 							}
 						};
 
+////////////////////////////////////////////////////////////////////
+// Finance part
+////////////////////////////////////////////////////////////////////
+						rtnObj.loadFinanceAccounts = function() {
+							if (!$rootScope.isFinanceAccountLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCEACCOUNTLIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceAccount = data;
+													$rootScope.isFinanceAccountLoaded = true;
+
+													$rootScope.$broadcast("FinanceAccountLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+						};
+						rtnObj.loadFinanceAccountCategories = function() {
+							if (!$rootScope.isFinanceAccountCategoryLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCEACCOUNTCATEGORYLIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceAccountCategory = data;
+													$rootScope.isFinanceAccountCategoryLoaded = true;
+
+													$rootScope.$broadcast("FinanceAccountCategoryLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+						};
+						
+////////////////////////////////////////////////////////////////////
+// Others
+////////////////////////////////////////////////////////////////////
+						
 						// Util for communicate with backend
 						rtnObj.sendRequest = function (reqData, funcSucc, funcErr) {
 							$http.post('script/hihsrv.php', reqData)

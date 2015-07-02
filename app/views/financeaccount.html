@@ -1,0 +1,51 @@
+<div id="viewFinanceAccount">
+	<div class="page-header">
+		<h2>
+			Finance Account<small> {{Activity}}</small>
+		</h2>
+	</div>
+
+	<form class="form-horizontal" role="form" name="frmObj">
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptID">ID:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptID"
+					readonly="readonly" placeholder="ID" ng-model="ObjectID">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptCtgy">Category:</label>
+			<div class="col-sm-10">
+				<select id="iptCtgy" ng-model="ObjectCategoryID" ng-disabled="isReadonly"
+					ng-options="ctgy.id as ctgy.text for ctgy in CategoryIDs">
+					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
+      					Example 2: usertype.value as usertype.text for usertype in userTypes 
+      				-->
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptName">Name</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
+					placeholder="Name" ng-model="ObjectName" required>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptContent">Content</label>
+			<div class="col-sm-10">
+				<textarea ui-tinymce="tinymceOptions" rows="20" ng-readonly="isReadonly"
+					ng-model="ObjectContent"></textarea>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+					ng-disabled="frmObj.$invalid || !frmObj.$dirty">Submit</button>
+				<button class="btn btn-danger" ng-click="close()">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>
