@@ -86,83 +86,35 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		case "GETLEARNOBJECTLIST" :
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$arRst = learn_object_listread ();
-					$sErrors = $arRst[0];
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
-				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
-				}
+				HIHSrv_Function( 'learn_object_listread' );
 			}
 			break;
 		
 		case "GETLEARNHISTORYLIST" :
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$username = $realParamArr ["userid"];
-					
-					// Get list
-					if (IsNullOrEmptyString ( $username )) {
-						$arRst = learn_hist_listread ();
-					} else {
-						$arRst = learn_hist_listread_byuser ( $username );
-					}
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
+				$username = $realParamArr ["userid"];
+				if (IsNullOrEmptyString ( $username )) {
+					HIHSrv_Function( 'learn_hist_listread' );
 				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
+					HIHSrv_Function( 'learn_hist_listread_byuser' );
 				}
 			}
 			break;
 		
 		case "GETLEARNAWARDLIST" :
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$username = $realParamArr ["userid"];
-					
-					if (IsNullOrEmptyString ( $username )) {
-						$arRst = learn_award_listread ();
-					} else {
-						$arRst = learn_award_listread_byuser ( $username );
-					}
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
+				$username = $realParamArr ["userid"];
+				if (IsNullOrEmptyString ( $username )) {
+					HIHSrv_Function( 'learn_award_listread' );
 				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
+					HIHSrv_Function( 'learn_award_listread_byuser' );
 				}
 			}
 			break;
 		
 		case "GETLEARNCATEGORYLIST" :
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$arRst = learn_category_read ();
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
-				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
-				}
+				HIHSrv_Function( 'learn_category_read' );
 			}
 			break;
 		
@@ -171,35 +123,31 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		case "GETFINANCEACCOUNTLIST": 
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$arRst = finance_account_listread ();
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
-				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
-				}
+				HIHSrv_Function( 'finance_account_listread' );
+			}
+			break;
+			
+		case "GETCURRENCYLIST": 
+			{
+				HIHSrv_Function( 'finance_currency_listread' );
 			}
 			break;
 			
 		case "GETFINANCEACCOUNTCATEGORYLIST":
+			{ 
+				HIHSrv_Function( 'finance_account_category_listread' );			
+			}
+			break;
+			
+		case "GETFINANCEDOCUMENTLIST":
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$arRst = finance_account_category_listread ();
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
-				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
-				}				
+				HIHSrv_Function( 'finance_document_listread' );
+			}
+			break;
+			
+		case "GETFINANCEDOCUMENTTYPELIST":
+			{
+				HIHSrv_Function( 'finance_doctype_listread' );
 			}
 			break;
 			

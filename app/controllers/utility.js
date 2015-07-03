@@ -26,6 +26,11 @@
 							return randKey;
 						};
 						
+						rtnObj.assetFormatter = function(assetflg) {
+							var nAsset = parseInt(assetflg);
+							if (nAsset === 1) return "Asset";
+							return "Liability";
+						};
 						rtnObj.genderFormatter = function(gender) {
 							var nGen = parseInt(gender);
 							if (nGen === 1) return "Male";
@@ -216,6 +221,31 @@
 ////////////////////////////////////////////////////////////////////
 // Finance part
 ////////////////////////////////////////////////////////////////////
+						rtnObj.loadCurrencies = function() {
+							if (!$rootScope.isCurrencyLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETCURRENCYLIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arCurrency = data;
+													$rootScope.isCurrencyLoaded = true;
+
+													$rootScope.$broadcast("CurrencyLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+						};
 						rtnObj.loadFinanceAccounts = function() {
 							if (!$rootScope.isFinanceAccountLoaded) {
 								$http
@@ -266,6 +296,56 @@
 												});
 							}							
 						};
+						rtnObj.loadFinanceDocuments = function() {
+							if (!$rootScope.isFinanceDocumentLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCEDOCUMENTLIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceDocument = data;
+													$rootScope.isFinanceDocumentLoaded = true;
+
+													$rootScope.$broadcast("FinanceDocumentLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+						};
+						rtnObj.loadFinanceDocumentTypes = function() {
+							if (!$rootScope.isFinanceDocumentTypeLoaded) {
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCEDOCUMENTTYPELIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceDocumentType = data;
+													$rootScope.isFinanceDocumentTypeLoaded = true;
+
+													$rootScope.$broadcast("FinanceDocumentTypeLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+						};
 						
 ////////////////////////////////////////////////////////////////////
 // Others
@@ -291,3 +371,4 @@
 						return rtnObj;
 					});
 })();
+

@@ -1,0 +1,60 @@
+<div id="viewFinanceDocumentList">
+
+	<div class="page-header">
+		<h2>
+			Finance Document <small> List View </small>
+		</h2>
+		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+	</div>
+
+	<table st-table="displayedCollection" st-safe-src="rowCollection"
+		class="table table-striped">
+		<thead>
+			<tr>
+				<th st-sort="docid">Doc ID</th>
+				<th st-sort="doctypename'">Doc Type</th>
+				<th st-sort="trandate">Tran Date</th>
+				<th st-sort="trancurr">Currency</th>
+				<th st-sort="trancurrname">Currency</th>
+				<th st-sort="tranamount">Amount</th>
+				<th st-sort="desp">Desp</th>
+			</tr>
+			<tr>
+				<th colspan="8"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.docid}}</td>
+				<td>{{row.doctypename}}</td>
+				<td>{{row.trandate}}</td>
+				<td>{{row.trancurr}}</td>
+				<td>{{row.trancurrname}}</td>
+				<td>{{row.tranamount}}</td>
+				<td>{{row.desp}}</td>
+				<td>
+					<div class="btn-group" role="group">
+						<button type="button" ng-click="displayItem(row)"
+							class="btn-group btn-primary" role="group">
+							<i class="glyphicon glyphicon-share"> </i>
+						</button>
+						<button type="button" ng-click="editItem(row)"
+							class="btn-group btn-warning" role="group">
+							<i class="glyphicon glyphicon-edit"> </i>
+						</button>
+						<button type="button" ng-click="removeItem(row)"
+							class="btn-group btn-danger" role="group">
+							<i class="glyphicon glyphicon-trash"> </i>
+						</button>
+					</div>					
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="5" class="text-center">
+					<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+				</td>
+			</tr>
+		</tfoot>	</table>
+</div>

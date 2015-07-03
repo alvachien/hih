@@ -10,19 +10,23 @@
 			<label class="control-label col-sm-2" for="iptID">ID:</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptID"
-					readonly="readonly" placeholder="ID" ng-model="ObjectID">
+					readonly="readonly" placeholder="ID" ng-model="AccountID">
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptCtgy">Category:</label>
 			<div class="col-sm-10">
-				<select id="iptCtgy" ng-model="ObjectCategoryID" ng-disabled="isReadonly"
-					ng-options="ctgy.id as ctgy.text for ctgy in CategoryIDs">
-					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
-      					Example 2: usertype.value as usertype.text for usertype in userTypes 
-      				-->
-				</select>
+				<ui-select ng-model="AccountCategory.selected" theme="select2"  search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+			    	<ui-select-match placeholder="Select a category via the name...">{{$select.selected.name}}</ui-select-match>
+			    	<ui-select-choices repeat="acntctgy in AllAccountCategories">
+			      		<div ng-bind-html="acntctgy.name | highlight: $select.search"></div>
+			      		<small>
+			      			ID: {{acntctgy.id}} <br />			      			
+			        		Name: <span ng-bind-html="+acntctgy.name | highlight: $select.search"></span>
+			      		</small>
+			    	</ui-select-choices>
+				</ui-select>
 			</div>
 		</div>
 		
@@ -30,14 +34,15 @@
 			<label class="control-label col-sm-2" for="iptName">Name</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
-					placeholder="Name" ng-model="ObjectName" required>
+					placeholder="Name" ng-model="AccountName" required>
 			</div>
 		</div>
+		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptContent">Content</label>
+			<label class="control-label col-sm-2" for="iptContent">Comment</label>
 			<div class="col-sm-10">
-				<textarea ui-tinymce="tinymceOptions" rows="20" ng-readonly="isReadonly"
-					ng-model="ObjectContent"></textarea>
+				<textarea rows="20" ng-readonly="isReadonly"
+					ng-model="AccountComment"></textarea>
 			</div>
 		</div>
 
