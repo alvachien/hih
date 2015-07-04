@@ -221,7 +221,7 @@
 			var index = $scope.rowCollection.indexOf(row);
 		    if (index !== -1) {
 		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.document.display",  { docid : row.id });
+		    	$state.go("home.finance.document.display",  { docid : row.docid });
 		    }
 		}
 		
@@ -230,7 +230,7 @@
 			var index = $scope.rowCollection.indexOf(row);
 		    if (index !== -1) {
 		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.document.maintain",  { docid : row.id });
+		    	$state.go("home.finance.document.maintain",  { docid : row.docid });
 		    }
 		}
 		
@@ -245,58 +245,95 @@
 		$scope.Activity = "";
 		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
+		$scope.showhdr = true; // Default value
 		
+        // For select control
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
-		$scope.AllDocumentTypes = $rootScope.areDocumentType;
+		$scope.AllDocumentTypes = $rootScope.arFinanceDocumentType;
 
+        // Attributes
 		$scope.DocumentID = -1;
 		$scope.DocumentType = {};
-		$scope.DocumentTranDate = new Date();
 		$scope.DocumentCurrency = {};
+		$scope.DocumentTranDate = new Date();
 		$scope.DocumentDesp = "";
 		$scope.DocumentAmount = 0;
-		
-		 if (angular.isDefined($stateParams.docid)) {
-			 $scope.DocumentID = parseInt($stateParams.docid);
-			 
-			 if ($state.current.name === "home.finance.document.maintain") {
-				 $scope.Activity = "Edit";
-			 } else if ($state.current.name === "home.finance.document.display") {
-				 $scope.Activity = "Display";
-				 $scope.isReadonly = true;
-			 }
-			 
-			 $.each($rootScope.arFinanceDocument, function(idx, obj) {
-				 if (obj.docid === $stateParams.docid) {
-					 
-					 $scope.DocumentAmount = obj.tranamount;
-					 $scope.DocumentDesp = obj.desp;
-					 $scope.DocumentTranDate = obj.trandate;
+		$scope.ItemsCollection = [];
 
-					 $.each($scope.AllDocumentTypes, function (idx2, obj2) {
-					     if (obj2.id === obj.doctype) {
-					         $scope.DocumentType.selected = obj2;
-					         return false;
-					     }
-					 });
-					 $.each($scope.AllCurrencies, function (idx3, obj3) {
-					     if (obj3.curr === obj.trancurr) {
-					         $scope.DocumentCurrency.selected = obj3;
-					         return false;
-					     }
-					 });
-					 
-					 return false;
-				 }
-			 });
-		 } else {
-			 $scope.Activity = "Create";
-		 }
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly)
+		        $scope.isDateOpened = true;
+		};
+
+		if (angular.isDefined($stateParams.docid)) {
+		    $scope.DocumentID = parseInt($stateParams.docid);
+
+		    if ($state.current.name === "home.finance.document.maintain") {
+		        $scope.Activity = "Edit";
+		    } else if ($state.current.name === "home.finance.document.display") {
+		        $scope.Activity = "Display";
+		        $scope.isReadonly = true;
+		    }
+
+		    $.each($rootScope.arFinanceDocument, function (idx, obj) {
+		        if (obj.docid === $stateParams.docid) {
+
+		            $scope.DocumentAmount = parseFloat(obj.tranamount).toFixed(4);
+		            $scope.DocumentDesp = obj.desp;
+		            $scope.DocumentTranDate = obj.trandate;
+
+		            $.each($scope.AllDocumentTypes, function (idx2, obj2) {
+		                if (obj2.id === obj.doctype) {
+		                    $scope.DocumentType.selected = obj2;
+		                    return false;
+		                }
+		            });
+		            $.each($scope.AllCurrencies, function (idx3, obj3) {
+		                if (obj3.curr === obj.trancurr) {
+		                    $scope.DocumentCurrency.selected = obj3;
+		                    return false;
+		                }
+		            });
+
+		            return false;
+		        }
+		    });
+		} else {
+		    $scope.Activity = "Create";
+		}
 		 
-		 $scope.close = function() {
-			 $state.go("home.finance.document.list");
-		 }
+		$scope.close = function() {
+		    $state.go("home.finance.document.list");
+		}
+
+		$scope.GoHeader = function (target) {
+		    var hdr = angular.element('#divFinDocHeader');
+		    var itm = angular.element('divFinDocItem');
+
+		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
+                
+		    }
+		}
+
+		$scope.GoItems = function (target) {
+		    var hdr = angular.element('#divFinDocHeader');
+		    var itm = angular.element('divFinDocItem');
+
+		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
+
+		    }
+		}
 	}])	
 	;
 }()

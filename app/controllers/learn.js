@@ -447,7 +447,7 @@
 			 $scope.dateOptions = {
 				formatYear: 'yyyy',
 				startingDay: 1
-			};
+			 };
 			 $scope.openDate = function($event) {
 					$event.preventDefault();
 					$event.stopPropagation();
@@ -505,3 +505,4 @@
 		}])
 		;
 })();
+
