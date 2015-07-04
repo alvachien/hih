@@ -133,7 +133,7 @@
 		
 		$scope.AccountID = -1;
 		$scope.AccountCategory = {};
-		$scope.AllAccountCategories = $rootScope.arFinanceAccountCategory; 
+		$scope.AllAccountCategories = $rootScope.arFinanceAccountCategory;
 		$scope.AccountName = "";
 		$scope.AccountComment = "";
 		$scope.AccountAssetFlag = "";
@@ -246,6 +246,10 @@
 		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
 		
+		$scope.AllAccounts = $rootScope.arFinanceAccount;
+		$scope.AllCurrencies = $rootScope.arCurrency;
+		$scope.AllDocumentTypes = $rootScope.areDocumentType;
+
 		$scope.DocumentID = -1;
 		$scope.DocumentType = {};
 		$scope.DocumentTranDate = new Date();
@@ -268,6 +272,20 @@
 					 
 					 $scope.DocumentAmount = obj.tranamount;
 					 $scope.DocumentDesp = obj.desp;
+					 $scope.DocumentTranDate = obj.trandate;
+
+					 $.each($scope.AllDocumentTypes, function (idx2, obj2) {
+					     if (obj2.id === obj.doctype) {
+					         $scope.DocumentType.selected = obj2;
+					         return false;
+					     }
+					 });
+					 $.each($scope.AllCurrencies, function (idx3, obj3) {
+					     if (obj3.curr === obj.trancurr) {
+					         $scope.DocumentCurrency.selected = obj3;
+					         return false;
+					     }
+					 });
 					 
 					 return false;
 				 }
@@ -283,3 +301,4 @@
 	;
 }()
 );
+

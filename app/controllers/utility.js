@@ -222,7 +222,9 @@
 // Finance part
 ////////////////////////////////////////////////////////////////////
 						rtnObj.loadCurrencies = function() {
-							if (!$rootScope.isCurrencyLoaded) {
+						    if (!$rootScope.isCurrencyLoaded) {
+						        // Example JSON response
+						        // {"curr":"CNY","name":"aaa","symbol":null}
 								$http
 										.post(
 												'script/hihsrv.php',
@@ -248,7 +250,9 @@
 						};
 						rtnObj.loadFinanceAccounts = function() {
 							if (!$rootScope.isFinanceAccountLoaded) {
-								$http
+							    // Example JSON response
+							    // {"id":"4","ctgyid":"1","name":"aaa","comment":"aaa","ctgyname":"aaa","assetflag":"1"}
+							    $http
 										.post(
 												'script/hihsrv.php',
 												{
@@ -273,7 +277,9 @@
 						};
 						rtnObj.loadFinanceAccountCategories = function() {
 							if (!$rootScope.isFinanceAccountCategoryLoaded) {
-								$http
+							    // Example JSON response
+							    // {"id":"1","name":"aaa","assetflag":"1","comment":null}
+							    $http
 										.post(
 												'script/hihsrv.php',
 												{
@@ -297,7 +303,9 @@
 							}							
 						};
 						rtnObj.loadFinanceDocuments = function() {
-							if (!$rootScope.isFinanceDocumentLoaded) {
+						    if (!$rootScope.isFinanceDocumentLoaded) {
+						        // Example JSON reponse
+						        // {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa","desp":"aaa","tranamount":"-155"}
 								$http
 										.post(
 												'script/hihsrv.php',
@@ -322,7 +330,9 @@
 							}							
 						};
 						rtnObj.loadFinanceDocumentTypes = function() {
-							if (!$rootScope.isFinanceDocumentTypeLoaded) {
+						    if (!$rootScope.isFinanceDocumentTypeLoaded) {
+						        // Example JSON response
+						        // {"id":"1","name":"aaa","comment":"aaa"}
 								$http
 										.post(
 												'script/hihsrv.php',
