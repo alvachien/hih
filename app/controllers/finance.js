@@ -219,7 +219,7 @@
 		// Display
 		$scope.displayItem = function (row) {
 			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
+			if (index !== -1) {
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.document.display",  { docid : row.docid });
 		    }
@@ -228,7 +228,7 @@
 		// Edit
 		$scope.editItem = function (row) {
 			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
+			if (index !== -1) {
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.document.maintain",  { docid : row.docid });
 		    }
@@ -277,6 +277,8 @@
 		};
 
 		if (angular.isDefined($stateParams.docid)) {
+		    utils.loadFinanceDocumentItems($stateParams.docid);
+
 		    $scope.DocumentID = parseInt($stateParams.docid);
 
 		    if ($state.current.name === "home.finance.document.maintain") {
@@ -309,10 +311,31 @@
 		            return false;
 		        }
 		    });
+
+		    if (angular.isDefined($rootScope.arFinanceDocumentItem) && $scope.ItemsCollection.length <= 0) {
+		        $.each($rootScope.arFinanceDocumentItem, function (idx10, obj10) {
+		            if (obj10.docid === $stateParams.docid) {
+		                $scope.ItemsCollection.push(obj10);
+		                return false;
+		            }
+		        });
+		    }
 		} else {
 		    $scope.Activity = "Create";
 		}
-		 
+		
+		$scope.$on("FinanceDocumentItemLoaded", function () {
+		    console.log("HIH FinanceDocument: Items Loaded event fired!");
+		    if (angular.isDefined($rootScope.arFinanceDocumentItem) && $scope.ItemsCollection.length <= 0) {
+		        $.each($rootScope.arFinanceDocumentItem, function (idx11, obj11) {
+		            if (obj11.docid === $stateParams.docid) {
+		                $scope.ItemsCollection.push(obj11);
+		                return false;
+		            }
+		        });
+		    }
+		});
+
 		$scope.close = function() {
 		    $state.go("home.finance.document.list");
 		}

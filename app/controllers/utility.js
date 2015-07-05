@@ -356,6 +356,50 @@
 												});
 							}							
 						};
+						rtnObj.loadFinanceDocumentItems = function (docid) {
+						    // Example JSON response
+						    // {    "docid":"6","itemid":"1","accountid":"4","accountname":"aaa","categoryname":"aaa","trantype":"46","trantypename":"aaa","tranamount":"-20",
+						    //      "controlcenterid":"0","controlcentername":null,"orderid":"6","ordername":"aaa","desp":"aaa","trantypeexpense":"1",
+						    //      "accountcategory":"1","accountcategoryname":"aaa","doctype":"1","doctypename":"aaa","trandate":"2015-04-09","trancurr":"CNY","trancurrname":"aaa"}
+						    var bDocItemExist = false;
+						    if (angular.isDefined($rootScope.arFinanceDocumentItem)) {
+						        $.each($rootScope.arFinanceDocumentItem, function (idx, obj) {
+						            if (obj.docid === docid) {
+						                bDocItemExist = true;
+						                return false;
+						            }
+						        });
+						    }
+
+						    if (bDocItemExist) {
+						    } else {
+						        $http
+                                    .post(
+                                        'script/hihsrv.php',
+                                        {
+                                            objecttype: 'GETFINANCEDOCUMENTITEMLIST',
+                                            docid: docid
+                                        })
+                                    .success(
+                                        function (data, status, headers, config) {
+                                            if (angular.isDefined(data) && angular.isArray(data)) {
+                                                if (!angular.isDefined($rootScope.arFinanceDocumentItem))
+                                                    $rootScope.arFinanceDocumentItem = [];
+                                                $.merge($rootScope.arFinanceDocumentItem, data);
+                                            }
+
+                                            $rootScope.$broadcast("FinanceDocumentItemLoaded");
+                                        })
+                                    .error(
+                                        function (data, status, headers, config) {
+                                            // called asynchronously if an error occurs or server returns response with an error status.
+                                            $rootScope.$broadcast(
+                                                "ShowMessage",
+                                                "Error",
+                                                data.Message);
+                                        });
+						    }
+						};
 						
 ////////////////////////////////////////////////////////////////////
 // Others

@@ -94,34 +94,41 @@
 
     <!-- Items -->
     <div class="container" ng-show="!showhdr">
+        
         <div class="btn-group" role="group" aria-label="Items Operation">
-            <button type="button" class="btn btn-default">Add Item</button>
-            <button type="button" class="btn btn-default">Delete Item</button>
+            <button type="button" class="btn btn-default" ng-disabled="isReadonly">Add Item</button>
+            <button type="button" class="btn btn-default" ng-disabled="isReadonly">Delete Item</button>
         </div>
 
         <table st-table="ItemsCollection" class="table table-striped">
             <thead>
                 <tr>
-                    <th st-sort="acntid">Account ID</th>
-                    <th st-sort="acntname">Account Name</th>
-                    <th st-sort="ctgyName">Category Name</th>
-                    <th st-sort="Name">Name</th>
-                    <th st-sort="content">Content</th>
+                    <th st-sort="itemid">Item ID</th>
+                    <th st-sort="accountid">Account ID</th>
+                    <th st-sort="accountname">Account Name</th>
+                    <th st-sort="accountcategoryname">Account Category Name</th>
+                    <th st-sort="trantypename">Transaction</th>
+                    <th st-sort="trantypeexpense">Expense Flag</th>
+                    <th st-sort="tranamount">Amount</th>
+                    <th st-sort="desp">Desp</th>
                 </tr>
                 <tr>
-                    <th colspan="6">
+                    <th colspan="9">
                         <input st-search="" class="form-control"
                                placeholder="global search ..." type="text" />
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="row in displayedCollection">
-                    <td>{{row.id}}</td>
-                    <td>{{row.categoryid}}</td>
-                    <td>{{row.categoryname}}</td>
-                    <td>{{row.name}}</td>
-                    <td>{{row.content}}</td>
+                <tr ng-repeat="row in ItemsCollection">
+                    <td>{{row.itemid}}</td>
+                    <td>{{row.accountid}}</td>
+                    <td>{{row.accountname}}</td>
+                    <td>{{row.accountcategoryname}}</td>
+                    <td>{{row.trantypename}}</td>
+                    <td>{{row.trantypeexpense}}</td>
+                    <td>{{row.tranamount}}</td>
+                    <td>{{row.desp}}</td>
                     <td>
                         <div class="btn-group" role="group">
                             <button type="button" ng-click="displayItem(row)"

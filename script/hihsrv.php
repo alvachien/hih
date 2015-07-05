@@ -151,6 +151,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETFINANCEDOCUMENTITEMLIST":
+			{
+				$docid = escape ( $realParamArr ['docid'] );
+				HIHSrv_Function_1Param( 'finance_documentitem_listread', $docid );
+			}
+			break;
+			
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================
