@@ -2,7 +2,9 @@
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>
-    <h3 class="modal-title">{{MessageHeader}}</h3>
+    <h3 class="modal-title">
+        Document Item <small>{{Activity}}</small>
+    </h3>
 </div>
 
 <div class="modal-body">
@@ -24,7 +26,7 @@
             <label class="control-label col-sm-2" for="iptItemID">Item ID:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="iptItemID"
-                       readonly="readonly" placeholder="ID" ng-model="Item ID">
+                       readonly="readonly" placeholder="ID" ng-model="DocumentItem.itemid">
             </div>
         </div>
         
@@ -51,3 +53,4 @@
             ng-disabled="frmItem.$invalid || !frmItem.$dirty" ng-click="ok()">OK</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 </div>
+

@@ -249,6 +249,7 @@
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemsChanged = false;
+		$scope.ItemActivity = "Create an Item";
 		
         // For select control
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
@@ -362,79 +363,79 @@
 		    }
 		};
 		
-		$scope.addDocItem = function() {
-			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, $scope.Activity, null]; 
-			// Show the dialog	
-			var modalInstance = $modal.open({
-				animation: true,
-			    templateUrl: 'app/views/financedocumentitemdlg.html',
-			    controller: 'FinanceDocumentDialogController',
-				keyboard: false
+		//$scope.addDocItem = function() {
+		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, $scope.Activity, null]; 
+		//	// Show the dialog	
+		//	var modalInstance = $modal.open({
+		//		animation: true,
+		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
+		//	    controller: 'FinanceDocumentDialogController',
+		//		keyboard: false
 
-				// Following part is not working without ngRoute				
-				// resolve: {
-       			// 	DocumentInfo: function () {
-				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        		// 	}
-      			// }
-		      });
+		//		// Following part is not working without ngRoute				
+		//		// resolve: {
+       	//		// 	DocumentInfo: function () {
+		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        //		// 	}
+      	//		// }
+		//      });
 			
-			modalInstance.result.then(function () {
-			      //$scope.selected = selectedItem;
-				  $rootScope.CurrentDocumentItem = [];
-			    }, function () {
-			 });			
-		};
+		//	modalInstance.result.then(function () {
+		//	      //$scope.selected = selectedItem;
+		//		  $rootScope.CurrentDocumentItem = [];
+		//	    }, function () {
+		//	 });			
+		//};
 		
-		$scope.displayItem = function (row) {
-			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
-			// Show the dialog	
-			var modalInstance = $modal.open({
-				animation: true,
-			    templateUrl: 'app/views/financedocumentitemdlg.html',
-			    controller: 'FinanceDocumentDialogController',
-				keyboard: false
+		//$scope.displayItem = function (row) {
+		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
+		//	// Show the dialog	
+		//	var modalInstance = $modal.open({
+		//		animation: true,
+		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
+		//	    controller: 'FinanceDocumentDialogController',
+		//		keyboard: false
 
-				// Following part is not working without ngRoute				
-				// resolve: {
-       			// 	DocumentInfo: function () {
-				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        		// 	}
-      			// }
-		      });
+		//		// Following part is not working without ngRoute				
+		//		// resolve: {
+       	//		// 	DocumentInfo: function () {
+		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        //		// 	}
+      	//		// }
+		//      });
 			
-			modalInstance.result.then(function () {
-			      //$scope.selected = selectedItem;
-				  $rootScope.CurrentDocumentItem = [];
-			    }, function () {
-			 });			
-		};
-		$scope.editItem = function(row) {
-			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
-			// Show the dialog	
-			var modalInstance = $modal.open({
-				animation: true,
-			    templateUrl: 'app/views/financedocumentitemdlg.html',
-			    controller: 'FinanceDocumentDialogController',
-				keyboard: false
+		//	modalInstance.result.then(function () {
+		//	      //$scope.selected = selectedItem;
+		//		  $rootScope.CurrentDocumentItem = [];
+		//	    }, function () {
+		//	 });			
+		//};
+		//$scope.editItem = function(row) {
+		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
+		//	// Show the dialog	
+		//	var modalInstance = $modal.open({
+		//		animation: true,
+		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
+		//	    controller: 'FinanceDocumentDialogController',
+		//		keyboard: false
 
-				// Following part is not working without ngRoute				
-				// resolve: {
-       			// 	DocumentInfo: function () {
-				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        		// 	}
-      			// }
-		      });
+		//		// Following part is not working without ngRoute				
+		//		// resolve: {
+       	//		// 	DocumentInfo: function () {
+		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        //		// 	}
+      	//		// }
+		//      });
 			
-			modalInstance.result.then(function () {
-			      //$scope.selected = selectedItem;
-				  $rootScope.CurrentDocumentItem = [];
-			    }, function () {
-			 });			
-		};
-		$scope.removeItem = function(row) {
+		//	modalInstance.result.then(function () {
+		//	      //$scope.selected = selectedItem;
+		//		  $rootScope.CurrentDocumentItem = [];
+		//	    }, function () {
+		//	 });			
+		//};
+		//$scope.removeItem = function(row) {
 			
-		};
+		//};
 	}])	
 	
 	.controller('FinanceDocumentDialogController', ['$scope', '$rootScope', '$modalInstance', 'utils', function($scope, $rootScope, $modalInstance, utils) {

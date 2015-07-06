@@ -87,6 +87,7 @@
                     <textarea rows="5" columns="50" ng-readonly="isReadonly" ng-model="DocumentHeader.DocumentDesp"></textarea>
                 </div>
             </div>
+        </form>
     </div>
 
     <!-- Items -->
@@ -116,7 +117,7 @@
             </thead>
             
             <tbody>
-                <tr ng-repeat="row in ItemsCollection">
+                <tr ng-repeat="row in ItemsCollection" st-select-row="row" st-select-mode="single">
                     <td>{{row.itemid}}</td>
                     <td>{{row.accountid}}</td>
                     <td>{{row.accountname}}</td>
@@ -125,24 +126,40 @@
                     <td>{{row.trantypeexpense}}</td>
                     <td>{{row.tranamount}}</td>
                     <td>{{row.desp}}</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button type="button" ng-click="displayItem(row)" class="btn-group btn-primary" role="group">
-                                <i class="glyphicon glyphicon-share"> </i>
-                            </button>
-                            <button type="button" ng-click="editItem(row)" ng-disabled="isReadonly"
-                                    class="btn-group btn-warning" role="group">
-                                <i class="glyphicon glyphicon-edit"> </i>
-                            </button>
-                            <button type="button" ng-click="removeItem(row)" ng-disabled="isReadonly"
-                                    class="btn-group btn-danger" role="group">
-                                <i class="glyphicon glyphicon-trash"> </i>
-                            </button>
-                        </div>
-                    </td>
                 </tr>
             </tbody>
         </table>
+
+        <!-- Item Detail -->
+        <div class="container">
+            <div>{{ItemActivity}}</div>
+            <form class="form-horizontal" role="form" name="frmItem">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemID">Item ID:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="iptItemID"
+                               readonly="readonly" placeholder="ID" ng-model="SelectedDocumentItem.itemid">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptType">Account:</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="FinanceAccount.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                            <ui-select-match placeholder="Select an account via the name...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="acnt in AllAccounts">
+                                <div ng-bind-html="acnt.name | highlight: $select.search"></div>
+                                <small>
+                                    ID: {{acnt.id}} <br />
+                                    Name: <span ng-bind-html="''+acnt.name | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 
