@@ -173,7 +173,7 @@
 		 
 		 $scope.close = function() {
 			 $state.go("home.finance.account.list");
-		 }
+		 };
 	}])	
 	
 	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
@@ -216,7 +216,7 @@
 		    	// Last, update the UI part
 //		    	$scope.rowCollection.splice(index, 1);
 		    }
-		 }
+		 };
 	    
 		// Display
 		$scope.displayItem = function (row) {
@@ -225,7 +225,7 @@
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.document.display",  { docid : row.docid });
 		    }
-		}
+		};
 		
 		// Edit
 		$scope.editItem = function (row) {
@@ -234,16 +234,16 @@
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.document.maintain",  { docid : row.docid });
 		    }
-		}
+		};
 		
 		// Create
 		$scope.newItem = function() {
 			//$location.path('/learnobject');
 			$state.go('home.finance.document.create');
-		}
+		};
 	}])
 		
-	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
+	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$modal', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $modal, utils) {
 		$scope.Activity = "";
 		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
@@ -256,12 +256,15 @@
 		$scope.AllDocumentTypes = $rootScope.arFinanceDocumentType;
 
         // Attributes
-		$scope.DocumentID = -1;
-		$scope.DocumentType = {};
-		$scope.DocumentCurrency = {};
-		$scope.DocumentTranDate = new Date();
-		$scope.DocumentDesp = "";
-		$scope.DocumentAmount = 0;
+		$scope.DocumentHeader = {};
+		$scope.SelectedDocumentItem = {};
+		
+		$scope.DocumentHeader.DocumentID = -1;
+		$scope.DocumentHeader.DocumentType = {};
+		$scope.DocumentHeader.DocumentCurrency = {};
+		$scope.DocumentHeader.DocumentTranDate = new Date();
+		$scope.DocumentHeader.DocumentDesp = "";
+		$scope.DocumentHeader.DocumentAmount = 0;
 		$scope.ItemsCollection = [];
 
         // For date control
@@ -282,7 +285,7 @@
 		if (angular.isDefined($stateParams.docid)) {
 		    utils.loadFinanceDocumentItems($stateParams.docid);
 
-		    $scope.DocumentID = parseInt($stateParams.docid);
+		    $scope.DocumentHeader.DocumentID = parseInt($stateParams.docid);
 
 		    if ($state.current.name === "home.finance.document.maintain") {
 		        $scope.Activity = "Edit";
@@ -294,19 +297,19 @@
 		    $.each($rootScope.arFinanceDocument, function (idx, obj) {
 		        if (obj.docid === $stateParams.docid) {
 
-		            $scope.DocumentAmount = parseFloat(obj.tranamount).toFixed(4);
-		            $scope.DocumentDesp = obj.desp;
-		            $scope.DocumentTranDate = obj.trandate;
+		            $scope.DocumentHeader.DocumentAmount = parseFloat(obj.tranamount).toFixed(4);
+		            $scope.DocumentHeader.DocumentDesp = obj.desp;
+		            $scope.DocumentHeader.DocumentTranDate = obj.trandate;
 
 		            $.each($scope.AllDocumentTypes, function (idx2, obj2) {
 		                if (obj2.id === obj.doctype) {
-		                    $scope.DocumentType.selected = obj2;
+		                    $scope.DocumentHeader.DocumentType.selected = obj2;
 		                    return false;
 		                }
 		            });
 		            $.each($scope.AllCurrencies, function (idx3, obj3) {
 		                if (obj3.curr === obj.trancurr) {
-		                    $scope.DocumentCurrency.selected = obj3;
+		                    $scope.DocumentHeader.DocumentCurrency.selected = obj3;
 		                    return false;
 		                }
 		            });
@@ -341,25 +344,131 @@
 
 		$scope.close = function() {
 		    $state.go("home.finance.document.list");
-		}
+		};
 
 		$scope.GoHeader = function (target) {
 		    var hdr = angular.element('#divFinDocHeader');
 		    var itm = angular.element('#divFinDocItem');
 
-		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
-                
+		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {                
 		    }
-		}
+		};
 
 		$scope.GoItems = function (target) {
 		    var hdr = angular.element('#divFinDocHeader');
 		    var itm = angular.element('#divFinDocItem');
 
 		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
-
 		    }
+		};
+		
+		$scope.addDocItem = function() {
+			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, $scope.Activity, null]; 
+			// Show the dialog	
+			var modalInstance = $modal.open({
+				animation: true,
+			    templateUrl: 'app/views/financedocumentitemdlg.html',
+			    controller: 'FinanceDocumentDialogController',
+				keyboard: false
+
+				// Following part is not working without ngRoute				
+				// resolve: {
+       			// 	DocumentInfo: function () {
+				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        		// 	}
+      			// }
+		      });
+			
+			modalInstance.result.then(function () {
+			      //$scope.selected = selectedItem;
+				  $rootScope.CurrentDocumentItem = [];
+			    }, function () {
+			 });			
+		};
+		
+		$scope.displayItem = function (row) {
+			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
+			// Show the dialog	
+			var modalInstance = $modal.open({
+				animation: true,
+			    templateUrl: 'app/views/financedocumentitemdlg.html',
+			    controller: 'FinanceDocumentDialogController',
+				keyboard: false
+
+				// Following part is not working without ngRoute				
+				// resolve: {
+       			// 	DocumentInfo: function () {
+				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        		// 	}
+      			// }
+		      });
+			
+			modalInstance.result.then(function () {
+			      //$scope.selected = selectedItem;
+				  $rootScope.CurrentDocumentItem = [];
+			    }, function () {
+			 });			
+		};
+		$scope.editItem = function(row) {
+			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
+			// Show the dialog	
+			var modalInstance = $modal.open({
+				animation: true,
+			    templateUrl: 'app/views/financedocumentitemdlg.html',
+			    controller: 'FinanceDocumentDialogController',
+				keyboard: false
+
+				// Following part is not working without ngRoute				
+				// resolve: {
+       			// 	DocumentInfo: function () {
+				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+        		// 	}
+      			// }
+		      });
+			
+			modalInstance.result.then(function () {
+			      //$scope.selected = selectedItem;
+				  $rootScope.CurrentDocumentItem = [];
+			    }, function () {
+			 });			
+		};
+		$scope.removeItem = function(row) {
+			
+		};
+	}])	
+	
+	.controller('FinanceDocumentDialogController', ['$scope', '$rootScope', '$modalInstance', 'utils', function($scope, $rootScope, $modalInstance, utils) {
+		$scope.Activity = "Create";
+		$scope.DocumentHeader = {};
+		$scope.DocumentItem = {};
+		$scope.isReadonly = false;
+		
+		if (angular.isDefined($rootScope.CurrentDocumentItem) && angular.isArray($rootScope.CurrentDocumentItem) && $rootScope.CurrentDocumentItem.length > 2) {
+			$scope.Activity = $rootScope.CurrentDocumentItem[1];
+			$scope.DocumentHeader = $rootScope.CurrentDocumentItem[0];
+			$scope.DocumentItem = $rootScope.CurrentDocumentItem[2];	
+			if ( $scope.Activity === "Display" ) {
+				$scope.isReadonly = true;				
+			}
 		}
+		
+		$scope.ok = function () {
+		    $modalInstance.close();
+		  };
+		  
+        $scope.cancel = function () {
+		    $modalInstance.dismiss('cancel');
+		  };
+		  
+		
+		$scope.$on('modal.closing', function($event) {
+			if ($scope.isReadonly) {
+				
+			} else {
+				//if (frmIt)
+				//$event.preventDefault();
+			}
+		});
 	}])	
 	;
 }()
