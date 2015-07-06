@@ -246,6 +246,7 @@
 		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
+		$scope.ItemsChanged = false;
 		
         // For select control
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
@@ -342,7 +343,7 @@
 
 		$scope.GoHeader = function (target) {
 		    var hdr = angular.element('#divFinDocHeader');
-		    var itm = angular.element('divFinDocItem');
+		    var itm = angular.element('#divFinDocItem');
 
 		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
                 
@@ -351,7 +352,7 @@
 
 		$scope.GoItems = function (target) {
 		    var hdr = angular.element('#divFinDocHeader');
-		    var itm = angular.element('divFinDocItem');
+		    var itm = angular.element('#divFinDocItem');
 
 		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
 

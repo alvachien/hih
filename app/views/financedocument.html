@@ -5,6 +5,15 @@
 		</h2>
 	</div>
 
+    <!-- Buttons -->
+    <div class="form-group">
+    	<div class="col-sm-10">
+        	<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+            			ng-disabled="frmObj.$invalid || !frmObj.$dirty || ItemsChanged">Submit</button>
+            <button class="btn btn-danger" ng-click="close()">Cancel</button>
+        </div>
+    </div>
+
     <ul class="nav nav-tabs">
         <li role="presentation" ng-class="showhdr ? 'active' : ''"><a role="button" ng-click="showhdr = true">Header</a></li>
         <li role="presentation" ng-class="showhdr ? '' : 'active'"><a role="button" ng-click="showhdr = false">Items</a></li>
@@ -75,29 +84,16 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" for="iptDesp">Desp</label>
                 <div class="col-sm-10">
-                    <textarea rows="20" ng-readonly="isReadonly"
-                              ng-model="DocumentDesp"></textarea>
+                    <textarea rows="5" columns="50" ng-readonly="isReadonly" ng-model="DocumentDesp"></textarea>
                 </div>
             </div>
-
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
-                            ng-disabled="frmObj.$invalid || !frmObj.$dirty">
-                        Submit
-                    </button>
-                    <button class="btn btn-danger" ng-click="close()">Cancel</button>
-                </div>
-            </div>
-        </form>
     </div>
 
     <!-- Items -->
-    <div class="container" ng-show="!showhdr">
-        
+    <div class="container" ng-show="!showhdr">        
         <div class="btn-group" role="group" aria-label="Items Operation">
             <button type="button" class="btn btn-default" ng-disabled="isReadonly">Add Item</button>
-            <button type="button" class="btn btn-default" ng-disabled="isReadonly">Delete Item</button>
+            <button type="button" class="btn btn-default" ng-disabled="isReadonly">Delete Items</button>
         </div>
 
         <table st-table="ItemsCollection" class="table table-striped">
@@ -119,6 +115,7 @@
                     </th>
                 </tr>
             </thead>
+            
             <tbody>
                 <tr ng-repeat="row in ItemsCollection">
                     <td>{{row.itemid}}</td>
@@ -131,15 +128,15 @@
                     <td>{{row.desp}}</td>
                     <td>
                         <div class="btn-group" role="group">
-                            <button type="button" ng-click="displayItem(row)"
+                            <button type="button" ng-click="displayItem(row)" ng-disabled="isReadonly¡°
                                     class="btn-group btn-primary" role="group">
                                 <i class="glyphicon glyphicon-share"> </i>
                             </button>
-                            <button type="button" ng-click="editItem(row)"
+                            <button type="button" ng-click="editItem(row)" ng-disabled="isReadonly¡°
                                     class="btn-group btn-warning" role="group">
                                 <i class="glyphicon glyphicon-edit"> </i>
                             </button>
-                            <button type="button" ng-click="removeItem(row)"
+                            <button type="button" ng-click="removeItem(row)" ng-disabled="isReadonly¡°
                                     class="btn-group btn-danger" role="group">
                                 <i class="glyphicon glyphicon-trash"> </i>
                             </button>
@@ -148,7 +145,6 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
 </div>
 
