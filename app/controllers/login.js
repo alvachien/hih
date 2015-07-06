@@ -1,3 +1,5 @@
+/* global $ */
+/* global angular */
 (function() {
 	'use strict';	
 	
@@ -49,12 +51,12 @@
 				  });
 				
 				// Go to some other page
-			}
+			};
 			
 			$scope.register = function() {
 				//$location.path('/register');
 				$state.go('login.register');
-			}
+			};
 		}])
         
 		// Register controller
@@ -68,9 +70,10 @@
 	  			
 			$scope.submitRegister = function() {
 				
-			}
+			};
+			
 			$scope.cancel = function() {
 				$state.go('login');
-			}
+			};
 		}]);
 })();

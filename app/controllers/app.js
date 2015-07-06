@@ -1,3 +1,5 @@
+/* global $ */
+/* global angular */
 (function() {
 	"use strict";	
 	
@@ -144,8 +146,8 @@
 			}, function(data, status, headers, config) {
 				// Throw out error message				
 				$rootScope.$broadcast('ShowMessage', 'Error', 'Failed to logout!');
-			})
-		}
+			});
+		};
 	}])
 	
 	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {

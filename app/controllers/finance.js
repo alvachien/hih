@@ -1,3 +1,5 @@
+/* global $ */
+/* global angular */
 (function() {
 	'use strict';
 
@@ -98,7 +100,7 @@
 		    	// Last, update the UI part
 //		    	$scope.rowCollection.splice(index, 1);
 		    }
-		 }
+		 };
 	    
 		// Display
 		$scope.displayItem = function (row) {
@@ -107,7 +109,7 @@
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.account.display",  { accountid : row.id });
 		    }
-		}
+		};
 		
 		// Edit
 		$scope.editItem = function (row) {
@@ -116,13 +118,13 @@
 		    	// $scope.rowCollection.splice(index, 1);
 		    	$state.go("home.finance.account.maintain",  { accountid : row.id });
 		    }
-		}
+		};
 		
 		// Create
 		$scope.newItem = function() {
 			//$location.path('/learnobject');
 			$state.go('home.finance.account.create');
-		}
+		};
 	}])
 
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 

@@ -1,3 +1,5 @@
+/* global $ */
+/* global angular */
 (function() {
 	'use strict';
 	
@@ -122,7 +124,7 @@
 			    	// Last, update the UI part
 //			    	$scope.rowCollection.splice(index, 1);
 			    }
-			 }
+			 };
 			
 			// Display
 			$scope.displayItem = function (row) {
@@ -132,7 +134,7 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.object.display",  { objid : row.id });
 			    }
-			}
+			};
 			
 			// Edit
 			$scope.editItem = function (row) {
@@ -142,13 +144,13 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.object.maintain",  { objid : row.id });
 			    }
-			}
+			};
 			
 			// Create
 			$scope.newItem = function() {
 				//$location.path('/learnobject');
 				$state.go('home.learn.object.create');
-			}
+			};
 		}])
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
@@ -211,7 +213,7 @@
 				 } else {
 									
 				 }
-			 }
+			 };
 			 
 			 $scope.close = function() {
 				 //$location.path('/learnobjectlist');
@@ -219,7 +221,7 @@
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
 				 $state.go("home.learn.object.list");
-			 }
+			 };
 		}])
 		
 		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
@@ -254,7 +256,7 @@
 			    	// Last, update the UI part
 //			    	$scope.rowCollection.splice(index, 1);
 			    }
-			 }
+			 };
 			
 			// Display
 			$scope.displayItem = function (row) {
@@ -264,7 +266,7 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			    }
-			}
+			};
 			
 			// Edit
 			$scope.editItem = function (row) {
@@ -274,13 +276,13 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			    }
-			}
+			};
 			
 			// Create
 			$scope.newItem = function() {
 				//$location.path('/learnobject');
 				$state.go('home.learn.history.create');
-			}
+			};
 		}])
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
@@ -360,7 +362,7 @@
 				 // Let's do the checks first!!!!
 				 $scope.ErrorDetail = "Please input the name!";
 				 //$("#areaAlert").alert();
-			 }
+			 };
 			 
 			 $scope.close = function() {
 				 //$location.path('/learnobjectlist');
@@ -368,7 +370,7 @@
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
 				 $state.go("home.learn.history.list");
-			 }
+			 };
 		}])
 
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
@@ -401,7 +403,7 @@
 			    	// Last, update the UI part
 //			    	$scope.rowCollection.splice(index, 1);
 			    }
-			 }
+			 };
 			
 			// Display
 			$scope.displayItem = function (row) {
@@ -411,7 +413,7 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.award.display",  { objid : row.id });
 			    }
-			}
+			};
 			
 			// Edit
 			$scope.editItem = function (row) {
@@ -421,13 +423,13 @@
 			    	//$location.path('/learnobject/' + row.id);
 			    	$state.go("home.learn.award.maintain",  { objid : row.id });
 			    }
-			}
+			};
 			
 			// Create
 			$scope.newItem = function() {
 				//$location.path('/learnobject');
 				$state.go('home.learn.award.create');
-			}
+			};
 		}])
 		
 		.controller('LearnAwardController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
@@ -493,7 +495,7 @@
 			 $scope.submit = function() {
 				 // Let's do the checks first!!!!
 				 $scope.ErrorDetail = "Please input the name!";
-			 }
+			 };
 			 
 			 $scope.close = function() {
 				 //$location.path('/learnobjectlist');
@@ -501,7 +503,7 @@
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
 				 $state.go("home.learn.award.list");
-			 }
+			 };
 		}])
 		;
 })();
