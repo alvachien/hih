@@ -402,6 +402,34 @@
                                         });
 						    }
 						};
+						rtnObj.loadFinanceTransactionTypes = function() {
+						    if (!$rootScope.isFinanceTransactionTypeLoaded) {
+						        // Example JSON response
+						        // {"id":"1","name":"aaa","comment":"aaa"}
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCETRANSACTIONTYPELIST'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceTransactionType = data;
+													$rootScope.isFinanceTransactionTypeLoaded = true;
+
+													$rootScope.$broadcast("FinanceTransactionTypeLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+							
+						};
 						
 ////////////////////////////////////////////////////////////////////
 // Others

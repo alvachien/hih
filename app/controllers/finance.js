@@ -61,6 +61,36 @@
         	templateUrl: 'app/views/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
+		.state("home.finance.transactiontype", {
+			url: '/transactiontype',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.transactiontype.list", {
+			url: '',
+			templateUrl: 'app/views/financetransactiontypelist.html',
+			controller: 'FinanceTransactionTypeListController'
+		})
+		.state("home.finance.documenttype", {
+			url: '/documenttype',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.documenttype.list", {
+			url: '',
+			templateUrl: 'app/views/financedocumenttypelist.html',
+			controller: 'FinanceDocumentTypeListController'
+		})
+		.state("home.finance.accountcategory", {
+			url: '/accountcategory',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.accountcategory.list", {
+			url: '',
+			templateUrl: 'app/views/financeaccountcategorylist.html',
+			controller: 'FinanceAccountCategoryListController'
+		})
     ;
 	}])
 	
@@ -182,6 +212,7 @@
 		utils.loadFinanceAccounts();
 		utils.loadFinanceAccountCategories();
 		utils.loadCurrencies();
+		utils.loadFinanceTransactionTypes();
 
 		$scope.rowCollection = [];     
 	    $scope.displayedCollection = [];	    
@@ -255,17 +286,18 @@
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
 		$scope.AllDocumentTypes = $rootScope.arFinanceDocumentType;
+		$scope.AllTransactionTypes = $rootScope.arFinanceTransactionType;
 
         // Attributes
 		$scope.DocumentHeader = {};
-		$scope.SelectedDocumentItem = {};
+		$scope.SelectedDocumentItem = {};		
 		
 		$scope.DocumentHeader.DocumentID = -1;
 		$scope.DocumentHeader.DocumentType = {};
 		$scope.DocumentHeader.DocumentCurrency = {};
 		$scope.DocumentHeader.DocumentTranDate = new Date();
 		$scope.DocumentHeader.DocumentDesp = "";
-		$scope.DocumentHeader.DocumentAmount = 0;
+		$scope.DocumentHeader.DocumentAmount = 0.0;
 		$scope.ItemsCollection = [];
 
         // For date control
@@ -274,7 +306,7 @@
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
-		};
+		};		
 		$scope.openDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
@@ -361,6 +393,14 @@
 
 		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
 		    }
+		};
+		
+		$scope.saveCurrentItem = function() {
+			
+		};
+		
+		$scope.cancelCurrentItem = function() {
+			
 		};
 		
 		//$scope.addDocItem = function() {
@@ -470,6 +510,72 @@
 				//$event.preventDefault();
 			}
 		});
+	}])	
+	
+	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		utils.loadFinanceAccounts();
+		utils.loadFinanceAccountCategories();
+		utils.loadCurrencies();
+
+		$scope.rowCollection = [];     
+	    $scope.displayedCollection = [];	    
+	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+	    $scope.$on("FinanceAccountLoaded", function() {
+	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    	
+	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+		    }
+	    });
+	}])
+
+	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		utils.loadFinanceAccounts();
+		utils.loadFinanceAccountCategories();
+		utils.loadCurrencies();
+
+		$scope.rowCollection = [];     
+	    $scope.displayedCollection = [];	    
+	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+	    $scope.$on("FinanceAccountLoaded", function() {
+	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    	
+	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+		    }
+	    });
+	}])
+
+	.controller('FinanceAccountCategoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		utils.loadFinanceAccounts();
+		utils.loadFinanceAccountCategories();
+		utils.loadCurrencies();
+
+		$scope.rowCollection = [];     
+	    $scope.displayedCollection = [];	    
+	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+	    $scope.$on("FinanceAccountLoaded", function() {
+	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    	
+	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+		    }
+	    });
 	}])	
 	;
 }()

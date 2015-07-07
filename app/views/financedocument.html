@@ -124,14 +124,14 @@
                     <td>{{row.accountcategoryname}}</td>
                     <td>{{row.trantypename}}</td>
                     <td>{{row.trantypeexpense}}</td>
-                    <td>{{row.tranamount}}</td>
+                    <td>{{row.tranamount | currency}}</td>
                     <td>{{row.desp}}</td>
                 </tr>
             </tbody>
         </table>
 
         <!-- Item Detail -->
-        <div class="container">
+        <div class="container" ng-hide="isReadonly">
             <div>{{ItemActivity}}</div>
             <form class="form-horizontal" role="form" name="frmItem">
                 <div class="form-group">
@@ -143,9 +143,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptType">Account:</label>
+                    <label class="control-label col-sm-2" for="iptAccount">Account:</label>
                     <div class="col-sm-10">
-                        <ui-select ng-model="FinanceAccount.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                        <ui-select ng-model="SelectedDocumentItem.Account.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
                             <ui-select-match placeholder="Select an account via the name...">{{$select.selected.name}}</ui-select-match>
                             <ui-select-choices repeat="acnt in AllAccounts">
                                 <div ng-bind-html="acnt.name | highlight: $select.search"></div>
@@ -155,6 +155,46 @@
                                 </small>
                             </ui-select-choices>
                         </ui-select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptTranType">Transaction Type:</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="SelectedDocumentItem.TranType.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                            <ui-select-match placeholder="Select a type via the name...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="tt in AllTransactionTypes">
+                                <div ng-bind-html="tt.name | highlight: $select.search"></div>
+                                <small>
+                                    ID: {{tt.id}} <br />
+                                    Name: <span ng-bind-html="''+tt.name | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptAmt">Amount:</label>
+                    <div class="col-sm-10">
+                        <input type="number" id="iptAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.Amount"></input>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptDesp">Desp</label>
+                    <div class="col-sm-10">
+                        <textarea rows="5" id="iptReason" ng-readonly="isReadonly" cols="50"
+                                    ng-model="SelectedDocumentItem.Desp"></textarea>
+			        </div>
+		        </div>
+
+                <!-- Button group -->
+                <div class="form-group">
+                	<div class="col-sm-10">
+                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
+                        		ng-disabled="frmItem.$invalid || !frmItem.$dirty">Save Item</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Item</button>
                     </div>
                 </div>
             </form>

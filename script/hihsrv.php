@@ -158,6 +158,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETFINANCETRANSACTIONTYPELIST":
+			{
+				HIHSrv_Function_1Param( 'finance_trantype_listread', false );				
+			}
+			break;
+			
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================
