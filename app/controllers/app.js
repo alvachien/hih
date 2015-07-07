@@ -206,5 +206,4 @@
 		 $scope.addSlide('app/img/TheAutumn.jpg', 'The Autumn');
 	}])
 	;
-
 })();
