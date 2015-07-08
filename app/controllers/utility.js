@@ -14,7 +14,7 @@
 						
 						rtnObj.findById = function (a, id) {
 							for (var i = 0; i < a.length; i++) {
-								if (a[i].id == id)
+								if (a[i].id === id)
 									return a[i];
 							}
 							return null;
@@ -24,7 +24,7 @@
 							do {
 								randKey = coll[Math.floor(coll.length
 										* Math.random())][key];
-							} while (randKey == currentKey);
+							} while (randKey === currentKey);
 							return randKey;
 						};
 						
@@ -405,7 +405,7 @@
 						rtnObj.loadFinanceTransactionTypes = function() {
 						    if (!$rootScope.isFinanceTransactionTypeLoaded) {
 						        // Example JSON response
-						        // {"id":"1","name":"aaa","comment":"aaa"}
+						        // {"id":"2","parent":null,"name":"\u4e3b\u4e1a\u6536\u5165","expense":"0","comment":null}
 								$http
 										.post(
 												'script/hihsrv.php',

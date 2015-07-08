@@ -91,6 +91,16 @@
 			templateUrl: 'app/views/financeaccountcategorylist.html',
 			controller: 'FinanceAccountCategoryListController'
 		})
+		.state("home.finance.currency", {
+			url: '/currency',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.currency.list", {
+			url: '',
+			templateUrl: 'app/views/financecurrencylist.html',
+			controller: 'FinanceCurrencyListController'
+		})
     ;
 	}])
 	
@@ -513,19 +523,17 @@
 	}])	
 	
 	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
-		utils.loadFinanceAccounts();
-		utils.loadFinanceAccountCategories();
-		utils.loadCurrencies();
+		utils.loadFinanceTransactionTypes();
 
 		$scope.rowCollection = [];     
 	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.rowCollection = $rootScope.arFinanceTransactionType;
 	    $scope.displayedCollection = [].concat($scope.rowCollection);
 
-	    $scope.$on("FinanceAccountLoaded", function() {
-	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    $scope.$on("FinanceTransactionTypeLoaded", function() {
+	    	console.log("HIH FinanceTransactionType List: Loaded event fired!");
 	    	
-	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+	    	$scope.rowCollection = $rootScope.arFinanceTransactionType;
 		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
 				// copy the references (you could clone ie angular.copy but
 				// then have to go through a dirty checking for the matches)
@@ -535,19 +543,17 @@
 	}])
 
 	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
-		utils.loadFinanceAccounts();
-		utils.loadFinanceAccountCategories();
-		utils.loadCurrencies();
+		utils.loadFinanceDocumentTypes();
 
 		$scope.rowCollection = [];     
 	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.rowCollection = $rootScope.arFinanceDocumentType;
 	    $scope.displayedCollection = [].concat($scope.rowCollection);
 
-	    $scope.$on("FinanceAccountLoaded", function() {
-	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    $scope.$on("FinanceDocumentTypeLoaded", function() {
+	    	console.log("HIH FinanceDocumentType List: Loaded event fired!");
 	    	
-	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+	    	$scope.rowCollection = $rootScope.arFinanceDocumentType;
 		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
 				// copy the references (you could clone ie angular.copy but
 				// then have to go through a dirty checking for the matches)
@@ -557,19 +563,17 @@
 	}])
 
 	.controller('FinanceAccountCategoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
-		utils.loadFinanceAccounts();
 		utils.loadFinanceAccountCategories();
-		utils.loadCurrencies();
 
 		$scope.rowCollection = [];     
 	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.rowCollection = $rootScope.arFinanceAccountCategory;
 	    $scope.displayedCollection = [].concat($scope.rowCollection);
 
-	    $scope.$on("FinanceAccountLoaded", function() {
-	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    $scope.$on("FinanceAccountCategoryLoaded", function() {
+	    	console.log("HIH FinanceAccountCategory List: Loaded event fired!");
 	    	
-	    	$scope.rowCollection = $rootScope.arFinanceAccount;
+	    	$scope.rowCollection = $rootScope.arFinanceAccountCategory;
 		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
 				// copy the references (you could clone ie angular.copy but
 				// then have to go through a dirty checking for the matches)
@@ -577,6 +581,26 @@
 		    }
 	    });
 	}])	
+	
+	.controller('FinanceCurrencyListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		utils.loadCurrencies();
+
+		$scope.rowCollection = [];     
+	    $scope.displayedCollection = [];	    
+	    $scope.rowCollection = $rootScope.arFinanceAccount;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+	    $scope.$on("CurrencyLoaded", function() {
+	    	console.log("HIH Currency List: Loaded event fired!");
+	    	
+	    	$scope.rowCollection = $rootScope.arCurrency;
+		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+		    }
+	    });
+	}])		
 	;
 }()
 );
