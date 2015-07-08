@@ -31,7 +31,7 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="iptType">Doc. Type:</label>
+                <label class="control-label col-sm-2" for="iptDocType">Doc. Type:</label>
                 <div class="col-sm-10">
                     <ui-select ng-model="DocumentHeader.DocumentType.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
                         <ui-select-match placeholder="Select a document type via the name...">{{$select.selected.name}}</ui-select-match>
@@ -51,11 +51,11 @@
                 <div class="col-sm-10">
                     <ui-select ng-model="DocumentHeader.Currency.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
                         <ui-select-match placeholder="Select a currency via the name...">{{$select.selected.name}}</ui-select-match>
-                        <ui-select-choices repeat="curr in AllCurrencies">
-                            <div ng-bind-html="curr.name | highlight: $select.search"></div>
+                        <ui-select-choices repeat="cur in AllCurrencies">
+                            <div ng-bind-html="cur.name | highlight: $select.search"></div>
                             <small>
-                                ID: {{curr.curr}} <br />
-                                Name: <span ng-bind-html="''+curr.name | highlight: $select.search"></span>
+                                ID: {{cur.curr}} <br />
+                                Name: <span ng-bind-html="''+cur.name | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -63,7 +63,7 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="iptDate">Date</label>
+                <label class="control-label col-sm-2" for="iptDocDate">Date</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentHeader.DocumentDate" is-open="isDateOpened"
                            datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
@@ -74,17 +74,17 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="iptAmount">Amount</label>
+                <label class="control-label col-sm-2" for="iptDocAmount">Amount</label>
                 <div class="col-sm-10">
-                    <input type="number" class="form-control" id="iptAmount" ng-readonly="isReadonly"
+                    <input type="text" class="form-control" id="iptDocAmount" ng-readonly="isReadonly"
                            placeholder="Amount" ng-model="DocumentHeader.DocumentAmount" required>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="iptDesp">Desp</label>
+                <label class="control-label col-sm-2" for="iptDocDesp">Desp</label>
                 <div class="col-sm-10">
-                    <textarea rows="5" columns="50" ng-readonly="isReadonly" ng-model="DocumentHeader.DocumentDesp"></textarea>
+                    <textarea id="iptDocDesp" rows="5" columns="50" ng-readonly="isReadonly" ng-model="DocumentHeader.DocumentDesp"></textarea>
                 </div>
             </div>
         </form>
@@ -92,12 +92,7 @@
 
     <!-- Items -->
     <div class="container" ng-show="!showhdr">        
-        <div class="btn-group" role="group" aria-label="Items Operation">
-            <button type="button" class="btn btn-default" ng-disabled="isReadonly" ng-click="addDocItem()">Add Item</button>
-            <button type="button" class="btn btn-default" ng-disabled="isReadonly">Delete Items</button>
-        </div>
-
-        <table st-table="ItemsCollection" class="table table-striped">
+        <table st-table="ItemsCollection" class="table table-striped" style="padding: 12px;">
             <thead>
                 <tr>
                     <th st-sort="itemid">Item ID</th>
@@ -124,14 +119,30 @@
                     <td>{{row.accountcategoryname}}</td>
                     <td>{{row.trantypename}}</td>
                     <td>{{row.trantypeexpense}}</td>
-                    <td>{{row.tranamount | currency}}</td>
+                    <td>{{row.tranamount}}</td>
                     <td>{{row.desp}}</td>
+    				<td>
+    					<div class="btn-group" role="group">
+    						<button type="button" ng-click="displayItem(row)"
+    							class="btn-group btn-primary" role="group">
+    							<i class="glyphicon glyphicon-share"> </i>
+    						</button>
+    						<button type="button" ng-click="editItem(row)" ng-hide="isReadonly"
+    							class="btn-group btn-warning" role="group">
+    							<i class="glyphicon glyphicon-edit"> </i>
+    						</button>
+    						<button type="button" ng-click="removeItem(row)" ng-hide="isReadonly"
+    							class="btn-group btn-danger" role="group">
+    							<i class="glyphicon glyphicon-trash"> </i>
+    						</button>
+    					</div>					
+    				</td>
                 </tr>
             </tbody>
         </table>
 
         <!-- Item Detail -->
-        <div class="container" ng-hide="isReadonly">
+        <div class="container">
             <div>{{ItemActivity}}</div>
             <form class="form-horizontal" role="form" name="frmItem">
                 <div class="form-group">
@@ -143,7 +154,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptAccount">Account:</label>
+                    <label class="control-label col-sm-2" for="iptItemAccount">Account:</label>
                     <div class="col-sm-10">
                         <ui-select ng-model="SelectedDocumentItem.Account.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
                             <ui-select-match placeholder="Select an account via the name...">{{$select.selected.name}}</ui-select-match>
@@ -175,17 +186,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptAmt">Amount:</label>
+                    <label class="control-label col-sm-2" for="iptItemAmt">Amount:</label>
                     <div class="col-sm-10">
-                        <input type="number" id="iptAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.Amount"></input>
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.tranamount"></input>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptDesp">Desp</label>
+                    <label class="control-label col-sm-2" for="iptItemDesp">Desp: </label>
                     <div class="col-sm-10">
-                        <textarea rows="5" id="iptReason" ng-readonly="isReadonly" cols="50"
-                                    ng-model="SelectedDocumentItem.Desp"></textarea>
+                        <textarea rows="5" id="iptItemDesp" ng-readonly="isReadonly" cols="50"
+                                    ng-model="SelectedDocumentItem.desp"></textarea>
 			        </div>
 		        </div>
 
@@ -194,7 +205,7 @@
                 	<div class="col-sm-10">
                     	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
                         		ng-disabled="frmItem.$invalid || !frmItem.$dirty">Save Item</button>
-                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Item</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Item Editing</button>
                     </div>
                 </div>
             </form>

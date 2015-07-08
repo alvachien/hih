@@ -284,9 +284,8 @@
 		};
 	}])
 		
-	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$modal', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $modal, utils) {
+	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		$scope.Activity = "";
-		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemsChanged = false;
@@ -321,8 +320,9 @@
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
-		    if (!$scope.isReadonly)
-		        $scope.isDateOpened = true;
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
 		};
 
 		if (angular.isDefined($stateParams.docid)) {
@@ -437,29 +437,58 @@
 		//	 });			
 		//};
 		
-		//$scope.displayItem = function (row) {
-		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
-		//	// Show the dialog	
-		//	var modalInstance = $modal.open({
-		//		animation: true,
-		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
-		//	    controller: 'FinanceDocumentDialogController',
-		//		keyboard: false
-
-		//		// Following part is not working without ngRoute				
-		//		// resolve: {
-       	//		// 	DocumentInfo: function () {
-		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        //		// 	}
-      	//		// }
-		//      });
+		$scope.displayItem = function (row) {
+			$scope.SelectedDocumentItem = angular.copy(row);
+			$scope.SelectedDocumentItem.Account = {};
+			$scope.SelectedDocumentItem.TranType = {};
+			
+			// Account
+			$.each($scope.AllAccounts, function(idx, obj) {
+				if (obj.id === row.accountid) {
+					$scope.SelectedDocumentItem.Account.selected = obj;
+					return false;
+				}
+			});			
+			
+			// Transaction type
+			$.each($scope.AllTransactionTypes, function(idx2, obj2) {
+				if (obj2.id === row.trantype) {
+					$scope.SelectedDocumentItem.TranType.selected = obj2;
+					return false;
+				}
+			});
+			
+			// Set the Item detail part
+			// $.each($scope.ItemsCollection, function (idx1, obj1) {
+		    //         if (obj1.itemid === $scope.DocumentHeader.docid) {
+		    //             $scope.ItemsCollection.push(obj1);
+		    //             return false;
+		    //         }
+		    //     });
+			
+			
+// 			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
+// 			// Show the dialog	
+// 			var modalInstance = $modal.open({
+// 				animation: true,
+// 			    templateUrl: 'app/views/financedocumentitemdlg.html',
+// 			    controller: 'FinanceDocumentDialogController',
+// 				keyboard: false
+// 
+// 				// Following part is not working without ngRoute				
+// 				// resolve: {
+//        			// 	DocumentInfo: function () {
+// 				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
+//         		// 	}
+//       			// }
+// 		     });
 			
 		//	modalInstance.result.then(function () {
 		//	      //$scope.selected = selectedItem;
 		//		  $rootScope.CurrentDocumentItem = [];
 		//	    }, function () {
 		//	 });			
-		//};
+		};
 		//$scope.editItem = function(row) {
 		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
 		//	// Show the dialog	
@@ -509,8 +538,7 @@
 		  
         $scope.cancel = function () {
 		    $modalInstance.dismiss('cancel');
-		  };
-		  
+		  };		  
 		
 		$scope.$on('modal.closing', function($event) {
 			if ($scope.isReadonly) {
