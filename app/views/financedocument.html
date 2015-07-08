@@ -39,7 +39,7 @@
                             <div ng-bind-html="doctype.name | highlight: $select.search"></div>
                             <small>
                                 ID: {{doctype.id}} <br />
-                                Name: <span ng-bind-html="''+doctype.name | highlight: $select.search"></span>
+                                Name: <span ng-bind-html="+doctype.name | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -55,7 +55,7 @@
                             <div ng-bind-html="cur.name | highlight: $select.search"></div>
                             <small>
                                 ID: {{cur.curr}} <br />
-                                Name: <span ng-bind-html="''+cur.name | highlight: $select.search"></span>
+                                Name: <span ng-bind-html="+cur.name | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -148,9 +148,8 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptItemID">Item ID:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="iptItemID"
-                               readonly="readonly" placeholder="ID" ng-model="SelectedDocumentItem.itemid">
-                    </div>
+      					<p class="form-control-static" id="iptItemID">{{SelectedDocumentItem.itemid}}</p>
+    				</div>
                 </div>
 
                 <div class="form-group">
