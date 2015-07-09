@@ -105,7 +105,7 @@
 
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
-		    $scope.itemsByPage = 15;
+		    $scope.itemsByPage = 10;
 
 		    $scope.rowCollection = $rootScope.arLearnObject;
 		    $scope.displayedCollection = [].concat($scope.rowCollection);
