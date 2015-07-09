@@ -3,43 +3,54 @@
 (function() {
 	"use strict";	
 	
-	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 'hihApp.Finance'])
-		.run(['$rootScope', '$state', '$stateParams', '$modal', '$log', function ($rootScope,   $state,   $stateParams, $modal, $log) {
+	angular.module('jm.i18next').config(['$i18nextProvider', function ($i18nextProvider) {
+	    $i18nextProvider.options = {
+	        lng: 'en',
+	        useCookie: false,
+	        useLocalStorage: false,
+	        fallbackLng: 'en',
+	        resGetPath: 'locales/__lng__/resource.json',
+	        defaultLoadingValue: '' // ng-i18next option, *NOT* directly supported by i18next
+	    };
+	}]);
+	
+	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 'hihApp.Finance', 'jm.i18next'])
+		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', '$i18next', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log, $i18next) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;
 			    
 			    $rootScope.$on('$stateChangeStart', 
-			    		function(event, toState, toParams, fromState, fromParams) {
-			    			console.log('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
-			    			
-			    			if (toState.name === 'login' || toState.name === 'register') {
-			    				if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
-			    					console.log('HIH: state change failed: already login but ask for login page, redirect to home page...');
-			    					event.preventDefault();
-			    					$state.go("home.welcome");
-			    				} 
-			    				return;
-			    			}  
-			    			
-			    			if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
-			    				return;
-			    			}
+		    		function(event, toState, toParams, fromState, fromParams) {
+		    			console.log('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
+		    			
+		    			if (toState.name === 'login' || toState.name === 'register') {
+		    				if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
+		    					console.log('HIH: state change failed: already login but ask for login page, redirect to home page...');
+		    					event.preventDefault();
+		    					$state.go("home.welcome");
+		    				} 
+		    				return;
+		    			}  
+		    			
+		    			if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
+		    				return;
+		    			}
 
-			    			console.log('HIH: state change failed: not login, redirect to login page...');
-		    		    	event.preventDefault();
-		    		    	$state.go("login");
-//			    			if (!angular.isDefined(toState.data) || !angular.isDefined(toState.data.rule)) return;
-//			    			if (!angular.isFunction(toState.data.rule)) return;
-//			    			
-//			    		    var result = toState.data.rule($rootScope);
-//			    		    if (result !== true) {
-//			    		    	console.log('HIH: state change failed: not login, redirect to login page...');
-//			    		    	event.preventDefault();
-//			    		    	$state.go("login");
-//			    		    }
+		    			console.log('HIH: state change failed: not login, redirect to login page...');
+	    		    	event.preventDefault();
+	    		    	$state.go("login");
 			    	}
 			    );
 			    
+				$rootScope.$on('i18nextLanguageChange', function () {
+					$log.info('Language has changed!');
+					if (!$rootScope.i18nextReady) {
+						$timeout(function () {
+							$rootScope.i18nextReady = true;
+						}, 500);
+					}
+				});
+				
 			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail) {
 					console.log('HIH: ShowMessage event occurred');
 					
@@ -106,8 +117,7 @@
         	onEnter: function($rootScope) {
         		console.log('HIH Home: Entering page!');
         	}
-        })
-        
+        })        
         .state('home.welcome', {
         	url: '',
         	templateUrl: 'app/views/welcome.html'
@@ -123,17 +133,17 @@
         });
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		$scope.displayedCollection = [
-			{userobj: 'ID', 			usercont: $scope.CurrentUser.userid},
-			{userobj: 'Display As', 	usercont: $scope.CurrentUser.userdisplayas},
+			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},
+			{userobj: 'Display As', usercont: $scope.CurrentUser.userdisplayas},
 			{userobj: 'Gender',		usercont: utils.genderFormatter($scope.CurrentUser.usergender)},
 			{userobj: 'Created On', usercont: $scope.CurrentUser.usercreatedon}
 			];
 		
 		$scope.logout = function() {
-			console.log("HIH: Logout triggerd!");
+			$log.info("HIH: Logout triggerd!");
 			utils.sendRequest( { objecttype: 'USERLOGOUT' }, function (data, status, headers, config) {
 				
 				// Clear the current user information
@@ -148,6 +158,14 @@
 				$rootScope.$broadcast('ShowMessage', 'Error', 'Failed to logout!');
 			});
 		};
+		
+		$scope.setLanguage = function(lng) {
+			$log.info("HIH: Language change event triggerd!");
+			
+			if (lng !== $i18next.options.lng) {
+				$i18next.options.lng = lng;				
+			}
+		}
 	}])
 	
 	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {
@@ -199,11 +217,11 @@
 		    });
 		 };
 		 
-		 $scope.addSlide('app/img/Duoduo2013.jpg', 'Duoduo @ 2013');
-		 $scope.addSlide('app/img/JiaotongUniversity.jpg', 'Jiaotong University');
-		 $scope.addSlide('app/img/LD.jpg', 'LD @ 2013');
-		 $scope.addSlide('app/img/SpeedOfShanghai.jpg', 'Speed of Shanghai');
-		 $scope.addSlide('app/img/TheAutumn.jpg', 'The Autumn');
+		//$scope.addSlide('app/img/Duoduo2013.jpg', 'Duoduo @ 2013');
+		//$scope.addSlide('app/img/JiaotongUniversity.jpg', 'Jiaotong University');
+		//$scope.addSlide('app/img/LD.jpg', 'LD @ 2013');
+		//$scope.addSlide('app/img/SpeedOfShanghai.jpg', 'Speed of Shanghai');
+		//$scope.addSlide('app/img/TheAutumn.jpg', 'The Autumn');
 	}])
 	;
 })();

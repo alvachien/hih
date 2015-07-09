@@ -103,7 +103,7 @@
 	            <nav class="hidden-xs">
 	                <ul class="nav navbar-nav">
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle>Home<b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.Home">Home</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 	                            <li><a ui-sref="home.userdetail">User Detail</a></li>
 	                            <li role="separator" class="divider"></li>
@@ -111,7 +111,7 @@
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle>Learning<b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 	                            <li><a ui-sref="home.learn.category.list">Learn Category</a></li>
 								<li role="separator" class="divider"></li>
@@ -121,7 +121,7 @@
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle>Finance<b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 								<li><a ui-sref="home.finance.currency.list">Currency</a></li>
 	                            <li><a ui-sref="home.finance.accountcategory.list">Account Category</a></li>
@@ -133,7 +133,7 @@
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle>Acknowledgements<b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.Acknowledgements">Acknowledgements</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 								<li><a target="_blank" href="https://www.angularjs.org/">Angular JS</a></li>
 								<li><a target="_blank" href="http://getbootstrap.com/">Bootstrap</a></li>
@@ -156,20 +156,20 @@
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header">Others</li>
 								<li><a target="_blank" href="https://github.com/thomaspark/bootswatch/">Themes</a></li>
-								<li><a target="_blank" href="http://www.jstree.com/"></a>jsTree</li>
+								<li><a target="_blank" href="http://www.jstree.com/">jsTree</a></li>
 								<li><a target="_blank" href="https://github.com/ezraroi/ngJsTree">ngJsTree</a></li>
 								<li><a target="_blank" href="http://ui-grid.info/">Angular UI Grid</a></li>
 	                        </ul>
 	                    </li>
-	                    <li><a href="#/about">About</a></li>
+	                    <li><a href="#/about"><span ng-i18next="Nav.About">About</span></a></li>
 	                </ul>
 	                
 	                <ul class="nav navbar-nav navbar-right">
 	                    <li class="dropdown" dropdown>
-		                	<a role="button" class="dropdown-toggle" dropdown-toggle>Languages<b class="caret"></b></a>
+		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Common.Language">Languages</span><b class="caret"></b></a>
 							<ul class="dropdown-menu">
-                                <li><a href="">简体中文</a></li>
-								<li><a href="">English</a></li>
+                                <li><a href="" ng-click="setLanguage('zh')">简体中文</a></li>
+								<li><a href="" ng-click="setLanguage('en')">English</a></li>
 							</ul>
 						</li>
 	                    <!--<li class="dropdown" dropdown>
