@@ -16,8 +16,14 @@
 		
 		"New": "New",
 		"Change" : "Change",
-		"Delete": "Delete",
-		"Refresh": "Refresh",
+        "Delete": "Delete",
+        "Create": "Create",
+        "Display": "Display",
+        "Edit":  "Edit",
+        "Refresh": "Refresh",
+        "Object": "Object",
+        "Value": "Value",
+        "Search":  "Search",
 		
 		"ID": "ID",
 		"Category": "Category",
@@ -34,7 +40,9 @@
     	"User": "User",
     	"Password": "Password",
     	"Register": "Register",
-    	"Login": "Login",
+        "Login": "Login",
+        "SignIn": "Sign in",
+        "SignUp":  "Sign up",
     	"Logout": "Logout",
 		"ConfirmToLogout": "You can currently log out. Do you confirm to continue?",
     	"LoginTitle": "Login into the System",
@@ -49,7 +57,9 @@
  	
  	"Nav": {
  		"Home": "Home",
- 		"Users": "Users",
+        "Users": "Users",
+        "UserDetail": "User Detail",
+        "TakeALookAtUserDetail":  "Take a look at User Detail",
  		"LearningTrace": "Learning Trace",
  		"FinanceTrace": "Finance Trace",
  		"About": "About",

@@ -15,10 +15,16 @@
 		"Themes": "主题",
 
 		"New": "新建",
-		"Change": "修改",
+        "Change": "修改",
 		"Delete": "删除",
+        "Create": "创建",
+        "Display": "显示",
+        "Edit":  "编辑",
 		"Refresh": "刷新",
-		
+        "Object": "对象",
+        "Value":  "值",
+		"Search":  "搜索",
+
 		"ID": "ID",
 		"Category": "类别",
 		"Name": "名称",
@@ -36,6 +42,8 @@
     	"Register": "注册",
     	"Login": "登陆",
     	"Logout": "登出",
+        "SignIn": "登陆",
+        "SignUp":  "注册",
 		"ConfirmToLogout": "即将登出系统。请确认继续？",
     	"LoginTitle": "登陆到系统",
     	"RegisterTitle": "注册新用户",
@@ -50,6 +58,8 @@
  	"Nav": {
  		"Home": "主页",
  		"Users": "用户信息",
+        "UserDetail":  "用户详细信息",
+        "TakeALookAtUserDetail":  "查看当前用户详细信息",
  		"LearningTrace": "学习记录系统",
  		"FinanceTrace": "财务记录系统",
  		"About": "关于",

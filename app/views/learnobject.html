@@ -1,21 +1,21 @@
 <div id="viewLearnObject">
 	<div class="page-header">
 		<h2>
-			Learn Object<small> {{Activity}}</small>
+            <span ng-i18next="Learn.LearningObject">Learn Object</span><small> {{Activity | i18next}}</small>
 		</h2>
 	</div>
 
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptID">ID:</label>
+			<label class="control-label col-sm-2" for="iptID" ng-i18next="Common.ID">ID</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptID"
-					readonly="readonly" placeholder="ID" ng-model="ObjectID">
+					readonly="readonly" placeholder="{{ "Common.ID" | i18next}}" ng-model="ObjectID">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptCtgy">Category:</label>
+			<label class="control-label col-sm-2" for="iptCtgy" ng-i18next="Common.Category">Category:</label>
 			<div class="col-sm-10">
 				<select id="iptCtgy" ng-model="ObjectCategoryID" ng-disabled="isReadonly"
 					ng-options="ctgy.id as ctgy.text for ctgy in CategoryIDs">
@@ -27,27 +27,28 @@
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptName">Name</label>
+			<label class="control-label col-sm-2" for="iptName" ng-i18next="Common.Name">Name</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
-					placeholder="Name" ng-model="ObjectName" required>
+					placeholder="{{ "Common.Name" | i18next }}" ng-model="ObjectName" required>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptContent">Content</label>
+			<label class="control-label col-sm-2" for="iptContent" ng-i18next="Common.Content">Content</label>
 			<div class="col-sm-10">
 				<textarea ui-tinymce="tinymceOptions" rows="20" ng-readonly="isReadonly"
-					ng-model="ObjectContent"></textarea>
+					        ng-model="ObjectContent"></textarea>
 			</div>
 		</div>
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
-					ng-disabled="frmObj.$invalid || !frmObj.$dirty">Submit</button>
-				<button class="btn btn-danger" ng-click="close()">Cancel</button>
+					ng-disabled="frmObj.$invalid || !frmObj.$dirty" ng-i18next="Common.Submit">Submit</button>
+				<button class="btn btn-danger" ng-click="close()" ng-i18next="Common.Cancel">Cancel</button>
 			</div>
 		</div>
 	</form>
 </div>
+

@@ -5,10 +5,10 @@
 	
 	angular.module('jm.i18next').config(['$i18nextProvider', function ($i18nextProvider) {
 	    $i18nextProvider.options = {
-	        lng: 'en',
+	        lng: 'zh',
 	        useCookie: false,
 	        useLocalStorage: false,
-	        fallbackLng: 'en',
+	        fallbackLng: 'zh',
 	        resGetPath: 'locales/__lng__/resource.json',
 	        defaultLoadingValue: '' // ng-i18next option, *NOT* directly supported by i18next
 	    };

@@ -2,24 +2,24 @@
 
 	<div class="page-header">
 		<h2>
-			Learn Objects <small> List View </small>
+            <span ng-i18next="Learn.LearningObject">Learn Objects</span> <small ng-i18next="Common.ListView"> List View </small>
 		</h2>
-		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+		<button type="button" class="btn btn-primary" ng-click="newItem()" ng-i18next="Common.New">New</button>
 	</div>
 
 	<table st-table="displayedCollection" st-safe-src="rowCollection"
 		class="table table-striped">
 		<thead>
 			<tr>
-				<th st-sort="ID">ID</th>
-				<th st-sort="ctgyID">Category ID</th>
-				<th st-sort="ctgyName">Category Name</th>
-				<th st-sort="Name">Name</th>
-				<th st-sort="content">Content</th>
+                <th st-sort="ID" ng-i18next="Common.ID">ID</th>
+                <th st-sort="ctgyID" ng-i18next="Common.CategoryID">Category ID</th>
+                <th st-sort="ctgyName" ng-i18next="Common.Category">Category Name</th>
+				<th st-sort="Name" ng-i18next="Common.Name">Name</th>
+                <th st-sort="content" ng-i18next="Common.Content">Content</th>
 			</tr>
 			<tr>
 				<th colspan="6"><input st-search="" class="form-control"
-					placeholder="global search ..." type="text" /></th>
+					placeholder="{{ "Common.Search" | i18next }}" type="text" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -47,5 +47,12 @@
 				</td>
 			</tr>
 		</tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <div st-pagination="" st-items-by-page="itemsByPage"></div>
+                </td>
+            </tr>
+        </tfoot>
 	</table>
 </div>

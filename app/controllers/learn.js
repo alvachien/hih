@@ -102,9 +102,11 @@
 		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
 			utils.loadLearnCategories();
 			utils.loadLearnObjects();
+
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
-		    
+		    $scope.itemsByPage = 15;
+
 		    $scope.rowCollection = $rootScope.arLearnObject;
 		    $scope.displayedCollection = [].concat($scope.rowCollection);
 		    
@@ -164,45 +166,51 @@
 		}])
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
-			 $scope.Activity = "";
-			 $scope.ErrorDetail = "";
-			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.ObjectContent = "";
-			 $scope.ObjectName = "";
-			 $scope.ObjectCategoryID = -1;
-			 $scope.ObjectID = 0;
-			 $scope.isReadonly = false;
+		    $scope.Activity = "";
+		    $scope.ActivityID = 3;
+			$scope.ErrorDetail = "";
+			$scope.CategoryIDs = $rootScope.arLearnCategory;
+			$scope.ObjectContent = "";
+			$scope.ObjectName = "";
+			$scope.ObjectCategoryID = -1;
+			$scope.ObjectID = 0;
+			$scope.isReadonly = false;
+			$scope.ContentModified = false;
 			 
-			 if (angular.isDefined($stateParams.objid)) {
-				 $scope.ObjectID = $stateParams.objid;
+			if (angular.isDefined($stateParams.objid)) {
+			    $scope.ObjectID = $stateParams.objid;
 				 
-				 if ($state.current.name === "home.learn.object.maintain") {
-					 $scope.Activity = "Edit";					 
-				 } else if ($state.current.name === "home.learn.object.display") {
-					 $scope.Activity = "Display";
-					 $scope.isReadonly = true;
-				 }
+				if ($state.current.name === "home.learn.object.maintain") {
+				    $scope.Activity = "Common.Edit";
+				    $scope.ActivityID = 2;
+				} else if ($state.current.name === "home.learn.object.display") {
+				    $scope.Activity = "Common.Display";
+				    $scope.isReadonly = true;
+				    $scope.ActivityID = 3;
+				}
  				 
-				 $.each($rootScope.arLearnObject, function(idx, obj) {
-					 if ($scope.ObjectID === 0 || $scope.ObjectID === -1) 
-						 return false;
+				$.each($rootScope.arLearnObject, function(idx, obj) {
+				    if ($scope.ObjectID === 0 || $scope.ObjectID === -1) 
+					    return false;
 					 
-					 if (obj.id === $scope.ObjectID) {
-						 $scope.ObjectContent = obj.content;
-						 $scope.ObjectName = obj.name;
-						 $scope.ObjectCategoryID = obj.categoryid;
-						 //$scope.ObjectID = obj.id;
-						 return false;
-					 }
-				 });
-			 } else {
-				 $scope.Activity = "Create";
-			 };
+                    if (obj.id === $scope.ObjectID) {
+					    $scope.ObjectContent = obj.content;
+						$scope.ObjectName = obj.name;
+						$scope.ObjectCategoryID = obj.categoryid;
+						//$scope.ObjectID = obj.id;
+						return false;
+					}
+				});
+			} else {
+			    $scope.Activity = "Common.Create";
+			    $scope.ActivityID = 1;
+			};
 			 
-			 $scope.tinymceOptions = {
+			$scope.tinymceOptions = {
 			    onChange: function(e) {
-			      // put logic here for keypress and cut/paste changes
-			    	
+			        if ($scope.ActivityID !== 3) {
+			            $scope.ContentModified = true;
+			        }
 			    },
 			    inline: false,
 			    menubar: false,

@@ -105,25 +105,25 @@
 	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.Home">Home</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-	                            <li><a ui-sref="home.userdetail">User Detail</a></li>
+	                            <li><a ui-sref="home.userdetail"><span ng-i18next="Nav.UserDetail">User Detail</span></a></li>
 	                            <li role="separator" class="divider"></li>
-	                            <li><a href="" ng-click="logout()">Logout</a></li>                            
+	                            <li><a href="" ng-click="logout()"><span ng-i18next="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-	                            <li><a ui-sref="home.learn.category.list">Learn Category</a></li>
+	                            <li><a ui-sref="home.learn.category.list"><span ng-i18next="Learn.LearningCategory">Learn Category</span></a></li>
 								<li role="separator" class="divider"></li>
-	                            <li><a ui-sref="home.learn.object.list">Learn Object</a></li>
-								<li><a ui-sref="home.learn.history.list">Learn History</a></li>
-								<li><a ui-sref="home.learn.award.list">Learn Award</a></li>
+	                            <li><a ui-sref="home.learn.object.list"><span ng-i18next="Learn.LearningObject">Learn Object</span></a></li>
+								<li><a ui-sref="home.learn.history.list"><span ng-i18next="Learn.LearningHistory">Learn History</span></a></li>
+								<li><a ui-sref="home.learn.award.list"><span ng-i18next="Learn.LearningAward">Learn Award</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-								<li><a ui-sref="home.finance.currency.list">Currency</a></li>
+								<li><a ui-sref="home.finance.currency.list"><span ng-i18next="Finance.Currency">Currency</span></a></li>
 	                            <li><a ui-sref="home.finance.accountcategory.list">Account Category</a></li>
 								<li><a ui-sref="home.finance.documenttype.list">Document Type</a></li>
 								<li><a ui-sref="home.finance.transactiontype.list">Transaction Type</a></li>								

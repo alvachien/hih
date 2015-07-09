@@ -1,25 +1,33 @@
-<div id="login">
+<div id="viewRegister">
 	<form class="form-register" name="registerForm">
-		<h2 class="form-register-heading">Register an user</h2>
+        <h2 class="form-register-heading" ng-i18next="Login.RegisterTitle">Register an user</h2>
 
-		<label for="inputUser" class="sr-only">User name</label> <input
-			id="inputUser" class="form-control" placeholder="User name"
-			ng-model="registerInfo.username" required autofocus> <label
-			for="inputPassword" class="sr-only">Password</label> <input
-			type="password" id="inputPassword" class="form-control"
-			ng-model="registerInfo.password" placeholder="Password" required>
+		<label for="inputUser" class="sr-only">User name</label> 
+        <input id="inputUser" class="form-control" placeholder="{{ 'Login.User' | i18next }}"
+               ng-model="registerInfo.username" required autofocus> 
+        
+        <label
+			for="inputPassword" class="sr-only">Password</label> 
+        <input type="password" id="inputPassword" class="form-control"
+               ng-model="registerInfo.password" placeholder="{{ 'Login.Password' | i18next }}" required>
 
 		<label for="inputConfirmPassword" class="sr-only">Confirm
-			Password</label> <input type="password" id="inputConfirmPassword"
+			Password</label> 
+        <input type="password" id="inputConfirmPassword"
 			class="form-control" ng-model="registerInfo.confirmpassword"
-			placeholder="Confirm Password" required> <label
-			for="inputMail" class="sr-only">Mailbox</label> <input type="email"
+			placeholder="{{ 'Login.ConfirmedPassword' | i18next}}" required> 
+        
+        <label
+			for="inputMail" class="sr-only">Mailbox</label> 
+        <input type="email"
 			id="inputMail" class="form-control" ng-model="registerInfo.mailbox"
-			placeholder="Mailbox" required>
+			placeholder="{{ 'Login.Email' | i18next }}" required>
 
-		<button class="btn btn-lg btn-primary btn-block" type="submit"
-			ng-disabled="registerForm.$invalid" ng-click="submitRegister()">Register</button>
-		<button class="btn btn-lg btn-block" ui-sref="login">Cancel</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"
+                ng-disabled="registerForm.$invalid" ng-click="submitRegister()" ng-i18next="Login.Register">
+            Register
+        </button>
+        <button class="btn btn-lg btn-block" ui-sref="login" ng-i18next="Common.Cancel">Cancel</button>
 	</form>
 </div>
 
