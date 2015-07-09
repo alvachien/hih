@@ -113,6 +113,8 @@
 ////////////////////////////////////////////////////////////////////						
 						rtnObj.loadLearnObjects = function () {
 							if (!$rootScope.isLearnObjectLoad) {
+								// Example JSON response
+								// {"id":"1","categoryid":"2","categoryname":"aaa","name":"aaa","content":"aaa2"}
 								$http
 										.post(
 												'script/hihsrv.php',
@@ -168,6 +170,7 @@
 						};
 						rtnObj.loadLearnAwards = function () {
 							if (!$rootScope.isLearnAwardLoaded) {
+								
 								$http
 										.post(
 												'script/hihsrv.php',
@@ -196,6 +199,8 @@
 						};
 						rtnObj.loadLearnCategories = function () {
 							if (!$rootScope.isLearnCategoryLoaded) {
+								// Example JSON response:
+								// {"id":"1","parent":"#","text":"aaa","comment":"aaa"}
 								$http
 										.post(
 												'script/hihsrv.php',

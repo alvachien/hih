@@ -86,7 +86,17 @@
 	        	templateUrl: 'app/views/learnaward.html',
 	        	controller: 'LearnAwardController'
 	        })
-	    ;
+	        .state("home.learn.category", {
+	            url: "/category",
+	            abstract: true,
+	            template: '<div ui-view></div>'
+	        })
+	        .state("home.learn.category.list", {
+	        	url: "",
+	        	templateUrl: 'app/views/learncategorylist.html',
+	        	controller: 'LearnCategoryListController'
+	        })
+			;
 		}])
 		
 		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
@@ -505,6 +515,27 @@
 				 $state.go("home.learn.award.list");
 			 };
 		}])
-		;
+		
+	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		utils.loadLearnCategories();
+
+		$scope.rowCollection = [];     
+	    $scope.displayedCollection = [];	    
+	    $scope.rowCollection = $rootScope.arLearnCategory;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+		$scope.$on("LearnCategoryLoaded", function() {
+			console.log("HIH LearnCategory List: Category Loaded event fired!");
+	    	$scope.rowCollection = $rootScope.arLearnCategory;
+			
+		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+		    }
+		});	
+	}])
+			
+	;
 })();
 

@@ -1,0 +1,31 @@
+<div id="viewLearnCategoryList">
+
+	<div class="page-header">
+		<h2>
+			Learn Category <small> List View </small>
+		</h2>
+	</div>
+
+	<table st-table="displayedCollection" st-safe-src="rowCollection"
+		class="table table-striped">
+		<thead>
+			<tr>
+				<th st-sort="id">ID</th>
+				<th st-sort="parent">Parent ID</th>
+				<th st-sort="text">Text</th>
+				<th st-sort="comment">Comment</th>
+			</tr>
+			<tr>
+				<th colspan="4"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.id}}</td>
+				<td>{{row.parent}}</td>
+				<td>{{row.text}}</td>
+				<td>{{row.comment}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

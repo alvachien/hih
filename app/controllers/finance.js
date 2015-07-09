@@ -342,7 +342,7 @@
 
 		            $scope.DocumentHeader.DocumentAmount = parseFloat(obj.tranamount).toFixed(4);
 		            $scope.DocumentHeader.DocumentDesp = obj.desp;
-		            $scope.DocumentHeader.DocumentTranDate = obj.trandate;
+		            $scope.DocumentHeader.DocumentTranDate = obj.trandate;					
 
 		            $.each($scope.AllDocumentTypes, function (idx2, obj2) {
 		                if (obj2.id === obj.doctype) {
