@@ -22,6 +22,10 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 	$username = "";
 	
 	switch ($sObject) {
+		// ===========================================================================================
+		// Login and User Part
+		// ===========================================================================================
+		
 		case "USERLOGIN" :
 			{
 				$sLogin = escape ( $realParamArr ['loginuser'] );
@@ -176,7 +180,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		export_error ( $sErrors );
 	}
 } else {
-	export_error ( "Wrong request method: " . $_SERVER ["REQUEST_METHOD"] );
+	export_error ( "HIH Wrong request method: " . $_SERVER ["REQUEST_METHOD"] );
 }
 
 ?>

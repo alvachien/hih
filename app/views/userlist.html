@@ -1,0 +1,36 @@
+<div id="viewUserList">
+	<div class="page-header">
+		<h2>
+            <span ng-i18next="Nav.Users">Users</span> <small ng-i18next="Common.ListView"> List View </small>
+		</h2>
+	</div>
+
+	<table st-table="displayedCollection" st-safe-src="rowCollection"
+		class="table table-striped">
+		<thead>
+			<tr>
+                <th st-sort="user" ng-i18next="Login.User">User</th>
+                <th st-sort="displayas" ng-i18next="Login.DisplayAs">Display As</th>
+			</tr>
+			<tr>
+				<th colspan="2"><input st-search="" class="form-control"
+					placeholder="{{ 'Common.Search' | i18next }}" type="text" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in displayedCollection">
+				<td>{{row.id}}</td>
+				<td>{{row.text}}</td>
+			</tr>
+		</tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <div st-pagination="" st-items-by-page="10"></div>
+                </td>
+            </tr>
+        </tfoot>
+	</table>
+	
+</div>
+	

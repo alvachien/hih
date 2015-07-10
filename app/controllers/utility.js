@@ -92,8 +92,7 @@
 													$rootScope.arUserList = data;
 													$rootScope.isUserListLoad = true;
 
-													$rootScope
-															.$broadcast("UserListLoaded");
+													$rootScope.$broadcast("UserListLoaded");
 												})
 										.error(
 												function(data, status,

@@ -5,10 +5,10 @@
 	
 	angular.module('jm.i18next').config(['$i18nextProvider', function ($i18nextProvider) {
 	    $i18nextProvider.options = {
-	        lng: 'zh',
+	        lng: 'en',
 	        useCookie: false,
 	        useLocalStorage: false,
-	        fallbackLng: 'zh',
+	        fallbackLng: 'en',
 	        resGetPath: 'locales/__lng__/resource.json',
 	        defaultLoadingValue: '' // ng-i18next option, *NOT* directly supported by i18next
 	    };
@@ -43,7 +43,7 @@
 			    );
 			    
 				$rootScope.$on('i18nextLanguageChange', function () {
-					$log.info('Language has changed!');
+					$log.info('HIH: Language has changed!');
 					if (!$rootScope.i18nextReady) {
 						$timeout(function () {
 							$rootScope.i18nextReady = true;
@@ -122,6 +122,11 @@
         	url: '',
         	templateUrl: 'app/views/welcome.html'
         })
+		.state('home.userlist', {
+        	url: '/userlist',
+        	templateUrl: 'app/views/userlist.html',
+			controller: 'UserListController'
+		})
         .state('home.userdetail', {
         	url: '/userdetail',
         	templateUrl: 'app/views/userdetail.html'
@@ -167,6 +172,24 @@
 			}
 		}
 	}])
+
+	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {
+		utils.loadUserList();
+		
+	    $scope.rowCollection = $rootScope.arUserList;
+	    $scope.displayedCollection = [].concat($scope.rowCollection);
+
+	    $scope.$on("UserListLoaded", function() {
+	    	$log.info("HIH User List: Loaded event fired!");
+		    	
+		    $scope.rowCollection = $rootScope.arUserList;
+			if ($scope.rowCollection && $scope.rowCollection.length > 0) {
+				// copy the references (you could clone ie angular.copy but
+				// then have to go through a dirty checking for the matches)
+			   	$scope.displayedCollection = [].concat($scope.rowCollection);
+			}
+		});		
+	}])
 	
 	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {
 		$scope.MessageHeader = $rootScope.MessageHeader;
@@ -199,10 +222,10 @@
 //		      $log.info('HIH: Message dialog dismissed at: ' + new Date());
 //		    });			
 //			
-////			$('#dlgMessage').modal('hide');
-////			var dlg = $('#dlgMessage');
-////			if (dlg)
-////				dlg.modal('show');
+//			$('#dlgMessage').modal('hide');
+//			var dlg = $('#dlgMessage');
+//			if (dlg)
+//				dlg.modal('show');
 //		});
 	}])	
 	
