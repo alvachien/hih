@@ -7,6 +7,7 @@
 	</div>
 	
 	<div class="panel-body">
-		<div js-tree="vm.treeConfig" should-apply="vm.applyModelChanges()" ng-model="vm.treeData" tree="vm.treeInstance" tree-events="ready:vm.readyCB;create_node:vm.createCB"></div>
+		<div js-tree="treeConfig" ng-model="treeData" tree="treeInstance" 
+			tree-events="ready:vm.readyCB;create_node:vm.createCB"></div>
 	</div>
 </div>
