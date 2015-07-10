@@ -3,7 +3,7 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select'])
+	angular.module('hihApp.Learn', ["ui.router", 'ngModel', "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -95,6 +95,12 @@
 	        	url: "",
 	        	templateUrl: 'app/views/learncategorylist.html',
 	        	controller: 'LearnCategoryListController'
+	        })
+	        .state("home.learn.category.hierarchy", {
+	        	url: "/hierarchy",
+	        	templateUrl: 'app/views/learncategoryhierarchy.html',
+	        	controller: 'LearnCategoryHierarchyController',
+				controllerAs: 'vm'
 	        })
 			;
 		}])
@@ -524,26 +530,191 @@
 			 };
 		}])
 		
-	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadLearnCategories();
 
 		$scope.rowCollection = [];     
 	    $scope.displayedCollection = [];	    
 	    $scope.rowCollection = $rootScope.arLearnCategory;
 	    $scope.displayedCollection = [].concat($scope.rowCollection);
+		$scope.treeData = [{id: 1, parent: '#', text: 'Test'}];
+		if ($scope.displayedCollection.length > 0) {
+			$scope.treeData = angular.copy($scope.displayedCollection);			
+		}
 
 		$scope.$on("LearnCategoryLoaded", function() {
 			console.log("HIH LearnCategory List: Category Loaded event fired!");
 	    	$scope.rowCollection = $rootScope.arLearnCategory;
 			
 		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-				// copy the references (you could clone ie angular.copy but
-				// then have to go through a dirty checking for the matches)
 		    	$scope.displayedCollection = [].concat($scope.rowCollection);
+				$scope.treeData = angular.copy($scope.displayedCollection);
 		    }
-		});	
+		});
+		
+		$scope.treeConfig = {		    
+            core : {
+                multiple : false,
+                animation: true,
+                error : function(error) {
+                    $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                },
+                check_callback : true,
+                worker : true
+            },
+            types : {
+                default : {
+                    icon : 'glyphicon glyphicon-flash'
+                },
+                star : {
+                    icon : 'glyphicon glyphicon-star'
+                },
+                cloud : {
+                    icon : 'glyphicon glyphicon-cloud'
+                }
+            },
+            version : 1,
+            plugins : ['types','checkbox']
+        };
+		
+		$scope.reCreateTree = function() {
+		    $scope.treeConfig.version++;
+		};
+		
+		$scope.readyCB = function() {
+        	$log.info('ready called');
+    	};
+
+    	$scope.createNodeCB = function(e,item) {
+        	$log.info('create_node called');
+    	};
+		
+		// Get selected tree node
+		//var selected_nodes = $scope.treeInstance.jstree(true).get_selected();
+	
 	}])
-			
+	
+	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+		// $scope.ignoreChanges = false;
+		// $scope.originalData = [
+        //      { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
+        //      { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
+        //      { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
+        //      { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
+        //  ];
+        // $scope.treeData = [];
+        // angular.copy($scope.originalData,$scope.treeData);
+        // $scope.treeConfig = {
+        //     core : {
+        //         multiple : false,
+        //         animation: true,
+        //         error : function(error) {
+        //             $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+        //         },
+        //         check_callback : true,
+        //         worker : true
+        //     },
+        //     types : {
+        //         default : {
+        //             icon : 'glyphicon glyphicon-flash'
+        //         },
+        //         star : {
+        //             icon : 'glyphicon glyphicon-star'
+        //         },
+        //         cloud : {
+        //             icon : 'glyphicon glyphicon-cloud'
+        //         }
+        //     },
+        //     version : 1,
+        //     plugins : ['types','checkbox']
+        // };
+		 
+        var vm = this;
+
+        var newId = 1;
+        vm.ignoreChanges = false;
+        vm.newNode = {};
+        vm.originalData = [
+            { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
+            { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
+            { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
+            { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
+        ];
+        vm.treeData = [];
+        angular.copy(vm.originalData,vm.treeData);
+        vm.treeConfig = {
+            core : {
+                multiple : false,
+                animation: true,
+                error : function(error) {
+                    $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                },
+                check_callback : true,
+                worker : true
+            },
+            types : {
+                default : {
+                    icon : 'glyphicon glyphicon-flash'
+                },
+                star : {
+                    icon : 'glyphicon glyphicon-star'
+                },
+                cloud : {
+                    icon : 'glyphicon glyphicon-cloud'
+                }
+            },
+            version : 1,
+            plugins : ['types','checkbox']
+        };
+
+
+        vm.reCreateTree = function() {
+            vm.ignoreChanges = true;
+            angular.copy(this.originalData,this.treeData);
+            vm.treeConfig.version++;
+        };
+
+        vm.simulateAsyncData = function() {
+            //vm.promise = $timeout(function(){
+            //    vm.treeData.push({ id : (newId++).toString(), parent : vm.treeData[0].id, text : 'Async Loaded' })
+            //},3000);
+        };
+
+        vm.addNewNode = function() {
+            vm.treeData.push({ id : (newId++).toString(), parent : vm.newNode.parent, text : vm.newNode.text });
+        };
+
+
+        vm. treeInstanceDemo = function() {
+            //var selectedNode = vm.treeInstance.jstree(true).get_selected();
+            //toaster.pop('info', 'Tree Instance Method Called',  selectedNode.length > 0 ? 'Selected node id is ' + selectedNode : 'None of the nodes are selected');
+        };
+
+        vm.setNodeType = function() {
+            //var item = _.findWhere(this.treeData, { id : this.selectedNode } );
+            //item.type = this.newType;
+            //toaster.pop('success', 'Node Type Changed', 'Changed the type of node ' + this.selectedNode);
+        };
+
+        vm.readyCB = function() {
+            //$timeout(function() {
+            //    vm.ignoreChanges = false;
+            //    toaster.pop('success', 'JS Tree Ready', 'Js Tree issued the ready event')
+            //});
+        };
+
+        this.createCB  = function(e,item) {
+            //$timeout(function() {toaster.pop('success', 'Node Added', 'Added new node with the text ' + item.node.text)});
+        };
+
+        this.applyModelChanges = function() {
+            return !vm.ignoreChanges;
+        };
+    		
+		// Get selected tree node
+		//var selected_nodes = $scope.treeInstance.jstree(true).get_selected();
+	
+	}])			
 	;
 })();
 

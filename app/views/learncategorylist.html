@@ -6,17 +6,21 @@
 		</h2>
 	</div>
 
+	<!--<div js-tree="treeConfig" ng-model="treeData" 
+		 tree="treeInstance" tree-events="ready:readyCB;create_node:createNodeCB"></div>-->
+	
 	<table st-table="displayedCollection" st-safe-src="rowCollection"
 		class="table table-striped">
 		<thead>
 			<tr>
-				<th st-sort="id">ID</th>
-				<th st-sort="parent">Parent ID</th>
-				<th st-sort="text">Text</th>
-				<th st-sort="comment">Comment</th>
+				<th st-sort="id" ng-i18next="Common.ID">ID</th>
+				<th st-sort="parent" ng-i18next="Common.Parent">Parent ID</th>
+				<th st-sort="text" ng-i18next="Common.Text">Text</th>
+				<th st-sort="comment" ng-i18next="Common.Comment">Comment</th>
 			</tr>
 			<tr>
-				<th colspan="4"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
+				<th colspan="4"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | i18next }}" 
+					type="text" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,5 +31,12 @@
 				<td>{{row.comment}}</td>
 			</tr>
 		</tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <div st-pagination="" st-items-by-page="10"></div>
+                </td>
+            </tr>
+        </tfoot>
 	</table>
 </div>

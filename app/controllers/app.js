@@ -14,7 +14,8 @@
 	    };
 	}]);
 	
-	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 'hihApp.Finance', 'jm.i18next'])
+	angular.module('hihApp', ["smart-table", "ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 
+		'hihApp.Finance', 'jm.i18next', 'ngJsTree'])
 		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', '$i18next', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log, $i18next) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;

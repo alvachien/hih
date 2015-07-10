@@ -1,0 +1,12 @@
+<div id="viewLearnCategoryHier">
+
+	<div class="page-header">
+		<h2>
+			<span ng-i18next="Learn.LearningCategory">Learn Category</span> <small ng-i18next="Common.HierarchyView"> List View </small>
+		</h2>
+	</div>
+	
+	<div class="panel-body">
+		<div js-tree="vm.treeConfig" should-apply="vm.applyModelChanges()" ng-model="vm.treeData" tree="vm.treeInstance" tree-events="ready:vm.readyCB;create_node:vm.createCB"></div>
+	</div>
+</div>

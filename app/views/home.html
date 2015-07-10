@@ -114,7 +114,9 @@
 	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-	                            <li><a ui-sref="home.learn.category.list"><span ng-i18next="Learn.LearningCategory">Learn Category</span></a></li>
+								<li class="dropdown-header"><span ng-i18next="Learn.LearningCategory">Learn Category</span></li>
+	                            <li><a ui-sref="home.learn.category.list"><span ng-i18next="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.learn.category.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
 								<li role="separator" class="divider"></li>
 	                            <li><a ui-sref="home.learn.object.list"><span ng-i18next="Learn.LearningObject">Learn Object</span></a></li>
 								<li><a ui-sref="home.learn.history.list"><span ng-i18next="Learn.LearningHistory">Learn History</span></a></li>
