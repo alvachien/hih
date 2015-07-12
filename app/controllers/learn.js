@@ -549,39 +549,38 @@
 	}])
 	
 	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		 $scope.ignoreChanges = false;
-		 $scope.originalData = [
-              { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
-              { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
-              { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
-              { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
-          ];
+		utils.loadLearnCategories();
+		
+		$scope.ignoreChanges = false;
+//		$scope.originalData = [
+//              { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
+//              { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
+//              { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
+//              { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
+//          ];
          $scope.treeData = [];
-         angular.copy($scope.originalData,$scope.treeData);
+		 angular.copy($rootScope.arLearnCategory, $scope.treeData);
+         
+ 		 $scope.$on("LearnCategoryLoaded", function() {
+			console.log("HIH LearnCategory List: Category Loaded event fired!");
+			angular.copy($rootScope.arLearnCategory, $scope.treeData);
+			
+			$scope.treeConfig.version++;
+		 });
+ 		 
+         
          $scope.treeConfig = {
              core : {
                  multiple : false,
                  animation: true,
                  error : function(error) {
                      $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
-                 },
-                 check_callback : true,
-                 worker : true
+                 }//,
+                 //check_callback : true,
+                 //worker : true
              },
-             types : {
-                 default : {
-                     icon : 'glyphicon glyphicon-flash'
-                 },
-                 star : {
-                     icon : 'glyphicon glyphicon-star'
-                 },
-                 cloud : {
-                     icon : 'glyphicon glyphicon-cloud'
-                 }
-             },
-             version : 1,
-             plugins : ['types','checkbox']
-         };
+             version : 1
+           };
 		 
 //        var vm = this;
 //

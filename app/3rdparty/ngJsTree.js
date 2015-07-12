@@ -136,14 +136,13 @@
                     if (attrs.tree) {
                         if (attrs.tree.indexOf('.') !== -1) {
                             var split = attrs.tree.split('.');
-                            scope.tree = scope.$parent[split[0]][split[1]] = elm;
+                            scope.tree = scope.$parent[split[0]][split[1]] = $(elm);
                         }
                         else {
-                            scope.tree = scope.$parent[attrs.tree] = elm;
+                            scope.tree = scope.$parent[attrs.tree] = $(elm);
                         }
-
                     } else {
-                        scope.tree = elm;
+                        scope.tree = $(elm);
                     }
                     scope.tree.jstree('destroy');
                 };
