@@ -21,6 +21,11 @@
 	        	templateUrl: 'app/views/learnobjectlist.html',
 	        	controller: 'LearnObjectListController'
 	        })
+	        .state("home.learn.object.hierarchy", {
+	        	url: "/hierarchy",
+	        	templateUrl: 'app/views/learnobjecthierarchy.html',
+	        	controller: 'LearnObjectHierarchyController'
+	        })
 	        .state("home.learn.object.create", {
 	        	url: '/create',
 	        	templateUrl: 'app/views/learnobject.html',
@@ -169,6 +174,66 @@
 				$state.go('home.learn.object.create');
 			};
 		}])
+		
+		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+			utils.loadLearnObjectsHierarchy();
+			
+			$scope.treeData = [];
+			$scope.ignoreModelChanges = function() { return false };
+	        $scope.treeConfig = {
+	            	core : {
+	                     multiple : false,
+	                     animation: true,
+	                     error : function(error) {
+	                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+	                     },
+	                     check_callback : true,
+	                     worker : true,
+	    				 themes: {
+	                    	name: 'default',
+	    					url: true,
+	    					dir: "app\\3rdparty\\jstree3.1.1\\themes",
+	    					responsive: true,
+	    					stripes: true
+	                	}
+	                 },
+	                 version : 1,
+	    			 plugins : [ 'wholerow' ]
+	             };
+			
+			if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
+				 $.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
+					var treenode = {};
+					angular.copy(obj, treenode);
+					treenode.state = {
+						opened: true	
+					};
+					
+					$scope.treeData.push(treenode); 
+				 });
+			 } else {			 		 
+			 }
+	         
+	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
+				$log.info("HIH LearnObject History: Object Hierarchy Loaded event fired!");
+				if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
+					$.each($rootScope.arLearnCategory, function(idx, obj) {
+						var treenode = {};
+						angular.copy(obj, treenode);
+						treenode.state = {
+							opened: true	
+						};
+						
+						$scope.treeData.push(treenode); 
+					 });
+					 
+					// Re-create the hierarchy
+					$scope.treeConfig.version++;
+				}			
+			 }); 		 
+			
+		}])	
+		
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		    $scope.Activity = "";
@@ -549,32 +614,32 @@
 	}])
 	
 	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadLearnCategories();
+		utils.loadLearnCategories();	
 		
-		$scope.ignoreChanges = function() { return false };
+		$scope.treeData = [];
+		$scope.ignoreModelChanges = function() { return false };
         $scope.treeConfig = {
-        	core : {
-                 multiple : false,
-                 animation: true,
-                 error : function(error) {
-                     $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+            	core : {
+                     multiple : false,
+                     animation: true,
+                     error : function(error) {
+                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                     },
+                     check_callback : true,
+                     worker : true,
+    				 themes: {
+                    	name: 'default',
+    					url: true,
+    					dir: "app\\3rdparty\\jstree3.1.1\\themes",
+    					responsive: true,
+    					stripes: true
+                	}
                  },
-                 check_callback : true,
-                 worker : true,
-				 themes: {
-                	name: 'default',
-					url: true,
-					dir: "app\\3rdparty\\jstree3.1.1\\themes",
-					responsive: true,
-					stripes: true
-            	}
-             },
-             version : 1,
-			 plugins : [ 'checkbox', 'wholerow' ]
-         };
-
-         $scope.treeData = [];
-		 if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
+                 version : 1,
+    			 plugins : [ 'wholerow' ]
+             };
+		
+		if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
 			 $.each($rootScope.arLearnCategory, function(idx, obj) {
 				var treenode = {};
 				angular.copy(obj, treenode);
@@ -584,6 +649,7 @@
 				
 				$scope.treeData.push(treenode); 
 			 });
+		 } else {			 		 
 		 }
          
  		 $scope.$on("LearnCategoryLoaded", function() {

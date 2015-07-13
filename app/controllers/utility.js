@@ -140,6 +140,33 @@
 												});
 							}
 						};
+						rtnObj.loadLearnObjectsHierarchy = function () {
+							if (!$rootScope.isLearnObjectHierarchyLoad) {
+								// Example JSON response
+								// {"id":"1","categoryid":"2","categoryname":"aaa","name":"aaa","content":"aaa2"}
+								$http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETLEARNOBJECTHIERARCHY'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arLearnObjectHierarchy = data;
+													$rootScope.isLearnObjectHierarchyLoad = true;
+
+													$rootScope.$broadcast("LearnObjectHierarchyLoaded");
+												})												
+											.error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}
+						};
 						rtnObj.loadLearnHistories = function () {
 							if (!$rootScope.isLearnHistoryLoaded) {
 								$http

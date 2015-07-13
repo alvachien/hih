@@ -93,6 +93,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function( 'learn_object_listread' );
 			}
 			break;
+			
+		case "GETLEARNOBJECTHIERARCHY": 
+			{
+				HIHSrv_Function( 'learn_object_hierread' );
+			}
+			break;
 		
 		case "GETLEARNHISTORYLIST" :
 			{
