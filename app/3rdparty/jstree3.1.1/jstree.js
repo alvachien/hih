@@ -1,11 +1,11 @@
-/*globals jQuery, define, module, exports, require, window, document, postMessage */
+/*globals jQuery, define, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
 	}
-	else if(typeof module !== 'undefined' && module.exports) {
-		module.exports = factory(require('jquery'));
+	else if(typeof exports === 'object') {
+		factory(require('jquery'));
 	}
 	else {
 		factory(jQuery);
@@ -28,6 +28,7 @@
 
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
+		return;
 	}
 
 	/**
@@ -573,8 +574,7 @@
 				tout = null,
 				was_click = 0;
 			this.element
-				.on("dblclick.jstree", function (e) {
-						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
+				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
 							document.selection.empty();
 						}
@@ -601,7 +601,6 @@
 						this.toggle_node(e.target);
 					}, this))
 				.on("dblclick.jstree", ".jstree-anchor", $.proxy(function (e) {
-						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(this.settings.core.dblclick_toggle) {
 							this.toggle_node(e.target);
 						}
@@ -612,7 +611,7 @@
 						this.activate_node(e.currentTarget, e);
 					}, this))
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
-						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
+						if(e.target.tagName === "INPUT") { return true; }
 						if(e.which !== 32 && e.which !== 13 && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey)) { return true; }
 						var o = null;
 						if(this._data.core.rtl) {
@@ -740,7 +739,7 @@
 					}, this))
 				// quick searching when the tree is focused
 				.on('keypress.jstree', $.proxy(function (e) {
-						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
+						if(e.target.tagName === "INPUT") { return true; }
 						if(tout) { clearTimeout(tout); }
 						tout = setTimeout(function () {
 							word = '';
@@ -774,7 +773,7 @@
 							if(end) { return; }
 						}
 						// list nodes that start with that letter (only if word consists of a single char)
-						if(new RegExp('^' + chr.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '+$').test(word)) {
+						if(new RegExp('^' + chr + '+$').test(word)) {
 							// search for the next node starting with that letter
 							col.slice(ind + 1).each($.proxy(function (i, v) {
 								if($(v).text().toLowerCase().charAt(0) === chr) {
@@ -2704,13 +2703,14 @@
 			if(!obj) { return false; }
 			var dom = obj.id === '#' ? this.get_container_ul() : this.get_node(obj, true),
 				_this = this, i, j;
-			if(dom.length) {
-				dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
-				$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
+			if(!dom.length) {
+				for(i = 0, j = obj.children_d.length; i < j; i++) {
+					this._model.data[obj.children_d[i]].state.opened = false;
+				}
+				return this.trigger('close_all', { "node" : obj });
 			}
-			for(i = 0, j = obj.children_d.length; i < j; i++) {
-				this._model.data[obj.children_d[i]].state.opened = false;
-			}
+			dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
+			$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
 			/**
 			 * triggered when an `close_all` call completes
 			 * @event
@@ -2798,9 +2798,6 @@
 		activate_node : function (obj, e) {
 			if(this.is_disabled(obj)) {
 				return false;
-			}
-			if(!e || typeof e !== 'object') {
-				e = {};
 			}
 
 			// ensure last_clicked is still in the DOM, make it fresh (maybe it was moved?) and make sure it is still selected, if not - make last_clicked the last selected node
@@ -3160,7 +3157,7 @@
 		 * sets the state of the tree. Used internally.
 		 * @name set_state(state [, callback])
 		 * @private
-		 * @param {Object} state the state to restore. Keep in mind this object is passed by reference and jstree will modify it.
+		 * @param {Object} state the state to restore
 		 * @param {Function} callback an optional function to execute once the state is restored.
 		 * @trigger set_state.jstree
 		 */
@@ -3250,10 +3247,6 @@
 					state : { loaded : false }
 				}
 			};
-			this._data.core.selected = [];
-			this._data.core.last_clicked = null;
-			this._data.core.focused = null;
-
 			var c = this.get_container_ul()[0].className;
 			if(!skip_loading) {
 				this.element.html("<"+"ul class='"+c+"' role='group'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='treeitem' id='j"+this._id+"_loading'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
@@ -4099,10 +4092,10 @@
 		 * @name edit(obj [, default_text, callback])
 		 * @param  {mixed} obj
 		 * @param  {String} default_text the text to populate the input with (if omitted or set to a non-string value the node's text value is used)
-		 * @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node, a status parameter (true if the rename is successful, false otherwise) and a boolean indicating if the user cancelled the edit. You can access the node's title using .text
+		 * @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node and a status parameter - true if the rename is successful, false otherwise. You can access the node's title using .text
 		 */
 		edit : function (obj, default_text, callback) {
-			var rtl, w, a, s, t, h1, h2, fn, tmp, cancel = false;
+			var rtl, w, a, s, t, h1, h2, fn, tmp;
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
 			if(this.settings.core.check_callback === false) {
@@ -4157,13 +4150,12 @@
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 							if(callback) {
-								callback.call(this, tmp, nv, cancel);
+								callback.call(this, tmp, nv);
 							}
 						}, this),
 						"keydown" : function (event) {
 							var key = event.which;
 							if(key === 27) {
-								cancel = true;
 								this.value = t;
 							}
 							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
@@ -4529,7 +4521,7 @@
 							dpc = data.nodes,
 							i, j;
 						for(i = 0, j = dpc.length; i < j; i++) {
-							m[dpc[i]].state.checked = m[dpc[i]].state.checked || (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
+							m[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
 							if(m[dpc[i]].state.checked) {
 								this._data.checkbox.selected.push(dpc[i]);
 							}
@@ -4863,7 +4855,7 @@
 		this.redraw_node = function(obj, deep, is_callback, force_render) {
 			obj = parent.redraw_node.apply(this, arguments);
 			if(obj) {
-				var i, j, tmp = null, icon = null;
+				var i, j, tmp = null;
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
 					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
 						tmp = obj.childNodes[i];
@@ -4872,9 +4864,7 @@
 				}
 				if(tmp) {
 					if(!this.settings.checkbox.tie_selection && this._model.data[obj.id].state.checked) { tmp.className += ' jstree-checked'; }
-					icon = _i.cloneNode(false);
-					if(this._model.data[obj.id].state.checkbox_disabled) { icon.className += ' jstree-checkbox-disabled'; }
-					tmp.insertBefore(icon, tmp.childNodes[0]);
+					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
 				}
 			}
 			if(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
@@ -4923,83 +4913,8 @@
 			}
 			return false;
 		};
-		/**
-		 * disable a node's checkbox
-		 * @name disable_checkbox(obj)
-		 * @param {mixed} obj an array can be used too
-		 * @trigger disable_checkbox.jstree
-		 * @plugin checkbox
-		 */
-		this.disable_checkbox = function (obj) {
-			var t1, t2, dom;
-			if($.isArray(obj)) {
-				obj = obj.slice();
-				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.disable_checkbox(obj[t1]);
-				}
-				return true;
-			}
-			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
-				return false;
-			}
-			dom = this.get_node(obj, true);
-			if(!obj.state.checkbox_disabled) {
-				obj.state.checkbox_disabled = true;
-				if(dom && dom.length) {
-					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-checkbox-disabled');
-				}
-				/**
-				 * triggered when an node's checkbox is disabled
-				 * @event
-				 * @name disable_checkbox.jstree
-				 * @param {Object} node
-				 * @plugin checkbox
-				 */
-				this.trigger('disable_checkbox', { 'node' : obj });
-			}
-		};
-		/**
-		 * enable a node's checkbox
-		 * @name disable_checkbox(obj)
-		 * @param {mixed} obj an array can be used too
-		 * @trigger enable_checkbox.jstree
-		 * @plugin checkbox
-		 */
-		this.enable_checkbox = function (obj) {
-			var t1, t2, dom;
-			if($.isArray(obj)) {
-				obj = obj.slice();
-				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.enable_checkbox(obj[t1]);
-				}
-				return true;
-			}
-			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
-				return false;
-			}
-			dom = this.get_node(obj, true);
-			if(obj.state.checkbox_disabled) {
-				obj.state.checkbox_disabled = false;
-				if(dom && dom.length) {
-					dom.children('.jstree-anchor').children('.jstree-checkbox').removeClass('jstree-checkbox-disabled');
-				}
-				/**
-				 * triggered when an node's checkbox is enabled
-				 * @event
-				 * @name enable_checkbox.jstree
-				 * @param {Object} node
-				 * @plugin checkbox
-				 */
-				this.trigger('enable_checkbox', { 'node' : obj });
-			}
-		};
 
 		this.activate_node = function (obj, e) {
-			if($(e.target).hasClass('jstree-checkbox-disabled')) {
-				return false;
-			}
 			if(this.settings.checkbox.tie_selection && (this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox'))) {
 				e.ctrlKey = true;
 			}
@@ -5256,12 +5171,6 @@
 				return false;
 			}
 			return res;
-		};
-		this.refresh = function (skip_loading, forget_state) {
-			if(!this.settings.checkbox.tie_selection) {
-				this._data.checkbox.selected = [];
-			}
-			return parent.refresh.apply(this, arguments);
 		};
 	};
 
@@ -5908,7 +5817,7 @@
 		 */
 		open_timeout : 500,
 		/**
-		 * a function invoked each time a node is about to be dragged, invoked in the tree's scope and receives the nodes about to be dragged as an argument (array) and the event that started the drag - return `false` to prevent dragging
+		 * a function invoked each time a node is about to be dragged, invoked in the tree's scope and receives the nodes about to be dragged as an argument (array) - return `false` to prevent dragging
 		 * @name $.jstree.defaults.dnd.is_draggable
 		 * @plugin dnd
 		 */
@@ -5976,7 +5885,7 @@
 						txt = $.vakata.html.escape(txt);
 					}
 					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
-						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
+						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]))))
 					) {
 						this.element.trigger('mousedown.jstree');
 						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + txt + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
@@ -5989,14 +5898,12 @@
 		// bind only once for all instances
 		var lastmv = false,
 			laster = false,
-			lastev = false,
 			opento = false,
 			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
 			.on('dnd_start.vakata.jstree', function (e, data) {
 				lastmv = false;
-				lastev = false;
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.appendTo('body'); //.show();
 			})
@@ -6008,7 +5915,6 @@
 				if(data.event.target.id && data.event.target.id === 'jstree-marker') {
 					return;
 				}
-				lastev = data.event;
 
 				var ins = $.jstree.reference(data.event.target),
 					ref = false,
@@ -6116,7 +6022,6 @@
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
-				lastev = false;
 				data.helper.find('.jstree-icon').first().removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.on('dnd_stop.vakata.jstree', function (e, data) {
@@ -6139,18 +6044,11 @@
 						}
 					}
 				}
-				lastev = false;
-				lastmv = false;
 			})
 			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data && data.data && data.data.jstree) {
 					data.helper.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
-					if(lastev) {
-						lastev.metaKey = e.metaKey;
-						lastev.ctrlKey = e.ctrlKey;
-						$.vakata.dnd._trigger('move', lastev);
-					}
 				}
 			});
 	});
@@ -7527,5 +7425,4 @@
 		} catch(ignore) { }
 	}
 
-	return $.fn.jstree;
 }));
