@@ -55,20 +55,21 @@
 			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail) {
 					console.log('HIH: ShowMessage event occurred');
 					
-					$rootScope.MessageHeader = msgHeader;
-					$rootScope.MessageDetail = msgDetail;
-					
-					var modalInstance = $modal.open({
-					      animation: true,
-					      templateUrl: 'app/views/messagedialog.html',
-					      controller: 'MessageBoxController'
-				      });
-					
-					modalInstance.result.then(function () {
-					      //$scope.selected = selectedItem;
-					    }, function () {
-					      $log.info('HIH: Message dialog dismissed at: ' + new Date());
-					    });
+					window.swal(msgHeader, msgDetail, "error");
+//					$rootScope.MessageHeader = msgHeader;
+//					$rootScope.MessageDetail = msgDetail;
+//					
+//					var modalInstance = $modal.open({
+//					      animation: true,
+//					      templateUrl: 'app/views/messagedialog.html',
+//					      controller: 'MessageBoxController'
+//				      });
+//					
+//					modalInstance.result.then(function () {
+//					      //$scope.selected = selectedItem;
+//					    }, function () {
+//					      $log.info('HIH: Message dialog dismissed at: ' + new Date());
+//					    });
 				});
 			}
 		])

@@ -176,9 +176,8 @@
 		}])
 		
 		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-			utils.loadLearnObjectsHierarchy();
-						
-			$scope.treeData = [];
+			utils.loadLearnObjectsHierarchy();						
+			
 			$scope.ignoreModelChanges = function() { return false; };
 	        $scope.treeConfig = {
 	            	core : {
@@ -190,9 +189,8 @@
 	                     //check_callback : true,
 	                     //worker : true,
 	    				 themes: {
-	                    	name: 'default',
-	    					url: true,
-	    					dir: "app\\3rdparty\\jstree3.1.1\\themes",
+	                     	name: 'default-dark',
+	    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
 	    					responsive: true,
 	    					stripes: true
 	                	}
@@ -202,6 +200,7 @@
 	             };
 			
 			if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
+				$scope.treeData = [];
 				 $.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 					var treenode = {};
 					angular.copy(obj, treenode);
@@ -215,6 +214,8 @@
 	         
 	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
 				$log.info("HIH LearnObject Hierarchy view: Object Hierarchy Loaded event fired!");
+				
+				$scope.treeData = [];
 				if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
 					$.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 						var treenode = {};
@@ -625,9 +626,8 @@
                      check_callback : true,
                      worker : true,
     				 themes: {
-                    	name: 'default',
-    					url: true,
-    					dir: "app\\3rdparty\\jstree3.1.1\\themes",
+                    	name: 'default-dark',
+    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
