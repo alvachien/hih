@@ -143,7 +143,7 @@
 						rtnObj.loadLearnObjectsHierarchy = function () {
 							if (!$rootScope.isLearnObjectHierarchyLoad) {
 								// Example JSON response
-								// {"id":"1","categoryid":"2","categoryname":"aaa","name":"aaa","content":"aaa2"}
+								// {"categoryid":"1","categoryname":"aaa","categoryparid":"#","objectid":null,"objectname":null,"objectcontent":null}
 								$http
 										.post(
 												'script/hihsrv.php',
@@ -152,8 +152,29 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arLearnObjectHierarchy = data;
 													$rootScope.isLearnObjectHierarchyLoad = true;
+													$rootScope.arLearnObjectHierarchy = [];
+													if (angular.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj) {
+															// Build up the real key for the hierarchy
+															var lhn = {};
+															if (obj.objectid === null) {
+																lhn.id = 'ctg'.concat(obj.categoryid);
+																if (obj.categoryparid === '#') {
+																	lhn.parent = '#';
+																} else {
+																	lhn.parent = 'ctg'.concat(obj.categoryparid);
+																}
+																lhn.text = obj.categoryname;
+															} else {
+																lhn.id = 'obj'.concat(obj.objectid);
+																lhn.parent = 'ctg'.concat(obj.categoryid);
+																lhn.text = obj.objectname;
+															}										
+															
+															$rootScope.arLearnObjectHierarchy.push(lhn);	
+														});																												
+													}
 
 													$rootScope.$broadcast("LearnObjectHierarchyLoaded");
 												})												

@@ -175,11 +175,11 @@
 			};
 		}])
 		
-		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 			utils.loadLearnObjectsHierarchy();
-			
+						
 			$scope.treeData = [];
-			$scope.ignoreModelChanges = function() { return false };
+			$scope.ignoreModelChanges = function() { return false; };
 	        $scope.treeConfig = {
 	            	core : {
 	                     multiple : false,
@@ -187,8 +187,8 @@
 	                     error : function(error) {
 	                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
 	                     },
-	                     check_callback : true,
-	                     worker : true,
+	                     //check_callback : true,
+	                     //worker : true,
 	    				 themes: {
 	                    	name: 'default',
 	    					url: true,
@@ -211,13 +211,12 @@
 					
 					$scope.treeData.push(treenode); 
 				 });
-			 } else {			 		 
 			 }
 	         
 	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
-				$log.info("HIH LearnObject History: Object Hierarchy Loaded event fired!");
+				$log.info("HIH LearnObject Hierarchy view: Object Hierarchy Loaded event fired!");
 				if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
-					$.each($rootScope.arLearnCategory, function(idx, obj) {
+					$.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 						var treenode = {};
 						angular.copy(obj, treenode);
 						treenode.state = {
@@ -230,10 +229,8 @@
 					// Re-create the hierarchy
 					$scope.treeConfig.version++;
 				}			
-			 }); 		 
-			
-		}])	
-		
+			 });			
+		}])		
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		    $scope.Activity = "";
@@ -617,7 +614,7 @@
 		utils.loadLearnCategories();	
 		
 		$scope.treeData = [];
-		$scope.ignoreModelChanges = function() { return false };
+		$scope.ignoreModelChanges = function() { return false; };
         $scope.treeConfig = {
             	core : {
                      multiple : false,
