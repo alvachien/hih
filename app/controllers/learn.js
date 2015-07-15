@@ -204,9 +204,9 @@
 				 $.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 					var treenode = {};
 					angular.copy(obj, treenode);
-					treenode.state = {
-						opened: true	
-					};
+					// treenode.state = {
+					// 	opened: true	
+					// };
 					
 					$scope.treeData.push(treenode); 
 				 });
@@ -220,9 +220,9 @@
 					$.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 						var treenode = {};
 						angular.copy(obj, treenode);
-						treenode.state = {
-							opened: true	
-						};
+						// treenode.state = {
+						// 	opened: true	
+						// };
 						
 						$scope.treeData.push(treenode); 
 					 });

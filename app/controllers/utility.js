@@ -62,7 +62,24 @@
 //							
 //							return this.dateformatter(dt1);
 						};
-						
+						rtnObj.flat2nested = function (arFlat) {
+							if (angular.isArray(arFlat) && arFlat.length > 0) {
+								 var arOutput = [];
+								 
+								 $.each(arFlat, function(idx, obj) {
+									if (isNaN(obj.parent) || obj.parent === "#") {
+										var rootnode = {};
+										angular.copy(obj, rootnode);
+										arOutput.push(rootnode);
+									} 
+								 });
+								 
+								 
+								 return arOutput;
+							} else {
+								return [];
+							}
+						};
 						rtnObj.dateparser = function(s) {
 							if (!s)
 								return new Date();
@@ -154,26 +171,44 @@
 												function(data, status, headers, config) {
 													$rootScope.isLearnObjectHierarchyLoad = true;
 													$rootScope.arLearnObjectHierarchy = [];
+													var ctgypre = "ctgy";
+													var objpre = "obj";
 													if (angular.isArray(data) && data.length > 0) {
 														$.each(data, function(idx, obj) {
 															// Build up the real key for the hierarchy
 															var lhn = {};
 															if (obj.objectid === null) {
-																lhn.id = 'ctg'.concat(obj.categoryid);
+																lhn.id = ctgypre.concat(obj.categoryid);
 																if (obj.categoryparid === '#') {
 																	lhn.parent = '#';
 																} else {
-																	lhn.parent = 'ctg'.concat(obj.categoryparid);
+																	lhn.parent = ctgypre.concat(obj.categoryparid);
 																}
 																lhn.text = obj.categoryname;
 															} else {
-																lhn.id = 'obj'.concat(obj.objectid);
-																lhn.parent = 'ctg'.concat(obj.categoryid);
+																lhn.id = objpre.concat(obj.objectid);
+																lhn.parent = ctgypre.concat(obj.categoryid);
 																lhn.text = obj.objectname;
 															}										
 															
 															$rootScope.arLearnObjectHierarchy.push(lhn);	
-														});																												
+														});
+														
+														$rootScope.arLearnObjectHierarchy.sort(function (a, b) {
+															if (a.parent === "#") {
+																if (b.parent === "#") {
+																	return ((a.id < b.id ) ? -1 : ((a.id > b.id) ? 1 : 0));
+																} else {
+																	return -1;
+																}
+															} else {
+																if (b.parent === "#") {
+																	return 1;
+																} else {
+																	return ((a.id < b.id ) ? -1 : ((a.id > b.id) ? 1 : 0));
+																}
+															}
+														});																											
 													}
 
 													$rootScope.$broadcast("LearnObjectHierarchyLoaded");
