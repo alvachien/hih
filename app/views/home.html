@@ -134,8 +134,13 @@
 								<li><a ui-sref="home.finance.documenttype.list">Document Type</a></li>
 								<li><a ui-sref="home.finance.transactiontype.list">Transaction Type</a></li>								
 								<li role="separator" class="divider"></li>
-	                            <li><a ui-sref="home.finance.account.list">Account List</a></li>
-								<li><a ui-sref="home.finance.document.list">Document List</a></li>
+								<li class="dropdown-header"><span ng-i18next="Finance.Accounts">Finance Accounts</span></li>
+	                            <li><a ui-sref="home.finance.account.list"><span ng-i18next="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.finance.account.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li role="separator" class="divider"></li>
+								<li class="dropdown-header"><span ng-i18next="Finance.Documents">Finance Documents</span></li>
+	                            <li><a ui-sref="home.finance.document.list"><span ng-i18next="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.finance.document.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>

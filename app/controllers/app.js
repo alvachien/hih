@@ -52,10 +52,10 @@
 					}
 				});
 				
-			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail) {
+			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType) {
 					console.log('HIH: ShowMessage event occurred');
 					
-					window.swal(msgHeader, msgDetail, "error");
+					window.swal(msgHeader, msgDetail, msgType || "error");
 //					$rootScope.MessageHeader = msgHeader;
 //					$rootScope.MessageDetail = msgDetail;
 //					

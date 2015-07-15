@@ -21,6 +21,11 @@
         	templateUrl: 'app/views/financeaccountlist.html',
         	controller: 'FinanceAccountListController'
         })
+        .state("home.finance.account.hierarchy", {
+        	url: "/hierarchy",
+        	templateUrl: 'app/views/financeaccounthierarchy.html',
+        	controller: 'FinanceAccountHierarchyController'
+        })
         .state("home.finance.account.create", {
         	url: '/create',
         	templateUrl: 'app/views/financeaccount.html',
@@ -165,6 +170,11 @@
 			//$location.path('/learnobject');
 			$state.go('home.finance.account.create');
 		};
+	}])
+	
+	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
+	                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		$scope.treeData = [];
 	}])
 
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 

@@ -204,12 +204,13 @@
 				 $.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 					var treenode = {};
 					angular.copy(obj, treenode);
-					// treenode.state = {
-					// 	opened: true	
-					// };
+					treenode.state = {
+					 	opened: true	
+					};
 					
 					$scope.treeData.push(treenode); 
 				 });
+				 //$scope.treeData = utils.flat2nested($scope.treeData);
 			 }
 	         
 	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
@@ -220,12 +221,13 @@
 					$.each($rootScope.arLearnObjectHierarchy, function(idx, obj) {
 						var treenode = {};
 						angular.copy(obj, treenode);
-						// treenode.state = {
-						// 	opened: true	
-						// };
+						treenode.state = {
+						 	opened: true	
+						};
 						
 						$scope.treeData.push(treenode); 
 					 });
+					//$scope.treeData = utils.flat2nested($scope.treeData);
 					 
 					// Re-create the hierarchy
 					$scope.treeConfig.version++;
