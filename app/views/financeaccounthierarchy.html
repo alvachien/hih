@@ -1,0 +1,13 @@
+<div id="viewAccountHier">
+
+	<div class="page-header">
+		<h2>
+			<span ng-i18next="Finance.Accounts">Finance Accounts</span> <small ng-i18next="Common.HierarchyView"> Hierarchy View </small>
+		</h2>
+		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
+	</div>
+	
+	<div class="panel-body">
+		<div js-tree="treeConfig" ng-model="treeData" tree="treeInstance" should-apply="ignoreModelChanges()"></div>
+	</div>
+</div>

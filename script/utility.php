@@ -1562,7 +1562,7 @@ function finance_account_hierread() {
 	// Cash Journey
 	$rsttable [] = array (
 			'id' => '-1',
-			'parent' => null,
+			//'parent' => null,
 			'text' => 'Cash Journey' 
 	);
 	// For category
@@ -1570,7 +1570,7 @@ function finance_account_hierread() {
 		$ctgvaluepar = 'Ctgy' . $value [0];
 		$ctgvalue = array (
 				'id' => $ctgvaluepar,
-				'parent' => null,
+				//'parent' => null,
 				'text' => $value [1],
 				'attributes' => array (
 						'assetflag' => $value [2],
@@ -1586,7 +1586,7 @@ function finance_account_hierread() {
 				
 				$ctgvalue ['children'] [] = array (
 						'id' => 'Acnt' . $acntval [0],
-						'parent' => $ctgvaluepar,
+						//'parent' => $ctgvaluepar,
 						'text' => $acntval [2],
 						'attributes' => array (
 								'comment' => $acntval [3] 
@@ -1823,6 +1823,59 @@ function finance_trantype_listread($usetext) {
 				;
 			}
 		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query.";
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+			$sError,
+			$rsttable 
+	);
+}
+function finance_trantype_hierread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return "Connect failed: %s\n" . mysqli_connect_error ();
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Read category
+	$rsttable = array ();
+	$query = "SELECT ID, PARID, NAME, EXPENSE, COMMENT FROM " . MySqlFinTranTypeTable . " ORDER BY EXPENSE";
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		//$tmptable = array();
+		$sParent = '';
+		
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			if ($row [1] == null)
+				$sParent = '#';
+			else
+				$sParent = $row [1];
+
+			$rsttable [] = array (
+				"id" => $row [0],
+				"parent" => $sParent,
+				"text" => $row [2],
+				"expense" => $row [3],
+				"comment" => $row [4] 
+			);
+		}
+		
+		//$rsttable = build_financetrantype_tree($tmptable);
 		
 		/* free result set */
 		mysqli_free_result ( $result );
@@ -2997,7 +3050,7 @@ function build_financetrantype_tree($typetable) {
 	
 	// Root nodes
 	foreach ( $typetable as $key => $value ) {
-		if (IsNullOrEmptyString ( $value ['parent'] )) {
+		if (IsNullOrEmptyString ( $value ['parent'] ) || $value ['parent'] == '#') {
 			$newctgytable [] = $value;
 		}
 	}

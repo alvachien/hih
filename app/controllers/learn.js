@@ -227,7 +227,6 @@
 						
 						$scope.treeData.push(treenode); 
 					 });
-					//$scope.treeData = utils.flat2nested($scope.treeData);
 					 
 					// Re-create the hierarchy
 					$scope.treeConfig.version++;

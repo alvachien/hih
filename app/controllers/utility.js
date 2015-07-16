@@ -223,22 +223,6 @@
 															
 															$rootScope.arLearnObjectHierarchy.push(lhn);	
 														});
-														
-//														$rootScope.arLearnObjectHierarchy.sort(function (a, b) {
-//															if (a.parent === "#") {
-//																if (b.parent === "#") {
-//																	return ((a.id < b.id ) ? -1 : ((a.id > b.id) ? 1 : 0));
-//																} else {
-//																	return -1;
-//																}
-//															} else {
-//																if (b.parent === "#") {
-//																	return 1;
-//																} else {
-//																	return ((a.id < b.id ) ? -1 : ((a.id > b.id) ? 1 : 0));
-//																}
-//															}
-//														});																											
 													}
 
 													$rootScope.$broadcast("LearnObjectHierarchyLoaded");
@@ -394,6 +378,33 @@
 												});
 							}							
 						};
+						rtnObj.loadFinanceAccountHierarchy = function() {
+							if (!$rootScope.isFinanceAccountHierarchyLoaded) {
+							    // Example JSON response
+							    $http
+										.post(
+												'script/hihsrv.php',
+												{
+													objecttype : 'GETFINANCEACCOUNTHIERARCHY'
+												})
+										.success(
+												function(data, status, headers, config) {
+													$rootScope.arFinanceAccountHierarchy = data;
+													$rootScope.isFinanceAccountHierarchyLoaded = true;
+
+													$rootScope.$broadcast("FinanceAccountHierarchyLoaded");
+												})
+										 .error(
+												function(data, status, headers, config) {
+													// called asynchronously if an error occurs or server returns response with an error status.
+													$rootScope.$broadcast(
+															"ShowMessage",
+															"Error",
+															data.Message);
+												});
+							}							
+							
+						};
 						rtnObj.loadFinanceAccountCategories = function() {
 							if (!$rootScope.isFinanceAccountCategoryLoaded) {
 							    // Example JSON response
@@ -544,8 +555,33 @@
 															"Error",
 															data.Message);
 												});
-							}							
-							
+							}
+						};
+						rtnObj.loadFinanceTransactionTypeHierarchy = function() {
+							if (!$rootScope.isFinanceTransactionHierarchyLoaded) {
+								// Example JSON reponse
+								$http
+									.post(
+											'script/hihsrv.php',
+											{
+												objecttype : 'GETFINANCETRANSACTIONTYPEHIERARCHY'
+											})
+									.success(
+											function(data, status, headers, config) {
+												$rootScope.arFinanceTransactionTypeHierarchy = data;
+												$rootScope.isFinanceTransactionHierarchyLoaded = true;
+
+												$rootScope.$broadcast("FinanceTransactionTypeHierarchyLoaded");
+											})
+									 .error(
+											function(data, status, headers, config) {
+												// called asynchronously if an error occurs or server returns response with an error status.
+												$rootScope.$broadcast(
+														"ShowMessage",
+														"Error",
+														data.Message);
+										});
+							}
 						};
 						
 ////////////////////////////////////////////////////////////////////
