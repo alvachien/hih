@@ -76,6 +76,11 @@
 			templateUrl: 'app/views/financetransactiontypelist.html',
 			controller: 'FinanceTransactionTypeListController'
 		})
+		.state("home.finance.transactiontype.hierarchy", {
+			url: '/hierarchy',
+			templateUrl: 'app/views/financetransactiontypehierarchy.html',
+			controller: 'FinanceTransactionTypeHierarchyController'
+		})
 		.state("home.finance.documenttype", {
 			url: '/documenttype',
 			abstract: true,
@@ -172,9 +177,62 @@
 		};
 	}])
 	
-	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
-	                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
-		$scope.treeData = [];
+	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', 
+	                                      function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
+			utils.loadFinanceAccountHierarchy();
+		
+			$scope.ignoreModelChanges = function() { return false; };
+	        $scope.treeConfig = {
+            	core : {
+                     multiple : false,
+                     animation: true,
+                     error : function(error) {
+                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                     },
+                     check_callback : true,
+                     worker : true,
+    				 themes: {
+                     	name: 'default-dark',
+    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+    					responsive: true,
+    					stripes: true
+                	}
+                 },
+                 version : 1,
+    			 plugins : [ 'wholerow' ]
+            };
+			
+			$scope.treeData = [];
+			if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {				
+				 $.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
+					var treenode = {};
+					angular.copy(obj, treenode);
+					treenode.state = {
+					 	opened: true	
+					};
+					
+					$scope.treeData.push(treenode); 
+				 });
+			 }
+	         
+	 		 $scope.$on("FinanceAccountHierarchyLoaded", function() {
+				$log.info("HIH FinanceAccount Hierarchy view: Hierarchy Loaded event fired!");
+				
+				if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {
+					$.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
+						var treenode = {};
+						angular.copy(obj, treenode);
+						treenode.state = {
+						 	opened: true	
+						};
+						
+						$scope.treeData.push(treenode); 
+					 });
+					 
+					// Re-create the hierarchy
+					$scope.treeConfig.version++;
+				}			
+			 });
 	}])
 
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
@@ -579,7 +637,66 @@
 		    }
 	    });
 	}])
-
+	
+	.controller('FinanceTransactionTypeHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $log, utils) {
+			
+			utils.loadFinanceTransactionTypeHierarchy();
+		
+			$scope.ignoreModelChanges = function() { return false; };
+	        $scope.treeConfig = {
+            	core : {
+                     multiple : false,
+                     animation: true,
+                     error : function(error) {
+                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                     },
+                     check_callback : true,
+                     worker : true,
+    				 themes: {
+                     	name: 'default-dark',
+    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+    					responsive: true,
+    					stripes: true
+                	}
+                 },
+                 version : 1,
+    			 plugins : [ 'wholerow' ]
+            };
+			
+			$scope.treeData = [];
+			if (angular.isArray($rootScope.arFinanceTransactionTypeHierarchy) && $rootScope.arFinanceTransactionTypeHierarchy.length > 0) {				
+				 $.each($rootScope.arFinanceTransactionTypeHierarchy, function(idx, obj) {
+					var treenode = {};
+					angular.copy(obj, treenode);
+					treenode.state = {
+					 	opened: true	
+					};
+					
+					$scope.treeData.push(treenode); 
+				 });
+			 }
+	         
+	 		 $scope.$on("FinanceTransactionTypeHierarchyLoaded", function() {
+				$log.info("HIH FinanceTransactionType Hierarchy view: Hierarchy Loaded event fired!");
+				
+				if (angular.isArray($rootScope.arFinanceTransactionTypeHierarchy) && $rootScope.arFinanceTransactionTypeHierarchy.length > 0) {
+					$.each($rootScope.arFinanceTransactionTypeHierarchy, function(idx, obj) {
+						var treenode = {};
+						angular.copy(obj, treenode);
+						treenode.state = {
+						 	opened: true	
+						};
+						
+						$scope.treeData.push(treenode); 
+					 });
+					 
+					// Re-create the hierarchy
+					$scope.treeConfig.version++;
+				}			
+			 });
+	}])
+	
 	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
 		utils.loadFinanceDocumentTypes();
 

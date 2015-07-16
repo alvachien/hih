@@ -174,6 +174,18 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETFINANCETRANSACTIONTYPEHIERARCHY":
+			{
+				HIHSrv_Function( 'finance_trantype_hierread' );				
+			}
+			break;
+			
+		case "GETFINANCEACCOUNTHIERARCHY":
+			{
+				HIHSrv_Function( 'finance_account_hierread' );
+			}
+			break;
+			
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================
