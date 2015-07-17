@@ -1563,7 +1563,8 @@ function finance_account_hierread() {
 	$rsttable [] = array (
 			'id' => '-1',
 			//'parent' => null,
-			'text' => 'Cash Journey' 
+			'text' => 'Cash Journey',
+			'type' => 'Journey' 
 	);
 	// For category
 	foreach ( $acntctg as $value ) {
@@ -1572,9 +1573,10 @@ function finance_account_hierread() {
 				'id' => $ctgvaluepar,
 				//'parent' => null,
 				'text' => $value [1],
+				'type' => 'Category',
 				'attributes' => array (
-						'assetflag' => $value [2],
-						'comment' => $value [3] 
+					'assetflag' => $value [2],
+					'comment' => $value [3] 
 				) 
 		);
 		
@@ -1585,12 +1587,13 @@ function finance_account_hierread() {
 				}
 				
 				$ctgvalue ['children'] [] = array (
-						'id' => 'Acnt' . $acntval [0],
-						//'parent' => $ctgvaluepar,
-						'text' => $acntval [2],
-						'attributes' => array (
-								'comment' => $acntval [3] 
-						) 
+					'id' => 'Acnt' . $acntval [0],
+					//'parent' => $ctgvaluepar,
+					'text' => $acntval [2],
+					'type' => 'Account',
+					'attributes' => array (
+						'comment' => $acntval [3] 
+					) 
 				);
 			}
 		}

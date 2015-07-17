@@ -156,7 +156,7 @@
 				
 				if ($scope.currentTheme !== "default") {
 					$scope.bootstrapcss = urlcss1.concat($scope.currentTheme, urlcss2);
-					$scope.bootstrap_defaultcss = "app\css\empty.css"; 
+					$scope.bootstrap_defaultcss = "app/css/empty.css"; 
 				} else {
 					$scope.bootstrapcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css";
 					$scope.bootstrap_defaultcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css";

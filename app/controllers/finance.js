@@ -198,8 +198,22 @@
     					stripes: true
                 	}
                  },
+				types: {
+					default: {
+						icon : 'glyphicon glyphicon-folder-close'
+					},
+					Account: {
+						icon : 'glyphicon glyphicon-equalizer'
+					},
+					Category: {
+						icon : 'glyphicon glyphicon-gift'
+					},
+					Journey : {
+						icon : 'glyphicon glyphicon-list'
+					}
+				},
                  version : 1,
-    			 plugins : [ 'wholerow' ]
+    			 plugins : [ 'wholerow', 'types' ]
             };
 			
 			$scope.treeData = [];
@@ -215,6 +229,15 @@
 				 });
 			 }
 	         
+			 $scope.newItem = function() {
+				 // Navigate to the account create
+	 			 $state.go('home.finance.account.create');
+			 };
+			 
+			 $scope.refreshHierarchy = function() {
+				// ToDo: Refresh the whole hierarchy 
+			 };
+			 
 	 		 $scope.$on("FinanceAccountHierarchyLoaded", function() {
 				$log.info("HIH FinanceAccount Hierarchy view: Hierarchy Loaded event fired!");
 				

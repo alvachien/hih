@@ -130,8 +130,8 @@
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 								<li><a ui-sref="home.finance.currency.list"><span ng-i18next="Finance.Currency">Currency</span></a></li>
-	                            <li><a ui-sref="home.finance.accountcategory.list">Account Category</a></li>
-								<li><a ui-sref="home.finance.documenttype.list">Document Type</a></li>
+	                            <li><a ui-sref="home.finance.accountcategory.list"><span ng-i18next="Finance.AccountCategory">Account Category</span></a></li>
+								<li><a ui-sref="home.finance.documenttype.list"><span ng-i18next="Finance.DocumentType">Document Type</span></a></li>
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header"><span ng-i18next="Finance.TransactionType">Transaction Type</span></li>
 	                            <li><a ui-sref="home.finance.transactiontype.list"><span ng-i18next="Common.ListView">List View</span></a></li>
@@ -182,9 +182,9 @@
 	                
 	                <ul class="nav navbar-nav navbar-right">
 	                    <li class="dropdown" dropdown>
-		                	<a role="button" class="dropdown-toggle" dropdown-toggle>Themes<b class="caret"></b></a>
+		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Common.Themes">Themes</span><b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="" ng-click="setTheme()">Default</a></li>
+								<li><a href="" ng-click="setTheme()"><span ng-i18next="Common.Default">Default</span></a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="" ng-click="setTheme('cerulean')">cerulean</a></li>
 								<li><a href="" ng-click="setTheme('cosmo')">cosmo</a></li>
