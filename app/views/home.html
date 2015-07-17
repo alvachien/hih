@@ -172,7 +172,7 @@
 								<li><a target="_blank" href="http://t4t5.github.io/sweetalert/">Sweet Alert</a></li>
 								<li><a target="_blank" href="https://github.com/i18next/ng-i18next">ng-i18next</a></li>
 								<li><a target="_blank" href="https://github.com/ezraroi/ngJsTree">ngJsTree</a></li>
-								<li><a target="_blank" href="https://github.com/thomaspark/bootswatch/">Themes</a></li>
+								<li><a target="_blank" href="https://github.com/thomaspark/bootswatch/">bootswatch</a></li>
 								<li><a target="_blank" href="http://ui-grid.info/">UI-Grid in Angular UI</a></li>
 								<li><a target="_blank" href="http://jtblin.github.io/angular-chart.js/">Angular Chart</a></li>
 	                        </ul>
@@ -182,19 +182,36 @@
 	                
 	                <ul class="nav navbar-nav navbar-right">
 	                    <li class="dropdown" dropdown>
+		                	<a role="button" class="dropdown-toggle" dropdown-toggle>Themes<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="" ng-click="setTheme()">Default</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="" ng-click="setTheme('cerulean')">cerulean</a></li>
+								<li><a href="" ng-click="setTheme('cosmo')">cosmo</a></li>
+								<li><a href="" ng-click="setTheme('custom')">custom</a></li>
+								<li><a href="" ng-click="setTheme('cyborg')">cyborg</a></li>
+								<li><a href="" ng-click="setTheme('darkly')">darkly</a></li>								
+								<li><a href="" ng-click="setTheme('flatly')">flatly</a></li>
+								<li><a href="" ng-click="setTheme('journal')">journal</a></li>
+								<li><a href="" ng-click="setTheme('lumen')">lumen</a></li>
+								<li><a href="" ng-click="setTheme('paper')">paper</a></li>
+								<li><a href="" ng-click="setTheme('readable')">readable</a></li>
+								<li><a href="" ng-click="setTheme('sandstone')">sandstone</a></li>
+								<li><a href="" ng-click="setTheme('simplex')">simplex</a></li>
+								<li><a href="" ng-click="setTheme('slate')">slate</a></li>
+								<li><a href="" ng-click="setTheme('spacelab')">spacelab</a></li>
+								<li><a href="" ng-click="setTheme('superhero')">superhero</a></li>
+								<li><a href="" ng-click="setTheme('united')">united</a></li>
+								<li><a href="" ng-click="setTheme('yeti')">yeti</a></li>
+							</ul>
+						</li>
+	                    <li class="dropdown" dropdown>
 		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Common.Language">Languages</span><b class="caret"></b></a>
 							<ul class="dropdown-menu">
                                 <li><a href="" ng-click="setLanguage('zh')">简体中文</a></li>
 								<li><a href="" ng-click="setLanguage('en')">English</a></li>
 							</ul>
 						</li>
-	                    <!--<li class="dropdown" dropdown>
-		                	<a role="button" class="dropdown-toggle" dropdown-toggle>Themes<b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="">Default</a></li>
-								<li><a href="">More to come...</a></li>
-							</ul>
-						</li>-->
 					</ul>	                
 	            </nav>
 	        </div>

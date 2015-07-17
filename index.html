@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="hihApp" ng-controller="MainController">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -52,9 +52,11 @@
 	<!-- CSS part -->
 	<!-- 3rd party part -->
 	<!-- Bootstrap -->
-	<link href="app\3rdparty\bootstrap\css\bootstrap.min.css" rel="stylesheet">
+	<!--<link href="app\3rdparty\bootstrap\css\bootstrap.min.css" rel="stylesheet">
 	<link href="app\3rdparty\bootstrap\css\bootstrap-theme.min.css" rel="stylesheet">
-<!-- 	<link href="app\3rdparty\select2.min.css" rel="stylesheet"> -->
+	<link href="app\3rdparty\select2.min.css" rel="stylesheet"> -->
+	<link ng-href="{{bootstrapcss}}" rel="stylesheet">
+	<link ng-href="{{bootstrap_defaultcss}}" rel="stylesheet">
 	<link href="app\3rdparty\select2.3.4.5.css" rel="stylesheet"> 
 	<link href="app\3rdparty\select.min.css" rel="stylesheet">
 	<!-- Sweet alert -->
@@ -65,7 +67,7 @@
 	<link href="app\css\register.css" rel="stylesheet">
 </head>
 
-<body ng-app="hihApp">
+<body>
 	<!-- Main content area begins -->
 	<div class="container" ui-view></div>
 	<!-- Main content area ends -->
@@ -80,33 +82,5 @@
 		</div>
 	</footer>
 	<!-- Footer area ends -->
-
-	<!-- Dialog for showing info/error/warning begins -->
-<!-- 	<div class="container" ng-controller="MessageBoxController"> -->
-<!-- 		<div class="modal fade" id="dlgMessage"> -->
-<!-- 			<div class="modal-dialog"> -->
-<!-- 				<div class="modal-content"> -->
-<!-- 					<div class="modal-header"> -->
-<!-- 						<button type="button" class="close" data-dismiss="modal" -->
-<!-- 							aria-label="Close"> -->
-<!-- 							<span aria-hidden="true">&times;</span> -->
-<!-- 						</button> -->
-<!-- 						<h4 class="modal-title">{{MessageHeader}}</h4> -->
-<!-- 					</div> -->
-<!-- 					<div class="modal-body"> -->
-<!-- 						<p>{{MessageDetail}}</p> -->
-<!-- 					</div> -->
-<!-- 					<div class="modal-footer"> -->
-<!-- 						<button type="button" class="btn btn-default btn-primary" -->
-<!-- 							data-dismiss="modal">Close</button> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				<!-- /.modal-content -->
-<!-- 			</div> -->
-			<!-- /.modal-dialog -->
-<!-- 		</div> -->
-		<!-- /.modal -->
-<!-- 	</div> -->
-	<!-- Message dialog ends -->
 </body>
 </html>

@@ -140,6 +140,31 @@
         });
 	}])
 	
+	.controller('MainController', ['$scope', '$rootScope', '$log', '$i18next', 'utils', function($scope, $rootScope, $log, $i18next, utils) {
+		$scope.bootstrapcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css";		
+		$scope.bootstrap_defaultcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css";
+		$scope.currentTheme = "default";
+		
+		$scope.$on('ThemeChange', function (oEvent, newtheme) {
+			$log.info('HIH: Theme has changed!');
+			
+			if ($scope.currentTheme !== newtheme) {
+				$scope.currentTheme = newtheme;
+				
+				var urlcss1 = "//cdn.bootcss.com/bootswatch/3.3.5/";
+				var urlcss2 = "/bootstrap.min.css";
+				
+				if ($scope.currentTheme !== "default") {
+					$scope.bootstrapcss = urlcss1.concat($scope.currentTheme, urlcss2);
+					$scope.bootstrap_defaultcss = "app\css\empty.css"; 
+				} else {
+					$scope.bootstrapcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css";
+					$scope.bootstrap_defaultcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css";
+				}
+			}
+		});
+	}])
+	
 	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		$scope.displayedCollection = [
@@ -172,7 +197,21 @@
 			if (lng !== $i18next.options.lng) {
 				$i18next.options.lng = lng;				
 			}
-		}
+		};
+		
+		$scope.setTheme = function(theme) {
+			$log.info("HIH: Theme change event triggerd!");
+
+			var realtheme = "";			
+			if (theme && theme.length > 0) {
+				// Now replace the CSS
+				realtheme = theme;
+			} else {
+				// Go for default theme
+				realtheme = "default";
+			}			
+			$rootScope.$broadcast('ThemeChange', realtheme);
+		};
 	}])
 
 	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {
