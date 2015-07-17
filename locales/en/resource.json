@@ -13,6 +13,7 @@
 		"ListView": "List View",
 		"HierarchyView": "Hierarchy View",
 		"Themes": "Themes",
+		"Default": "Default",
 		
 		"New": "New",
 		"Change" : "Change",
@@ -58,6 +59,7 @@
  	"Nav": {
  		"Home": "Home",
         "Users": "Users",
+		"UserList": "User List",
         "UserDetail": "User Detail",
         "TakeALookAtUserDetail":  "Take a look at User Detail",
  		"LearningTrace": "Learning Trace",

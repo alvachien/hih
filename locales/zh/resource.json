@@ -13,6 +13,7 @@
 		"ListView": "列表视图",
 		"HierarchyView": "树形视图",
 		"Themes": "主题",
+		"Default": "默认",
 
 		"New": "新建",
         "Change": "修改",
@@ -57,7 +58,8 @@
  	
  	"Nav": {
  		"Home": "主页",
- 		"Users": "用户信息",
+ 		"Users": "用户",
+		"UserList": "用户列表",
         "UserDetail":  "用户详细信息",
         "TakeALookAtUserDetail":  "查看当前用户详细信息",
  		"LearningTrace": "学习记录系统",
