@@ -130,8 +130,8 @@
 ////////////////////////////////////////////////////////////////////						
 // Learn part
 ////////////////////////////////////////////////////////////////////						
-						rtnObj.loadLearnObjects = function () {
-							if (!$rootScope.isLearnObjectLoad) {
+						rtnObj.loadLearnObjects = function (bForceReload) {
+							if (!$rootScope.isLearnObjectLoad || (angular.isDefined(bForceReload) && bForceReload)) {
 								// Example JSON response
 								// {"id":"1","categoryid":"2","categoryname":"aaa","name":"aaa","content":"aaa2"}
 								$http
@@ -160,8 +160,8 @@
 												});
 							}
 						};
-						rtnObj.loadLearnObjectsHierarchy = function () {
-							if (!$rootScope.isLearnObjectHierarchyLoad) {
+						rtnObj.loadLearnObjectsHierarchy = function (bForceReload) {
+							if (!$rootScope.isLearnObjectHierarchyLoad || (angular.isDefined(bForceReload) && bForceReload)) {
 								// Example JSON response
 								// {"categoryid":"1","categoryname":"aaa","categoryparid":"#","objectid":null,"objectname":null,"objectcontent":null}
 								$http

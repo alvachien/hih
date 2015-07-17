@@ -176,7 +176,8 @@
 		}])
 		
 		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-			utils.loadLearnObjectsHierarchy();						
+			utils.loadLearnObjectsHierarchy();
+			utils.loadLearnCategories();
 			
 			$scope.ignoreModelChanges = function() { return false; };
 	        $scope.treeConfig = {
@@ -212,6 +213,14 @@
 				 });
 				 //$scope.treeData = utils.flat2nested($scope.treeData);
 			 }
+			
+			 $scope.newItem = function() {
+				 $state.go('home.learn.object.create');
+			 };
+			 
+			 $scope.refreshHierarchy = function() {
+				 // To-Do
+			 };
 	         
 	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
 				$log.info("HIH LearnObject Hierarchy view: Object Hierarchy Loaded event fired!");
@@ -234,11 +243,12 @@
 			 });			
 		}])		
 		
-		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$i18next', 'utils', 
+		                                      function($scope, $rootScope, $state, $stateParams, $http, $i18next, utils) {
 		    $scope.Activity = "";
 		    $scope.ActivityID = 3;
-			$scope.ErrorDetail = "";
 			$scope.CategoryIDs = $rootScope.arLearnCategory;
+			
 			$scope.ObjectContent = "";
 			$scope.ObjectName = "";
 			$scope.ObjectCategoryID = -1;
@@ -292,14 +302,40 @@
 			 
 			 $scope.submit = function() {
 				 // Let's do the checks first!!!!
-				 $scope.ErrorDetail = "Please input the name!";
-				 //$("#areaAlert").alert();
-							
-				 if ($scope.LearnObject ) {
-									
-				 } else {
-									
+				 if ($scope.ObjectName.length <= 0) {
+					 $rootScope.$broadcast('ShowMessage', "Error", "Name is must!");
+					 return;
 				 }
+				 
+				 // Check the category
+				 if ($scope.ObjectCategoryID === -1 || $scope.ObjectCategoryID === 0) {
+					 $rootScope.$broadcast('ShowMessage', "Error", "Category is must!");
+					 return;
+				 }
+				 
+				 // Check the content
+				 var realcontent = $scope.ObjectContent.replace("<p><br data-mce-bogus=\"1\"></p>", "");
+				 realcontent = realcontent.replace("<p><br /></p>", "");
+				 if (realcontent.length <= 0) {
+					 $rootScope.$broadcast('ShowMessage', "Error", "Content is must!");
+					 return;
+				 }
+				 
+				 // Now, submit to the server
+				$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', category:$scope.ObjectCategoryID, name: $scope.ObjectName, content: $scope.ObjectContent } ).
+				  success(function(data, status, headers, config) {
+					  // Add the buffer
+					  utils.loadLearnObjects(true);
+					  utils.loadLearnObjectsHierarchy(true);
+					  
+					  // Then, go to display page
+					  $state.go("home.learn.object.display", { objid : data[0].id });
+				  }).
+				  error(function(data, status, headers, config) {
+					  // called asynchronously if an error occurs or server returns response with an error status.
+					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+				  });
+
 			 };
 			 
 			 $scope.close = function() {

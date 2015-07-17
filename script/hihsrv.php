@@ -127,7 +127,29 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function( 'learn_category_read' );
 			}
 			break;
-		
+
+		case "CREATELEARNOBJECT" :
+				{
+					if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+						$category = escape( $realParamArr['category'] );
+						$name = escape( $realParamArr['name'] );
+						$content = escape( $realParamArr['content'] );
+						
+						// To-Do: Validate!
+						
+						$arRst = learn_object_create( $category, $name, $content);
+						if (! IsNullOrEmptyString ( $arRst [0] )) {
+							export_error ( $arRst [0] );
+						} else {
+							echo json_encode ( $arRst [1] );
+						}						
+					} else {
+						$sErrors = "User not login yet";
+						export_error ( sErrors );
+					}			
+				}
+				break;
+					
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================
