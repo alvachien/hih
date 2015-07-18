@@ -92,7 +92,8 @@
  		"CreateLearningAwardTitle": "Create Learning Award",
  		"EditLearningAwardTitle": "Edit Learning Award",
  		"FilterByUser": "Filter by User",
- 		"ObjectID": "Object ID"
+ 		"ObjectID": "Object ID",
+ 		"ObjectName": "Object Name"
   	},
   	
   	"Mainpage": {

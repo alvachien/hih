@@ -12,15 +12,15 @@
 			<tr>
 				<th st-sort="userid">User ID</th>
 				<th st-sort="displayas">User Name</th>
-				<th st-sort="objectid">Object ID</th>
-				<th st-sort="objectname">Object Name</th>
-				<th st-sort="categoryid">Category ID</th>
-				<th st-sort="categoryname">Category Name</th>
+				<th st-sort="objectid" ng-i18next="Learn.ObjectID">Object ID</th>
+				<th st-sort="objectname" ng-i18next="Learn.ObjectName">Object Name</th>
+				<th st-sort="categoryid" ng-i18next="Common.CategoryID">Category ID</th>
+				<th st-sort="categoryname" ng-i18next="Common.CategoryName">Category Name</th>
 				<th st-sort="learndate">Learn Date</th>
 			</tr>
 			<tr>
 				<th colspan="7"><input st-search="" class="form-control"
-					placeholder="global search ..." type="text" /></th>
+					placeholder="{{'Common.Search' | i18next }}" type="text" /></th>
 			</tr>
 		</thead>
 		<tbody>

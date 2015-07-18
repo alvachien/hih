@@ -329,7 +329,7 @@
 					  utils.loadLearnObjectsHierarchy(true);
 					  
 					  // Then, go to display page
-					  $state.go("home.learn.object.display", { objid : data[0].id });
+					  $scope.gen_id = data[0].id;
 				  }).
 				  error(function(data, status, headers, config) {
 					  // called asynchronously if an error occurs or server returns response with an error status.
@@ -345,6 +345,12 @@
  				 // $state.go("^");
 				 $state.go("home.learn.object.list");
 			 };
+			 
+    		 $scope.$on("LearnObjectLoaded", function() {
+				console.log("HIH LearnObject: Object list loaded event fired!");
+				
+				$state.go("home.learn.object.display", { objid : $scope.gen_id });
+			});	
 		}])
 		
 		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
@@ -644,8 +650,7 @@
 		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
 		    	$scope.displayedCollection = [].concat($scope.rowCollection);
 		    }
-		});
-		
+		});		
 	}])
 	
 	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {

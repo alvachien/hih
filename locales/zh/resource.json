@@ -92,7 +92,8 @@
  		"CreateLearningAwardTitle": "创建学习成绩",
  		"EditLearningAwardTitle": "修改学习成绩",
  		"FilterByUser": "根据用户过滤",
- 		"ObjectID": "学习目标ID"
+ 		"ObjectID": "学习目标ID",
+ 		"ObjectName": "学习目标名称"
  	},
 
   	"Mainpage": {
