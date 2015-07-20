@@ -219,8 +219,16 @@
 	    					stripes: true
 	                	}
 	                 },
+					 types: {
+						default: {
+							icon : 'glyphicon glyphicon-folder-close'
+						},
+						object: {
+							icon : 'glyphicon glyphicon-gift'
+						}
+					 },
 	                 version : 1,
-	    			 plugins : [ 'wholerow' ]
+	    			 plugins : [ 'wholerow', 'types' ]
 	             };
 			
 			if (angular.isArray($rootScope.arLearnObjectHierarchy) && $rootScope.arLearnObjectHierarchy.length > 0) {
@@ -358,7 +366,6 @@
 					  // called asynchronously if an error occurs or server returns response with an error status.
 					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
 				  });
-
 			 };
 			 
 			 $scope.close = function() {
@@ -402,11 +409,35 @@
 				var index = $scope.rowCollection.indexOf(row);
 			    if (index !== -1) {
 			    	// Popup dialog for confirm
-			    	
-			    	// Then, communicate the sever for deleting
-			    	
-			    	// Last, update the UI part
-//			    	$scope.rowCollection.splice(index, 1);
+					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+						$http.post(
+							'script/hihsrv.php',
+							{
+								objecttype : 'DELETELEARNHISTORY',
+								userid : row.userid,
+								objectid: row.objectid
+							})
+							.success(
+								function(data, status, headers, config) {
+									$scope.rowCollection.splice(index, 1);
+									
+									// Update the buffer
+									$.each($rootScope.arLearnHistory, function(idx, obj) {
+										if (obj.objectid === row.objectid && obj.userid === row.userid) {
+											$rootScope.arLearnHistory.splice(idx, 1);
+											return false;
+										}
+									});
+								})
+							 .error(
+								function(data, status, headers, config) {
+									// called asynchronously if an error occurs or server returns response with an error status.
+									$rootScope.$broadcast(
+										"ShowMessage",
+										"Error",
+										data.Message);
+								});
+					});
 			    }
 			 };
 			
@@ -511,9 +542,29 @@
 			 };
 			 
 			 $scope.submit = function() {
-				 // Let's do the checks first!!!!
-				 $scope.ErrorDetail = "Please input the name!";
-				 //$("#areaAlert").alert();
+				 // Now, submit to the server
+				 if ($scope.UserID) {					 
+				 } else {
+					 $rootScope.$broadcast("ShowMessage", "Error", "Select an user!", "error");
+					 return;					 
+				 }
+				 if ($scope.SelectedLearnObject && $scope.SelectedLearnObject.selected) {					 
+				 } else {
+					 $rootScope.$broadcast("ShowMessage", "Error", "Select a learning object!", "error");
+					 return;
+				 }
+				 
+				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', user:$scope.UserID, learnobject: $scope.ObjectID, learndate: $scope.LearnDate, comment: $scope.Comment  } ).
+				 	success(function(data, status, headers, config) {
+					  // Add the buffer
+					  
+					  // Then, go to display page
+					  $scope.gen_id = data[0].id;
+				  }).
+				  error(function(data, status, headers, config) {
+					  // called asynchronously if an error occurs or server returns response with an error status.
+					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+				  });
 			 };
 			 
 			 $scope.close = function() {

@@ -157,6 +157,38 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "CREATELEARNHISTORY" :
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$username = escape ( $realParamArr['user'] );
+					$objid = escape ( $realParamArr['learnobject'] );
+					$learndate = escape ( $realParamArr['learndate'] );
+					$comment = escape ( $realParamArr['comment'] );
+
+					// To-Do: Validate!
+					
+					$arRst = learn_hist_create ( $username, $objid, $learndate, $comment );
+					
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}						
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}			
+			}
+			break;
+			
+		case "DELETELEARNHISTORY": 
+			{
+				$userid = escape ( $realParamArr ['userid'] );
+				$objid = escape ( $realParamArr ['objectid'] );
+				HIHSrv_Function_2Param( 'learn_hist_delete', $userid, $objid );
+			}
+			break;
+			
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================

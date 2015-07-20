@@ -165,76 +165,79 @@
 								// Example JSON response
 								// {"categoryid":"1","categoryname":"aaa","categoryparid":"#","objectid":null,"objectname":null,"objectcontent":null}
 								$http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETLEARNOBJECTHIERARCHY'
-												})
-										.success(
-												function(data, status, headers, config) {
-													$rootScope.isLearnObjectHierarchyLoad = true;
-													$rootScope.arLearnObjectHierarchy = [];
-													
-													var ctgypre = "ctgy";
-													var objpre = "obj";
-													if (angular.isArray(data) && data.length > 0) {
-														var arTmpCtgy = [];
-														var bCtgyExist = false;
-														$.each(data, function(idx, obj) {
-															// Build up the real key for the hierarchy
-															var lhn = {};
-															if (!obj.objectid) {
-																lhn.id = ctgypre.concat(obj.categoryid);
-																if (obj.categoryparid === '#') {
-																	lhn.parent = '#';
-																} else {
-																	lhn.parent = ctgypre.concat(obj.categoryparid);
-																}
-																lhn.text = obj.categoryname;
+									.post(
+											'script/hihsrv.php',
+											{
+												objecttype : 'GETLEARNOBJECTHIERARCHY'
+											})
+									.success(
+											function(data, status, headers, config) {
+												$rootScope.isLearnObjectHierarchyLoad = true;
+												$rootScope.arLearnObjectHierarchy = [];
+												
+												var ctgypre = "ctgy";
+												var objpre = "obj";
+												if (angular.isArray(data) && data.length > 0) {
+													var arTmpCtgy = [];
+													var bCtgyExist = false;
+													$.each(data, function(idx, obj) {
+														// Build up the real key for the hierarchy
+														var lhn = {};
+														if (!obj.objectid) {
+															lhn.id = ctgypre.concat(obj.categoryid);
+															if (obj.categoryparid === '#') {
+																lhn.parent = '#';
 															} else {
-																bCtgyExist = false;
-																if (arTmpCtgy.length > 0) {
-																	$.each(arTmpCtgy, function(idx3, obj3) {
-																		if(obj3 === obj.categoryid) {
-																			bCtgyExist = true;
-																			return false;
-																		} 
-																	});																	
-																}
-																
-																if (!bCtgyExist) {
-																	arTmpCtgy.push(obj.categoryid);
-																	
-																	var lhn2 = {};
-																	lhn2.id = ctgypre.concat(obj.categoryid);
-																	if (obj.categoryparid === '#') {
-																		lhn2.parent = '#';
-																	} else {
-																		lhn2.parent = ctgypre.concat(obj.categoryparid);
-																	}
-																	lhn2.text = obj.categoryname;
-																	$rootScope.arLearnObjectHierarchy.push(lhn2);
-																}
-																
-																lhn.id = objpre.concat(obj.objectid);
-																lhn.parent = ctgypre.concat(obj.categoryid);
-																lhn.text = obj.objectname;
-															}										
+																lhn.parent = ctgypre.concat(obj.categoryparid);
+															}
+															lhn.text = obj.categoryname;
+															lhn.type = "default";
+														} else {
+															bCtgyExist = false;
+															if (arTmpCtgy.length > 0) {
+																$.each(arTmpCtgy, function(idx3, obj3) {
+																	if(obj3 === obj.categoryid) {
+																		bCtgyExist = true;
+																		return false;
+																	} 
+																});																	
+															}
 															
-															$rootScope.arLearnObjectHierarchy.push(lhn);	
-														});
-													}
+															if (!bCtgyExist) {
+																arTmpCtgy.push(obj.categoryid);
+																
+																var lhn2 = {};
+																lhn2.id = ctgypre.concat(obj.categoryid);
+																if (obj.categoryparid === '#') {
+																	lhn2.parent = '#';
+																} else {
+																	lhn2.parent = ctgypre.concat(obj.categoryparid);
+																}
+																lhn2.text = obj.categoryname;
+																lhn.type = "default";
+																$rootScope.arLearnObjectHierarchy.push(lhn2);
+															}
+															
+															lhn.id = objpre.concat(obj.objectid);
+															lhn.parent = ctgypre.concat(obj.categoryid);
+															lhn.text = obj.objectname;
+															lhn.type = "object";
+														}										
+														
+														$rootScope.arLearnObjectHierarchy.push(lhn);	
+													});
+												}
 
-													$rootScope.$broadcast("LearnObjectHierarchyLoaded");
-												})												
-											.error(
-												function(data, status, headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
-												});
+												$rootScope.$broadcast("LearnObjectHierarchyLoaded");
+											})												
+										.error(
+											function(data, status, headers, config) {
+												// called asynchronously if an error occurs or server returns response with an error status.
+												$rootScope.$broadcast(
+														"ShowMessage",
+														"Error",
+														data.Message);
+											});
 							}
 						};
 						rtnObj.loadLearnHistories = function () {
