@@ -140,11 +140,34 @@
 				var index = $scope.rowCollection.indexOf(row);
 			    if (index !== -1) {
 			    	// Popup dialog for confirm
-			    	
-			    	// Then, communicate the sever for deleting
-			    	
-			    	// Last, update the UI part
-//			    	$scope.rowCollection.splice(index, 1);
+					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+						$http.post(
+							'script/hihsrv.php',
+							{
+								objecttype : 'DELETELEARNOBJECT',
+								id : row.id
+							})
+							.success(
+								function(data, status, headers, config) {
+									$scope.rowCollection.splice(index, 1);
+									
+									// Update the buffer
+									$.each($rootScope.arLearnObject, function(idx, obj) {
+										if (obj.id === row.id) {
+											$rootScope.arLearnObject.splice(idx, 1);
+											return false;
+										}
+									});
+								})
+							 .error(
+								function(data, status, headers, config) {
+									// called asynchronously if an error occurs or server returns response with an error status.
+									$rootScope.$broadcast(
+										"ShowMessage",
+										"Error",
+										data.Message);
+								});							
+					});
 			    }
 			 };
 			

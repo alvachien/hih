@@ -1,7 +1,7 @@
 <div id="viewLearnHistory">
 	<div class="page-header">
 		<h2>
-			Learn Histories <small ng-i18next="Common.ListView"> List View </small>
+			<span ng-i18next="Learn.LearningHistory">Learn Histories</span> <small ng-i18next="Common.ListView"> List View </small>
 		</h2>
 		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
 	</div>
@@ -10,16 +10,16 @@
 		class="table table-striped">
 		<thead>
 			<tr>
-				<th st-sort="userid">User ID</th>
-				<th st-sort="displayas">User Name</th>
+				<th st-sort="userid" ng-i18next="Login.User">User ID</th>
+				<th st-sort="displayas" ng-i18next="Login.DisplayAs">User Name</th>
 				<th st-sort="objectid" ng-i18next="Learn.ObjectID">Object ID</th>
 				<th st-sort="objectname" ng-i18next="Learn.ObjectName">Object Name</th>
 				<th st-sort="categoryid" ng-i18next="Common.CategoryID">Category ID</th>
 				<th st-sort="categoryname" ng-i18next="Common.CategoryName">Category Name</th>
-				<th st-sort="learndate">Learn Date</th>
+				<th st-sort="learndate" ng-i18next="Common.Date">Learn Date</th>
 			</tr>
 			<tr>
-				<th colspan="7"><input st-search="" class="form-control"
+				<th colspan="8"><input st-search="" class="form-control"
 					placeholder="{{'Common.Search' | i18next }}" type="text" /></th>
 			</tr>
 		</thead>
@@ -35,15 +35,15 @@
 				<td>
 					<div class="btn-group" role="group">
 						<button type="button" ng-click="displayItem(row)"
-							class="btn-group btn-primary" role="group">
+							class="btn-group btn-primary" role="group" tooltip="{{'Common.Display' | i18next}}">
 							<i class="glyphicon glyphicon-share"> </i>
 						</button>
 						<button type="button" ng-click="editItem(row)"
-							class="btn-group btn-warning" role="group">
+							class="btn-group btn-warning" role="group" tooltip="{{'Common.Edit' | i18next}}">
 							<i class="glyphicon glyphicon-edit"> </i>
 						</button>
 						<button type="button" ng-click="removeItem(row)"
-							class="btn-group btn-danger" role="group">
+							class="btn-group btn-danger" role="group" tooltip="{{'Common.Delete' | i18next}}">
 							<i class="glyphicon glyphicon-trash"> </i>
 						</button>
 					</div>					

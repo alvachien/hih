@@ -129,27 +129,34 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			break;
 
 		case "CREATELEARNOBJECT" :
-				{
-					if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-						$category = escape( $realParamArr['category'] );
-						$name = escape( $realParamArr['name'] );
-						$content = escape( $realParamArr['content'] );
-						
-						// To-Do: Validate!
-						
-						$arRst = learn_object_create( $category, $name, $content);
-						if (! IsNullOrEmptyString ( $arRst [0] )) {
-							export_error ( $arRst [0] );
-						} else {
-							echo json_encode ( $arRst [1] );
-						}						
-					} else {
-						$sErrors = "User not login yet";
-						export_error ( sErrors );
-					}			
-				}
-				break;
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$category = escape( $realParamArr['category'] );
+					$name = escape( $realParamArr['name'] );
+					$content = escape( $realParamArr['content'] );
 					
+					// To-Do: Validate!
+					
+					$arRst = learn_object_create( $category, $name, $content);
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}						
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}			
+			}
+			break;
+
+		case "DELETELEARNOBJECT": 
+			{
+				$objid = escape ( $realParamArr ['id'] );
+				HIHSrv_Function_1Param( 'learn_object_delete', $objid );
+			}
+			break;
+			
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================

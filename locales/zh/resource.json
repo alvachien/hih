@@ -71,20 +71,20 @@
  	
  	"Learn": {
  		"LearningCategory": "学习种类",
- 		"LearningObject": "学习目标",
+ 		"LearningObject": "学习对象",
  		"LearningHistory": "学习记录",
  		"LearningAward": "学习成绩",
  		
- 		"LearningObjectListTitle": "学习目标 - 列表视图",
- 		"LearningObjectListDesp": "学习目标的列表视图，通过列表的方式将所有学习目标呈现出来。",
+ 		"LearningObjectListTitle": "学习对象 - 列表视图",
+ 		"LearningObjectListDesp": "学习对象的列表视图，通过列表的方式将所有学习对象呈现出来。",
  		"LearningHistoryListTitle": "学习记录 - 列表视图",
  		"LearningHistoryListDesp" : "学习记录的列表视图，通过列表的方式将所有学习记录呈现出来。",
  		"LearningAwardListTitle": "学习成绩 - 列表视图",
  		"LearningAwardListDesp" : "学习成绩的列表视图，通过列表的方式将学习成绩呈现出来。",
 
- 		"CreateLearningObjectTitle": "创建学习目标",
- 		"EditLearningObjectTitle": "修改学习目标",
- 		"LearningObjectList": "学习目标列表",
+ 		"CreateLearningObjectTitle": "创建学习对象",
+ 		"EditLearningObjectTitle": "修改学习对象",
+ 		"LearningObjectList": "学习对象列表",
  		"Score": "分数",
  		"Reason": "获取原因",
  		"CreateLearningHistoryTitle": "创建学习记录",
@@ -92,8 +92,8 @@
  		"CreateLearningAwardTitle": "创建学习成绩",
  		"EditLearningAwardTitle": "修改学习成绩",
  		"FilterByUser": "根据用户过滤",
- 		"ObjectID": "学习目标ID",
- 		"ObjectName": "学习目标名称"
+ 		"ObjectID": "学习对象ID",
+ 		"ObjectName": "学习对象名称"
  	},
 
   	"Mainpage": {
