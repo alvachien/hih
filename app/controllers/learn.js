@@ -355,12 +355,12 @@
 				 // Now, submit to the server
 				$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', category:$scope.ObjectCategoryID, name: $scope.ObjectName, content: $scope.ObjectContent } ).
 				  success(function(data, status, headers, config) {
-					  // Add the buffer
-					  utils.loadLearnObjects(true);
-					  utils.loadLearnObjectsHierarchy(true);
-					  
 					  // Then, go to display page
 					  $scope.gen_id = data[0].id;
+					  
+					  // Add the buffer
+					  utils.loadLearnObjects(true);
+					  utils.loadLearnObjectsHierarchy(true);					  
 				  }).
 				  error(function(data, status, headers, config) {
 					  // called asynchronously if an error occurs or server returns response with an error status.
@@ -470,7 +470,6 @@
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 			 $scope.Activity = "";
-			 $scope.ErrorDetail = "";
 			 
 			 $scope.CategoryIDs = $rootScope.arLearnCategory;
 			 $scope.UserIDs = $rootScope.arUserList;			 
@@ -504,9 +503,9 @@
 			 
 			 if (angular.isDefined($stateParams.histid)) {
 				 if ($state.current.name === "home.learn.history.maintain") {
-					 $scope.Activity = "Edit";					 
+					 $scope.Activity = "Common.Edit";					 
 				 } else if ($state.current.name === "home.learn.history.display") {
-					 $scope.Activity = "Display";
+					 $scope.Activity = "Common.Display";
 					 $scope.isReadonly = true;
 				 }
  				 
@@ -538,7 +537,7 @@
 					 }); 
 				 }
 			 } else {
-				 $scope.Activity = "Create";
+				 $scope.Activity = "Common.Create";
 			 };
 			 
 			 $scope.submit = function() {
@@ -556,10 +555,10 @@
 				 
 				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', user:$scope.UserID, learnobject: $scope.ObjectID, learndate: $scope.LearnDate, comment: $scope.Comment  } ).
 				 	success(function(data, status, headers, config) {
-					  // Add the buffer
-					  
 					  // Then, go to display page
-					  $scope.gen_id = data[0].id;
+					  $scope.gen_id = data[0].objectid.toString().concat('_', data[0].userid.toString());
+					  
+					  utils.loadLearnHistories(true);
 				  }).
 				  error(function(data, status, headers, config) {
 					  // called asynchronously if an error occurs or server returns response with an error status.
@@ -574,10 +573,18 @@
  				 // $state.go("^");
 				 $state.go("home.learn.history.list");
 			 };
+			 
+		    $scope.$on("LearnHistoryLoaded", function() {
+		    	console.log("HIH LearnHistory: List Loaded event fired!");
+		    	
+				$state.go("home.learn.history.display",   { histid : $scope.gen_id });
+		    });			 
 		}])
 
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
 			utils.loadLearnAwards();
+			utils.loadUserList(); // Ensure the Award page can show user combo.
+			
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
 		    
@@ -600,11 +607,34 @@
 				var index = $scope.rowCollection.indexOf(row);
 			    if (index !== -1) {
 			    	// Popup dialog for confirm
-			    	
-			    	// Then, communicate the sever for deleting
-			    	
-			    	// Last, update the UI part
-//			    	$scope.rowCollection.splice(index, 1);
+					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+						$http.post(
+							'script/hihsrv.php',
+							{
+								objecttype : 'DELETELEARNAWARD',
+								id : row.id
+							})
+							.success(
+								function(data, status, headers, config) {
+									$scope.rowCollection.splice(index, 1);
+									
+									// Update the buffer
+									$.each($rootScope.arLearnAward, function(idx, obj) {
+										if (obj.id === row.id) {
+											$rootScope.arLearnAward.splice(idx, 1);
+											return false;
+										}
+									});
+								})
+							 .error(
+								function(data, status, headers, config) {
+									// called asynchronously if an error occurs or server returns response with an error status.
+									$rootScope.$broadcast(
+										"ShowMessage",
+										"Error",
+										data.Message);
+								});
+					});
 			    }
 			 };
 			
@@ -637,7 +667,6 @@
 		
 		.controller('LearnAwardController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
 			 $scope.Activity = "";
-			 $scope.ErrorDetail = "";
 			 
 			 $scope.AwardID = -1;
 			 $scope.isReadonly = false;
@@ -654,21 +683,21 @@
 				startingDay: 1
 			 };
 			 $scope.openDate = function($event) {
-					$event.preventDefault();
-					$event.stopPropagation();
-					
-					if (!$scope.isReadonly)
-						$scope.isDateOpened = true;
-				};
+				$event.preventDefault();
+				$event.stopPropagation();
+				
+				if (!$scope.isReadonly)
+					$scope.isDateOpened = true;
+			 };
  
 			 if (angular.isDefined($stateParams.objid)) {
 				 $scope.AwardID = $stateParams.objid;
 				 
 				 if ($state.current.name === "home.learn.award.maintain") {
-					 $scope.Activity = "Edit";					 
+					 $scope.Activity = "Common.Edit";					 
 					 
 				 } else if ($state.current.name === "home.learn.award.display") {
-					 $scope.Activity = "Display";
+					 $scope.Activity = "Common.Display";
 					 $scope.isReadonly = true;
 				 }
  				 
@@ -692,12 +721,38 @@
 					 }
 				 });
 			 } else {
-				 $scope.Activity = "Create";
+				 $scope.Activity = "Common.Create";
 			 };
 			 
 			 $scope.submit = function() {
-				 // Let's do the checks first!!!!
-				 $scope.ErrorDetail = "Please input the name!";
+				 // To-Do: Validation!!!!
+				 if ($scope.SelectedUser && $scope.SelectedUser.selected) {					 
+				 } else {
+					 $rootScope.$broadcast("ShowMessage", "Error", "User is must!", "error");
+					 return;
+				 }
+				 if ($scope.Score >= 0 && $scope.Score <= 100){
+					 
+				 } else {
+					 $rootScope.$broadcast("ShowMessage", "Error", "Score is must!", "error");
+					 return;
+				 }
+				 
+				 // Submit the server
+				 var datefmt = utils.dateformatter($scope.AwardDate);
+				 // user, awarddate, awardscore, awardreason
+				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNAWARD', user:$scope.SelectedUser.selected.id, 
+					 awarddate: datefmt, awardscore: $scope.Score, awardreason: $scope.Reason  } ).
+				 	success(function(data, status, headers, config) {
+					  // Then, go to display page
+					  $scope.gen_id = data[0].id;
+					  
+					  utils.loadLearnAwards(true);
+				  }).
+				  error(function(data, status, headers, config) {
+					  // called asynchronously if an error occurs or server returns response with an error status.
+					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+				  });
 			 };
 			 
 			 $scope.close = function() {
@@ -707,6 +762,12 @@
  				 // $state.go("^");
 				 $state.go("home.learn.award.list");
 			 };
+			 
+    		 $scope.$on("LearnAwardLoaded", function() {
+				console.log("HIH LearnAward: Award list loaded event fired!");
+				
+				$state.go("home.learn.award.display", { objid : $scope.gen_id });
+			});	
 		}])
 		
 	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {

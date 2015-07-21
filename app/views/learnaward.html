@@ -1,7 +1,7 @@
 <div id="viewLearnAward" class="container">
 	<div class="page-header">
 		<h2>
-			<span ng-i18next="Learn.LearningAward">Learn Award</span> <small> {{Activity}}</small>
+			<span ng-i18next="Learn.LearningAward">Learn Award</span> <small> {{Activity | i18next}}</small>
 		</h2>
 	</div>
 
@@ -10,12 +10,12 @@
 			<label class="control-label col-sm-2" for="iptUser" ng-i18next="Login.User">User:</label>
 			<div class="col-sm-10">
 				<ui-select ng-model="SelectedUser.selected" theme="select2"  search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-			    	<ui-select-match placeholder="Select an user via the name...">{{$select.selected.text}}</ui-select-match>
+			    	<ui-select-match placeholder="{{'Common.Search' | i18next}}">{{$select.selected.text}}</ui-select-match>
 			    	<ui-select-choices repeat="usrid in UserIDs">
 			      		<div ng-bind-html="usrid.text | highlight: $select.search"></div>
 			      		<small>
-			      			ID: {{usrid.id}}
-			        		Name: <span ng-bind-html="''+usrid.text | highlight: $select.search"></span>
+			      			{{'Common.ID' | i18next}}: {{usrid.id}}
+			        		{{'Common.Name' | i18next}}: <span ng-bind-html="''+usrid.text | highlight: $select.search"></span>
 			      		</small>
 			    	</ui-select-choices>
 				</ui-select>		 	
@@ -54,7 +54,6 @@
 					ng-disabled="frmObj.$invalid || !frmObj.$dirty" ng-i18next="Common.Submit">Submit</button>
 				<button class="btn btn-danger" ng-click="close()" ng-i18next="Common.Cancel">Cancel</button>
 			</div>
-		</div>
-		
+		</div>		
 	</form>
 </div>
