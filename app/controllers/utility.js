@@ -96,6 +96,21 @@
 								return new Date();
 							}
 						};
+						rtnObj.getThemeCSSPath = function(theme) {
+							var arCSS = [];
+							var urlcss1 = "//cdn.bootcss.com/bootswatch/3.3.5/";
+							var urlcss2 = "/bootstrap.min.css";
+							
+							if (theme !== "default") {
+								arCSS.push(urlcss1.concat(theme, urlcss2));
+								arCSS.push("app/css/empty.css"); 
+							} else {
+								arCSS.push("//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css");
+								arCSS.push("//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css");
+							}
+							
+							return arCSS;
+						};
 						
 						// User part
 						rtnObj.loadUserList = function () {

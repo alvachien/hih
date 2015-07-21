@@ -188,6 +188,37 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function_2Param( 'learn_hist_delete', $userid, $objid );
 			}
 			break;
+		
+		case "CREATELEARNAWARD":
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$name = escape( $realParamArr['user'] );
+					$adate = escape( $realParamArr['awarddate'] );
+					$score = escape( $realParamArr['awardscore'] );
+					$score = (int) $score;
+					$reason = escape( $realParamArr['awardreason']);
+					
+					// To-Do: Validate!
+					
+					$arRst = learn_award_create($name, $adate, $score, $reason);		
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}
+			}
+			break;
+			
+		case "DELETELEARNAWARD":
+			{
+				$id = escape ( $realParamArr ['id'] );
+				HIHSrv_Function_1Param( 'learn_award_delete', $id );
+			}
+			break;
 			
 		// ===========================================================================================
 		// Finance Part

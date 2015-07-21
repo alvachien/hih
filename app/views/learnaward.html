@@ -1,13 +1,13 @@
 <div id="viewLearnAward" class="container">
 	<div class="page-header">
 		<h2>
-			Learn Award<small> {{Activity}}</small>
+			<span ng-i18next="Learn.LearningAward">Learn Award</span> <small> {{Activity}}</small>
 		</h2>
 	</div>
 
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptUser">User:</label>
+			<label class="control-label col-sm-2" for="iptUser" ng-i18next="Login.User">User:</label>
 			<div class="col-sm-10">
 				<ui-select ng-model="SelectedUser.selected" theme="select2"  search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
 			    	<ui-select-match placeholder="Select an user via the name...">{{$select.selected.text}}</ui-select-match>
@@ -23,10 +23,10 @@
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptDate">Date</label>
+			<label class="control-label col-sm-2" for="iptDate" ng-i18next="Common.Date">Date</label>
 			<div class="input-group col-sm-10">
             	<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="AwardDate" is-open="isDateOpened"            		
-            		datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
+            		datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | i18next }}" />
               	<span class="input-group-btn">
                 	<button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               	</span>
@@ -34,14 +34,14 @@
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptScore">Score</label>
+			<label class="control-label col-sm-2" for="iptScore" ng-i18next="Learn.Score">Score</label>
 			<div class="col-sm-10">
 				<input type="text" id="iptScore" ng-readonly="isReadonly" ng-model="Score"></input>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptReason">Reason</label>
+			<label class="control-label col-sm-2" for="iptReason" ng-i18next="Learn.Reason">Reason</label>
 			<div class="col-sm-10">
 				<textarea rows="5" id="iptReason" ng-readonly="isReadonly" cols="50"
 					ng-model="Reason"></textarea>
@@ -51,8 +51,8 @@
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
-					ng-disabled="frmObj.$invalid || !frmObj.$dirty">Submit</button>
-				<button class="btn btn-danger" ng-click="close()">Cancel</button>
+					ng-disabled="frmObj.$invalid || !frmObj.$dirty" ng-i18next="Common.Submit">Submit</button>
+				<button class="btn btn-danger" ng-click="close()" ng-i18next="Common.Cancel">Cancel</button>
 			</div>
 		</div>
 		

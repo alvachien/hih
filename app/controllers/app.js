@@ -107,6 +107,8 @@
         .when('/learnhistory', '/home/learn/history')
         .when('/learnaward', '/home/learn/award')
         .when('/finance', '/home/finance')
+		.when('/financeaccount', '/home/finance/account')
+		.when('/financedocument', '/home/finance/document')
 
         // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
         .otherwise('/home');
@@ -156,9 +158,11 @@
 	}])
 	
 	.controller('MainController', ['$scope', '$rootScope', '$log', '$i18next', 'utils', function($scope, $rootScope, $log, $i18next, utils) {
-		$scope.bootstrapcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css";		
-		$scope.bootstrap_defaultcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css";
-		$scope.currentTheme = "default";
+		$scope.currentTheme = "lumen";
+		
+		var arCSS = utils.getThemeCSSPath($scope.currentTheme);
+		$scope.bootstrapcss = arCSS[0];
+		$scope.bootstrap_defaultcss = arCSS[1];
 		
 		$scope.$on('ThemeChange', function (oEvent, newtheme) {
 			$log.info('HIH: Theme has changed!');
@@ -166,16 +170,9 @@
 			if ($scope.currentTheme !== newtheme) {
 				$scope.currentTheme = newtheme;
 				
-				var urlcss1 = "//cdn.bootcss.com/bootswatch/3.3.5/";
-				var urlcss2 = "/bootstrap.min.css";
-				
-				if ($scope.currentTheme !== "default") {
-					$scope.bootstrapcss = urlcss1.concat($scope.currentTheme, urlcss2);
-					$scope.bootstrap_defaultcss = "app/css/empty.css"; 
-				} else {
-					$scope.bootstrapcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css";
-					$scope.bootstrap_defaultcss = "//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css";
-				}
+				var arCSS = utils.getThemeCSSPath($scope.currentTheme);
+				$scope.bootstrapcss = arCSS[0];
+				$scope.bootstrap_defaultcss = arCSS[1];
 			}
 		});
 	}])
