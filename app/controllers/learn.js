@@ -196,6 +196,12 @@
 				//$location.path('/learnobject');
 				$state.go('home.learn.object.create');
 			};
+			
+			// Refresh list
+			$scope.refreshList = function() {
+				// Reload the whole list
+				utils.loadLearnObjects(true);
+			};
 		}])
 		
 		.controller('LearnObjectHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
@@ -250,7 +256,7 @@
 			 };
 			 
 			 $scope.refreshHierarchy = function() {
-				 // To-Do
+				 utils.loadLearnObjectsHierarchy(true);
 			 };
 	         
 	 		 $scope.$on("LearnObjectHierarchyLoaded", function() {
@@ -466,6 +472,12 @@
 				//$location.path('/learnobject');
 				$state.go('home.learn.history.create');
 			};
+			
+			// Refresh list
+			$scope.refreshList = function() {
+				// Reload the whole list
+				utils.loadLearnHistories(true);
+			};
 		}])
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
@@ -662,6 +674,12 @@
 			$scope.newItem = function() {
 				//$location.path('/learnobject');
 				$state.go('home.learn.award.create');
+			};
+			
+			// Refresh list
+			$scope.refreshList = function() {
+				// Reload the whole list
+				utils.loadLearnAwards(true);
 			};
 		}])
 		
