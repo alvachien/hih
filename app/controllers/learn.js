@@ -3,7 +3,9 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "smart-table", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree'])
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree', 
+		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
+		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -109,10 +111,28 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, uiGridConstants, uiGridGroupingConstants, utils) {
 			utils.loadLearnCategories();
 			utils.loadLearnObjects();
 
+			// Grid options
+			$scope.gridOptions = {};
+			$scope.gridOptions.data = 'myData';
+			$scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableFiltering = true;
+			$scope.gridOptions.enableGridMenu = true;
+			$scope.gridOptions.showGridFooter = true;
+			$scope.gridOptions.showColumnFooter = true;
+			$scope.gridOptions.fastWatch = true;
+			
+			$scope.gridOptions.rowIdentity = function(row) {
+				return row.id;
+			};
+			$scope.gridOptions.getRowIdentity = function(row) {
+				return row.id;
+			};			
+			
 		    $scope.rowCollection = [];     
 		    $scope.displayedCollection = [];
 		    $scope.itemsByPage = 10;
