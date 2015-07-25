@@ -8,54 +8,6 @@
 		<button type="button" class="btn btn-primary" ng-click="refreshList()" ng-i18next="Common.Refresh">Refresh</button>
 	</div>
 
-	<div id="grid1" ui-grid="gridOptions" ui-grid-cellNav ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-grouping class="grid"></div>
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-                <th st-sort="ID" ng-i18next="Common.ID">ID</th>
-                <th st-sort="ctgyID" ng-i18next="Common.CategoryID">Category ID</th>
-                <th st-sort="ctgyName" ng-i18next="Common.Category">Category Name</th>
-				<th st-sort="Name" ng-i18next="Common.Name">Name</th>
-                <th st-sort="content" ng-i18next="Common.Content">Content</th>
-			</tr>
-			<tr>
-				<th colspan="6"><input st-search="" class="form-control"
-					placeholder="{{'Common.Search' | i18next }}" type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.categoryid}}</td>
-				<td>{{row.categoryname}}</td>
-				<td>{{row.name}}</td>
-				<td>{{row.content}}</td>
-				<td>
-					<div class="btn-group" role="group">
-						<button type="button" ng-click="displayItem(row)"
-							class="btn-group btn-primary" role="group" tooltip="{{'Common.Display' | i18next}}">
-							<i class="glyphicon glyphicon-share"> </i>
-						</button>
-						<button type="button" ng-click="editItem(row)"
-							class="btn-group btn-warning" role="group" tooltip="{{'Common.Edit' | i18next}}">
-							<i class="glyphicon glyphicon-edit"> </i>
-						</button>
-						<button type="button" ng-click="removeItem(row)"
-							class="btn-group btn-danger" role="group" tooltip="{{'Common.Delete' | i18next}}">
-							<i class="glyphicon glyphicon-trash"> </i>
-						</button>
-					</div>					
-				</td>
-			</tr>
-		</tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5" class="text-center">
-                    <div st-pagination="" st-items-by-page="itemsByPage"></div>
-                </td>
-            </tr>
-        </tfoot>
-	</table>
-	
+	<div id="grid1" ui-grid="gridOptions"
+		style="width: 100%; height: 500px;"></div>
 </div>

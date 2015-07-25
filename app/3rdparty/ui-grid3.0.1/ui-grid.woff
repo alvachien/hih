@@ -34,29 +34,30 @@
 
         <meta name="google-analytics" content="UA-3769691-2">
 
-    <meta content="collector.githubapp.com" name="octolytics-host" /><meta content="collector-cdn.github.com" name="octolytics-script-host" /><meta content="github" name="octolytics-app-id" /><meta content="654E9122:56E3:4F7EE4:55AEFAE8" name="octolytics-dimension-request_id" />
+    <meta content="collector.githubapp.com" name="octolytics-host" /><meta content="collector-cdn.github.com" name="octolytics-script-host" /><meta content="github" name="octolytics-app-id" /><meta content="D20E4BE3:667B:62A0129:55B38EFF" name="octolytics-dimension-request_id" />
     
     <meta content="Rails, view, blob#show" data-pjax-transient="true" name="analytics-event" />
     <meta class="js-ga-set" name="dimension1" content="Logged Out">
+      <meta class="js-ga-set" name="dimension4" content="Current repo nav">
     <meta name="is-dotcom" content="true">
-      <meta name="hostname" content="github.com">
+        <meta name="hostname" content="github.com">
     <meta name="user-login" content="">
 
       <link rel="icon" sizes="any" mask href="https://assets-cdn.github.com/pinned-octocat.svg">
       <meta name="theme-color" content="#4078c0">
       <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
 
+    <!-- </textarea> --><!-- '"` --><meta content="authenticity_token" name="csrf-param" />
+<meta content="8h4mNmmyywrosyCl69eAA3MgRCJ5mHzeSQa7vXgx/R2TkPXkWLH2WNi88X2bfMgvT4G9UPDEMo1kuZHTNJhVSA==" name="csrf-token" />
+    
 
-    <meta content="authenticity_token" name="csrf-param" />
-<meta content="dY2l8PJoYjPE1oSdIgqi5s8O94wq8/5Hgdftww/CE0m/HmlUcL9m84ZxySpqT8r+Knk7h4i6dbe3sTxUaaahtw==" name="csrf-token" />
-
-    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github/index-50695c5163ac470fa2c366bc981c3513f8feb7d6a55f8cb1c56501dc46585f0e.css" media="all" rel="stylesheet" />
-    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github2/index-143e367d99d21ba3e43ce12c62930c01f279d633580057706c601e70ee6e6eff.css" media="all" rel="stylesheet" />
+    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github/index-2de9f2a0dcbebdb929c6fddf7fd94aa06a736743201b9c57db4c19cb74757211.css" media="all" rel="stylesheet" />
+    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github2/index-10a543c559e7ab841ecdc482a2ddb7aa9edaa55a3804cd1eec016d526c1b1c88.css" media="all" rel="stylesheet" />
     
     
 
 
-    <meta http-equiv="x-pjax-version" content="d212ae9b483391c6f70ac91a437a6677">
+    <meta http-equiv="x-pjax-version" content="e71b138694bd64d478d1a684d36740f4">
 
       
   <meta name="description" content="ui-grid.info - Website for ui-grid">
@@ -91,7 +92,7 @@
     </div>
 
     <div class="site-search repo-scope js-site-search" role="search">
-      <form accept-charset="UTF-8" action="/angular-ui/ui-grid.info/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="/angular-ui/ui-grid.info/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+      <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/angular-ui/ui-grid.info/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="/angular-ui/ui-grid.info/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
   <label class="js-chromeless-input-container form-control">
     <div class="scope-badge">This repository</div>
     <input type="text"
@@ -132,10 +133,11 @@
     <div id="js-flash-container">
       
     </div>
-    <div class="pagehead repohead instapaper_ignore readability-menu">
+    <div class="pagehead repohead instapaper_ignore readability-menu ">
       <div class="container">
 
-        
+        <div class="clearfix">
+          
 <ul class="pagehead-actions">
 
   <li>
@@ -160,7 +162,7 @@
   </a>
 
     <a class="social-count js-social-count" href="/angular-ui/ui-grid.info/stargazers">
-      217
+      218
     </a>
 
   </li>
@@ -173,29 +175,32 @@
         Fork
       </a>
       <a href="/angular-ui/ui-grid.info/network" class="social-count">
-        745
+        752
       </a>
     </li>
 </ul>
 
-        <h1 itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
-          <span class="mega-octicon octicon-repo"></span>
-          <span class="author"><a href="/angular-ui" class="url fn" itemprop="url" rel="author"><span itemprop="title">angular-ui</span></a></span><!--
-       --><span class="path-divider">/</span><!--
-       --><strong><a href="/angular-ui/ui-grid.info" data-pjax="#js-repo-pjax-container">ui-grid.info</a></strong>
+          <h1 itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+            <span class="mega-octicon octicon-repo"></span>
+            <span class="author"><a href="/angular-ui" class="url fn" itemprop="url" rel="author"><span itemprop="title">angular-ui</span></a></span><!--
+         --><span class="path-divider">/</span><!--
+         --><strong><a href="/angular-ui/ui-grid.info" data-pjax="#js-repo-pjax-container">ui-grid.info</a></strong>
 
-          <span class="page-context-loader">
-            <img alt="" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
-          </span>
+            <span class="page-context-loader">
+              <img alt="" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+            </span>
 
-        </h1>
-      </div><!-- /.container -->
-    </div><!-- /.repohead -->
+          </h1>
+        </div>
 
-    <div class="container">
-      <div class="repository-with-sidebar repo-container new-discussion-timeline  ">
-        <div class="repository-sidebar clearfix">
-            
+      </div>
+    </div>
+
+      <div class="container">
+        <div class="repository-with-sidebar repo-container new-discussion-timeline ">
+          <div class="repository-sidebar clearfix">
+              
+
 <nav class="sunken-menu repo-nav js-repo-nav js-sidenav-container-pjax js-octicon-loaders"
      role="navigation"
      data-pjax="#js-repo-pjax-container"
@@ -235,14 +240,14 @@
 
 </nav>
 
-              <div class="only-with-full-nav">
-                  
+                <div class="only-with-full-nav">
+                    
 <div class="js-clone-url clone-url open"
   data-protocol-type="http">
   <h3><span class="text-emphasized">HTTPS</span> clone URL</h3>
   <div class="input-group js-zeroclipboard-container">
     <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target"
-           value="https://github.com/angular-ui/ui-grid.info.git" readonly="readonly">
+           value="https://github.com/angular-ui/ui-grid.info.git" readonly="readonly" aria-label="HTTPS clone URL">
     <span class="input-group-button">
       <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
     </span>
@@ -255,7 +260,7 @@
   <h3><span class="text-emphasized">Subversion</span> checkout URL</h3>
   <div class="input-group js-zeroclipboard-container">
     <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target"
-           value="https://github.com/angular-ui/ui-grid.info" readonly="readonly">
+           value="https://github.com/angular-ui/ui-grid.info" readonly="readonly" aria-label="Subversion checkout URL">
     <span class="input-group-button">
       <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
     </span>
@@ -264,48 +269,44 @@
 
 
 
-<div class="clone-options">You can clone with
-  <form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=http&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="n7AvB330wLhvwMLXuemjdlm2an0MGgzL/ODxn9gIGNbwIjfXn/egaOidGApOwlHe12spVozhzTNHsK8aDvTkDQ==" /></div><button class="btn-link js-clone-selector" data-protocol="http" type="submit">HTTPS</button></form> or <form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="bnXbbx2nIIu9+rA7f6yjGlZP5qE7n3XzVDt6l6ET/guViPM4rVanarPV202yxJr5cs8S5AUnCLkexWMasZXbrw==" /></div><button class="btn-link js-clone-selector" data-protocol="subversion" type="submit">Subversion</button></form>.
-  <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
-    <span class="octicon octicon-question"></span>
-  </a>
-</div>
+  <div class="clone-options">You can clone with
+    <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=http&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="RKrZ22Z/Vlc3IG69fL2RrHlpulKpQQJ8waQgpuUT6NdxXUNPlWRsPL33GvNvPbv9D1guA17B44O5/cgAgXTouQ==" /></div><button class="btn-link js-clone-selector" data-protocol="http" type="submit">HTTPS</button></form> or <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="P4kcNBIouezngNwyH8maFGaObqLILWqMLK25c33axY8Fp9tyVac0WIBKnAXMyQEA0c8T18EXVIRT05g7Cy6/Hg==" /></div><button class="btn-link js-clone-selector" data-protocol="subversion" type="submit">Subversion</button></form>.
+    <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
+      <span class="octicon octicon-question"></span>
+    </a>
+  </div>
+    <a href="https://windows.github.com" class="btn btn-sm sidebar-button" title="Save angular-ui/ui-grid.info to your computer and use it in GitHub Desktop." aria-label="Save angular-ui/ui-grid.info to your computer and use it in GitHub Desktop.">
+      <span class="octicon octicon-device-desktop"></span>
+      Clone in Desktop
+    </a>
 
 
-  <a href="https://windows.github.com" class="btn btn-sm sidebar-button" title="Save angular-ui/ui-grid.info to your computer and use it in GitHub Desktop." aria-label="Save angular-ui/ui-grid.info to your computer and use it in GitHub Desktop.">
-    <span class="octicon octicon-device-desktop"></span>
-    Clone in Desktop
-  </a>
+                  <a href="/angular-ui/ui-grid.info/archive/gh-pages.zip"
+                     class="btn btn-sm sidebar-button"
+                     aria-label="Download the contents of angular-ui/ui-grid.info as a zip file"
+                     title="Download the contents of angular-ui/ui-grid.info as a zip file"
+                     rel="nofollow">
+                    <span class="octicon octicon-cloud-download"></span>
+                    Download ZIP
+                  </a>
+                </div>
+          </div>
+          <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container>
 
+            
 
-                <a href="/angular-ui/ui-grid.info/archive/gh-pages.zip"
-                   class="btn btn-sm sidebar-button"
-                   aria-label="Download the contents of angular-ui/ui-grid.info as a zip file"
-                   title="Download the contents of angular-ui/ui-grid.info as a zip file"
-                   rel="nofollow">
-                  <span class="octicon octicon-cloud-download"></span>
-                  Download ZIP
-                </a>
-              </div>
-        </div><!-- /.repository-sidebar -->
-
-        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container>
-
-          
-
-<a href="/angular-ui/ui-grid.info/blob/c7aff1e55b51831cda7bb30aeaf4ce9fb2ad0268/release/3.0.1/ui-grid.woff" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
+<a href="/angular-ui/ui-grid.info/blob/d58f2fd978a1f3a486e6239de5557d82a5f10d3f/release/3.0.1/ui-grid.woff" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
 
 <!-- blob contrib key: blob_contributors:v21:635fd5a39a036e904a1a1c9aa1646da3 -->
 
-<div class="file-navigation js-zeroclipboard-container">
-  
+  <div class="file-navigation js-zeroclipboard-container">
+    
 <div class="select-menu js-menu-container js-select-menu left">
   <span class="btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
     data-ref="gh-pages"
     title="gh-pages"
     role="button" aria-label="Switch branches or tags" tabindex="0" aria-haspopup="true">
-    <span class="octicon octicon-git-branch"></span>
-    <i>branch:</i>
+    <i>Branch:</i>
     <span class="js-select-button css-truncate-target">gh-pages</span>
   </span>
 
@@ -557,21 +558,21 @@
   </div>
 </div>
 
-  <div class="btn-group right">
-    <a href="/angular-ui/ui-grid.info/find/gh-pages"
-          class="js-show-file-finder btn btn-sm empty-icon tooltipped tooltipped-s"
-          data-pjax
-          data-hotkey="t"
-          aria-label="Quickly jump between files">
-      <span class="octicon octicon-list-unordered"></span>
-    </a>
-    <button aria-label="Copy file path to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
-  </div>
+    <div class="btn-group right">
+      <a href="/angular-ui/ui-grid.info/find/gh-pages"
+            class="js-show-file-finder btn btn-sm empty-icon tooltipped tooltipped-nw"
+            data-pjax
+            data-hotkey="t"
+            aria-label="Quickly jump between files">
+        <span class="octicon octicon-list-unordered"></span>
+      </a>
+      <button aria-label="Copy file path to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </div>
 
-  <div class="breadcrumb js-zeroclipboard-target">
-    <span class="repo-root js-repo-root"><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">ui-grid.info</span></a></span></span><span class="separator">/</span><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages/release" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">release</span></a></span><span class="separator">/</span><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages/release/3.0.1" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">3.0.1</span></a></span><span class="separator">/</span><strong class="final-path">ui-grid.woff</strong>
+    <div class="breadcrumb js-zeroclipboard-target">
+      <span class="repo-root js-repo-root"><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">ui-grid.info</span></a></span></span><span class="separator">/</span><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages/release" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">release</span></a></span><span class="separator">/</span><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/angular-ui/ui-grid.info/tree/gh-pages/release/3.0.1" class="" data-branch="gh-pages" data-pjax="true" itemscope="url"><span itemprop="title">3.0.1</span></a></span><span class="separator">/</span><strong class="final-path">ui-grid.woff</strong>
+    </div>
   </div>
-</div>
 
 
   <div class="commit file-history-tease">
@@ -642,17 +643,16 @@
 
 <a href="#jump-to-line" rel="facebox[.linejump]" data-hotkey="l" style="display:none">Jump to Line</a>
 <div id="jump-to-line" style="display:none">
-  <form accept-charset="UTF-8" action="" class="js-jump-to-line-form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+  <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="" class="js-jump-to-line-form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
     <input class="linejump-input js-jump-to-line-field" type="text" placeholder="Jump to line&hellip;" autofocus>
     <button type="submit" class="btn">Go</button>
 </form></div>
 
+          </div>
         </div>
-
-      </div><!-- /.repo-container -->
-      <div class="modal-backdrop"></div>
-    </div><!-- /.container -->
-  </div><!-- /.site -->
+        <div class="modal-backdrop"></div>
+      </div>
+  </div>
 
 
     </div><!-- /.wrapper -->
@@ -674,7 +674,7 @@
       <span class="mega-octicon octicon-mark-github" title="GitHub"></span>
 </a>
     <ul class="site-footer-links">
-      <li>&copy; 2015 <span title="0.04098s from github-fe120-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+      <li>&copy; 2015 <span title="0.02975s from github-fe132-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
         <li><a href="https://github.com/site/terms" data-ga-click="Footer, go to terms, text:terms">Terms</a></li>
         <li><a href="https://github.com/site/privacy" data-ga-click="Footer, go to privacy, text:privacy">Privacy</a></li>
         <li><a href="https://github.com/security" data-ga-click="Footer, go to security, text:security">Security</a></li>
@@ -716,8 +716,8 @@
     </div>
 
 
-      <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-3241a40a58a82e21daef3dd3cdca01bde189158793c1b6f9193fff2b5293cd1d.js"></script>
-      <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github/index-6da37670d1168f53e72d64e8e46408504be42053c21e859b1623a98559bb31fd.js"></script>
+      <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-4f5aedd50a2216d4de1944ee693ba3e51b09d4c7a00f303a8eaf2e4ed06a15c9.js"></script>
+      <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github/index-67c35294f0a8b1a9168cb9d4301677fff0406cc8de4aa504ee41d76c4d9645db.js"></script>
       
       
   </body>
