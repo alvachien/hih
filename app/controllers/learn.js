@@ -119,36 +119,64 @@
 			// Grid options
 			$scope.gridOptions = {};
 			$scope.gridOptions.data = 'myData';
-			$scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableSorting = true;
+			// $scope.gridOptions.enableColumnResizing = true;
 			$scope.gridOptions.enableFiltering = true;
-			$scope.gridOptions.enableGridMenu = true;
-			$scope.gridOptions.showGridFooter = true;
-			$scope.gridOptions.showColumnFooter = true;
-			$scope.gridOptions.fastWatch = true;
+			// $scope.gridOptions.enableGridMenu = true;
+			// $scope.gridOptions.showGridFooter = true;
+			// $scope.gridOptions.showColumnFooter = true;
+			// $scope.gridOptions.fastWatch = true;
 			
-			$scope.gridOptions.rowIdentity = function(row) {
-				return row.id;
-			};
-			$scope.gridOptions.getRowIdentity = function(row) {
-				return row.id;
-			};			
+			// $scope.gridOptions.rowIdentity = function(row) {
+			// 	return row.id;
+			// };
+			// $scope.gridOptions.getRowIdentity = function(row) {
+			// 	return row.id;
+			// };			
 			
-		    $scope.rowCollection = [];     
-		    $scope.displayedCollection = [];
-		    $scope.itemsByPage = 10;
-
-		    $scope.rowCollection = $rootScope.arLearnObject;
-		    $scope.displayedCollection = [].concat($scope.rowCollection);
+			$scope.gridOptions.columnDefs = [
+		    	{ name:'id', field: 'id', width:50 , sort: {
+		          	direction: uiGridConstants.DESC,
+		          	priority: 1
+		        	} 
+				},
+		    	{ name:'categoryid', field: 'categoryid', title: 'Common.Category | i18next', width:200 },
+				{ name:'categoryname', field: 'categoryname', title: 'Common.Category | i18next', width: 200 },
+				{ name:'name', field:'name', title: 'Common.Name | i18next', width: 100 },
+				{ name:'content', field:'content', title:'Common.Content | i18next', width: 400 }  
+		    // 	{ name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
+		    // { name:'address.street', width:150, enableCellEdit: true },
+		    // { name:'address.city', width:150, enableCellEdit: true },
+		    // { name:'address.state', width:50, enableCellEdit: true },
+		    // { name:'address.zip', width:50, enableCellEdit: true },
+		    // { name:'company', width:100, enableCellEdit: true },
+		    // { name:'email', width:100, enableCellEdit: true },
+		    // { name:'phone', width:200, enableCellEdit: true },
+		    // { name:'about', width:300, enableCellEdit: true },
+		    // { name:'friends[0].name', displayName:'1st friend', width:150, enableCellEdit: true },
+		    // { name:'friends[1].name', displayName:'2nd friend', width:150, enableCellEdit: true },
+		    // { name:'friends[2].name', displayName:'3rd friend', width:150, enableCellEdit: true },
+		    // { name:'agetemplate',field:'age', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><span>Age 2:{{COL_FIELD}}</span></div>' },
+		    // { name:'Is Active',field:'isActive', width:150, type:'boolean' },
+		    // { name:'Join Date',field:'registered', cellFilter:'date', width:150, type:'date', enableFiltering:false },
+		    // { name:'Month Joined',field:'registered', cellFilter: 'date:"MMMM"', filterCellFiltered:true, sortCellFiltered:true, width:150, type:'date' }
+		  ];
+		  
+		  
+		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
+			  $scope.myData = [];
+				$.each($rootScope.arLearnObject, function(idx, obj) {
+		  			$scope.myData.push(angular.copy(obj));					
+				});			  
+		  };
 		    
 		    $scope.$on("LearnObjectLoaded", function() {
 		    	console.log("HIH LearnObject List: Loaded event fired!");
-		    	
-		    	$scope.rowCollection = $rootScope.arLearnObject;
-			    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-					// copy the references (you could clone ie angular.copy but
-					// then have to go through a dirty checking for the matches)
-			    	$scope.displayedCollection = [].concat($scope.rowCollection);
-			    }
+		    	$scope.myData = [];
+				
+				$.each($rootScope.arLearnObject, function(idx, obj) {
+		  			$scope.myData.push(angular.copy(obj));					
+				});
 		    });
 		    
 		    $scope.$on("LearnCategoryLoaded", function() {
@@ -169,7 +197,7 @@
 							})
 							.success(
 								function(data, status, headers, config) {
-									$scope.rowCollection.splice(index, 1);
+									//$scope.rowCollection.splice(index, 1);
 									
 									// Update the buffer
 									$.each($rootScope.arLearnObject, function(idx, obj) {
@@ -193,22 +221,22 @@
 			
 			// Display
 			$scope.displayItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
+				//var index = $scope.rowCollection.indexOf(row);
+			    //if (index !== -1) {
 			    	// $scope.rowCollection.splice(index, 1);
 			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.object.display",  { objid : row.id });
-			    }
+			    //	$state.go("home.learn.object.display",  { objid : row.id });
+			    //}
 			};
 			
 			// Edit
 			$scope.editItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
+				//var index = $scope.rowCollection.indexOf(row);
+			    //if (index !== -1) {
 			    	// $scope.rowCollection.splice(index, 1);
 			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.object.maintain",  { objid : row.id });
-			    }
+			    //	$state.go("home.learn.object.maintain",  { objid : row.id });
+			   // }
 			};
 			
 			// Create
