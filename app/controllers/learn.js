@@ -120,11 +120,11 @@
 			$scope.gridOptions = {};
 			$scope.gridOptions.data = 'myData';
 			$scope.gridOptions.enableSorting = true;
-			// $scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableColumnResizing = true;
 			$scope.gridOptions.enableFiltering = true;
 			// $scope.gridOptions.enableGridMenu = true;
-			// $scope.gridOptions.showGridFooter = true;
-			// $scope.gridOptions.showColumnFooter = true;
+			$scope.gridOptions.showGridFooter = true;
+			//$scope.gridOptions.showColumnFooter = true;
 			// $scope.gridOptions.fastWatch = true;
 			
 			// $scope.gridOptions.rowIdentity = function(row) {
@@ -135,27 +135,17 @@
 			// };			
 			
 			$scope.gridOptions.columnDefs = [
-<<<<<<< HEAD
-		    	{ name:'id', field: 'id', width:50 , sort: {
-		          	direction: uiGridConstants.DESC,
-		          	priority: 1
-		        	} 
+		    	{ name:'id', field: 'id', title: 'Common.ID | i18next', width:50 
+//		    		, sort: {
+//		          	direction: uiGridConstants.DESC,
+//		          	priority: 1
+//		        	} 
 				},
 		    	{ name:'categoryid', field: 'categoryid', title: 'Common.Category | i18next', width:200 },
 				{ name:'categoryname', field: 'categoryname', title: 'Common.Category | i18next', width: 200 },
 				{ name:'name', field:'name', title: 'Common.Name | i18next', width: 100 },
 				{ name:'content', field:'content', title:'Common.Content | i18next', width: 400 }  
-=======
-		    	{ name:'id', width:50 , sort: {
-		          	direction: uiGridConstants.DESC,
-		          	priority: 1
-		        	} 
-				},
-		    	{ name:'categoryid', width:50 },
-				{ name:'categoryname', width: 100 },
-				{ name:'name', title: 'Common.Name | i18next', width: 100 },
-				{ name:'content', title:'Common.Content | i18next', width: 200 }  
->>>>>>> branch 'master' of https://github.com/alvachien/hih.git
+
 		    // 	{ name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
 		    // { name:'address.street', width:150, enableCellEdit: true },
 		    // { name:'address.city', width:150, enableCellEdit: true },
