@@ -3,7 +3,7 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree', 
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  'jm.i18next',
 		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
 		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
@@ -111,8 +111,8 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
-			function($scope, $rootScope, $state, $http, $interval, uiGridConstants, uiGridGroupingConstants, utils) {
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$i18next', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, $i18next, uiGridConstants, uiGridGroupingConstants, utils) {
 			utils.loadLearnCategories();
 			utils.loadLearnObjects();
 
@@ -122,48 +122,53 @@
 			$scope.gridOptions.enableSorting = true;
 			$scope.gridOptions.enableColumnResizing = true;
 			$scope.gridOptions.enableFiltering = true;
-			// $scope.gridOptions.enableGridMenu = true;
+			$scope.gridOptions.enableGridMenu = false;
+			$scope.gridOptions.enableColumnMenus = false;
 			$scope.gridOptions.showGridFooter = true;
 			//$scope.gridOptions.showColumnFooter = true;
 			// $scope.gridOptions.fastWatch = true;
 			
-			// $scope.gridOptions.rowIdentity = function(row) {
-			// 	return row.id;
-			// };
-			// $scope.gridOptions.getRowIdentity = function(row) {
-			// 	return row.id;
-			// };			
+			$scope.gridOptions.rowIdentity = function(row) {
+			 	return row.id;
+			};
+			$scope.gridOptions.getRowIdentity = function(row) {
+			 	return row.id;
+			};			
+			$scope.gridOptions.onRegisterApi = function(gridApi) {
+      			$scope.gridApi = gridApi;
+    		};
 			
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'id', title: 'Common.ID | i18next', width:50 
+		    	{ name:'id', field: 'id', displayName: $i18next('Common.ID'), width:90,
+					aggregationType:uiGridConstants.aggregationTypes.count
 //		    		, sort: {
 //		          	direction: uiGridConstants.DESC,
 //		          	priority: 1
 //		        	} 
 				},
-		    	{ name:'categoryid', field: 'categoryid', title: 'Common.Category | i18next', width:200 },
-				{ name:'categoryname', field: 'categoryname', title: 'Common.Category | i18next', width: 200 },
-				{ name:'name', field:'name', title: 'Common.Name | i18next', width: 100 },
-				{ name:'content', field:'content', title:'Common.Content | i18next', width: 400 }  
-
+		    	{ name:'categoryid', field: 'categoryid', displayName: $i18next('Common.Category'), width:90 },
+				{ name:'categoryname', field: 'categoryname', displayName: $i18next('Common.Category'), width: 150},
+				{ name:'name', field:'name', displayName: $i18next('Common.Name'), width: 150 },
+				{ name:'content', field:'content', displayName: $i18next('Common.Content'), width: 400 }
 		    // 	{ name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
-		    // { name:'address.street', width:150, enableCellEdit: true },
-		    // { name:'address.city', width:150, enableCellEdit: true },
-		    // { name:'address.state', width:50, enableCellEdit: true },
-		    // { name:'address.zip', width:50, enableCellEdit: true },
-		    // { name:'company', width:100, enableCellEdit: true },
-		    // { name:'email', width:100, enableCellEdit: true },
-		    // { name:'phone', width:200, enableCellEdit: true },
-		    // { name:'about', width:300, enableCellEdit: true },
-		    // { name:'friends[0].name', displayName:'1st friend', width:150, enableCellEdit: true },
-		    // { name:'friends[1].name', displayName:'2nd friend', width:150, enableCellEdit: true },
-		    // { name:'friends[2].name', displayName:'3rd friend', width:150, enableCellEdit: true },
 		    // { name:'agetemplate',field:'age', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><span>Age 2:{{COL_FIELD}}</span></div>' },
-		    // { name:'Is Active',field:'isActive', width:150, type:'boolean' },
 		    // { name:'Join Date',field:'registered', cellFilter:'date', width:150, type:'date', enableFiltering:false },
 		    // { name:'Month Joined',field:'registered', cellFilter: 'date:"MMMM"', filterCellFiltered:true, sortCellFiltered:true, width:150, type:'date' }
 		  ];
 		  
+		  // Languages changes - have to do so because we cannot integer the i18next into ui-grid
+		  $scope.$on('i18nextLanguageChange', function() {
+			  //for(int i = 0; i < $scope.gridOptions.columnDefs.length; i ++) {
+			  if ($scope.gridOptions.columnDefs.length > 0) {
+				  $scope.gridOptions.columnDefs[0].displayName = $i18next('Common.ID');
+				  $scope.gridOptions.columnDefs[1].displayName = $i18next('Common.CategoryID');
+				  $scope.gridOptions.columnDefs[2].displayName = $i18next('Common.Category');
+				  $scope.gridOptions.columnDefs[3].displayName = $i18next('Common.Name');
+				  $scope.gridOptions.columnDefs[4].displayName = $i18next('Common.Content');
+				  
+				  $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
+			  }
+		  });
 		  
 		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
 			  $scope.myData = [];

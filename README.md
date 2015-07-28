@@ -1,5 +1,6 @@
 # HIH (website version)
-HIH Website Version 0.4;
+HIH stands for Home Information Hub, which targets to build the application run on a server 
+HIH Website Version 0.4.2;
 Built with AngularJS, Angular UI, TinyMCE, etc.
 
 2015.7.1, Switch from native BootStrp to UI Bootstrap;
