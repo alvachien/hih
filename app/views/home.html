@@ -102,60 +102,58 @@
 	            <nav class="hidden-xs">
 	                <ul class="nav navbar-nav">
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.Home">Home</span><b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.Home">Home</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-	                            <li><a ui-sref="home.userdetail"><span ng-i18next="Nav.UserDetail">User Detail</span></a></li>
-								<li><a ui-sref="home.userlist"><span ng-i18next="Nav.Users">User List</span></a></li>
+	                            <li><a ui-sref="home.userdetail"><span translate="Nav.UserDetail">User Detail</span></a></li>
+								<li><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
 	                            <li role="separator" class="divider"></li>
-	                            <li><a href="" ng-click="logout()"><span ng-i18next="Login.Logout">Logout</span></a></li>                            
+	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-								<li class="dropdown-header"><span ng-i18next="Learn.LearningCategory">Learn Category</span></li>
-	                            <li><a ui-sref="home.learn.category.list"><span ng-i18next="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.learn.category.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li class="dropdown-header"><span translate="Learn.LearningCategory">Learn Category</span></li>
+	                            <li><a ui-sref="home.learn.category.list"><span translate="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.learn.category.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 								<li role="separator" class="divider"></li>
-								<li class="dropdown-header"><span ng-i18next="Learn.LearningObject">Learn Object</span></li>
-	                            <li><a ui-sref="home.learn.object.list"><span ng-i18next="Common.ListView">List View</span></a></li>
-	                            <li><a ui-sref="home.learn.object.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li class="dropdown-header"><span translate="Learn.LearningObject">Learn Object</span></li>
+	                            <li><a ui-sref="home.learn.object.list"><span translate="Common.ListView">List View</span></a></li>
+	                            <li><a ui-sref="home.learn.object.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 	                            <li role="separator" class="divider"></li>
-								<li><a ui-sref="home.learn.history.list"><span ng-i18next="Learn.LearningHistory">Learn History</span></a></li>
-								<li><a ui-sref="home.learn.award.list"><span ng-i18next="Learn.LearningAward">Learn Award</span></a></li>
+								<li><a ui-sref="home.learn.history.list"><span translate="Learn.LearningHistory">Learn History</span></a></li>
+								<li><a ui-sref="home.learn.award.list"><span translate="Learn.LearningAward">Learn Award</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-								<li><a ui-sref="home.finance.currency.list"><span ng-i18next="Finance.Currency">Currency</span></a></li>
-	                            <li><a ui-sref="home.finance.accountcategory.list"><span ng-i18next="Finance.AccountCategory">Account Category</span></a></li>
-								<li><a ui-sref="home.finance.documenttype.list"><span ng-i18next="Finance.DocumentType">Document Type</span></a></li>
+								<li><a ui-sref="home.finance.currency.list"><span translate="Finance.Currency">Currency</span></a></li>
+	                            <li><a ui-sref="home.finance.accountcategory.list"><span translate="Finance.AccountCategory">Account Category</span></a></li>
+								<li><a ui-sref="home.finance.documenttype.list"><span translate="Finance.DocumentType">Document Type</span></a></li>
 								<li role="separator" class="divider"></li>
-								<li class="dropdown-header"><span ng-i18next="Finance.TransactionType">Transaction Type</span></li>
-	                            <li><a ui-sref="home.finance.transactiontype.list"><span ng-i18next="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.transactiontype.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li class="dropdown-header"><span translate="Finance.TransactionType">Transaction Type</span></li>
+	                            <li><a ui-sref="home.finance.transactiontype.list"><span translate="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.finance.transactiontype.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 								<li role="separator" class="divider"></li>
-								<li class="dropdown-header"><span ng-i18next="Finance.Accounts">Finance Accounts</span></li>
-	                            <li><a ui-sref="home.finance.account.list"><span ng-i18next="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.account.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li class="dropdown-header"><span translate="Finance.Accounts">Finance Accounts</span></li>
+	                            <li><a ui-sref="home.finance.account.list"><span translate="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.finance.account.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 								<li role="separator" class="divider"></li>
-								<li class="dropdown-header"><span ng-i18next="Finance.Documents">Finance Documents</span></li>
-	                            <li><a ui-sref="home.finance.document.list"><span ng-i18next="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.document.hierarchy"><span ng-i18next="Common.HierarchyView">Hierarchy View</span></a></li>
+								<li class="dropdown-header"><span translate="Finance.Documents">Finance Documents</span></li>
+	                            <li><a ui-sref="home.finance.document.list"><span translate="Common.ListView">List View</span></a></li>
+								<li><a ui-sref="home.finance.document.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Nav.Acknowledgements">Acknowledgements</span><b class="caret"></b></a>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.Acknowledgements">Acknowledgements</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 								<li><a target="_blank" href="https://www.angularjs.org/">Angular JS</a></li>
 								<li><a target="_blank" href="http://getbootstrap.com/">Bootstrap</a></li>
 								<li><a target="_blank" href="http://www.tinymce.com/">TinyMCE</a></li>
 								<li><a target="_blank" href="http://www.jquery.com/">jQuery</a></li>
-								<li><a target="_blank" href="http://i18next.com/">i18next</a></li>
 								<li><a target="_blank" href="http://www.jstree.com/">jsTree</a></li>
 								<li><a target="_blank" href="http://t4t5.github.io/sweetalert/">Sweet Alert</a></li>
-								<li><a target="_blank" href="https://github.com/i18next/ng-i18next">ng-i18next</a></li>
 								<li><a target="_blank" href="https://github.com/ezraroi/ngJsTree">ngJsTree</a></li>
 								<li><a target="_blank" href="https://github.com/thomaspark/bootswatch/">bootswatch</a></li>
 								<li role="separator" class="divider"></li>
@@ -171,19 +169,20 @@
 								<li><a target="_blank" href="http://www.bootcdn.cn/">BootCDN</a></li>
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header">Others</li>
+								<li><a target="_blank" href="https://angular-translate.github.io/">Angular Translate</a></li>
 								<li><a target="_blank" href="http://jtblin.github.io/angular-chart.js/">Angular Chart</a></li>
 								<li><a target="_blank" href="https://github.com/lorenzofox3/Smart-Table">Smart-Table</a></li>
 								<li><a target="_blank" href="http://cdn.code.baidu.com/">Baidu CDN</a></li>
 	                        </ul>
 	                    </li>
-	                    <li><a href="#/about"><span ng-i18next="Nav.About">About</span></a></li>
+	                    <li><a href="#/about"><span translate="Nav.About">About</span></a></li>
 	                </ul>
 	                
 	                <ul class="nav navbar-nav navbar-right">
 	                    <li class="dropdown" dropdown>
-		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Common.Themes">Themes</span><b class="caret"></b></a>
+		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Common.Themes">Themes</span><b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="" ng-click="setTheme()"><span ng-i18next="Common.Default">Default</span></a></li>
+								<li><a href="" ng-click="setTheme()"><span translate="Common.Default">Default</span></a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="" ng-click="setTheme('cerulean')">cerulean</a></li>
 								<li><a href="" ng-click="setTheme('cosmo')">cosmo</a></li>
@@ -205,7 +204,7 @@
 							</ul>
 						</li>
 	                    <li class="dropdown" dropdown>
-		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span ng-i18next="Common.Language">Languages</span><b class="caret"></b></a>
+		                	<a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Common.Language">Languages</span><b class="caret"></b></a>
 							<ul class="dropdown-menu">
                                 <li><a href="" ng-click="setLanguage('zh')">简体中文</a></li>
 								<li><a href="" ng-click="setLanguage('en')">English</a></li>

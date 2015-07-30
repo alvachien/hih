@@ -3,7 +3,7 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  'jm.i18next',
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  
 		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
 		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
@@ -111,8 +111,8 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$i18next', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
-			function($scope, $rootScope, $state, $http, $interval, $i18next, uiGridConstants, uiGridGroupingConstants, utils) {
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, uiGridConstants, uiGridGroupingConstants, utils) {
 			utils.loadLearnCategories();
 			utils.loadLearnObjects();
 
@@ -139,36 +139,22 @@
     		};
 			
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'id', displayName: $i18next('Common.ID'), width:90,
+		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90,
 					aggregationType:uiGridConstants.aggregationTypes.count
 //		    		, sort: {
 //		          	direction: uiGridConstants.DESC,
 //		          	priority: 1
 //		        	} 
 				},
-		    	{ name:'categoryid', field: 'categoryid', displayName: $i18next('Common.Category'), width:90 },
-				{ name:'categoryname', field: 'categoryname', displayName: $i18next('Common.Category'), width: 150},
-				{ name:'name', field:'name', displayName: $i18next('Common.Name'), width: 150 },
-				{ name:'content', field:'content', displayName: $i18next('Common.Content'), width: 400 }
+		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.Category', headerCellFilter: "translate", width:90 },
+				{ name:'categoryname', field: 'categoryname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+				{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+				{ name:'content', field:'content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
 		    // 	{ name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
 		    // { name:'agetemplate',field:'age', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><span>Age 2:{{COL_FIELD}}</span></div>' },
 		    // { name:'Join Date',field:'registered', cellFilter:'date', width:150, type:'date', enableFiltering:false },
 		    // { name:'Month Joined',field:'registered', cellFilter: 'date:"MMMM"', filterCellFiltered:true, sortCellFiltered:true, width:150, type:'date' }
 		  ];
-		  
-		  // Languages changes - have to do so because we cannot integer the i18next into ui-grid
-		  $scope.$on('i18nextLanguageChange', function() {
-			  //for(int i = 0; i < $scope.gridOptions.columnDefs.length; i ++) {
-			  if ($scope.gridOptions.columnDefs.length > 0) {
-				  $scope.gridOptions.columnDefs[0].displayName = $i18next('Common.ID');
-				  $scope.gridOptions.columnDefs[1].displayName = $i18next('Common.CategoryID');
-				  $scope.gridOptions.columnDefs[2].displayName = $i18next('Common.Category');
-				  $scope.gridOptions.columnDefs[3].displayName = $i18next('Common.Name');
-				  $scope.gridOptions.columnDefs[4].displayName = $i18next('Common.Content');
-				  
-				  $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
-			  }
-		  });
 		  
 		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
 			  $scope.myData = [];
@@ -335,8 +321,8 @@
 			 });			
 		}])		
 		
-		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$i18next', 'utils', 
-		                                      function($scope, $rootScope, $state, $stateParams, $http, $i18next, utils) {
+		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
+		                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		    $scope.Activity = "";
 		    $scope.ActivityID = 3;
 			$scope.CategoryIDs = $rootScope.arLearnCategory;

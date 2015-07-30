@@ -1,12 +1,14 @@
 # HIH (website version)
 HIH stands for Home Information Hub, which targets to build the application run on a server 
-HIH Website Version 0.4.2;
+HIH Website Version 0.4.3;
 Built with AngularJS, Angular UI, TinyMCE, etc.
 
 2015.7.1, Switch from native BootStrp to UI Bootstrap;
 2015.7.2, Switch from Baidu CDN to Bootcss CDN, because the number of the components;
 2015.7.15, Switch from Modal dialog to Sweet Alert. The dialog in HIH only for Message/Warn/Error; 
 2015.7.22, Switch from Smart-Table to UI-Grid, because the column footer feature;
+2015.7.29, Switch for ng-i18next to Angular Translate because UI-Grid integer it;
+2015.?, Switch for ngJstree to UI-Grid tree mode;
 
 
 # HIH, webstie version 0.1 to 0.3

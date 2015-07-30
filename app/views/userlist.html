@@ -1,7 +1,7 @@
 <div id="viewUserList">
 	<div class="page-header">
 		<h2>
-            <span ng-i18next="Nav.Users">Users</span> <small ng-i18next="Common.ListView"> List View </small>
+            <span translate="Nav.Users">Users</span> <small translate="Common.ListView"> List View </small>
 		</h2>
 	</div>
 
@@ -9,12 +9,12 @@
 		class="table table-striped">
 		<thead>
 			<tr>
-                <th st-sort="user" ng-i18next="Login.User">User</th>
-                <th st-sort="displayas" ng-i18next="Login.DisplayAs">Display As</th>
+                <th st-sort="user" translate="Login.User">User</th>
+                <th st-sort="displayas" translate="Login.DisplayAs">Display As</th>
 			</tr>
 			<tr>
 				<th colspan="2"><input st-search="" class="form-control"
-					placeholder="{{ 'Common.Search' | i18next }}" type="text" /></th>
+					placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
 			</tr>
 		</thead>
 		<tbody>

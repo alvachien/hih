@@ -2,23 +2,23 @@
 	<form class="form-signin" name="loginForm">
 	
 <!-- 		<i class="glyphicon glyphicon-log-in"></i> -->
-        <h2 class="form-signin-heading" ng-i18next="Login.LoginTitle">Sign in</h2>
+        <h2 class="form-signin-heading" translate="Login.LoginTitle">Sign in</h2>
 
 		<label for="inputUser" class="sr-only">User</label> 
-        <input id="inputUser" class="form-control" placeholder="{{ 'Login.User' | i18next }}" required
+        <input id="inputUser" class="form-control" placeholder="{{ 'Login.User' | translate }}" required
 			autofocus ng-model="credentials.username" ng-minlength="6" /> 
         
         <label for="inputPassword" class="sr-only">Password</label> 
         <input type="password" id="inputPassword" class="form-control"
-               placeholder="{{ 'Login.Password' | i18next }}" ng-model="credentials.password" required
+               placeholder="{{ 'Login.Password' | translate }}" ng-model="credentials.password" required
                ng-minlength="6">
 
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block" type="submit"
-                    ng-disabled="loginForm.$invalid" ng-click="login()" ng-i18next="Login.SignIn">
+                    ng-disabled="loginForm.$invalid" ng-click="login()" translate="Login.SignIn">
                 Sign in
             </button>
-            <button class="btn btn-lg btn-block" ui-sref="register" ng-i18next="Login.SignUp">Sign up</button>
+            <button class="btn btn-lg btn-block" ui-sref="register" translate="Login.SignUp">Sign up</button>
         </div>
 </form>
 </div>

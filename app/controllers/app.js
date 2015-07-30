@@ -3,22 +3,11 @@
 (function() {
 	"use strict";	
 	
-	angular.module('jm.i18next').config(['$i18nextProvider', function ($i18nextProvider) {
-	    $i18nextProvider.options = {
-	        lng: 'en',
-	        useCookie: false,
-	        useLocalStorage: false,
-	        fallbackLng: 'en',
-	        resGetPath: 'locales/__lng__/resource.json',
-	        defaultLoadingValue: '' // ng-i18next option, *NOT* directly supported by i18next
-	    };
-	}]);
-	
 	angular.module('hihApp', ["ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 
-		'hihApp.Finance', 'jm.i18next', 'ngJsTree', 'ngTouch', 
+		'hihApp.Finance', 'pascalprecht.translate', 'ngJsTree', 'ngTouch', 
 		'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns', 
 		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
-		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', '$i18next', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log, $i18next) {
+		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log) {
 			    $rootScope.$state = $state;
 			    $rootScope.$stateParams = $stateParams;
 			    
@@ -45,15 +34,6 @@
 			    	}
 			    );
 			    
-				$rootScope.$on('i18nextLanguageChange', function () {
-					$log.info('HIH: Language has changed!');
-					if (!$rootScope.i18nextReady) {
-						$timeout(function () {
-							$rootScope.i18nextReady = true;
-						}, 500);
-					}
-				});
-				
 			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType, conf_func) {
 					console.log('HIH: ShowMessage event occurred');
 					
@@ -159,7 +139,7 @@
         });
 	}])
 	
-	.controller('MainController', ['$scope', '$rootScope', '$log', '$i18next', 'utils', function($scope, $rootScope, $log, $i18next, utils) {
+	.controller('MainController', ['$scope', '$rootScope', '$log', 'utils', function($scope, $rootScope, $log, utils) {
 		$scope.currentTheme = "lumen";
 		
 		var arCSS = utils.getThemeCSSPath($scope.currentTheme);
@@ -179,7 +159,7 @@
 		});
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		$scope.displayedCollection = [
 			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},
@@ -205,14 +185,6 @@
 			});
 		};
 		
-		$scope.setLanguage = function(lng) {
-			$log.info("HIH: Language change event triggerd!");
-			
-			if (lng !== $i18next.options.lng) {
-				$i18next.options.lng = lng;				
-			}
-		};
-		
 		$scope.setTheme = function(theme) {
 			$log.info("HIH: Theme change event triggerd!");
 
@@ -228,7 +200,7 @@
 		};
 	}])
 
-	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$i18next', 'utils', function($scope, $rootScope, $state, $http, $log, $i18next, utils) {
+	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadUserList();
 		
 	    $scope.rowCollection = $rootScope.arUserList;

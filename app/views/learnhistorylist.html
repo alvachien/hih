@@ -1,27 +1,27 @@
 <div id="viewLearnHistory">
 	<div class="page-header">
 		<h2>
-			<span ng-i18next="Learn.LearningHistory">Learn Histories</span> <small ng-i18next="Common.ListView"> List View </small>
+			<span translate="Learn.LearningHistory">Learn Histories</span> <small translate="Common.ListView"> List View </small>
 		</h2>
 		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
-		<button type="button" class="btn btn-primary" ng-click="refreshList()" ng-i18next="Common.Refresh">Refresh</button>
+		<button type="button" class="btn btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
 	</div>
 
 	<table st-table="displayedCollection" st-safe-src="rowCollection"
 		class="table table-striped">
 		<thead>
 			<tr>
-				<th st-sort="userid" ng-i18next="Login.User">User ID</th>
-				<th st-sort="displayas" ng-i18next="Login.DisplayAs">User Name</th>
-				<th st-sort="objectid" ng-i18next="Learn.ObjectID">Object ID</th>
-				<th st-sort="objectname" ng-i18next="Learn.ObjectName">Object Name</th>
-				<th st-sort="categoryid" ng-i18next="Common.CategoryID">Category ID</th>
-				<th st-sort="categoryname" ng-i18next="Common.CategoryName">Category Name</th>
-				<th st-sort="learndate" ng-i18next="Common.Date">Learn Date</th>
+				<th st-sort="userid" translate="Login.User">User ID</th>
+				<th st-sort="displayas" translate="Login.DisplayAs">User Name</th>
+				<th st-sort="objectid" translate="Learn.ObjectID">Object ID</th>
+				<th st-sort="objectname" translate="Learn.ObjectName">Object Name</th>
+				<th st-sort="categoryid" translate="Common.CategoryID">Category ID</th>
+				<th st-sort="categoryname" translate="Common.CategoryName">Category Name</th>
+				<th st-sort="learndate" translate="Common.Date">Learn Date</th>
 			</tr>
 			<tr>
 				<th colspan="8"><input st-search="" class="form-control"
-					placeholder="{{'Common.Search' | i18next }}" type="text" /></th>
+					placeholder="{{'Common.Search' | translate }}" type="text" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -36,15 +36,15 @@
 				<td>
 					<div class="btn-group" role="group">
 						<button type="button" ng-click="displayItem(row)"
-							class="btn-group btn-primary" role="group" tooltip="{{'Common.Display' | i18next}}">
+							class="btn-group btn-primary" role="group" tooltip="{{'Common.Display' | translate}}">
 							<i class="glyphicon glyphicon-share"> </i>
 						</button>
 						<button type="button" ng-click="editItem(row)"
-							class="btn-group btn-warning" role="group" tooltip="{{'Common.Edit' | i18next}}">
+							class="btn-group btn-warning" role="group" tooltip="{{'Common.Edit' | translate}}">
 							<i class="glyphicon glyphicon-edit"> </i>
 						</button>
 						<button type="button" ng-click="removeItem(row)"
-							class="btn-group btn-danger" role="group" tooltip="{{'Common.Delete' | i18next}}">
+							class="btn-group btn-danger" role="group" tooltip="{{'Common.Delete' | translate}}">
 							<i class="glyphicon glyphicon-trash"> </i>
 						</button>
 					</div>					
