@@ -125,6 +125,9 @@
 			$scope.gridOptions.enableGridMenu = false;
 			$scope.gridOptions.enableColumnMenus = false;
 			$scope.gridOptions.showGridFooter = true;
+			$scope.gridOptions.enableRowSelection = true;
+			$scope.gridOptions.enableFullRowSelection = true;
+			$scope.gridOptions.selectionRowHeaderWidth = 35;
 			//$scope.gridOptions.showColumnFooter = true;
 			// $scope.gridOptions.fastWatch = true;
 			
@@ -136,21 +139,25 @@
 			};			
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
       			$scope.gridApi = gridApi;
+				
+				//$scope.gridOptions.enableFullRowSelection = !$scope.gridOptions.enableFullRowSelection;
+			    //$scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.OPTIONS);
+				//$scope.gridApi. 
     		};
 			
 			$scope.gridOptions.columnDefs = [
 		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90,
-					aggregationType:uiGridConstants.aggregationTypes.count
+//					aggregationType:uiGridConstants.aggregationTypes.count
 //		    		, sort: {
-//		          	direction: uiGridConstants.DESC,
-//		          	priority: 1
+//		          		direction: uiGridConstants.DESC,
+//		          		priority: 1
 //		        	} 
 				},
 		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.Category', headerCellFilter: "translate", width:90 },
 				{ name:'categoryname', field: 'categoryname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 				{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 				{ name:'content', field:'content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
-		    // 	{ name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
+		    // { name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
 		    // { name:'agetemplate',field:'age', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><span>Age 2:{{COL_FIELD}}</span></div>' },
 		    // { name:'Join Date',field:'registered', cellFilter:'date', width:150, type:'date', enableFiltering:false },
 		    // { name:'Month Joined',field:'registered', cellFilter: 'date:"MMMM"', filterCellFiltered:true, sortCellFiltered:true, width:150, type:'date' }
@@ -163,22 +170,23 @@
 				});			  
 		  };
 		    
-		    $scope.$on("LearnObjectLoaded", function() {
+		  $scope.$on("LearnObjectLoaded", function() {
 		    	console.log("HIH LearnObject List: Loaded event fired!");
 		    	$scope.myData = [];
 				
 				$.each($rootScope.arLearnObject, function(idx, obj) {
 		  			$scope.myData.push(angular.copy(obj));					
 				});
-		    });
+		  });
 		    
-		    $scope.$on("LearnCategoryLoaded", function() {
-		    	console.log("HIH LearnObject List: Category Loaded event fired!");
-		    });	
-
+		  $scope.$on("LearnCategoryLoaded", function() {
+		  	console.log("HIH LearnObject List: Category Loaded event fired!");
+		  });	
+		  
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				var index = $scope.rowCollection.indexOf(row);
+				var rowCol = $scope.gridApi.cellNav.getFocusedCell();
+				var index = rowCol.row.entity.id;
 			    if (index !== -1) {
 			    	// Popup dialog for confirm
 					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {

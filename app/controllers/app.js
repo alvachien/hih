@@ -71,7 +71,7 @@
 			}
 		])
 
-	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+	.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', function ($stateProvider, $urlRouterProvider, $translateProvider) {
 
       /////////////////////////////
       // Redirects and Otherwise //
@@ -137,10 +137,28 @@
           templateUrl: 'app/views/about.html',
           controller: 'AboutController'
         });
+		
+		// Translate configurations
+		$translateProvider.useStaticFilesLoader({
+		    files: [{
+		        prefix: 'locales/',
+		        suffix: '.json'
+		    }]
+		});
+		// Enable escaping of HTML
+  		$translateProvider.useSanitizeValueStrategy('escaped');		
+		$translateProvider.registerAvailableLanguageKeys(['en', 'zh'], {
+		    'en_US': 'en',
+		    'en_UK': 'en',
+		    'zh_CN': 'zh'
+		  })
+		  .determinePreferredLanguage()
+		  //.preferredLanguage('en')
+		  .fallbackLanguage('en');		
 	}])
 	
-	.controller('MainController', ['$scope', '$rootScope', '$log', 'utils', function($scope, $rootScope, $log, utils) {
-		$scope.currentTheme = "lumen";
+	.controller('MainController', ['$scope', '$rootScope', '$log', '$translate', 'utils', function($scope, $rootScope, $log, $translate, utils) {
+		$scope.currentTheme = "lumen"; // Default theme
 		
 		var arCSS = utils.getThemeCSSPath($scope.currentTheme);
 		$scope.bootstrapcss = arCSS[0];
@@ -159,7 +177,8 @@
 		});
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$translate', 'i18nService', 'utils', 
+		function($scope, $rootScope, $state, $http, $log, $translate, i18nService, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		$scope.displayedCollection = [
 			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},
@@ -186,7 +205,7 @@
 		};
 		
 		$scope.setTheme = function(theme) {
-			$log.info("HIH: Theme change event triggerd!");
+			$log.info("HIH: Theme change triggerd!");
 
 			var realtheme = "";			
 			if (theme && theme.length > 0) {
@@ -197,6 +216,17 @@
 				realtheme = "default";
 			}			
 			$rootScope.$broadcast('ThemeChange', realtheme);
+		};
+		
+		$scope.setLanguage = function(newLang) {
+			$log.info("HIH: Language change triggerd!");
+			$translate.use(newLang);
+			
+		  	if (newLang === "zh") {
+				i18nService.setCurrentLang('zh-CN');					  
+			} else {
+				i18nService.setCurrentLang('en');
+			}
 		};
 	}])
 

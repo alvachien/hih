@@ -3,9 +3,9 @@
 (function() {
 	'use strict';	
 	
-	angular.module('hihApp.Login', ["ui.router", "ngAnimate"])
-		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
-		      $stateProvider
+	angular.module('hihApp.Login', ["ui.router", "ngAnimate", "pascalprecht.translate"])
+		.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', function ($stateProvider, $urlRouterProvider, $translateProvider) {
+			$stateProvider
 		        .state("login", {
 		          url: "/login",
 		          templateUrl: 'app/views/login.html',
@@ -16,16 +16,18 @@
 		        	templateUrl: 'app/views/register.html',
 		        	controller: 'RegisterController'
 		        });
+			
 		}])
 		
-		.controller('LoginController', ['$scope', '$rootScope', '$state', '$http', function($scope, $rootScope, $state, $http) {
+		.controller('LoginController', ['$scope', '$rootScope', '$state', '$http', '$translate', function($scope, $rootScope, $state, $http, $translate) {
 	  		$scope.credentials = {
-	  				username: "",
-	  				password: ""
+	  			username: "",
+	  			password: ""
 	  		};
 	  			
 			$scope.login = function() {
 				// Verify the inputs first!
+				// To-Do
 				
 				// Then, real logon
 				$http.post('script/hihsrv.php', { objecttype: 'USERLOGIN', loginuser:$scope.credentials.username, loginpassword: $scope.credentials.password } ).
@@ -50,7 +52,7 @@
 					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
 				  });
 				
-				// Go to some other page
+				// Go to some other page?
 			};
 			
 			$scope.register = function() {
@@ -60,7 +62,7 @@
 		}])
         
 		// Register controller
-		.controller('RegisterController', ['$scope', '$rootScope', '$state', function($scope, $rootScope, $state) {
+		.controller('RegisterController', ['$scope', '$rootScope', '$state', '$translate', function($scope, $rootScope, $state, $translate) {
 	  		$scope.registerInfo = {
 	  				username: "",
 	  				password: "",
