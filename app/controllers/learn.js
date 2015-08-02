@@ -128,8 +128,6 @@
 			$scope.gridOptions.enableRowSelection = true;
 			$scope.gridOptions.enableFullRowSelection = true;
 			$scope.gridOptions.selectionRowHeaderWidth = 35;
-			//$scope.gridOptions.showColumnFooter = true;
-			// $scope.gridOptions.fastWatch = true;
 			
 			$scope.gridOptions.rowIdentity = function(row) {
 			 	return row.id;
@@ -140,27 +138,26 @@
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
       			$scope.gridApi = gridApi;
 				
-				//$scope.gridOptions.enableFullRowSelection = !$scope.gridOptions.enableFullRowSelection;
-			    //$scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.OPTIONS);
-				//$scope.gridApi. 
+     			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+     				 if (row.isSelected) {
+     					$scope.selectedRows.push(row.entity);     					
+     				 } else {
+     					$.each($scope.selectedRows, function(idx, obj) {
+							if (obj.id === row.entity.id) {
+								$scope.selectedRows.splice(idx, 1);
+								return false;
+							}
+						});
+     				 }
+      		     });
     		};
 			
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90,
-//					aggregationType:uiGridConstants.aggregationTypes.count
-//		    		, sort: {
-//		          		direction: uiGridConstants.DESC,
-//		          		priority: 1
-//		        	} 
-				},
+		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
 		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.Category', headerCellFilter: "translate", width:90 },
 				{ name:'categoryname', field: 'categoryname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 				{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 				{ name:'content', field:'content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
-		    // { name:'age', width:100, enableCellEdit: true, aggregationType:uiGridConstants.aggregationTypes.avg, treeAggregationType: uiGridGroupingConstants.aggregation.AVG },
-		    // { name:'agetemplate',field:'age', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><span>Age 2:{{COL_FIELD}}</span></div>' },
-		    // { name:'Join Date',field:'registered', cellFilter:'date', width:150, type:'date', enableFiltering:false },
-		    // { name:'Month Joined',field:'registered', cellFilter: 'date:"MMMM"', filterCellFiltered:true, sortCellFiltered:true, width:150, type:'date' }
 		  ];
 		  
 		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
@@ -169,6 +166,8 @@
 		  			$scope.myData.push(angular.copy(obj));					
 				});			  
 		  };
+		  
+		  $scope.selectedRows = [];
 		    
 		  $scope.$on("LearnObjectLoaded", function() {
 		    	console.log("HIH LearnObject List: Loaded event fired!");
@@ -185,59 +184,59 @@
 		  
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				var rowCol = $scope.gridApi.cellNav.getFocusedCell();
-				var index = rowCol.row.entity.id;
-			    if (index !== -1) {
-			    	// Popup dialog for confirm
-					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
-						$http.post(
-							'script/hihsrv.php',
-							{
-								objecttype : 'DELETELEARNOBJECT',
-								id : row.id
-							})
-							.success(
-								function(data, status, headers, config) {
-									//$scope.rowCollection.splice(index, 1);
-									
-									// Update the buffer
-									$.each($rootScope.arLearnObject, function(idx, obj) {
-										if (obj.id === row.id) {
-											$rootScope.arLearnObject.splice(idx, 1);
-											return false;
-										}
-									});
-								})
-							 .error(
-								function(data, status, headers, config) {
-									// called asynchronously if an error occurs or server returns response with an error status.
-									$rootScope.$broadcast(
-										"ShowMessage",
-										"Error",
-										data.Message);
-								});							
-					});
-			    }
+				if ($scope.selectedRows.length <= 0)
+					return;
+				
+				// Following logic need enhance for multiple items deletion
+//				var rowCol = $scope.gridApi.cellNav.getFocusedCell();
+//				var index = rowCol.row.entity.id;
+//			    if (index !== -1) {
+//			    	// Popup dialog for confirm
+//					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+//						$http.post(
+//							'script/hihsrv.php',
+//							{
+//								objecttype : 'DELETELEARNOBJECT',
+//								id : row.id
+//							})
+//							.success(
+//								function(data, status, headers, config) {
+//									//$scope.rowCollection.splice(index, 1);
+//									
+//									// Update the buffer
+//									$.each($rootScope.arLearnObject, function(idx, obj) {
+//										if (obj.id === row.id) {
+//											$rootScope.arLearnObject.splice(idx, 1);
+//											return false;
+//										}
+//									});
+//								})
+//							 .error(
+//								function(data, status, headers, config) {
+//									// called asynchronously if an error occurs or server returns response with an error status.
+//									$rootScope.$broadcast(
+//										"ShowMessage",
+//										"Error",
+//										data.Message);
+//								});							
+//					});
+//			    }
 			 };
 			
 			// Display
 			$scope.displayItem = function (row) {
-				//var index = $scope.rowCollection.indexOf(row);
-			    //if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    //	$state.go("home.learn.object.display",  { objid : row.id });
-			    //}
+				if ($scope.selectedRows.length <= 0)
+					return;
+				
+				$state.go("home.learn.object.display",  { objid : $scope.selectedRows[0].id });
 			};
 			
 			// Edit
 			$scope.editItem = function (row) {
-				//var index = $scope.rowCollection.indexOf(row);
-			    //if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    //	$state.go("home.learn.object.maintain",  { objid : row.id });
-			   // }
+				if ($scope.selectedRows.length <= 0)
+					return;
+				
+				$state.go("home.learn.object.maintain",  { objid : $scope.selectedRows[0].id });
 			};
 			
 			// Create
@@ -442,78 +441,126 @@
 			utils.loadLearnHistories();
 			utils.loadLearnObjects();
 			utils.loadUserList();
-		    $scope.rowCollection = [];     
-		    $scope.displayedCollection = [];
-		    
-		    $scope.rowCollection = $rootScope.arLearnHistory;
-		    $scope.displayedCollection = [].concat($scope.rowCollection);
-		    
-		    $scope.$on("LearnHistoryLoaded", function() {
-		    	console.log("HIH LearnHistory List: Loaded event fired!");
+			
+			$scope.gridOptions = {};
+			$scope.gridOptions.data = 'myData';
+			$scope.gridOptions.enableSorting = true;
+			$scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableFiltering = true;
+			$scope.gridOptions.enableGridMenu = false;
+			$scope.gridOptions.enableColumnMenus = false;
+			$scope.gridOptions.showGridFooter = true;
+			$scope.gridOptions.enableRowSelection = true;
+			$scope.gridOptions.enableFullRowSelection = true;
+			$scope.gridOptions.selectionRowHeaderWidth = 35;
+			
+			$scope.gridOptions.rowIdentity = function(row) {
+			 	return row.objectid.toString().concat('_', row.userid.toString()) ;
+			};
+			$scope.gridOptions.getRowIdentity = function(row) {
+			 	return row.objectid.toString().concat('_', row.userid.toString()) ;
+			};			
+			$scope.gridOptions.onRegisterApi = function(gridApi) {
+      			$scope.gridApi = gridApi;
+				
+     			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+     				 if (row.isSelected) {
+     					$scope.selectedRows.push(row.entity);     					
+     				 } else {
+     					$.each($scope.selectedRows, function(idx, obj) {
+							if (obj.userid === row.entity.userid && obj.objectid === row.entity.objectid) {
+								$scope.selectedRows.splice(idx, 1);
+								return false;
+							}
+						});
+     				 }
+      		     });
+    		};
+
+			$scope.gridOptions.columnDefs = [
+		    	{ name:'userid', field: 'userid', displayName: 'Login.User', headerCellFilter: "translate", width:'5%' },
+		    	{ name:'displayas', field: 'displayas', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
+				{ name:'objectid', field: 'objectid', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
+				{ name:'objectname', field:'objectname', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
+				{ name:'categoryid', field:'categoryid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
+				{ name:'categoryname', field:'categoryname', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
+				{ name:'learndate', field:'learndate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
+		  ];
+		  
+		  if (angular.isArray($rootScope.arLearnHistory ) && $rootScope.arLearnHistory.length > 0) {
+			  $scope.myData = [];
+				$.each($rootScope.arLearnHistory, function(idx, obj) {
+		  			$scope.myData.push(angular.copy(obj));					
+				});			  
+		  };
+		  
+		  $scope.selectedRows = [];		    
+		  $scope.$on("LearnHistoryLoaded", function() {
+		  		console.log("HIH LearnHistory List: Loaded event fired!");
 		    	
-		    	$scope.rowCollection = $rootScope.arLearnHistory;
-			    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-					// copy the references (you could clone ie angular.copy but
-					// then have to go through a dirty checking for the matches)
-			    	$scope.displayedCollection = [].concat($scope.rowCollection);
-			    }
-		    });
+				  $scope.myData = [];
+					$.each($rootScope.arLearnHistory, function(idx, obj) {
+			  			$scope.myData.push(angular.copy(obj));					
+					});	
+		  });
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// Popup dialog for confirm
-					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
-						$http.post(
-							'script/hihsrv.php',
-							{
-								objecttype : 'DELETELEARNHISTORY',
-								userid : row.userid,
-								objectid: row.objectid
-							})
-							.success(
-								function(data, status, headers, config) {
-									$scope.rowCollection.splice(index, 1);
-									
-									// Update the buffer
-									$.each($rootScope.arLearnHistory, function(idx, obj) {
-										if (obj.objectid === row.objectid && obj.userid === row.userid) {
-											$rootScope.arLearnHistory.splice(idx, 1);
-											return false;
-										}
-									});
-								})
-							 .error(
-								function(data, status, headers, config) {
-									// called asynchronously if an error occurs or server returns response with an error status.
-									$rootScope.$broadcast(
-										"ShowMessage",
-										"Error",
-										data.Message);
-								});
-					});
-			    }
+				// To-Do: delete multiple rows
+				if ($scope.selectedRows.length <= 0)
+					return;
+
+//				var index = $scope.rowCollection.indexOf(row);
+//			    if (index !== -1) {
+//			    	// Popup dialog for confirm
+//					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+//						$http.post(
+//							'script/hihsrv.php',
+//							{
+//								objecttype : 'DELETELEARNHISTORY',
+//								userid : row.userid,
+//								objectid: row.objectid
+//							})
+//							.success(
+//								function(data, status, headers, config) {
+//									$scope.rowCollection.splice(index, 1);
+//									
+//									// Update the buffer
+//									$.each($rootScope.arLearnHistory, function(idx, obj) {
+//										if (obj.objectid === row.objectid && obj.userid === row.userid) {
+//											$rootScope.arLearnHistory.splice(idx, 1);
+//											return false;
+//										}
+//									});
+//								})
+//							 .error(
+//								function(data, status, headers, config) {
+//									// called asynchronously if an error occurs or server returns response with an error status.
+//									$rootScope.$broadcast(
+//										"ShowMessage",
+//										"Error",
+//										data.Message);
+//								});
+//					});
+//			    }
 			 };
 			
 			// Display
-			$scope.displayItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
-			    }
+			$scope.displayItem = function () {
+				if ($scope.selectedRows.length <= 0)
+					return;
+				
+				var row = $scope.selectedRows[0];
+				$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			};
 			
 			// Edit
-			$scope.editItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
-			    }
+			$scope.editItem = function () {
+				if ($scope.selectedRows.length <= 0)
+					return;
+
+				var row = $scope.selectedRows[0];
+				$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
 			};
 			
 			// Create
@@ -642,81 +689,127 @@
 		    });			 
 		}])
 
-		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', 'uiGridConstants', 'utils', 
+		                                         function($scope, $rootScope, $state, $http, uiGridConstants, utils) {
 			utils.loadLearnAwards();
 			utils.loadUserList(); // Ensure the Award page can show user combo.
 			
-		    $scope.rowCollection = [];     
-		    $scope.displayedCollection = [];
-		    
-		    $scope.rowCollection = $rootScope.arLearnAward;
-		    $scope.displayedCollection = [].concat($scope.rowCollection);
-		    
+			$scope.gridOptions = {};
+			$scope.gridOptions.data = 'myData';
+			$scope.gridOptions.enableSorting = true;
+			$scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableFiltering = true;
+			$scope.gridOptions.enableGridMenu = false;
+			$scope.gridOptions.enableColumnMenus = false;
+			$scope.gridOptions.showGridFooter = true;
+			$scope.gridOptions.showColumnFooter = true;
+			$scope.gridOptions.enableRowSelection = true;
+			$scope.gridOptions.enableFullRowSelection = true;
+			$scope.gridOptions.selectionRowHeaderWidth = 35;
+			
+			$scope.gridOptions.rowIdentity = function(row) {
+			 	return row.id;
+			};
+			$scope.gridOptions.getRowIdentity = function(row) {
+			 	return row.id;
+			};			
+			$scope.gridOptions.onRegisterApi = function(gridApi) {
+      			$scope.gridApi = gridApi;
+				
+     			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+     				 if (row.isSelected) {
+     					$scope.selectedRows.push(row.entity);     					
+     				 } else {
+     					$.each($scope.selectedRows, function(idx, obj) {
+							if (obj.id === row.entity.id) {
+								$scope.selectedRows.splice(idx, 1);
+								return false;
+							}
+						});
+     				 }
+      		     });
+    		};
+
+			$scope.gridOptions.columnDefs = [
+		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:'5%' },
+		    	{ name:'userid', field: 'userid', displayName: 'Login.User', headerCellFilter: "translate", width: '10%' },
+		    	{ name:'displayas', field: 'displayas', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },				
+				{ name:'adate', field:'adate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter:'date', width: '10%' },
+				{ name:'score', field:'score', displayName: 'Learn.Score', headerCellFilter: "translate", width: '10%',
+					aggregationType:uiGridConstants.aggregationTypes.avg }, // type:'boolean' for sorting 
+				{ name:'reason', field:'reason', displayName: 'Learn.Reason', headerCellFilter: "translate", width: '40%' }
+		  ];
+		  
+		  if (angular.isArray($rootScope.arLearnAward ) && $rootScope.arLearnAward.length > 0) {
+			  $scope.myData = [];
+				$.each($rootScope.arLearnAward, function(idx, obj) {
+		  			$scope.myData.push(angular.copy(obj));					
+				});			  
+		  };
+		  
+		  $scope.selectedRows = [];
 		    $scope.$on("LearnAwardLoaded", function() {
 		    	console.log("HIH LearnAward List: Loaded event fired!");
-		    	
-		    	$scope.rowCollection = $rootScope.arLearnAward;
-			    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-					// copy the references (you could clone ie angular.copy but
-					// then have to go through a dirty checking for the matches)
-			    	$scope.displayedCollection = [].concat($scope.rowCollection);
-			    }
+		    	$scope.myData = [];
+				$.each($rootScope.arLearnAward, function(idx, obj) {
+		  			$scope.myData.push(angular.copy(obj));					
+				});	
 		    });
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// Popup dialog for confirm
-					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
-						$http.post(
-							'script/hihsrv.php',
-							{
-								objecttype : 'DELETELEARNAWARD',
-								id : row.id
-							})
-							.success(
-								function(data, status, headers, config) {
-									$scope.rowCollection.splice(index, 1);
-									
-									// Update the buffer
-									$.each($rootScope.arLearnAward, function(idx, obj) {
-										if (obj.id === row.id) {
-											$rootScope.arLearnAward.splice(idx, 1);
-											return false;
-										}
-									});
-								})
-							 .error(
-								function(data, status, headers, config) {
-									// called asynchronously if an error occurs or server returns response with an error status.
-									$rootScope.$broadcast(
-										"ShowMessage",
-										"Error",
-										data.Message);
-								});
-					});
-			    }
+				if ($scope.selectedRows.length <= 0) 
+					return;
+				
+				// To-DO: delete multiple selected items
+//				var index = $scope.rowCollection.indexOf(row);
+//			    if (index !== -1) {
+//			    	// Popup dialog for confirm
+//					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+//						$http.post(
+//							'script/hihsrv.php',
+//							{
+//								objecttype : 'DELETELEARNAWARD',
+//								id : row.id
+//							})
+//							.success(
+//								function(data, status, headers, config) {
+//									$scope.rowCollection.splice(index, 1);
+//									
+//									// Update the buffer
+//									$.each($rootScope.arLearnAward, function(idx, obj) {
+//										if (obj.id === row.id) {
+//											$rootScope.arLearnAward.splice(idx, 1);
+//											return false;
+//										}
+//									});
+//								})
+//							 .error(
+//								function(data, status, headers, config) {
+//									// called asynchronously if an error occurs or server returns response with an error status.
+//									$rootScope.$broadcast(
+//										"ShowMessage",
+//										"Error",
+//										data.Message);
+//								});
+//					});
+//			    }
 			 };
 			
 			// Display
-			$scope.displayItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.award.display",  { objid : row.id });
-			    }
+			$scope.displayItem = function () {
+				if ($scope.selectedRows.length <= 0) 
+					return;
+
+		    	$state.go("home.learn.award.display",  { objid : $scope.selectedRows[0].id });
 			};
 			
 			// Edit
-			$scope.editItem = function (row) {
-				var index = $scope.rowCollection.indexOf(row);
-			    if (index !== -1) {
-			    	// $scope.rowCollection.splice(index, 1);
-			    	//$location.path('/learnobject/' + row.id);
-			    	$state.go("home.learn.award.maintain",  { objid : row.id });
-			    }
+			$scope.editItem = function () {
+				if ($scope.selectedRows.length <= 0) 
+					return;
+
+		    	$state.go("home.learn.award.maintain",  { objid : $scope.selectedRows[0].id });
 			};
 			
 			// Create
@@ -840,18 +933,51 @@
 	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadLearnCategories();
 
-		$scope.rowCollection = [];     
-	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arLearnCategory;
-	    $scope.displayedCollection = [].concat($scope.rowCollection);
+		// Grid options
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.id;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.id;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:'10%' },
+	    	{ name:'parent', field: 'parent', displayName: 'Common.Parent', headerCellFilter: "translate", width:'10%' },
+			{ name:'text', field: 'text', displayName: 'Common.Text', headerCellFilter: "translate", width: '30%' },
+			{ name:'comment', field:'commnet', displayName: 'Common.Comment', headerCellFilter: "translate", width: '50%' }
+	  ];
+	  
+	  if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {
+		  $scope.myData = [];
+		  $.each($rootScope.arLearnCategory, function(idx, obj) {
+	  			$scope.myData.push(angular.copy(obj));					
+			});			  
+	  };
+
+//		$scope.rowCollection = [];     
+//	    $scope.displayedCollection = [];	    
+//	    $scope.rowCollection = $rootScope.arLearnCategory;
+//	    $scope.displayedCollection = [].concat($scope.rowCollection);
 
 		$scope.$on("LearnCategoryLoaded", function() {
-			console.log("HIH LearnCategory List: Category Loaded event fired!");
-	    	$scope.rowCollection = $rootScope.arLearnCategory;
-			
-		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-		    	$scope.displayedCollection = [].concat($scope.rowCollection);
-		    }
+			$log.info("HIH LearnCategory List: Category Loaded event fired!");
+			$scope.myData = [];
+			$.each($rootScope.arLearnCategory, function(idx, obj) {
+		  		$scope.myData.push(angular.copy(obj));					
+			});		
 		});		
 	}])
 	

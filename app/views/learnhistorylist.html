@@ -3,53 +3,30 @@
 		<h2>
 			<span translate="Learn.LearningHistory">Learn Histories</span> <small translate="Common.ListView"> List View </small>
 		</h2>
-		<button type="button" class="btn btn-primary" ng-click="newItem()">New</button>
-		<button type="button" class="btn btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+		
+		<div class="btn-toolbar" role="toolbar" aria-label="...">
+		  <div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn-group btn-primary" ng-click="newItem()" translate="Common.New">New</button>
+			<button type="button" class="btn-group btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+		  </div>
+		  
+		  <div class="btn-group" role="group" aria-label="...">
+  			<button type="button" ng-click="displayItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
+					translate="Common.Display">					
+			</button>
+			<button type="button" ng-click="editItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
+					translate="Common.Edit">
+			</button>
+			<button type="button" ng-click="removeItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
+					translate="Common.Delete">
+			</button>
+		  </div>
+		</div>
 	</div>
 
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="userid" translate="Login.User">User ID</th>
-				<th st-sort="displayas" translate="Login.DisplayAs">User Name</th>
-				<th st-sort="objectid" translate="Learn.ObjectID">Object ID</th>
-				<th st-sort="objectname" translate="Learn.ObjectName">Object Name</th>
-				<th st-sort="categoryid" translate="Common.CategoryID">Category ID</th>
-				<th st-sort="categoryname" translate="Common.CategoryName">Category Name</th>
-				<th st-sort="learndate" translate="Common.Date">Learn Date</th>
-			</tr>
-			<tr>
-				<th colspan="8"><input st-search="" class="form-control"
-					placeholder="{{'Common.Search' | translate }}" type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.userid}}</td>
-				<td>{{row.displayas}}</td>
-				<td>{{row.objectid}}</td>
-				<td>{{row.objectname}}</td>
-				<td>{{row.categoryid}}</td>
-				<td>{{row.categoryname}}</td>
-				<td>{{row.learndate}}</td>
-				<td>
-					<div class="btn-group" role="group">
-						<button type="button" ng-click="displayItem(row)"
-							class="btn-group btn-primary" role="group" tooltip="{{'Common.Display' | translate}}">
-							<i class="glyphicon glyphicon-share"> </i>
-						</button>
-						<button type="button" ng-click="editItem(row)"
-							class="btn-group btn-warning" role="group" tooltip="{{'Common.Edit' | translate}}">
-							<i class="glyphicon glyphicon-edit"> </i>
-						</button>
-						<button type="button" ng-click="removeItem(row)"
-							class="btn-group btn-danger" role="group" tooltip="{{'Common.Delete' | translate}}">
-							<i class="glyphicon glyphicon-trash"> </i>
-						</button>
-					</div>					
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="grid1" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div>		 
 </div>

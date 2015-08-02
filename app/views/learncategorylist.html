@@ -6,37 +6,6 @@
 		</h2>
 	</div>
 
-	<!--<div js-tree="treeConfig" ng-model="treeData" 
-		 tree="treeInstance" tree-events="ready:readyCB;create_node:createNodeCB"></div>-->
-	
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="id" translate="Common.ID">ID</th>
-				<th st-sort="parent" translate="Common.Parent">Parent ID</th>
-				<th st-sort="text" translate="Common.Text">Text</th>
-				<th st-sort="comment" translate="Common.Comment">Comment</th>
-			</tr>
-			<tr>
-				<th colspan="4"><input st-search="" class="form-control" placeholder="{{'Common.Search' | translate }}" 
-					type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.parent}}</td>
-				<td>{{row.text}}</td>
-				<td>{{row.comment}}</td>
-			</tr>
-		</tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5" class="text-center">
-                    <div st-pagination="" st-items-by-page="10"></div>
-                </td>
-            </tr>
-        </tfoot>
-	</table>
+	<div id="grid1" ui-grid="gridOptions"
+		 style="width: 100%; height: 500px;"></div>
 </div>
