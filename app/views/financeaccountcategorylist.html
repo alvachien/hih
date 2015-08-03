@@ -2,30 +2,10 @@
 
 	<div class="page-header">
 		<h2>
-			Finance Account Category<small translate="Common.ListView"> List View </small>
+			<span translate="Finance.AccountCategory">Finance Account Category</span><small translate="Common.ListView"> List View </small>
 		</h2>
 	</div>
-
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="id">ID</th>
-				<th st-sort="name">Name</th>
-				<th st-sort="assetflag">Asset Flag</th>
-				<th st-sort="comment">Comment</th>
-			</tr>
-			<tr>
-				<th colspan="4"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.name}}</td>
-				<td>{{row.assetflag}}</td>
-				<td>{{row.comment}}</td>
-			</tr>
-		</tbody>
-	</table>
+	
+	<div id="gridAcntCtgy" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div>
 </div>

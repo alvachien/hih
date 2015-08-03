@@ -2,28 +2,10 @@
 
 	<div class="page-header">
 		<h2>
-			Finance Document Type <small translate="Common.ListView"> List View </small>
+			<span translate="Finance.DocumentType">Finance Document Type</span> <small translate="Common.ListView"> List View </small>
 		</h2>
 	</div>
 
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="id">ID</th>
-				<th st-sort="name">Name</th>
-				<th st-sort="Comment"> Name</th>
-			</tr>
-			<tr>
-				<th colspan="3"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.name}}</td>
-				<td>{{row.comment}}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="gridFinDocType" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div>	
 </div>

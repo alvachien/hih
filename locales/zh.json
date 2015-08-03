@@ -112,6 +112,7 @@
   		"InternalOrder": "内部订单",
   		"ConfigObjects": "可配置对象",
   		"Currency": "货币",
+  		"CurrencySymbol": "货币符号",
   		"TransactionType": "交易类型",
   		"DocumentType": "凭证类型",
   		"Reports": "报表",

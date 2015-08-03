@@ -112,6 +112,7 @@
   		"InternalOrder": "Internal Order",
   		"ConfigObjects": "Config Objects",
   		"Currency": "Currency",
+  		"CurrencySymbol": "Currency Symbol",
   		"TransactionType": "Transaction Type",
   		"DocumentType": "Document Type",
   		"Reports": "Reports",

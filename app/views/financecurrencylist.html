@@ -2,28 +2,10 @@
 
 	<div class="page-header">
 		<h2>
-			Currency <small translate="Common.ListView"> List View </small>
+			<span translate="Finance.Currency">Currency</span> <small translate="Common.ListView"> List View </small>
 		</h2>
 	</div>
 
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="curr">Currency</th>
-				<th st-sort="name">Name</th>
-				<th st-sort="symbol">Symbol</th>
-			</tr>
-			<tr>
-				<th colspan="3"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.curr}}</td>
-				<td>{{row.name}}</td>
-				<td>{{row.symbol}}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="gridCurr" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div>
 </div>

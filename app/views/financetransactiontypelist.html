@@ -6,28 +6,6 @@
 		</h2>
 	</div>
 
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-				<th st-sort="id">ID</th>
-				<th st-sort="name'">Name</th>
-				<th st-sort="expenseflag">Expense</th>
-				<th st-sort="parent">Parent ID</th>
-				<th st-sort="comment">Comment</th>
-			</tr>
-			<tr>
-				<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.name}}</td>
-				<td>{{row.expense}}</td>
-				<td>{{row.parent}}</td>
-				<td>{{row.comment}}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div id="gridFinTranType" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div>
 </div>

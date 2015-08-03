@@ -956,8 +956,8 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:'10%' },
 	    	{ name:'parent', field: 'parent', displayName: 'Common.Parent', headerCellFilter: "translate", width:'10%' },
-			{ name:'text', field: 'text', displayName: 'Common.Text', headerCellFilter: "translate", width: '30%' },
-			{ name:'comment', field:'commnet', displayName: 'Common.Comment', headerCellFilter: "translate", width: '50%' }
+			{ name:'text', field: 'text', displayName: 'Common.Text', headerCellFilter: "translate", width: '20%' },
+			{ name:'comment', field:'commnet', displayName: 'Common.Comment', headerCellFilter: "translate", width: '40%' }
 	  ];
 	  
 	  if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {

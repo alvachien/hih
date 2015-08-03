@@ -5,32 +5,7 @@
 		</h2>
 	</div>
 
-	<table st-table="displayedCollection" st-safe-src="rowCollection"
-		class="table table-striped">
-		<thead>
-			<tr>
-                <th st-sort="user" translate="Login.User">User</th>
-                <th st-sort="displayas" translate="Login.DisplayAs">Display As</th>
-			</tr>
-			<tr>
-				<th colspan="2"><input st-search="" class="form-control"
-					placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in displayedCollection">
-				<td>{{row.id}}</td>
-				<td>{{row.text}}</td>
-			</tr>
-		</tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5" class="text-center">
-                    <div st-pagination="" st-items-by-page="10"></div>
-                </td>
-            </tr>
-        </tfoot>
-	</table>
-	
+	<div id="gridUserList" ui-grid="gridOptions" ui-grid-selection
+		 style="width: 100%; height: 500px;"></div> 
 </div>
 	
