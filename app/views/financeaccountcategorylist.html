@@ -6,6 +6,22 @@
 		</h2>
 	</div>
 	
-	<div id="gridAcntCtgy" ui-grid="gridOptions" ui-grid-selection
-		 style="width: 100%; height: 500px;"></div>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th translate="Common.ID">ID</th>
+				<th translate="Common.Name">Name</th>
+				<th translate="Finance.Asset">Asset Flag</th>
+				<th translate="Common.Comment">Comment</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in arList">
+				<td>{{row.id}}</td>
+				<td>{{row.name}}</td>
+				<td>{{row.assetflag}}</td>
+				<td>{{row.comment}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

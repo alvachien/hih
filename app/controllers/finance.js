@@ -181,7 +181,7 @@
 	}])
 	
 	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', 
-	                                      function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
+		function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
 			utils.loadFinanceAccountHierarchy();
 		
 			$scope.ignoreModelChanges = function() { return false; };
@@ -644,54 +644,23 @@
 		});
 	}])	
 	
-	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceTransactionTypes();
+		$scope.arList = [];
 
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.id;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.id;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'name', field: 'name', displayName: 'Common.Name', headerCellFilter: "translate", width:150 },
-	    	{ name:'expenseflag', field: 'expenseflag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width:50,
-	    		type: 'boolean'},
-	    	{ name:'parent', field: 'parent', displayName: 'Common.Parent', headerCellFilter: "translate", width:150 }
-			{ name:'comment', field: 'comment', displayName: 'Common.Comment', headerCellFilter: "translate", width:150 }
-	  ];
-	  
-	  if (angular.isArray($rootScope.arFinanceTransactionType ) && $rootScope.arFinanceTransactionType.length > 0) {
-		$scope.myData = [];
-		$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
-			$scope.myData.push(angular.copy(obj));					
-		});			  
-	  };
-
-	    $scope.$on("FinanceTransactionTypeLoaded", function() {
-	    	console.log("HIH FinanceTransactionType List: Loaded event fired!");
-	    	
-			$scope.myData = [];
+		if (angular.isArray($rootScope.arFinanceTransactionType ) && $rootScope.arFinanceTransactionType.length > 0) {
+			$scope.arList = [];
 			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
-				$scope.myData.push(angular.copy(obj));					
+				$scope.arList.push(angular.copy(obj));					
+			});	  
+		};
+
+		$scope.$on("FinanceTransactionTypeLoaded", function() {
+			$log.info("HIH FinanceTransactionType List: Loaded event fired!");
+	    	
+			$scope.arList = [];
+			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
 			});	
 		});
 	}])
@@ -755,51 +724,23 @@
 			 });
 	}])
 	
-	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceDocumentTypes();
-
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.id;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.id;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'name', field: 'name', displayName: 'Common.Name', headerCellFilter: "translate", width:150 },
-			{ name:'comment', field: 'comment', displayName: 'Common.Comment', headerCellFilter: "translate", width:150 }
-	  ];
+		$scope.arList = [];
 	  
-	  if (angular.isArray($rootScope.arFinanceDocumentType ) && $rootScope.arFinanceDocumentType.length > 0) {
-		$scope.myData = [];
-		$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
-			$scope.myData.push(angular.copy(obj));					
-		});			  
-	  };
+		if (angular.isArray($rootScope.arFinanceDocumentType ) && $rootScope.arFinanceDocumentType.length > 0) {
+			$scope.arList = [];			
+			$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
+			});			  
+		};
 
-	    $scope.$on("FinanceDocumentTypeLoaded", function() {
+		$scope.$on("FinanceDocumentTypeLoaded", function() {
 	    	console.log("HIH FinanceDocumentType List: Loaded event fired!");
 	    	
-			$scope.myData = [];
+			$scope.arList = [];
 			$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
-				$scope.myData.push(angular.copy(obj));					
+				$scope.arList.push(angular.copy(obj));					
 			});	
 	    });
 	}])
@@ -807,101 +748,44 @@
 	.controller('FinanceAccountCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
 	                                                     function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceAccountCategories();
+		$scope.arList = [];
 
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.id;
+		if (angular.isArray($rootScope.arFinanceAccountCategory ) && $rootScope.arFinanceAccountCategory.length > 0) {
+			$scope.arList = [];
+			$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
+			});			  
 		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.id;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'name', field: 'name', displayName: 'Common.Name', headerCellFilter: "translate", width:150 },
-			{ name:'assetflag', field: 'assetflag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50, type: 'boolean'},
-			{ name:'comment', field: 'comment', displayName: 'Common.Comment', headerCellFilter: "translate", width:150 }
-	  ];
-	  
-	  if (angular.isArray($rootScope.arFinanceAccountCategory ) && $rootScope.arFinanceAccountCategory.length > 0) {
-		$scope.myData = [];
-		$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
-			$scope.myData.push(angular.copy(obj));					
-		});			  
-	  };
 
 	    $scope.$on("FinanceAccountCategoryLoaded", function() {
 	    	$log.info("HIH FinanceAccountCategory List: Loaded event fired!");
 	    	
-			$scope.myData = [];
+			$scope.arList = [];
 			$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
-				$scope.myData.push(angular.copy(obj));					
-			});	
+				$scope.arList.push(angular.copy(obj));					
+			});			  
 	    });
 	}])	
 	
 	.controller('FinanceCurrencyListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadCurrencies();
+		$scope.arList = [];
 
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.curr;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.curr;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
+		if (angular.isArray($rootScope.arCurrency ) && $rootScope.arCurrency.length > 0) {
+			$scope.arList = [];
+			$.each($rootScope.arCurrency, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
+			});
 		};
 
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'curr', field: 'curr', displayName: 'Finance.Currency', headerCellFilter: "translate", width:90 },
-	    	{ name:'name', field: 'name', displayName: 'Common.Name', headerCellFilter: "translate", width:150 },
-			{ name:'symbol', field: 'symbol', displayName: 'Finance.CurrencySymbol', headerCellFilter: "translate", width: 150}
-	  ];
-	  
-	  if (angular.isArray($rootScope.arCurrency ) && $rootScope.arCurrency.length > 0) {
-		  $scope.myData = [];
-		  $.each($rootScope.arCurrency, function(idx, obj) {
-	  		$scope.myData.push(angular.copy(obj));					
-		  });			  
-	  };
-
-	  $scope.$on("CurrencyLoaded", function() {
-		  $log.info("HIH Currency List: Loaded event fired!");
+		$scope.$on("CurrencyLoaded", function() {
+			$log.info("HIH Currency List: Loaded event fired!");
 	    	
-		  $scope.myData = [];
-		  $.each($rootScope.arCurrency, function(idx, obj) {
-			  $scope.myData.push(angular.copy(obj));					
-		  });			  
-	  });
+			$scope.arList = [];
+			$.each($rootScope.arCurrency, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
+			});
+		});
 	}])		
 	;
 }()

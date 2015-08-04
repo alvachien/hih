@@ -6,6 +6,20 @@
 		</h2>
 	</div>
 
-	<div id="gridCurr" ui-grid="gridOptions" ui-grid-selection
-		 style="width: 100%; height: 500px;"></div>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th translate="Finance.Currency">Currency</th>
+				<th translate="Common.Name">Name</th>
+				<th translate="Finance.CurrencySymbol">Symbol</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in arList">
+				<td>{{row.curr}}</td>
+				<td>{{row.name}}</td>
+				<td>{{row.symbol}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

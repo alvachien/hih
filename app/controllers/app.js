@@ -150,7 +150,8 @@
 		$translateProvider.registerAvailableLanguageKeys(['en', 'zh'], {
 		    'en_US': 'en',
 		    'en_UK': 'en',
-		    'zh_CN': 'zh'
+		    'zh_CN': 'zh',
+			'zh-CN': 'zh'
 		  })
 		  .determinePreferredLanguage()
 		  //.preferredLanguage('en')
@@ -234,50 +235,19 @@
 	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadUserList();
 		
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.user;
+		$scope.arList = [];
+		if (angular.isArray($rootScope.arUserList ) && $rootScope.arUserList.length > 0) {		
+			$.each($rootScope.arUserList, function(idx, obj) {
+				$scope.arList.push(angular.copy(obj));					
+			});			  
 		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.user;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'user', field: 'user', displayName: 'Login.User', headerCellFilter: "translate", width:120 },
-	    	{ name:'displayas', field: 'displayas', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:200 }
-	    ];
-	  
-	  if (angular.isArray($rootScope.arUserList ) && $rootScope.arUserList.length > 0) {
-		$scope.myData = [];
-		$.each($rootScope.arUserList, function(idx, obj) {
-			$scope.myData.push(angular.copy(obj));					
-		});			  
-	  };
-
-	  $scope.rowCollection = $rootScope.arUserList;
-	    $scope.displayedCollection = [].concat($scope.rowCollection);
 
 	    $scope.$on("UserListLoaded", function() {
 	    	$log.info("HIH User List: Loaded event fired!");
 		    	
-			$scope.myData = [];
+			$scope.arList = [];
 			$.each($rootScope.arUserList, function(idx, obj) {
-				$scope.myData.push(angular.copy(obj));					
+				$scope.arList.push(angular.copy(obj));					
 			});			  
 		});		
 	}])
