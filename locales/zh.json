@@ -106,6 +106,7 @@
 		"Account": "账户",
   		"AccountCategory": "账户种类",
   		"Documents": "财务凭证",
+  		"Document": "财务凭证",
   		"PostDocument": "记账",
   		"Controlling": "财务控制",
   		"ControlCenter": "控制中心",

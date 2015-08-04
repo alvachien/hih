@@ -106,6 +106,7 @@
 		"Account": "Account",
   		"AccountCategory": "Account Category",
   		"Documents": "Documents",
+  		"Document": "Document",
   		"PostDocument": "Post Document",
   		"Controlling": "Controlling",
   		"ControlCenter": "Control Center",

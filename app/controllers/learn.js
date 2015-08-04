@@ -154,7 +154,7 @@
 			
 			$scope.gridOptions.columnDefs = [
 		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.Category', headerCellFilter: "translate", width:90 },
+		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
 				{ name:'categoryname', field: 'categoryname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 				{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 				{ name:'content', field:'content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }

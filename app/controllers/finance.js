@@ -117,60 +117,108 @@
     ;
 	}])
 	
-	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
+	                                             function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceAccounts();
 		utils.loadFinanceAccountCategories();
 		utils.loadCurrencies();
 
-		$scope.rowCollection = [];     
-	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arFinanceAccount;
-	    $scope.displayedCollection = [].concat($scope.rowCollection);
-
+		// Grid options
+        $scope.selectedRows = [];
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.enableRowSelection = true;
+		$scope.gridOptions.enableFullRowSelection = true;
+		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.id;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.id;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+			
+ 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				 if (row.isSelected) {
+ 					$scope.selectedRows.push(row.entity);     					
+ 				 } else {
+ 					$.each($scope.selectedRows, function(idx, obj) {
+						if (obj.id === row.entity.id) {
+							$scope.selectedRows.splice(idx, 1);
+							return false;
+						}
+					});
+ 				 }
+  		     });
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'ctgyid', field: 'ctgyid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+			{ name:'ctgyname', field: 'ctgyname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+			{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+			{ name:'assetflag', field:'assetflag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'comment', field:'comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	  ];
+	  
+	  if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
+		  $scope.myData = [];
+			$.each($rootScope.arFinanceAccount, function(idx, obj) {
+	  			$scope.myData.push(angular.copy(obj));					
+			});			  
+	  };
+		
 	    $scope.$on("FinanceAccountLoaded", function() {
-	    	console.log("HIH FinanceAccount List: Loaded event fired!");
+	    	$log.info("HIH FinanceAccount List: Loaded event fired!");
 	    	
-	    	$scope.rowCollection = $rootScope.arFinanceAccount;
-		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-				// copy the references (you could clone ie angular.copy but
-				// then have to go through a dirty checking for the matches)
-		    	$scope.displayedCollection = [].concat($scope.rowCollection);
-		    }
+		  $scope.myData = [];
+		  $.each($rootScope.arFinanceAccount, function(idx, obj) {
+	  			$scope.myData.push(angular.copy(obj));					
+			});			  
 	    });
 	    
 	    $scope.$on("FinanceAccountCategoryLoaded", function() {
-	    	console.log("HIH FinanceAccount List: Category Loaded event fired!");
+	    	$log.info("HIH FinanceAccount List: Category Loaded event fired!");
 	    });	
 
 		// Remove to the real data holder
 		$scope.removeItem = function removeItem(row) {
-			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
+			if ($scope.selectedRows.length <= 0)
+				return;
+			
+			//var index = $scope.rowCollection.indexOf(row);
+		    //if (index !== -1) {
 		    	// Popup dialog for confirm
 		    	
 		    	// Then, communicate the sever for deleting
 		    	
 		    	// Last, update the UI part
 //		    	$scope.rowCollection.splice(index, 1);
-		    }
+		    //}
 		 };
 	    
 		// Display
 		$scope.displayItem = function (row) {
-			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
-		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.account.display",  { accountid : row.id });
-		    }
+			if ($scope.selectedRows.length <= 0)
+				return;
+			
+	    	$state.go("home.finance.account.display",  { accountid : $scope.selectedRows[0].id });
 		};
 		
 		// Edit
 		$scope.editItem = function (row) {
-			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
-		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.account.maintain",  { accountid : row.id });
-		    }
+			if ($scope.selectedRows.length <= 0)
+				return;
+			
+		    $state.go("home.finance.account.maintain",  { accountid : $scope.selectedRows[0].id });
 		};
 		
 		// Create
@@ -262,7 +310,7 @@
 	}])
 
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
-	                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
+	    function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		$scope.Activity = "";
 		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
@@ -310,7 +358,8 @@
 		 };
 	}])	
 	
-	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
+	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceDocuments();
 		utils.loadFinanceDocumentTypes();
 		utils.loadFinanceAccounts();
@@ -318,57 +367,100 @@
 		utils.loadCurrencies();
 		utils.loadFinanceTransactionTypes();
 
-		$scope.rowCollection = [];     
-	    $scope.displayedCollection = [];	    
-	    $scope.rowCollection = $rootScope.arFinanceDocument;
-	    $scope.displayedCollection = [].concat($scope.rowCollection);
-	    $scope.itemsByPage = 15;
-	    $scope.pagesTotal = 1;
-
+		// Grid options
+        $scope.selectedRows = [];
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.enableRowSelection = true;
+		$scope.gridOptions.enableFullRowSelection = true;
+		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.docid;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.docid;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+			
+ 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				 if (row.isSelected) {
+ 					$scope.selectedRows.push(row.entity);     					
+ 				 } else {
+ 					$.each($scope.selectedRows, function(idx, obj) {
+						if (obj.docid === row.entity.docid) {
+							$scope.selectedRows.splice(idx, 1);
+							return false;
+						}
+					});
+ 				 }
+  		     });
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'docid', field: 'docid', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'doctypename', field: 'doctypename', displayName: 'Finance.DocumentTypeID', headerCellFilter: "translate", width:90 },
+			{ name:'trandate', field: 'trandate', displayName: 'Common.Date', headerCellFilter: "translate", width: 150},
+			{ name:'trancurr', field:'trancurr', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'trancurrname', field:'trancurrname', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
+			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	  ];
+	  
+	  if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
+		  $scope.myData = [];
+			$.each($rootScope.arFinanceDocument, function(idx, obj) {
+	  			$scope.myData.push(angular.copy(obj));					
+			});			  
+	  };
+		
 	    $scope.$on("FinanceDocumentLoaded", function() {
-	    	console.log("HIH FinanceDocument List: Loaded event fired!");
+	    	$log.info("HIH FinanceDocument List: Loaded event fired!");
 	    	
-	    	$scope.rowCollection = $rootScope.arFinanceDocument;
-		    if ($scope.rowCollection && $scope.rowCollection.length > 0) {
-				// copy the references (you could clone ie angular.copy but
-				// then have to go through a dirty checking for the matches)
-		    	$scope.displayedCollection = [].concat($scope.rowCollection);
-		    }
+		  $scope.myData = [];
+			$.each($rootScope.arFinanceDocument, function(idx, obj) {
+				$scope.myData.push(angular.copy(obj));					
+			});			  
 	    });
 	    
 	    $scope.$on("FinanceDocumentTypeLoaded", function() {
-	    	console.log("HIH FinanceDocument List: Type Loaded event fired!");
+	    	$log.info("HIH FinanceDocument List: Type Loaded event fired!");
 	    });	
 
 		// Remove to the real data holder
 		$scope.removeItem = function removeItem(row) {
-			var index = $scope.rowCollection.indexOf(row);
-		    if (index !== -1) {
+			if ($scope.selectedRows.length <= 0)
+				return;
+			//var index = $scope.rowCollection.indexOf(row);
+		    //if (index !== -1) {
 		    	// Popup dialog for confirm
 		    	
 		    	// Then, communicate the sever for deleting
 		    	
 		    	// Last, update the UI part
 //		    	$scope.rowCollection.splice(index, 1);
-		    }
+		    //}
 		 };
 	    
 		// Display
 		$scope.displayItem = function (row) {
-			var index = $scope.rowCollection.indexOf(row);
-			if (index !== -1) {
-		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.document.display",  { docid : row.docid });
-		    }
+			if ($scope.selectedRows.length <= 0)
+				return;
+	    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].docid });
 		};
 		
 		// Edit
 		$scope.editItem = function (row) {
-			var index = $scope.rowCollection.indexOf(row);
-			if (index !== -1) {
-		    	// $scope.rowCollection.splice(index, 1);
-		    	$state.go("home.finance.document.maintain",  { docid : row.docid });
-		    }
+			if ($scope.selectedRows.length <= 0)
+				return;
+	    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].docid });
 		};
 		
 		// Create
