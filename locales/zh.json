@@ -121,6 +121,9 @@
   		"ControlCenterReport": "控制中心报表",
   		"InternalOrderReport": "内部订单报表",
   		"DailyBalanceReport": "日常开支表",
+		"CreateItem": "新建行项目",
+		"DeleteItem": "删除行项目",
+		"ItemID": "行项目ID",
 
   		"AccountsDesp": "当前系统中所有的账户以列表形式呈现。",
   		"Asset": "资产",

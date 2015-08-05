@@ -121,6 +121,9 @@
   		"ControlCenterReport": "Control Center Report",
   		"InternalOrderReport": "Internal Order Report",
   		"DailyBalanceReport": "The Daily Balance Sheet",
+		"CreateItem": "Create an Item",
+		"DeleteItem": "Delete an Item",
+		"ItemID": "Item ID",
   		
   		"AccountsDesp": "Finance accounts show all accounts in the list view.",
   		"Asset": "Asset",

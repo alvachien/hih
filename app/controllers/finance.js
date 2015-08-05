@@ -118,7 +118,7 @@
 	}])
 	
 	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
-	                                             function($scope, $rootScope, $state, $http, $log, utils) {
+	    function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadFinanceAccounts();
 		utils.loadFinanceAccountCategories();
 		utils.loadCurrencies();
@@ -326,9 +326,9 @@
 			 $scope.AccountID = parseInt($stateParams.accountid);
 			 
 			 if ($state.current.name === "home.finance.account.maintain") {
-				 $scope.Activity = "Edit";
+				 $scope.Activity = "Common.Edit";
 			 } else if ($state.current.name === "home.finance.account.display") {
-				 $scope.Activity = "Display";
+				 $scope.Activity = "Common.Display";
 				 $scope.isReadonly = true;
 			 }
 			 
@@ -350,7 +350,7 @@
 			 });
 
 		 } else {
-			 $scope.Activity = "Create";
+			 $scope.Activity = "Common.Create";
 		 }
 		 
 		 $scope.close = function() {
@@ -438,6 +438,8 @@
 		$scope.removeItem = function removeItem(row) {
 			if ($scope.selectedRows.length <= 0)
 				return;
+				
+			// To-Do: delete mutliple accounts allowed?
 			//var index = $scope.rowCollection.indexOf(row);
 		    //if (index !== -1) {
 		    	// Popup dialog for confirm
@@ -475,8 +477,55 @@
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemsChanged = false;
-		$scope.ItemActivity = "Create an Item";
+		$scope.ItemActivity = "Finance.CreateItem";
 		
+		// For item table
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'ItemsCollection';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.enableRowSelection = true;
+		$scope.gridOptions.enableFullRowSelection = true;
+		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.docid;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.docid;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+			
+ 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				 if (row.isSelected) {
+ 					$scope.selectedItemRows.push(row.entity);     					
+ 				 } else {
+ 					$.each($scope.selectedRows, function(idx, obj) {
+						if (obj.docid === row.entity.docid) {
+							$scope.selectedItemRows.splice(idx, 1);
+							return false;
+						}
+					});
+ 				 }
+  		     });
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'itemid', field: 'itemid', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
+	    	{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
+			{ name:'accountname', field: 'accountname', displayName: 'Finance.Account', headerCellFilter: "translate", width: 100},
+			{ name:'accountcategoryname', field:'accountcategoryname', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
+			{ name:'trantypename', field:'trantypename', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
+			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
+			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
+			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	   ];
+
         // For select control
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
@@ -485,7 +534,8 @@
 
         // Attributes
 		$scope.DocumentHeader = {};
-		$scope.SelectedDocumentItem = {};		
+		$scope.SelectedDocumentItem = {};
+        $scope.selectedItemRows = [];
 		
 		$scope.DocumentHeader.DocumentID = -1;
 		$scope.DocumentHeader.DocumentType = {};
@@ -517,9 +567,9 @@
 		    $scope.DocumentHeader.DocumentID = parseInt($stateParams.docid);
 
 		    if ($state.current.name === "home.finance.document.maintain") {
-		        $scope.Activity = "Edit";
+		        $scope.Activity = "Common.Edit";
 		    } else if ($state.current.name === "home.finance.document.display") {
-		        $scope.Activity = "Display";
+		        $scope.Activity = "Common.Display";
 		        $scope.isReadonly = true;
 		    }
 
@@ -556,7 +606,7 @@
 		        });
 		    }
 		} else {
-		    $scope.Activity = "Create";
+		    $scope.Activity = "Common.Create";
 		}
 		
 		$scope.$on("FinanceDocumentItemLoaded", function () {
@@ -623,7 +673,11 @@
 		//	 });			
 		//};
 		
-		$scope.displayItem = function (row) {
+		$scope.displayItem = function () {
+			if ($scope.selectedItemRows.length <= 0 )
+				return;
+			
+			var row = $scope.selectedItemRows[0];
 			$scope.SelectedDocumentItem = angular.copy(row);
 			$scope.SelectedDocumentItem.Account = {};
 			$scope.SelectedDocumentItem.TranType = {};
