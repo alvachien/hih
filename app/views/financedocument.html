@@ -91,55 +91,9 @@
     </div>
 
     <!-- Items -->
-    <div class="container" ng-show="!showhdr">        
-        <table st-table="ItemsCollection" class="table table-striped" style="padding: 12px;">
-            <thead>
-                <tr>
-                    <th st-sort="itemid">Item ID</th>
-                    <th st-sort="accountid">Account ID</th>
-                    <th st-sort="accountname">Account Name</th>
-                    <th st-sort="accountcategoryname">Account Category Name</th>
-                    <th st-sort="trantypename">Transaction</th>
-                    <th st-sort="trantypeexpense">Expense Flag</th>
-                    <th st-sort="tranamount">Amount</th>
-                    <th st-sort="desp">Desp</th>
-                </tr>
-                <tr>
-                    <th colspan="9">
-                        <input st-search="" class="form-control" placeholder="global search ..." type="text" />
-                    </th>
-                </tr>
-            </thead>
-            
-            <tbody>
-                <tr ng-repeat="row in ItemsCollection" st-select-row="row" st-select-mode="single">
-                    <td>{{row.itemid}}</td>
-                    <td>{{row.accountid}}</td>
-                    <td>{{row.accountname}}</td>
-                    <td>{{row.accountcategoryname}}</td>
-                    <td>{{row.trantypename}}</td>
-                    <td>{{row.trantypeexpense}}</td>
-                    <td>{{row.tranamount}}</td>
-                    <td>{{row.desp}}</td>
-    				<td>
-    					<div class="btn-group" role="group">
-    						<button type="button" ng-click="displayItem(row)"
-    							class="btn-group btn-primary" role="group">
-    							<i class="glyphicon glyphicon-share"> </i>
-    						</button>
-    						<button type="button" ng-click="editItem(row)" ng-hide="isReadonly"
-    							class="btn-group btn-warning" role="group">
-    							<i class="glyphicon glyphicon-edit"> </i>
-    						</button>
-    						<button type="button" ng-click="removeItem(row)" ng-hide="isReadonly"
-    							class="btn-group btn-danger" role="group">
-    							<i class="glyphicon glyphicon-trash"> </i>
-    						</button>
-    					</div>					
-    				</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="container" ng-show="!showhdr">
+    	<div id="gridFinDocItems" ui-grid="gridOptions" ui-grid-selection
+		 	style="width: 100%; height: 500px;"></div>
 
         <!-- Item Detail -->
         <div class="container">

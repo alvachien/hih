@@ -642,7 +642,7 @@
 		};
 		
 		$scope.saveCurrentItem = function() {
-			
+			$scope.ItemsCollection.push(angular.copy($scope.SelectedDocumentItem));
 		};
 		
 		$scope.cancelCurrentItem = function() {
