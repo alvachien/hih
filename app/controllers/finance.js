@@ -472,11 +472,10 @@
 		};
 	}])
 		
-	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
+	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
-		$scope.ItemsChanged = false;
 		$scope.ItemActivity = "Finance.CreateItem";
 		
 		// For item table
@@ -488,9 +487,9 @@
 		$scope.gridOptions.enableGridMenu = false;
 		$scope.gridOptions.enableColumnMenus = false;
 		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		//$scope.gridOptions.enableRowSelection = true;
+		//$scope.gridOptions.enableFullRowSelection = true;
+		//$scope.gridOptions.selectionRowHeaderWidth = 35;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
 		 	return row.docid;
@@ -501,18 +500,18 @@
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
 			
- 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				 if (row.isSelected) {
- 					$scope.selectedItemRows.push(row.entity);     					
- 				 } else {
- 					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.docid === row.entity.docid) {
-							$scope.selectedItemRows.splice(idx, 1);
-							return false;
-						}
-					});
- 				 }
-  		     });
+ 			//  gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 			// 	 if (row.isSelected) {
+ 			// 		$scope.selectedItemRows.push(row.entity);     					
+ 			// 	 } else {
+ 			// 		$.each($scope.selectedRows, function(idx, obj) {
+			// 			if (obj.docid === row.entity.docid) {
+			// 				$scope.selectedItemRows.splice(idx, 1);
+			// 				return false;
+			// 			}
+			// 		});
+ 			// 	 }
+  		    //  });
 		};
 		
 		$scope.gridOptions.columnDefs = [
@@ -523,7 +522,11 @@
 			{ name:'trantypename', field:'trantypename', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
 			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
 			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
-			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
+			{ name: 'edit', field:'dummy', displayName: 'Common.Edit', headerCellFilter: "translate", 
+					cellTemplate:'<button class="btn primary" ng-click="grid.appScope.editItem()" translate="Common.Edit"></button>',
+					enableFiltering: false
+					 }
 	   ];
 
         // For select control
@@ -534,8 +537,12 @@
 
         // Attributes
 		$scope.DocumentHeader = {};
-		$scope.SelectedDocumentItem = {};
-        $scope.selectedItemRows = [];
+		$scope.ItemsCollection = [];
+        $scope.selectedItemRows = []; // Selected items
+		$scope.SelectedDocumentItem = {}; // Current edit item
+		$scope.SelectedDocumentItem.itemid = -1;
+		$scope.nextItemID = 0;
+		$scope.ItemsChanged = false;
 		
 		$scope.DocumentHeader.DocumentID = -1;
 		$scope.DocumentHeader.DocumentType = {};
@@ -543,7 +550,6 @@
 		$scope.DocumentHeader.DocumentTranDate = new Date();
 		$scope.DocumentHeader.DocumentDesp = "";
 		$scope.DocumentHeader.DocumentAmount = 0.0;
-		$scope.ItemsCollection = [];
 
         // For date control
 		$scope.isDateOpened = false;
@@ -551,13 +557,31 @@
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
-		};		
+		};
 		$scope.openDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
 		    if (!$scope.isReadonly) {
 		        $scope.isDateOpened = true;				
+			}
+		};
+		
+		// Get the next Item ID
+		$scope.UpdateNextItemID = function () {
+			if (angular.isArray($scope.ItemsCollection) && $scope.ItemsCollection.length > 0) {
+				$scope.nextItemID = 0;
+				$.each($scope.ItemsCollection, function (idx, obj) {
+	                var nItemID = parseInt(obj.itemid);
+						
+					if ($scope.nextItemID < nItemID) {
+						$scope.nextItemID = nItemID;
+		            }
+		        });
+				
+				$scope.nextItemID++;
+			} else {
+				$scope.nextItemID = 1;
 			}
 		};
 
@@ -604,17 +628,20 @@
 		                return false;
 		            }
 		        });
+				
+				$scope.UpdateNextItemID();
 		    }
 		} else {
 		    $scope.Activity = "Common.Create";
+			$scope.UpdateNextItemID();
 		}
 		
 		$scope.$on("FinanceDocumentItemLoaded", function () {
-		    console.log("HIH FinanceDocument: Items Loaded event fired!");
+		    $log.info("HIH FinanceDocument: Items Loaded event fired!");
 		    if (angular.isDefined($rootScope.arFinanceDocumentItem) && $scope.ItemsCollection.length <= 0) {
 		        $.each($rootScope.arFinanceDocumentItem, function (idx11, obj11) {
 		            if (obj11.docid === $stateParams.docid) {
-		                $scope.ItemsCollection.push(obj11);
+		                $scope.ItemsCollection.push(angular.copy(obj11));
 		                return false;
 		            }
 		        });
@@ -625,24 +652,21 @@
 		    $state.go("home.finance.document.list");
 		};
 
-		$scope.GoHeader = function (target) {
-		    var hdr = angular.element('#divFinDocHeader');
-		    var itm = angular.element('#divFinDocItem');
-
-		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {                
-		    }
-		};
-
-		$scope.GoItems = function (target) {
-		    var hdr = angular.element('#divFinDocHeader');
-		    var itm = angular.element('#divFinDocItem');
-
-		    if (angular.isDefined(hdr) && angular.isDefined(itm)) {
-		    }
-		};
-		
 		$scope.saveCurrentItem = function() {
-			$scope.ItemsCollection.push(angular.copy($scope.SelectedDocumentItem));
+			// Save current editting item
+			if ($scope.SelectedDocumentItem.itemid === -1) {
+				var newItem = angular.copy($scope.SelectedDocumentItem);
+				newItem.itemid = $scope.nextItemID;	
+				newItem.accountid = newItem.Account.selected.id;
+				newItem.accountname = newItem.Account.selected.name;
+				//newItem.accountcategoryname = newItem.Accoun
+				$scope.ItemsCollection.push(newItem);
+				
+				$scope.UpdateNextItemID();
+				
+				$scope.SelectedDocumentItem = {};
+				$scope.SelectedDocumentItem.itemid = -1;
+			}
 		};
 		
 		$scope.cancelCurrentItem = function() {
@@ -677,14 +701,13 @@
 			if ($scope.selectedItemRows.length <= 0 )
 				return;
 			
-			var row = $scope.selectedItemRows[0];
-			$scope.SelectedDocumentItem = angular.copy(row);
+			$scope.SelectedDocumentItem = angular.copy($scope.selectedItemRows[0]);
 			$scope.SelectedDocumentItem.Account = {};
 			$scope.SelectedDocumentItem.TranType = {};
 			
 			// Account
 			$.each($scope.AllAccounts, function(idx, obj) {
-				if (obj.id === row.accountid) {
+				if (obj.id === $scope.selectedItemRows[0].accountid) {
 					$scope.SelectedDocumentItem.Account.selected = obj;
 					return false;
 				}
@@ -692,7 +715,7 @@
 			
 			// Transaction type
 			$.each($scope.AllTransactionTypes, function(idx2, obj2) {
-				if (obj2.id === row.trantype) {
+				if (obj2.id === $scope.selectedItemRows[0].trantype) {
 					$scope.SelectedDocumentItem.TranType.selected = obj2;
 					return false;
 				}
@@ -729,7 +752,11 @@
 		//	    }, function () {
 		//	 });			
 		};
-		//$scope.editItem = function(row) {
+		$scope.editItem = function(event) {
+			var rowCol = $scope.gridApi.cellNav.getFocusedCell();
+      		if(rowCol !== null) {
+          		//$scope.currentFocused = 'Row Id:' + rowCol.row.entity.id + ' col:' + rowCol.col.colDef.name;
+      		}
 		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
 		//	// Show the dialog	
 		//	var modalInstance = $modal.open({
@@ -754,7 +781,7 @@
 		//};
 		//$scope.removeItem = function(row) {
 			
-		//};
+		};
 	}])	
 	
 	.controller('FinanceDocumentDialogController', ['$scope', '$rootScope', '$modalInstance', 'utils', function($scope, $rootScope, $modalInstance, utils) {
