@@ -499,19 +499,6 @@
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
-			
- 			//  gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 			// 	 if (row.isSelected) {
- 			// 		$scope.selectedItemRows.push(row.entity);     					
- 			// 	 } else {
- 			// 		$.each($scope.selectedRows, function(idx, obj) {
-			// 			if (obj.docid === row.entity.docid) {
-			// 				$scope.selectedItemRows.splice(idx, 1);
-			// 				return false;
-			// 			}
-			// 		});
- 			// 	 }
-  		    //  });
 		};
 		
 		$scope.gridOptions.columnDefs = [
@@ -523,10 +510,18 @@
 			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
 			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
 			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
-			{ name: 'edit', field:'dummy', displayName: 'Common.Edit', headerCellFilter: "translate", 
-					cellTemplate:'<button class="btn primary" ng-click="grid.appScope.editItem()" translate="Common.Edit"></button>',
+			{ name: 'edit', field:'itemid', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
+					cellTemplate:'<div class="ui-grid-cell-contents">\
+						<div class="btn-toolbar" role="toolbar">\
+							<div class="btn-group" role="group">\
+								<button class="btn primary" ng-click="grid.appScope.displayItem(COL_FIELD)" translate="Common.Display"></button>\
+								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.editItem(COL_FIELD)" translate="Common.Edit"></button>\
+								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.deleteItem(COL_FIELD)" translate="Common.Delete"></button>\
+							</div>\
+						</div>\
+					</div>',
 					enableFiltering: false
-					 }
+			}
 	   ];
 
         // For select control
@@ -538,7 +533,6 @@
         // Attributes
 		$scope.DocumentHeader = {};
 		$scope.ItemsCollection = [];
-        $scope.selectedItemRows = []; // Selected items
 		$scope.SelectedDocumentItem = {}; // Current edit item
 		$scope.SelectedDocumentItem.itemid = -1;
 		$scope.nextItemID = 0;
@@ -673,41 +667,23 @@
 			
 		};
 		
-		//$scope.addDocItem = function() {
-		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, $scope.Activity, null]; 
-		//	// Show the dialog	
-		//	var modalInstance = $modal.open({
-		//		animation: true,
-		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
-		//	    controller: 'FinanceDocumentDialogController',
-		//		keyboard: false
-
-		//		// Following part is not working without ngRoute				
-		//		// resolve: {
-       	//		// 	DocumentInfo: function () {
-		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        //		// 	}
-      	//		// }
-		//      });
-			
-		//	modalInstance.result.then(function () {
-		//	      //$scope.selected = selectedItem;
-		//		  $rootScope.CurrentDocumentItem = [];
-		//	    }, function () {
-		//	 });			
-		//};
+		$scope.displayItem = function (itemid) {
+			$.each($scope.ItemsCollection, function (idx, obj) {
+				if (obj.itemid === itemid) {
+					$scope.setSelectedDocumentItem(obj);
+					return false;
+				}
+		    });			
+		};
 		
-		$scope.displayItem = function () {
-			if ($scope.selectedItemRows.length <= 0 )
-				return;
-			
-			$scope.SelectedDocumentItem = angular.copy($scope.selectedItemRows[0]);
+		$scope.setSelectedDocumentItem = function(docItem) {
+			$scope.SelectedDocumentItem = angular.copy(docItem);
 			$scope.SelectedDocumentItem.Account = {};
 			$scope.SelectedDocumentItem.TranType = {};
 			
 			// Account
 			$.each($scope.AllAccounts, function(idx, obj) {
-				if (obj.id === $scope.selectedItemRows[0].accountid) {
+				if (obj.id === $scope.SelectedDocumentItem.accountid) {
 					$scope.SelectedDocumentItem.Account.selected = obj;
 					return false;
 				}
@@ -715,72 +691,31 @@
 			
 			// Transaction type
 			$.each($scope.AllTransactionTypes, function(idx2, obj2) {
-				if (obj2.id === $scope.selectedItemRows[0].trantype) {
+				if (obj2.id === $scope.SelectedDocumentItem.trantype) {
 					$scope.SelectedDocumentItem.TranType.selected = obj2;
 					return false;
 				}
 			});
-			
-			// Set the Item detail part
-			// $.each($scope.ItemsCollection, function (idx1, obj1) {
-		    //         if (obj1.itemid === $scope.DocumentHeader.docid) {
-		    //             $scope.ItemsCollection.push(obj1);
-		    //             return false;
-		    //         }
-		    //     });
-			
-			
-// 			$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Display', row]; 
-// 			// Show the dialog	
-// 			var modalInstance = $modal.open({
-// 				animation: true,
-// 			    templateUrl: 'app/views/financedocumentitemdlg.html',
-// 			    controller: 'FinanceDocumentDialogController',
-// 				keyboard: false
-// 
-// 				// Following part is not working without ngRoute				
-// 				// resolve: {
-//        			// 	DocumentInfo: function () {
-// 				// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-//         		// 	}
-//       			// }
-// 		     });
-			
-		//	modalInstance.result.then(function () {
-		//	      //$scope.selected = selectedItem;
-		//		  $rootScope.CurrentDocumentItem = [];
-		//	    }, function () {
-		//	 });			
 		};
-		$scope.editItem = function(event) {
-			var rowCol = $scope.gridApi.cellNav.getFocusedCell();
-      		if(rowCol !== null) {
-          		//$scope.currentFocused = 'Row Id:' + rowCol.row.entity.id + ' col:' + rowCol.col.colDef.name;
-      		}
-		//	$rootScope.CurrentDocumentItem = [$scope.DocumentHeader, 'Maintain', row]; 
-		//	// Show the dialog	
-		//	var modalInstance = $modal.open({
-		//		animation: true,
-		//	    templateUrl: 'app/views/financedocumentitemdlg.html',
-		//	    controller: 'FinanceDocumentDialogController',
-		//		keyboard: false
-
-		//		// Following part is not working without ngRoute				
-		//		// resolve: {
-       	//		// 	DocumentInfo: function () {
-		//		// 		return [$scope.DocumentHeader, $scope.Activity, $scope.SelectedDocumentItem];
-        //		// 	}
-      	//		// }
-		//      });
-			
-		//	modalInstance.result.then(function () {
-		//	      //$scope.selected = selectedItem;
-		//		  $rootScope.CurrentDocumentItem = [];
-		//	    }, function () {
-		//	 });			
-		//};
-		//$scope.removeItem = function(row) {
-			
+		
+		$scope.editItem = function(itemid) {
+			// Load the specified item into the current item
+			$.each($scope.ItemsCollection, function (idx, obj) {
+				if (obj.itemid === itemid) {
+					$scope.setSelectedDocumentItem(obj);
+					return false;
+				}
+		    });
+		};
+		$scope.deleteItem = function(itemid) {
+			// Load the specified item into the current item
+			$.each($scope.ItemsCollection, function (idx, obj) {
+				if (obj.itemid === itemid) {
+					// Delete it!
+					//$scope.setSelectedDocumentItem(obj);
+					return false;
+				}
+		    });
 		};
 	}])	
 	
