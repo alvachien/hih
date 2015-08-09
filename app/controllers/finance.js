@@ -642,6 +642,10 @@
 		    }
 		});
 
+		$scope.submit = function() {
+			// Submit the current item
+		};
+		
 		$scope.close = function() {
 		    $state.go("home.finance.document.list");
 		};
@@ -656,15 +660,14 @@
 				//newItem.accountcategoryname = newItem.Accoun
 				$scope.ItemsCollection.push(newItem);
 				
-				$scope.UpdateNextItemID();
-				
-				$scope.SelectedDocumentItem = {};
-				$scope.SelectedDocumentItem.itemid = -1;
+				$scope.UpdateNextItemID();				
+				$scope.cancelCurrentItem();
 			}
 		};
 		
 		$scope.cancelCurrentItem = function() {
-			
+			$scope.SelectedDocumentItem = {}; 
+			$scope.SelectedDocumentItem.itemid = -1;
 		};
 		
 		$scope.displayItem = function (itemid) {
