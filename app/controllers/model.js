@@ -2,29 +2,49 @@
 /* global angular */
 (function() {
     "use strict";
+    
+    var hih = window.hih || (window.hih = {});
 
 	/* Root Model */
-	function HIHModel() {
+	hih.Model = function() {
 		this.CreatedAt = new Date();
 		this.CreatedBy = {};
 	};
-	HIHModel.prototype.Version = "1.0";
+	hih.Model.prototype.Version = "1.0";
 	
 	/* Method 1: using apply(or call) in the children's constructor */
 	/* User */
-	function HIHUser() {
-		HIHModel.apply(this, arguments);
-		this._super = HIHModel.prototype;
+	hih.User = function() {
+		hih.Model.apply(this, arguments);
+		this._super = hih.Model.prototype;
 		
 		this.UserID = "";
+		this.DisplayAs = "";
+	};
+	hih.User.prototype.setContent = function(user, dispas) {
+		this.UserID = user;
+		this.DisplayAs = dispas;
 	};
 	
 	/* Method 2: changing the prototype */
 	/* Learn Object */
-	function HIHLearnObject() {
-		this.prototype = new HIHModel();
-		this.prototype.constructor = HIHLearnObject;
+	hih.LearnObject = function() {
+		this.prototype = new hih.Model();
+		this.prototype.constructor = hih.LearnObject;
+		this.prototype.setContent = function(id, ctgyid, ctgyname, nam, cont) {
+			this.ID = id;
+			this.CategoryID = ctgyid;
+			this.CategoryName = ctgyname;
+			this.Name = nam;
+			this.Content = cont;
+		};
 		
+		// Attributes
+		this.ID = 0;
+		this.CategoryID = 0;
+		this.CategoryName = "";
+		this.Name = "";
+		this.Content = "";
 	};
 	
 	/* Method 3: using the prototype of superclass directly in children class */
@@ -32,26 +52,28 @@
 	
 	/* Method 4: using the prototype of superclass but assign it to an empty instance */
     /** Utility methods 
-     * @Child: instance of child class;
-     * @Parent: instance of parent class;
+     * @description create the Child extends Parent
+     * @param {object} Child, instance of child class.
+     * @param {object} Parent, instance of parent class.
+     * @returns {null} No returns.
      */
-    function extend(Child, Parent) {
+    hih.extend = function(Child, Parent) {
         /* */
 		var OOP = function() {};
 		OOP.prototype = Parent.prototype;
 		
-　　　　 Child.prototype = new OOP();
+　　　　 	Child.prototype = new OOP();
 		Child.prototype.constructor = Child;
 		
 		Child._super = Parent.prototype;
 　　}
 
 	/* Learn Category */
-	var HIHLearnCategory = {};
-	extend(HIHLearnCategory, HIHModel);
+	hih.LearnCategory = {};
+	hih.extend(hih.LearnCategory, hih.Model);
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
-	function extend_copy(Child, Parent) {
+	hih.extend_copy = function(Child, Parent) {
 		var p = Parent.prototype;
 		var c = Child.prototype;
 		
@@ -60,13 +82,13 @@
 		}
 		c._super = p;
 	};
-	function extend_deepcopy(Child, Parent) {
+	hih.extend_deepcopy = function(Child, Parent) {
 		var p = Parent.prototype;
 		var c = Child.prototype;
 		for(var i in p) {
 			if (typeof p[i] === 'object') {
 				c[i] = (p[i].constructor === Array)? [] : {};
-				extend_deepcopy(p[i], c[i]);
+				hih.extend_deepcopy(p[i], c[i]);
 			} else {
 				c[i] = p[i];
 			}
@@ -76,14 +98,23 @@
 	
 	/* Method 6: Minimalist approach from Gabor de Mooij */
 	/* Learn History */
-	var HIHLearnHistory = {
+	hih.LearnHistory = {
 		createNew: function() {
-			// Inherit from HIHModel first
-			var lrnhist = new HIHModel();
+			// Inherit from Model first
+			var lrnhist = new hih.Model();
 			
 			// Other fields
 			
 			return lrnhist;
 		}	
 	};
+	
+	hih.LearnAward = {
+		createNew: function() {
+			var lrnawd = new hih.Model();
+			
+			return lrnawd;
+		}	
+	};
 }());
+

@@ -3,8 +3,7 @@
 (function() {
 	"use strict";
 
-	angular
-			.module('hihApp.Utility', [])
+	angular.module('hihApp.Utility', [])
 
 			.factory(
 					'utils',
@@ -115,30 +114,32 @@
 						// User part
 						rtnObj.loadUserList = function () {
 							if (!$rootScope.isUserListLoad) {
-								$http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETUSERLIST'
-												})
-										.success(
-												function(data, status, headers, config) {
-													$rootScope.arUserList = data;
-													$rootScope.isUserListLoad = true;
-
-													$rootScope.$broadcast("UserListLoaded");
-												})
-										.error(
-												function(data, status,
-														headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
+								$http.post(
+										'script/hihsrv.php',
+										{
+											objecttype : 'GETUSERLIST'
+										})
+									.success(
+											function(data, status, headers, config) {
+												$rootScope.arUserList = [];
+												$.each(data, function(idx1, obj1) {
+													var objUsr = new hih.User();
+													objUsr.setContent(obj1.id, obj1.text);
+													$rootScope.arUserList.push(objUsr);
 												});
-							}
-							
+												$rootScope.isUserListLoad = true;
+
+												$rootScope.$broadcast("UserListLoaded");
+											})
+									.error(
+											function(data, status, headers, config) {
+												// called asynchronously if an error occurs or server returns response with an error status.
+												$rootScope.$broadcast(
+														"ShowMessage",
+														"Error",
+														data.Message);
+											});
+							}							
 						};
 						
 ////////////////////////////////////////////////////////////////////						
