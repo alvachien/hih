@@ -133,5 +133,12 @@
   		"Outgoing": "Outgoing",
   		
   		"CreateAccountTitle": "Create an Account"
-  	}
+  	},
+	
+	"Message": {
+		"InvalidCategory": "Category is invalid",
+		"InvalidName": "Name is invalid",
+		"InvalidContent": "Content is invalid",
+		"InvalidID": "ID is invalid"
+	}
  }

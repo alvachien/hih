@@ -133,5 +133,12 @@
   		"Outgoing": "开支",
 
   		"CreateAccountTitle": "创建账户"
-  	}
+  	},
+	  
+	"Message": {
+		"InvalidCategory": "不合法的类别",
+		"InvalidName": "不合法的名字",
+		"InvalidContent": "不合法的内容",
+		"InvalidID": "不合法的ID"
+	}
 }

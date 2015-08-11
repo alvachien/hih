@@ -130,15 +130,15 @@
 			$scope.gridOptions.selectionRowHeaderWidth = 35;
 			
 			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.id;
+			 	return row.ID;
 			};
 			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.id;
+			 	return row.ID;
 			};			
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
-      			$scope.gridApi = gridApi;
+                $scope.gridApi = gridApi;
 				
-     			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+                gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
      				 if (row.isSelected) {
      					$scope.selectedRows.push(row.entity);     					
      				 } else {
@@ -153,11 +153,11 @@
     		};
 			
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-		    	{ name:'categoryid', field: 'categoryid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-				{ name:'categoryname', field: 'categoryname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
-				{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-				{ name:'content', field:'content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
+		    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+		    	{ name:'categoryid', field: 'CategoryID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+				{ name:'categoryname', field: 'CategoryName', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+				{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+				{ name:'content', field:'Content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
 		  ];
 		  
 		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
@@ -170,8 +170,8 @@
 		  $scope.selectedRows = [];
 		    
 		  $scope.$on("LearnObjectLoaded", function() {
-		    	console.log("HIH LearnObject List: Loaded event fired!");
-		    	$scope.myData = [];
+              console.log("HIH LearnObject List: Loaded event fired!");
+		      $scope.myData = [];
 				
 				$.each($rootScope.arLearnObject, function(idx, obj) {
 		  			$scope.myData.push(angular.copy(obj));					
@@ -329,7 +329,7 @@
 		}])		
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
-		                                      function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		    function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		    $scope.Activity = "";
 		    $scope.ActivityID = 3;
 			$scope.CategoryIDs = $rootScope.arLearnCategory;

@@ -1,5 +1,6 @@
 /* global $ */
 /* global angular */
+/* global hih */
 (function() {
 	"use strict";
 
@@ -149,30 +150,28 @@
 							if (!$rootScope.isLearnObjectLoad || (angular.isDefined(bForceReload) && bForceReload)) {
 								// Example JSON response
 								// {"id":"1","categoryid":"2","categoryname":"aaa","name":"aaa","content":"aaa2"}
-								$http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETLEARNOBJECTLIST'
-												})
-										.success(
-												function(data, status,
-														headers, config) {
-													$rootScope.arLearnObject = data;
-													$rootScope.isLearnObjectLoad = true;
-
-													$rootScope
-															.$broadcast("LearnObjectLoaded");
-												})												
-											.error(
-												function(data, status,
-														headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
+								$http.post(
+											'script/hihsrv.php',
+											{
+												objecttype : 'GETLEARNOBJECTLIST'
+											})
+									.success(
+											function(data, status, headers, config) {
+												$rootScope.arLearnObject = [];
+												$.each(data, function(idx1, obj1) {
+													var lrnobj = new hih.LearnObject();
+													lrnobj.setContent(obj1.id, obj1.categoryid, obj1.categoryname, obj1.name, obj1.content);
+													$rootScope.arLearnObject.push(lrnobj);
 												});
+												$rootScope.isLearnObjectLoad = true;
+
+												$rootScope.$broadcast("LearnObjectLoaded");
+											})												
+										.error(
+											function(data, status, headers, config) {
+												// called asynchronously if an error occurs or server returns response with an error status.
+												$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+											});
 							}
 						};
 						rtnObj.loadLearnObjectsHierarchy = function (bForceReload) {

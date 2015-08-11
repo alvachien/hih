@@ -11,6 +11,10 @@
 		this.CreatedBy = {};
 	};
 	hih.Model.prototype.Version = "1.0";
+	hih.Model.prototype.Verify = function() {
+		// Verify the data, returns the error messages!
+		return [];	
+	};
 	
 	/* Method 1: using apply(or call) in the children's constructor */
 	/* User */
@@ -31,13 +35,7 @@
 	hih.LearnObject = function() {
 		this.prototype = new hih.Model();
 		this.prototype.constructor = hih.LearnObject;
-		this.prototype.setContent = function(id, ctgyid, ctgyname, nam, cont) {
-			this.ID = id;
-			this.CategoryID = ctgyid;
-			this.CategoryName = ctgyname;
-			this.Name = nam;
-			this.Content = cont;
-		};
+		this._super = hih.Model.prototype;
 		
 		// Attributes
 		this.ID = 0;
@@ -45,6 +43,37 @@
 		this.CategoryName = "";
 		this.Name = "";
 		this.Content = "";
+	};
+	hih.LearnObject.prototype.setContent = function(id, ctgyid, ctgyname, nam, cont) {
+		this.ID = parseInt(id);
+		this.CategoryID = parseInt(ctgyid);
+		this.CategoryName = ctgyname;
+		this.Name = nam;
+		this.Content = cont;
+	};
+	hih.LearnObject.prototype.Verify = function() {
+		var errMsgs = [];
+		// Call to the super class's verify
+		errMsgs = this._super.prototype.Verify.call(this);		
+		if (errMsgs.length > 0)
+			return errMsgs; 
+		 
+		if (isNaN(this.ID)) {
+			errMsgs.push("Message.InvalidID");
+			}
+		if (isNaN(this.CategoryID)) {
+			errMsgs.push("Message.InvalidCategory");
+			}
+		if (this.Name && typeof this.Name === "string" && this.Name.length > 0) {
+		} else {
+			errMsgs.push("Message.InvalidName");
+		}
+		if (this.Content && typeof this.Content === "string" && this.Content.length > 0) {
+		} else {
+			errMsgs.push("Message.InvalidContent");
+		}
+		 
+		return errMsgs;
 	};
 	
 	/* Method 3: using the prototype of superclass directly in children class */
@@ -58,21 +87,23 @@
      * @returns {null} No returns.
      */
     hih.extend = function(Child, Parent) {
-        /* */
-		var OOP = function() {};
-		OOP.prototype = Parent.prototype;
+        var OOP = function() {};
+        OOP.prototype = Parent.prototype;
 		
-　　　　 	Child.prototype = new OOP();
-		Child.prototype.constructor = Child;
+        Child.prototype = new OOP();
+        Child.prototype.constructor = Child;
 		
-		Child._super = Parent.prototype;
-　　}
+        Child._super = Parent.prototype;
+    }
 
 	/* Learn Category */
-	hih.LearnCategory = {};
+	hih.LearnCategory = {
+		// Attributes
+	};
 	hih.extend(hih.LearnCategory, hih.Model);
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
+	/* Just two methods provided. */
 	hih.extend_copy = function(Child, Parent) {
 		var p = Parent.prototype;
 		var c = Child.prototype;
@@ -105,13 +136,19 @@
 			
 			// Other fields
 			
+			lrnhist._super = hih.Model.prototype;
+			
 			return lrnhist;
 		}	
 	};
 	
+	/* Learn Award */
 	hih.LearnAward = {
 		createNew: function() {
+			// Inherit from Model first
 			var lrnawd = new hih.Model();
+			
+			lrnawd._super = hih.Model.prototype;
 			
 			return lrnawd;
 		}	
