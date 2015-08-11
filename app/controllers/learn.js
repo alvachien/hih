@@ -187,40 +187,44 @@
                     return;
 				
 				// Following logic need enhance for multiple items deletion
-				
-//				var rowCol = $scope.gridApi.cellNav.getFocusedCell();
-//				var index = rowCol.row.entity.id;
-//			    if (index !== -1) {
-//			    	// Popup dialog for confirm
-//					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
-//						$http.post(
-//							'script/hihsrv.php',
-//							{
-//								objecttype : 'DELETELEARNOBJECT',
-//								id : row.id
-//							})
-//							.success(
-//								function(data, status, headers, config) {
-//									//$scope.rowCollection.splice(index, 1);
-//									
-//									// Update the buffer
-//									$.each($rootScope.arLearnObject, function(idx, obj) {
-//										if (obj.id === row.id) {
-//											$rootScope.arLearnObject.splice(idx, 1);
-//											return false;
-//										}
-//									});
-//								})
-//							 .error(
-//								function(data, status, headers, config) {
-//									// called asynchronously if an error occurs or server returns response with an error status.
-//									$rootScope.$broadcast(
-//										"ShowMessage",
-//										"Error",
-//										data.Message);
-//								});							
-//					});
-//			    }
+                var strIDs = "";
+				$.each($scope.selectedRows, function(idx, obj) {
+					if (idx === 0) {						
+					} else {
+						strIDs = strIDs.concat(",");
+					}
+					strIDs = strIDs.concat(obj.ID.toString());
+				});
+		    	// Popup dialog for confirm
+				$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+					$http.post(
+							'script/hihsrv.php',
+							{
+								objecttype : 'DELETELEARNOBJECTS',
+								ids: strIDs
+							})
+						.success(
+							function(data, status, headers, config) {
+								$.each($scope.myData, function(idx, obj){
+									if ($.inArray(obj.ID.toString(), strIDs) !== -1) {
+										$scope.myData.splice(idx, 1);
+									}
+								});
+								$.each($rootScope.arLearnObject, function(idx, obj){
+									if ($.inArray(obj.ID.toString(), strIDs) !== -1) {
+										$rootScope.arLearnObject.splice(idx, 1);
+									}
+								});
+							})
+						.error(
+							function(data, status, headers, config) {
+								// called asynchronously if an error occurs or server returns response with an error status.
+								$rootScope.$broadcast(
+										"ShowMessage",
+										"Error",
+										data.Message);
+							});
+				});
 			};
 			
 			// Display

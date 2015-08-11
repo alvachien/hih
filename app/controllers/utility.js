@@ -123,11 +123,13 @@
 									.success(
 											function(data, status, headers, config) {
 												$rootScope.arUserList = [];
-												$.each(data, function(idx1, obj1) {
-													var objUsr = new hih.User();
-													objUsr.setContent(obj1.id, obj1.text);
-													$rootScope.arUserList.push(objUsr);
-												});
+												if ($.isArray(data) && data.length > 0) {
+													$.each(data, function(idx1, obj1) {
+														var objUsr = new hih.User();
+														objUsr.setContent(obj1.id, obj1.text);
+														$rootScope.arUserList.push(objUsr);
+													});													
+												}
 												$rootScope.isUserListLoad = true;
 
 												$rootScope.$broadcast("UserListLoaded");
@@ -158,11 +160,13 @@
 									.success(
 											function(data, status, headers, config) {
 												$rootScope.arLearnObject = [];
-												$.each(data, function(idx1, obj1) {
-													var lrnobj = new hih.LearnObject();
-													lrnobj.setContent(obj1.id, obj1.categoryid, obj1.categoryname, obj1.name, obj1.content);
-													$rootScope.arLearnObject.push(lrnobj);
-												});
+												if($.isArray(data) && data.length > 0) {
+													$.each(data, function(idx1, obj1) {
+														var lrnobj = new hih.LearnObject();
+														lrnobj.setContent(obj1.id, obj1.categoryid, obj1.categoryname, obj1.name, obj1.content);
+														$rootScope.arLearnObject.push(lrnobj);
+													});													
+												}
 												$rootScope.isLearnObjectLoad = true;
 
 												$rootScope.$broadcast("LearnObjectLoaded");

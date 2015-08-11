@@ -704,10 +704,12 @@ function learn_object_multidelete($ids) {
 
 	$sError = "";
 	
-	$in = join(',', array_fill(0, count($ids), '?'));
-	$query = "DELETE FROM " . MySqlLearnObjTable . " WHERE ID IN ($in);";
+	//$in = join(',', array_fill(0, count($ids), '?'));
+	//$array = array_map('intval', explode(',', $ids));
+	$array = implode("','",$ids);	
+	$query = "DELETE FROM " . MySqlLearnObjTable . " WHERE ID IN ('" . $array ."')";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
+		//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {

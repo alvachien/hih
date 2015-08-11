@@ -161,7 +161,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			{
 				$objids =  explode(',', escape( $realParamArr ['ids'] ));
 				
-				HIHSrv_Function_1Param( 'learn_object_delete', $objids );
+				HIHSrv_Function_1Param( 'learn_object_multidelete', $objids );
 			}
 			break;
 			
