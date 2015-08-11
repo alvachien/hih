@@ -157,6 +157,14 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "DELETELEARNOBJECTS": 
+			{
+				$objids =  explode(',', escape( $realParamArr ['ids'] ));
+				
+				HIHSrv_Function_1Param( 'learn_object_delete', $objids );
+			}
+			break;
+			
 		case "CREATELEARNHISTORY" :
 			{
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {

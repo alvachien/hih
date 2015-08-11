@@ -33,6 +33,8 @@
 		"Content": "Content",
 		"Comment": "Comment",
 		"CategoryID": "Category ID",
+		"Parent": "Parent",
+		"Text": "Text",
 		
 		"ConfirmToDeleteSelectedItem": "The selected item will be deleted. Do you confirm to continue?"
 	},

@@ -33,6 +33,8 @@
 		"Content": "内容",
 		"Comment": "备注",
 		"CategoryID": "类别ID",
+		"Parent": "父对象",
+		"Text": "文本",
 		
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？"		
 	},

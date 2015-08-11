@@ -686,6 +686,56 @@ function learn_object_delete($id) {
 			$sSuccess 
 	);
 }
+function learn_object_multidelete($ids) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	
+	$in = join(',', array_fill(0, count($ids), '?'));
+	$query = "DELETE FROM " . MySqlLearnObjTable . " WHERE ID IN ($in);";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+			$sError,
+			$ids 
+	);
+}
 function learn_object_combo() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
@@ -1105,6 +1155,7 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 	);
 }
 function learn_hist_change($categoryid, $username, $learndate, $content) {
+	// ToDo!
 }
 function learn_hist_delete($userid, $objid) {
 	// Check the existence first

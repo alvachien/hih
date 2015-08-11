@@ -158,36 +158,36 @@
 				{ name:'categoryname', field: 'CategoryName', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 				{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 				{ name:'content', field:'Content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
-		  ];
+		    ];
 		  
-		  if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
-			  $scope.myData = [];
+		    if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
+			    $scope.myData = [];
 				$.each($rootScope.arLearnObject, function(idx, obj) {
 		  			$scope.myData.push(angular.copy(obj));					
 				});			  
-		  };
+		    };
 		  
-		  $scope.selectedRows = [];
-		    
-		  $scope.$on("LearnObjectLoaded", function() {
-              console.log("HIH LearnObject List: Loaded event fired!");
-		      $scope.myData = [];
+		    $scope.selectedRows = [];
+		    $scope.$on("LearnObjectLoaded", function() {
+                console.log("HIH LearnObject List: Loaded event fired!");
+		        $scope.myData = [];
 				
 				$.each($rootScope.arLearnObject, function(idx, obj) {
 		  			$scope.myData.push(angular.copy(obj));					
 				});
-		  });
+		    });
 		    
-		  $scope.$on("LearnCategoryLoaded", function() {
-		  	console.log("HIH LearnObject List: Category Loaded event fired!");
-		  });	
+		    $scope.$on("LearnCategoryLoaded", function() {
+		  	    console.log("HIH LearnObject List: Category Loaded event fired!");
+		    });	
 		  
-			// Remove to the real data holder
-			$scope.removeItem = function removeItem(row) {
-				if ($scope.selectedRows.length <= 0)
-					return;
+            // Remove to the real data holder
+            $scope.removeItem = function removeItem(row) {
+                if ($scope.selectedRows.length <= 0)
+                    return;
 				
 				// Following logic need enhance for multiple items deletion
+				
 //				var rowCol = $scope.gridApi.cellNav.getFocusedCell();
 //				var index = rowCol.row.entity.id;
 //			    if (index !== -1) {
@@ -221,7 +221,7 @@
 //								});							
 //					});
 //			    }
-			 };
+			};
 			
 			// Display
 			$scope.displayItem = function (row) {
