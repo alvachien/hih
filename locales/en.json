@@ -33,6 +33,7 @@
 		"Content": "Content",
 		"Comment": "Comment",
 		"CategoryID": "Category ID",
+		"CategoryName": "Category Name",
 		"Parent": "Parent",
 		"Text": "Text",
 		

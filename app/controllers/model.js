@@ -107,7 +107,6 @@
 		// Attributes
 		this.ID = -1;
 		this.ParentID = -1;
-		this.ParentForJsTree = "";
 		this.Parent = {};
 		this.Text = "";
 		this.Comment = ""; 
@@ -157,6 +156,19 @@
 		}
 		return this.FullDisplayText;
 	};
+	hih.LearnCategory.prototype.getJsTreeNode = function() {
+		var treenode = {};
+		treenode.id = this.ID.toString();
+		if (this.ParentID === -1)
+			treenode.parent = "#";
+		else 
+			treenode.parent = this.ParentID.toString();
+		treenode.text = this.Text;
+		treenode.state = {
+			opened: true
+		};
+		return treenode;
+	};
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
 	/* Just two methods provided. */
@@ -186,13 +198,41 @@
 	/* Method 6: Minimalist approach from Gabor de Mooij */
 	/* Learn History */
 	hih.LearnHistory = {
+		_setContent: function(data) {
+			// userid, displayas, objectid, objectname, categoryid, categoryname, learndate, objectcontent, comment
+			this.UserID = data.userid;
+			this.UserDisplayAs = data.displayas;
+			
+			this.ObjectID = parseInt(data.objectid);
+			this.ObjectName = data.objectname;
+			
+			this.CategoryID = parseInt(data.categoryid);
+			this.CategoryName = data.categoryname;
+			
+			this.LearnDate = data.learndate;
+			this.ObjectContent = data.objectcontent;
+			this.Comment = data.comment;
+		},
 		createNew: function() {
 			// Inherit from Model first
 			var lrnhist = new hih.Model();
 			
 			// Other fields
+			lrnhist.UserID = "";
+			lrnhist.UserDisplayAs = "";
+			lrnhist.UserObject = {};
+			lrnhist.ObjectID = -1;
+			lrnhist.ObjectName = "";
+			lrnhist.LearnObject = {};
+			lrnhist.CategoryID = -1;
+			lrnhist.CategoryName = "";
+			lrnhist.LearnCategory = {};
+			lrnhist.LearnDate = new Date();
+			lrnhist.ObjectContent = "";
+			lrnhist.Comment = "";
 			
 			lrnhist._super = hih.Model.prototype;
+			lrnhist.setContent = hih.LearnHistory._setContent;
 			
 			return lrnhist;
 		}	

@@ -459,10 +459,10 @@
 			$scope.gridOptions.selectionRowHeaderWidth = 35;
 			
 			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.objectid.toString().concat('_', row.userid.toString()) ;
+			 	return row.ObjectID.toString().concat('_', row.UserID.toString()) ;
 			};
 			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.objectid.toString().concat('_', row.userid.toString()) ;
+			 	return row.ObjectID.toString().concat('_', row.UserID.toString()) ;
 			};			
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
       			$scope.gridApi = gridApi;
@@ -482,31 +482,31 @@
     		};
 
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'userid', field: 'userid', displayName: 'Login.User', headerCellFilter: "translate", width:'5%' },
-		    	{ name:'displayas', field: 'displayas', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
-				{ name:'objectid', field: 'objectid', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
-				{ name:'objectname', field:'objectname', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
-				{ name:'categoryid', field:'categoryid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
-				{ name:'categoryname', field:'categoryname', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
-				{ name:'learndate', field:'learndate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
-		  ];
+		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width:'5%' },
+		    	{ name:'displayas', field: 'UserDisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
+				{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
+				{ name:'objectname', field:'ObjectName', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
+				{ name:'categoryid', field:'CategoryID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
+				{ name:'categoryname', field:'CategoryName', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
+				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
+		    ];
 		  
-		  if (angular.isArray($rootScope.arLearnHistory ) && $rootScope.arLearnHistory.length > 0) {
-			  $scope.myData = [];
+		    if (angular.isArray($rootScope.arLearnHistory ) && $rootScope.arLearnHistory.length > 0) {
+			    $scope.myData = [];
 				$.each($rootScope.arLearnHistory, function(idx, obj) {
 		  			$scope.myData.push(angular.copy(obj));					
 				});			  
-		  };
+		    };
 		  
-		  $scope.selectedRows = [];		    
-		  $scope.$on("LearnHistoryLoaded", function() {
+		    $scope.selectedRows = [];		    
+		    $scope.$on("LearnHistoryLoaded", function() {
 		  		console.log("HIH LearnHistory List: Loaded event fired!");
 		    	
-				  $scope.myData = [];
-					$.each($rootScope.arLearnHistory, function(idx, obj) {
-			  			$scope.myData.push(angular.copy(obj));					
-					});	
-		  });
+				$scope.myData = [];
+				$.each($rootScope.arLearnHistory, function(idx, obj) {
+			  	    $scope.myData.push(angular.copy(obj));					
+				});	
+		    });
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
@@ -515,35 +515,35 @@
 					return;
 			 };
 			
-			// Display
-			$scope.displayItem = function () {
+			 // Display
+			 $scope.displayItem = function () {
 				if ($scope.selectedRows.length <= 0)
 					return;
 				
 				var row = $scope.selectedRows[0];
 				$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
-			};
+			 };
 			
-			// Edit
-			$scope.editItem = function () {
+			 // Edit
+			 $scope.editItem = function () {
 				if ($scope.selectedRows.length <= 0)
 					return;
 
 				var row = $scope.selectedRows[0];
 				$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
-			};
+			 };
 			
-			// Create
-			$scope.newItem = function() {
+			 // Create
+			 $scope.newItem = function() {
 				//$location.path('/learnobject');
 				$state.go('home.learn.history.create');
-			};
+			 };
 			
-			// Refresh list
-			$scope.refreshList = function() {
+			 // Refresh list
+			 $scope.refreshList = function() {
 				// Reload the whole list
 				utils.loadLearnHistories(true);
-			};
+			 };
 		}])
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
@@ -975,17 +975,7 @@
 		if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
 			$scope.treeData = [];
 			 $.each($rootScope.arLearnCategory, function(idx, obj) {
-				var treenode = {};
-				treenode.id = obj.ID.toString();
-				if (obj.ParentID === -1)
-					treenode.parent = "#";
-				else 
-					treenode.parent = obj.ParentID.toString();
-				treenode.text = obj.Text;
-				treenode.state = {
-					opened: true
-				};
-				
+				var treenode = obj.getJsTreeNode();
 				$scope.treeData.push(treenode); 
 			 });
 		 } else {			 		 
@@ -996,17 +986,7 @@
 			if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
 				$scope.treeData = [];
 				$.each($rootScope.arLearnCategory, function(idx, obj) {
-					var treenode = {};
-					treenode.id = obj.ID.toString();
-					if (obj.ParentID === -1)
-						treenode.parent = "#";
-					else 
-						treenode.parent = obj.ParentID.toString();
-					treenode.text = obj.Text;
-					treenode.state = {
-						opened: true	
-					};
-					
+					var treenode = obj.getJsTreeNode();
 					$scope.treeData.push(treenode); 
 				 });
 				 

@@ -33,6 +33,7 @@
 		"Content": "内容",
 		"Comment": "备注",
 		"CategoryID": "类别ID",
+		"CategoryName": "类别名称",
 		"Parent": "父对象",
 		"Text": "文本",
 		

@@ -261,26 +261,28 @@
 						rtnObj.loadLearnHistories = function (bForceReload) {
 							if (!$rootScope.isLearnHistoryLoaded || (angular.isDefined(bForceReload) && bForceReload)) {
 								$http
-									.post(
-											'script/hihsrv.php',
+									.post('script/hihsrv.php',
 											{
 												objecttype : 'GETLEARNHISTORYLIST'
 											})
 									.success(
-											function(data, status,
-													headers, config) {
-												$rootScope.arLearnHistory = data;
+											function(data, status, headers, config) {
+												// Sample response
+												// userid, displayas, objectid, objectname, categoryid, categoryname, learndate, objectcontent, comment
+												$rootScope.arLearnHistory = [];
+												if ($.isArray(data) && data.length > 0) {
+													$.each(data, function(idx, obj){
+														var lrnhist = hih.LearnHistory.createNew();
+														lrnhist.setContent(obj);
+														$rootScope.arLearnHistory.push(lrnhist);
+													});
+												}
 												$rootScope.isLearnHistoryLoaded = true;
 
 												$rootScope.$broadcast("LearnHistoryLoaded");
 											}).error(
-											function(data, status,
-													headers, config) {
-												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast(
-														"ShowMessage",
-														"Error",
-														data.Message);
+											function(data, status, headers, config) {
+												$rootScope.$broadcast("ShowMessage","Error",data.Message);
 											});
 							}
 						};
