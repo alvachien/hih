@@ -5,6 +5,11 @@
     
     var hih = window.hih || (window.hih = {});
 
+	/* Constants */
+	hih.Constants = {
+		LearnCategorySplitChar: " > "
+	};
+	
 	/* Root Model */
 	hih.Model = function() {
 		this.CreatedAt = new Date();
@@ -53,6 +58,7 @@
 	};
 	hih.LearnObject.prototype.Verify = function() {
 		var errMsgs = [];
+		
 		// Call to the super class's verify
 		errMsgs = this._super.prototype.Verify.call(this);		
 		if (errMsgs.length > 0)
@@ -97,10 +103,60 @@
     }
 
 	/* Learn Category */
-	hih.LearnCategory = {
+	hih.LearnCategory = function()	{
 		// Attributes
+		this.ID = -1;
+		this.ParentID = -1;
+		this.ParentForJsTree = "";
+		this.Parent = {};
+		this.Text = "";
+		this.Comment = ""; 
+		
+		// Runtime information
+		this.FullDisplayText = "";
 	};
 	hih.extend(hih.LearnCategory, hih.Model);
+	hih.LearnCategory.prototype.setContent = function(id, parent, txt, cmt) {
+		this.ID = parseInt(id);
+		this.ParentForJsTree = parent;
+		if (!parent) {
+			this.ParentID = -1;
+		} else {
+			if (typeof parent === "string" && parent === "#") {
+				this.ParentID = -1; // Root node!
+			} else {
+				this.ParentID = parseInt(parent);
+			}			
+		}
+		this.Text = txt;
+		this.Comment = cmt;
+	};
+	hih.LearnCategory.prototype.buildParentConnection = function(arCategories) {
+		if (this.ParentID === -1) {
+			this.Parent = null;
+		} else {
+			if ($.isArray(arCategories) && arCategories.length > 0) {
+				var that = this;
+				$.each(arCategories, function(idx, obj){
+					if (that.ParentID === obj.ID) {
+						that.Parent = arCategories[idx];
+						return false;
+					}
+				});
+			}			
+		}
+	};
+	hih.LearnCategory.prototype.buildFullText = function() {
+		if (this.ParentID === -1) {
+			// Root category
+			this.FullDisplayText = this.Text;
+		} else {
+			if (this.Parent) {
+				this.FullDisplayText = this.Parent.buildFullText().concat(hih.Constants.LearnCategorySplitChar, this.Text);				 
+			}
+		}
+		return this.FullDisplayText;
+	};
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
 	/* Just two methods provided. */

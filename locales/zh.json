@@ -36,6 +36,7 @@
 		"Parent": "父对象",
 		"Text": "文本",
 		
+		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？"		
 	},
 	

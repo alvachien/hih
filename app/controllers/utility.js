@@ -316,27 +316,39 @@
 							if (!$rootScope.isLearnCategoryLoaded) {
 								// Example JSON response:
 								// {"id":"1","parent":"#","text":"aaa","comment":"aaa"}
-								$http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETLEARNCATEGORYLIST'
-												})
-										.success(
-												function(data, status, headers, config) {
-													$rootScope.arLearnCategory = data;
-													$rootScope.isLearnCategoryLoaded = true;
+								$http.post(
+									'script/hihsrv.php',
+									{
+										objecttype : 'GETLEARNCATEGORYLIST'
+									})
+									.success(function(data, status, headers, config) {
+										$rootScope.arLearnCategory = [];
+										if ($.isArray(data) && data.length > 0){
+											$.each(data, function(idx, obj){
+												var lrnctgy = new hih.LearnCategory();
+												lrnctgy.setContent(obj.id, obj.parent, obj.text, obj.comment);
+												$rootScope.arLearnCategory.push(lrnctgy);
+											});
+											
+											// Then build the parent connection
+											// for(var i = 0, j = $rootScope.arLearnCategory.length; i < j; i ++) {
+											// 	$rootScope.arLearnCategory[i].buildParentConnection($rootScope.arLearnCategory);
+											// }
+											
+											// Then, check the long text
+											$.each($rootScope.arLearnCategory, function(idx, obj) {
+												obj.buildParentConnection($rootScope.arLearnCategory);
+												obj.buildFullText();
+											});
+										}
+										$rootScope.isLearnCategoryLoaded = true;
 
-													$rootScope.$broadcast("LearnCategoryLoaded");
-												})
-										 .error(
-												function(data, status, headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
-												});
+										$rootScope.$broadcast("LearnCategoryLoaded");
+									})
+									.error(function(data, status, headers, config) {
+										// called asynchronously if an error occurs or server returns response with an error status.
+										$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+									});
 							}
 						};
 

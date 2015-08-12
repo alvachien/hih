@@ -111,8 +111,8 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
-			function($scope, $rootScope, $state, $http, $interval, uiGridConstants, uiGridGroupingConstants, utils) {
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, $translate, uiGridConstants, uiGridGroupingConstants, utils) {
 			utils.loadLearnCategories();
 			utils.loadLearnObjects();
 
@@ -180,14 +180,22 @@
 		    $scope.$on("LearnCategoryLoaded", function() {
 		  	    console.log("HIH LearnObject List: Category Loaded event fired!");
 		    });	
+
+			if (!$rootScope.DeletionDialogTitle || !$rootScope.DeletionDialogMsg) {
+				$translate(['Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem']).then(function (translations) {
+    				$rootScope.DeletionDialogTitle = translations['Common.DeleteConfirmation'];
+    				$rootScope.DeletionDialogMsg = translations['Common.ConfirmToDeleteSelectedItem'];
+  				});				
+			}
 		  
             // Remove to the real data holder
             $scope.removeItem = function removeItem(row) {
                 if ($scope.selectedRows.length <= 0)
                     return;
 				
+				var strIDs = "";
+				  
 				// Following logic need enhance for multiple items deletion
-                var strIDs = "";
 				$.each($scope.selectedRows, function(idx, obj) {
 					if (idx === 0) {						
 					} else {
@@ -195,8 +203,9 @@
 					}
 					strIDs = strIDs.concat(obj.ID.toString());
 				});
+				
 		    	// Popup dialog for confirm
-				$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
+				$rootScope.$broadcast('ShowMessage', $rootScope.DeletionDialogTitle, $rootScope.DeletionDialogMsg, "warning", function() {
 					$http.post(
 							'script/hihsrv.php',
 							{
@@ -205,16 +214,7 @@
 							})
 						.success(
 							function(data, status, headers, config) {
-								$.each($scope.myData, function(idx, obj){
-									if ($.inArray(obj.ID.toString(), strIDs) !== -1) {
-										$scope.myData.splice(idx, 1);
-									}
-								});
-								$.each($rootScope.arLearnObject, function(idx, obj){
-									if ($.inArray(obj.ID.toString(), strIDs) !== -1) {
-										$rootScope.arLearnObject.splice(idx, 1);
-									}
-								});
+								$scope.refreshList();
 							})
 						.error(
 							function(data, status, headers, config) {
@@ -513,40 +513,6 @@
 				// To-Do: delete multiple rows
 				if ($scope.selectedRows.length <= 0)
 					return;
-
-//				var index = $scope.rowCollection.indexOf(row);
-//			    if (index !== -1) {
-//			    	// Popup dialog for confirm
-//					$rootScope.$broadcast('ShowMessage', "Deletion Confirm", "Delete the select item?", "warning", function() {
-//						$http.post(
-//							'script/hihsrv.php',
-//							{
-//								objecttype : 'DELETELEARNHISTORY',
-//								userid : row.userid,
-//								objectid: row.objectid
-//							})
-//							.success(
-//								function(data, status, headers, config) {
-//									$scope.rowCollection.splice(index, 1);
-//									
-//									// Update the buffer
-//									$.each($rootScope.arLearnHistory, function(idx, obj) {
-//										if (obj.objectid === row.objectid && obj.userid === row.userid) {
-//											$rootScope.arLearnHistory.splice(idx, 1);
-//											return false;
-//										}
-//									});
-//								})
-//							 .error(
-//								function(data, status, headers, config) {
-//									// called asynchronously if an error occurs or server returns response with an error status.
-//									$rootScope.$broadcast(
-//										"ShowMessage",
-//										"Error",
-//										data.Message);
-//								});
-//					});
-//			    }
 			 };
 			
 			// Display
@@ -958,23 +924,19 @@
 		};
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:'10%' },
-	    	{ name:'parent', field: 'parent', displayName: 'Common.Parent', headerCellFilter: "translate", width:'10%' },
-			{ name:'text', field: 'text', displayName: 'Common.Text', headerCellFilter: "translate", width: '20%' },
-			{ name:'comment', field:'commnet', displayName: 'Common.Comment', headerCellFilter: "translate", width: '40%' }
-	  ];
+	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'10%' },
+	    	{ name:'parent', field: 'ParentID', displayName: 'Common.Parent', headerCellFilter: "translate", width:'10%' },
+			{ name:'text', field: 'Text', displayName: 'Common.Text', headerCellFilter: "translate", width: '15%' },
+			{ name:'fulltext', field: 'FullDisplayText', displayName: 'Common.Text', headerCellFilter: "translate", width: '25%' },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '25%' }
+	  	];
 	  
-	  if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {
-		  $scope.myData = [];
-		  $.each($rootScope.arLearnCategory, function(idx, obj) {
+	  	if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {
+			$scope.myData = [];
+			$.each($rootScope.arLearnCategory, function(idx, obj) {
 	  			$scope.myData.push(angular.copy(obj));					
 			});			  
-	  };
-
-//		$scope.rowCollection = [];     
-//	    $scope.displayedCollection = [];	    
-//	    $scope.rowCollection = $rootScope.arLearnCategory;
-//	    $scope.displayedCollection = [].concat($scope.rowCollection);
+	  	};
 
 		$scope.$on("LearnCategoryLoaded", function() {
 			$log.info("HIH LearnCategory List: Category Loaded event fired!");
@@ -1011,11 +973,17 @@
              };
 		
 		if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
+			$scope.treeData = [];
 			 $.each($rootScope.arLearnCategory, function(idx, obj) {
 				var treenode = {};
-				angular.copy(obj, treenode);
+				treenode.id = obj.ID.toString();
+				if (obj.ParentID === -1)
+					treenode.parent = "#";
+				else 
+					treenode.parent = obj.ParentID.toString();
+				treenode.text = obj.Text;
 				treenode.state = {
-					opened: true	
+					opened: true
 				};
 				
 				$scope.treeData.push(treenode); 
@@ -1026,9 +994,15 @@
  		 $scope.$on("LearnCategoryLoaded", function() {
 			$log.info("HIH LearnCategory List: Category Loaded event fired!");
 			if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {
+				$scope.treeData = [];
 				$.each($rootScope.arLearnCategory, function(idx, obj) {
 					var treenode = {};
-					angular.copy(obj, treenode);
+					treenode.id = obj.ID.toString();
+					if (obj.ParentID === -1)
+						treenode.parent = "#";
+					else 
+						treenode.parent = obj.ParentID.toString();
+					treenode.text = obj.Text;
 					treenode.state = {
 						opened: true	
 					};
