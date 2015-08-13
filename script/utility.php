@@ -1468,6 +1468,59 @@ function learn_award_delete($id) {
 			$sSuccess 
 	);
 }
+function learn_award_multidelete($ids) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	
+	//$in = join(',', array_fill(0, count($ids), '?'));
+	//$array = array_map('intval', explode(',', $ids));
+	$array = implode("','",$ids);	
+	$query = "DELETE FROM " . MySqlLearnAwardTable . " WHERE ID IN ('" . $array ."')";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+			$sError,
+			$ids 
+	);
+}
+
 // 1.6 Finance account
 function finance_account_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

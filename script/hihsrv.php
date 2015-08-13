@@ -227,6 +227,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function_1Param( 'learn_award_delete', $id );
 			}
 			break;
+
+		case "DELETELEARNAWARDS":
+			{
+				$objids =  explode(',', escape( $realParamArr ['ids'] ));
+				HIHSrv_Function_1Param( 'learn_award_multidelete', $objids );
+			}
+			break;
 			
 		// ===========================================================================================
 		// Finance Part

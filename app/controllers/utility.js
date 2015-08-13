@@ -260,8 +260,7 @@
 						};
 						rtnObj.loadLearnHistories = function (bForceReload) {
 							if (!$rootScope.isLearnHistoryLoaded || (angular.isDefined(bForceReload) && bForceReload)) {
-								$http
-									.post('script/hihsrv.php',
+								$http.post('script/hihsrv.php',
 											{
 												objecttype : 'GETLEARNHISTORYLIST'
 											})
@@ -280,7 +279,8 @@
 												$rootScope.isLearnHistoryLoaded = true;
 
 												$rootScope.$broadcast("LearnHistoryLoaded");
-											}).error(
+											})
+									 .error(
 											function(data, status, headers, config) {
 												$rootScope.$broadcast("ShowMessage","Error",data.Message);
 											});
@@ -289,28 +289,31 @@
 						rtnObj.loadLearnAwards = function (bForceReload) {
 							if (!$rootScope.isLearnAwardLoaded || (angular.isDefined(bForceReload) && bForceReload)) {
 								
-								$http
-									.post(
+								$http.post(
 											'script/hihsrv.php',
 											{
 												objecttype : 'GETLEARNAWARDLIST'
 											})
 									.success(
-											function(data, status,
-													headers, config) {
-												$rootScope.arLearnAward = data;
+											function(data, status,headers, config) {
+												$rootScope.arLearnAward = [];
+												// Sample response
+												// id, userid, displayas, adate, score, reason
+												if ($.isArray(data) && data.length >0 ) {
+													$.each(data, function(idx, obj) {
+														var lrnawd = new hih.LearnAward();
+														lrnawd.setContent(obj);
+														$rootScope.arLearnAward.push(lrnawd);
+													});
+												}
 												$rootScope.isLearnAwardLoaded = true;
 
 												$rootScope.$broadcast("LearnAwardLoaded");
 											})
 									.error(
-											function(data, status,
-													headers, config) {
+											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast(
-														"ShowMessage",
-														"Error",
-														data.Message);
+												$rootScope.$broadcast("ShowMessage", "Error",data.Message);
 											});
 							}
 						};
@@ -332,12 +335,7 @@
 												$rootScope.arLearnCategory.push(lrnctgy);
 											});
 											
-											// Then build the parent connection
-											// for(var i = 0, j = $rootScope.arLearnCategory.length; i < j; i ++) {
-											// 	$rootScope.arLearnCategory[i].buildParentConnection($rootScope.arLearnCategory);
-											// }
-											
-											// Then, check the long text
+											// Then, build the runtime information
 											$.each($rootScope.arLearnCategory, function(idx, obj) {
 												obj.buildParentConnection($rootScope.arLearnCategory);
 												obj.buildFullText();

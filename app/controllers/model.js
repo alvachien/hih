@@ -7,7 +7,8 @@
 
 	/* Constants */
 	hih.Constants = {
-		LearnCategorySplitChar: " > "
+		LearnCategorySplitChar: " > ",
+		IDSplitChar: ","
 	};
 	
 	/* Root Model */
@@ -239,15 +240,26 @@
 	};
 	
 	/* Learn Award */
-	hih.LearnAward = {
-		createNew: function() {
-			// Inherit from Model first
-			var lrnawd = new hih.Model();
-			
-			lrnawd._super = hih.Model.prototype;
-			
-			return lrnawd;
-		}	
+	hih.LearnAward = function() {
+		// Attributes
+		this.ID = -1;
+		this.UserID = "";
+		this.UserDisplayAs = "";
+		this.UserObject = {};
+		this.AwardDate = new Date();
+		this.Score = 0.0;
+		this.Reason = "";
+	};
+	// Build prototype chain
+	hih.extend(hih.LearnAward, hih.Model);
+	hih.LearnAward.prototype.setContent = function(obj) {
+		// id, userid, displayas, adate, score, reason
+		this.ID = parseInt(obj.id);
+		this.UserID = obj.userid;
+		this.UserDisplayAs = obj.displayas;
+		this.AwardDate = obj.adate;
+		this.Score = obj.score;
+		this.Reason = obj.reason;
 	};
 }());
 
