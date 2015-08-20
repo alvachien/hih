@@ -7,6 +7,7 @@
 
 	/* Constants */
 	hih.Constants = {
+		LearnHistorySplitChar: "_",
 		LearnCategorySplitChar: " > ",
 		IDSplitChar: ","
 	};
@@ -61,21 +62,26 @@
 		var errMsgs = [];
 		
 		// Call to the super class's verify
-		errMsgs = this._super.prototype.Verify.call(this);		
+		errMsgs = this._super.Verify.call(this);		
 		if (errMsgs.length > 0)
 			return errMsgs; 
 		 
 		if (isNaN(this.ID)) {
 			errMsgs.push("Message.InvalidID");
-			}
+		}
 		if (isNaN(this.CategoryID)) {
 			errMsgs.push("Message.InvalidCategory");
-			}
+		}
 		if (this.Name && typeof this.Name === "string" && this.Name.length > 0) {
 		} else {
 			errMsgs.push("Message.InvalidName");
 		}
 		if (this.Content && typeof this.Content === "string" && this.Content.length > 0) {
+			var realcontent = this.Content.replace("<p><br data-mce-bogus=\"1\"></p>", "");
+			realcontent = realcontent.replace("<p><br /></p>", "");
+			if (realcontent.length <= 0) {
+				 errMsgs.push("Message.InvalidContent");
+			}
 		} else {
 			errMsgs.push("Message.InvalidContent");
 		}

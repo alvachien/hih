@@ -232,7 +232,7 @@
 				if ($scope.selectedRows.length <= 0)
 					return;
 				
-				$state.go("home.learn.object.display",  { objid : $scope.selectedRows[0].id });
+				$state.go("home.learn.object.display",  { objid : $scope.selectedRows[0].ID });
 			};
 			
 			// Edit
@@ -240,7 +240,7 @@
 				if ($scope.selectedRows.length <= 0)
 					return;
 				
-				$state.go("home.learn.object.maintain",  { objid : $scope.selectedRows[0].id });
+				$state.go("home.learn.object.maintain",  { objid : $scope.selectedRows[0].ID });
 			};
 			
 			// Create
@@ -324,7 +324,7 @@
 						};
 						
 						$scope.treeData.push(treenode); 
-					 });
+					});
 					 
 					// Re-create the hierarchy
 					$scope.treeConfig.version++;
@@ -351,9 +351,10 @@
 				    $scope.isReadonly = true;
 				    $scope.ActivityID = 3;
 				}
- 				 
+ 				
+				var nObjID = parseInt($stateParams.objid);
 				$.each($rootScope.arLearnObject, function(idx, obj) {
-                    if (obj.ID === $stateParams.objid) {
+                    if (obj.ID === nObjID) {
 						$scope.objLearnObject = angular.copy(obj);
 						return false;
 					}
@@ -382,22 +383,10 @@
 				 // Verify it!
 				 var msgTab = $scope.objLearnObject.Verify();
 				 if (msgTab.length > 0) {
-					 // Show the error dialog
+					 // Show the error dialog, for the first item
+					 $rootScope.$broadcast('ShowMessage', "Error", msgTab[0]);
 					 return;
 				 }
-				 
-				 // Let's do the checks first!!!!
-				 if ($scope.ObjectName.length <= 0) {
-					 $rootScope.$broadcast('ShowMessage', "Error", "Name is must!");
-					 return;
-				 }
-				 
-				 // Check the category
-				 if ($scope.ObjectCategoryID === -1 || $scope.ObjectCategoryID === 0) {
-					 $rootScope.$broadcast('ShowMessage', "Error", "Category is must!");
-					 return;
-				 }
-				 
 				 // Check the content
 				 var realcontent = $scope.ObjectContent.replace("<p><br data-mce-bogus=\"1\"></p>", "");
 				 realcontent = realcontent.replace("<p><br /></p>", "");
@@ -407,7 +396,8 @@
 				 }
 				 
 				 // Now, submit to the server
-				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', category:$scope.ObjectCategoryID, name: $scope.ObjectName, content: $scope.ObjectContent } )
+				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', category:$scope.objLearnObject.CategoryID, 
+					 	name: $scope.objLearnObject.Name, content: $scope.objLearnObject.Content } )
 				 	.success(function(data, status, headers, config) {
 					   // Then, go to display page
 					   $scope.gen_id = data[0].id;
@@ -415,11 +405,10 @@
 					   // Add the buffer
 					   utils.loadLearnObjects(true);
 					   utils.loadLearnObjectsHierarchy(true);					  
-				     })
-				     .error(function(data, status, headers, config) {
-					   // called asynchronously if an error occurs or server returns response with an error status.
-					   $rootScope.$broadcast("ShowMessage", "Error", data.Message);
-				   });
+				    })
+				    .error(function(data, status, headers, config) {
+					    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+				    });
 			 };
 			 
 			 $scope.close = function() {
@@ -438,6 +427,7 @@
 			utils.loadLearnObjects();
 			utils.loadUserList();
 			
+			// Grid option
 			$scope.gridOptions = {};
 			$scope.gridOptions.data = 'myData';
 			$scope.gridOptions.enableSorting = true;
@@ -464,7 +454,7 @@
      					$scope.selectedRows.push(row.entity);     					
      				 } else {
      					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.userid === row.entity.userid && obj.objectid === row.entity.objectid) {
+							if (obj.UserID === row.entity.UserID && obj.ObjectID === row.entity.ObjectID) {
 								$scope.selectedRows.splice(idx, 1);
 								return false;
 							}
@@ -513,7 +503,7 @@
 					return;
 				
 				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.display",   { histid : row.objectid.toString().concat('_', row.userid.toString()) });
+				$state.go("home.learn.history.display",   { histid : row.ObjectID.toString().concat('_', row.UserID.toString()) });
 			 };
 			
 			 // Edit
@@ -522,7 +512,7 @@
 					return;
 
 				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.maintain",  { histid : row.objectid.toString().concat('_', row.userid.toString()) });
+				$state.go("home.learn.history.maintain",  { histid : row.ObjectID.toString().concat('_', row.UserID.toString()) });
 			 };
 			
 			 // Create
@@ -582,25 +572,25 @@
 				 var arrID = $stateParams.histid.split('_');
 				 if (arrID.length >= 2) {
 					 $.each($rootScope.arLearnHistory, function(idx, obj) {
-						 if (obj.userid === arrID[1] && parseInt(obj.objectid) === parseInt(arrID[0])) {
-							 $scope.UserID = obj.userid;
-							 $scope.DisplayAs = obj.displayas;
+						 if (obj.UserID === arrID[1] && parseInt(obj.ObjectID) === parseInt(arrID[0])) {
+							 $scope.UserID = obj.UserID;
+							 $scope.DisplayAs = obj.UserDisplayAs;
 							 
 							 $.each($scope.LearnObjects, function(idx2, obj2) {
-								 if (obj.objectid === obj2.id) {
+								 if (obj.ObjectID === obj2.ID) {
 									 $scope.SelectedLearnObject.selected = obj2;
 									 return false;
 								 }
 							 });
 							 
-							 $scope.ObjectID = obj.objectid;
-							 $scope.ObjectName = obj.objectname;						 
-							 $scope.CategoryID = obj.categoryid;
-							 $scope.CategoryName = obj.categoryname;
-							 $scope.LearnDate = utils.dateparser(obj.learndate);
+							 $scope.ObjectID = obj.ObjectID;
+							 $scope.ObjectName = obj.ObjectName;						 
+							 $scope.CategoryID = obj.CategoryID;
+							 $scope.CategoryName = obj.CategoryName;
+							 $scope.LearnDate = utils.dateparser(obj.LearnDate);
 							 //$scope.LearnDate = utils.datefromdbtoui(obj.learndate);
-							 $scope.ObjectContent = obj.objectcontent;
-							 $scope.Comment = obj.comment;
+							 $scope.ObjectContent = obj.ObjectContent;
+							 $scope.Comment = obj.Comment;
 							 
 							 return false;
 						 }
@@ -623,10 +613,11 @@
 					 return;
 				 }
 				 
-				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', user:$scope.UserID, learnobject: $scope.ObjectID, learndate: $scope.LearnDate, comment: $scope.Comment  } ).
+				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', user:$scope.UserID, 
+					 learnobject: $scope.ObjectID, learndate: $scope.LearnDate, comment: $scope.Comment  } ).
 				 	success(function(data, status, headers, config) {
 					  // Then, go to display page
-					  $scope.gen_id = data[0].objectid.toString().concat('_', data[0].userid.toString());
+					  $scope.gen_id = data[0].ObjectID.toString().concat('_', data[0].UserID.toString());
 					  
 					  utils.loadLearnHistories(true);
 				  }).
@@ -637,10 +628,6 @@
 			 };
 			 
 			 $scope.close = function() {
-				 //$location.path('/learnobjectlist');
-				 
-				 // Cannot go the parent, it shall go the list view!
- 				 // $state.go("^");
 				 $state.go("home.learn.history.list");
 			 };
 			 
@@ -700,7 +687,7 @@
 				{ name:'adate', field:'AwardDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter:'date', width: '120' },
 				{ name:'score', field:'Score', displayName: 'Learn.Score', headerCellFilter: "translate", width: '100',
 					aggregationType:uiGridConstants.aggregationTypes.avg }, // type:'boolean' for sorting 
-				{ name:'reason', field:'Reason', displayName: 'Learn.Reason', headerCellFilter: "translate", width: '150' }
+				{ name:'reason', field:'Reason', displayName: 'Learn.Reason', headerCellFilter: "translate", width: '200' }
 		    ];
 		  
 		    if (angular.isArray($rootScope.arLearnAward ) && $rootScope.arLearnAward.length > 0) {
@@ -766,7 +753,7 @@
 				if ($scope.selectedRows.length <= 0) 
 					return;
 
-		    	$state.go("home.learn.award.display",  { objid : $scope.selectedRows[0].id });
+		    	$state.go("home.learn.award.display",  { objid : $scope.selectedRows[0].ID });
 			};
 			
 			// Edit
@@ -774,7 +761,7 @@
 				if ($scope.selectedRows.length <= 0) 
 					return;
 
-		    	$state.go("home.learn.award.maintain",  { objid : $scope.selectedRows[0].id });
+		    	$state.go("home.learn.award.maintain",  { objid : $scope.selectedRows[0].ID });
 			};
 			
 			// Create
@@ -832,7 +819,7 @@
 						if (angular.isArray($scope.UserIDs)) {
 							$.each($scope.UserIDs, function (idx2, obj2) {
 								// User ID example: {"id":"ac","text":"AC"}
-								if (obj2.id === obj.userid) {
+								if (obj2.ID === obj.UserID) {
 									$scope.SelectedUser.selected = obj2;
 									return false;
 								}
@@ -919,11 +906,11 @@
 		};
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'10%' },
-	    	{ name:'parent', field: 'ParentID', displayName: 'Common.Parent', headerCellFilter: "translate", width:'10%' },
-			{ name:'text', field: 'Text', displayName: 'Common.Text', headerCellFilter: "translate", width: '15%' },
-			{ name:'fulltext', field: 'FullDisplayText', displayName: 'Common.Text', headerCellFilter: "translate", width: '25%' },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '25%' }
+	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'80' },
+	    	{ name:'parent', field: 'ParentID', displayName: 'Common.Parent', headerCellFilter: "translate", width:'80' },
+			{ name:'text', field: 'Text', displayName: 'Common.Text', headerCellFilter: "translate", width: '100' },
+			{ name:'fulltext', field: 'FullDisplayText', displayName: 'Common.Text', headerCellFilter: "translate", width: '150' },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '100' }
 	  	];
 	  
 	  	if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {
