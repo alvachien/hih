@@ -267,5 +267,19 @@
 		this.Score = obj.score;
 		this.Reason = obj.reason;
 	};
+	
+	// Finance part
+	// 1. Account
+	hih.FinanceAccount = function FinanceAccount() {
+		this.ID = -1; 
+	};
+	hih.extend(hih.FinanceAccount, hih.Model);
+	hih.FinanceAccount.prototype.setContent = function(obj) {
+		// Set the content..
+	};
+	
+	// 2. Document
+	// 3. Controlling Center
+	// 4. 
 }());
 
