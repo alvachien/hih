@@ -367,7 +367,14 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arCurrency = data;
+													$rootScope.arCurrency = [];
+													if ($.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj) {
+															var curobj = new hih.Currency();
+															curobj.setContent(obj);
+															$rootScope.arCurrency.push(curobj);
+														});
+													}
 													$rootScope.isCurrencyLoaded = true;
 
 													$rootScope.$broadcast("CurrencyLoaded");
@@ -394,7 +401,15 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arFinanceAccount = data;
+													$rootScope.arFinanceAccount = [];
+													if ($.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj) {
+															var finacnt = new hih.FinanceAccount();
+															finacnt.setContent(obj);
+															finacnt.buildCategory($rootScope.arFinanceAccountCategory);
+															$rootScope.arFinanceAccount.push(finacnt);
+														});
+													}
 													$rootScope.isFinanceAccountLoaded = true;
 
 													$rootScope.$broadcast("FinanceAccountLoaded");
@@ -448,7 +463,14 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arFinanceAccountCategory = data;
+													$rootScope.arFinanceAccountCategory = [];
+													if ($.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj) {
+															var finacntctgy = new hih.FinanceAccountCategory();
+															finacntctgy.setContent(obj);
+															$rootScope.arFinanceAccountCategory.push(finacntctgy);
+														});
+													}
 													$rootScope.isFinanceAccountCategoryLoaded = true;
 
 													$rootScope.$broadcast("FinanceAccountCategoryLoaded");
@@ -502,7 +524,15 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arFinanceDocumentType = data;
+													$rootScope.arFinanceDocumentType = [];
+													if ($.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj) {
+															var fdt = new hih.FinanceDocumentType();
+															fdt.setContent(obj);
+															$rootScope.arFinanceDocumentType.push(fdt);
+														});
+													}
+													//$rootScope.arFinanceDocumentType = data;
 													$rootScope.isFinanceDocumentTypeLoaded = true;
 
 													$rootScope.$broadcast("FinanceDocumentTypeLoaded");

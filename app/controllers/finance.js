@@ -161,12 +161,12 @@
 		};
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'id', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'ctgyid', field: 'ctgyid', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-			{ name:'ctgyname', field: 'ctgyname', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
-			{ name:'name', field:'name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'assetflag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
-			{ name:'comment', field:'comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	  ];
 	  
 	  if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {

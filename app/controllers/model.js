@@ -269,17 +269,78 @@
 	};
 	
 	// Finance part
-	// 1. Account
+	// 1. Currency
+	hih.Currency = function Currency() {
+		this.Currency = "";
+		this.Name = "";
+		this.Symbol = "";
+	};
+	hih.extend(hih.Currency, hih.Model);
+	hih.Currency.prototype.setContent = function(obj) {
+		this.Currency = obj.curr;
+		this.Name = obj.name;
+		this.Symbol = obj.symbol;
+	};
+	// 2. Account category
+	hih.FinanceAccountCategory = function FinanceAccountCategory() {
+		this.ID = -1;
+		this.Name = "";
+		this.AssetFlag = 0;
+		this.Comment = "";
+	};
+	hih.extend(hih.FinanceAccountCategory, hih.Model);
+	hih.FinanceAccountCategory.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.AssetFlag = parseInt(obj.assetflag);
+		this.Comment = obj.comment;
+	};
+	// 3. Document type
+	hih.FinanceDocumentType = function FinanceDocumentType() {
+		this.ID = -1;
+		this.Name = "";
+		this.Comment = "";
+	};
+	hih.extend(hih.FinanceDocumentType, hih.Model);
+	hih.FinanceDocumentType.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.Comment = obj.comment;
+	};	
+	// 4. Account
 	hih.FinanceAccount = function FinanceAccount() {
 		this.ID = -1; 
+		this.CategoryID = -1;
+		this.Name = "";
+		this.Comment = "";
+		
+		// Runtime information
+		this.CategoryObject = {};
 	};
 	hih.extend(hih.FinanceAccount, hih.Model);
 	hih.FinanceAccount.prototype.setContent = function(obj) {
-		// Set the content..
+		// {"id":"4","ctgyid":"1","name":"aaa","comment":"aaa","ctgyname":"aaa","assetflag":"1"}
+		this.ID = parseInt(obj.id);
+		this.CategoryID = parseInt(obj.ctgyid);
+		var ctgyname = obj.ctgyname;
+		var assetflg = obj.assetflag;
+		this.Name = obj.name;
+		this.Comment = obj.comment;
 	};
-	
-	// 2. Document
-	// 3. Controlling Center
-	// 4. 
+	hih.FinanceAccount.prototype.buildCategory = function(arAcntCtgy) {
+		if($.isArray(arAcntCtgy) && arAcntCtgy.length > 0) {
+			this.CategoryObject = {};
+			$.each(arAcntCtgy, function(idx, obj) {
+				if (obj.ID === this.CategoryID) {
+					this.CategoryObject = obj;
+					return false;
+				}
+			});
+		}
+	};
+	// 5. Controlling Center
+	// 6. Document Item
+	// 7. Document
+	// 8. 
 }());
 
