@@ -328,11 +328,12 @@
 		this.Comment = obj.comment;
 	};
 	hih.FinanceAccount.prototype.buildCategory = function(arAcntCtgy) {
+		var that = this;
 		if($.isArray(arAcntCtgy) && arAcntCtgy.length > 0) {
-			this.CategoryObject = {};
+			that.CategoryObject = {};
 			$.each(arAcntCtgy, function(idx, obj) {
-				if (obj.ID === this.CategoryID) {
-					this.CategoryObject = obj;
+				if (obj.ID === that.CategoryID) {
+					that.CategoryObject = obj;
 					return false;
 				}
 			});
