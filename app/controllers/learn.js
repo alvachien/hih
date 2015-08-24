@@ -382,10 +382,14 @@
 			 $scope.submit = function() {
 				 // Verify it!
 				 var msgTab = $scope.objLearnObject.Verify();
-				 if (msgTab.length > 0) {
-					 // Show the error dialog, for the first item
-					 $rootScope.$broadcast('ShowMessage', "Error", msgTab[0]);
-					 return;
+				 if (msgTab && msgTab.length > 0) {
+					$translate(msgTab).then(function (translations) {
+						// Show errors
+						$.foreach(translations, function(idx, obj) {
+							$rootScope.$broadcast("ShowMessage", "Error", obj);
+						});
+  					});	
+				 	return;
 				 }
 				 // Check the content
 				 var realcontent = $scope.ObjectContent.replace("<p><br data-mce-bogus=\"1\"></p>", "");

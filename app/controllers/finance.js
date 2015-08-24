@@ -315,8 +315,8 @@
 			 });
 	}])
 
-	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
-	    function($scope, $rootScope, $state, $stateParams, $http, utils) {
+	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $stateParams, $http, $translate, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		
@@ -356,7 +356,12 @@
 			
 			var errMsgs = $scope.AccountObject.Verify();
 			if (errMsgs && errMsgs.length > 0) {
-				// Show errors
+				$translate(errMsgs).then(function (translations) {
+					// Show errors
+					$.foreach(translations, function(idx, obj) {
+						$rootScope.$broadcast("ShowMessage", "Error", obj);
+					});
+  				});				
 				return;
 			}
 			
@@ -371,6 +376,7 @@
 					// First of all, update the rootScope
 					var acntObj = new hih.FinanceAccount();
 					acntObj.setContent(response.data[0]);
+					acntObj.buildCategory($rootScope.arFinanceAccountCategory);
 					$rootScope.arFinanceAccount.push(acntObj);
 					
 					// Change to the display mode
