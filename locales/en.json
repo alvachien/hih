@@ -38,7 +38,8 @@
 		"Text": "Text",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
-		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?"
+		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
+		"SearchViaName": "Select an item via the name..."
 	},
 	
 	

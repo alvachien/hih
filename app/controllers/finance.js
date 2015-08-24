@@ -117,12 +117,8 @@
     ;
 	}])
 	
-	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
-	    function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadFinanceAccounts();
-		utils.loadFinanceAccountCategories();
-		utils.loadCurrencies();
-
+	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, utils) {
 		// Grid options
         $scope.selectedRows = [];
 		$scope.gridOptions = {};
@@ -138,26 +134,26 @@
 		$scope.gridOptions.selectionRowHeaderWidth = 35;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.id;
+		 	return row.ID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.id;
+		 	return row.ID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
 			
- 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				 if (row.isSelected) {
+ 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				if (row.isSelected) {
  					$scope.selectedRows.push(row.entity);     					
- 				 } else {
+ 				} else {
  					$.each($scope.selectedRows, function(idx, obj) {
 						if (obj.id === row.entity.id) {
 							$scope.selectedRows.splice(idx, 1);
 							return false;
 						}
 					});
- 				 }
-  		     });
+ 				}
+  		    });
 		};
 		
 		$scope.gridOptions.columnDefs = [
@@ -167,65 +163,58 @@
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
-	  ];
+	    ];
 	  
-	  if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
-		  $scope.myData = [];
-			$.each($rootScope.arFinanceAccount, function(idx, obj) {
-	  			$scope.myData.push(angular.copy(obj));					
-			});			  
-	  };
-		
-	    $scope.$on("FinanceAccountLoaded", function() {
-	    	$log.info("HIH FinanceAccount List: Loaded event fired!");
-	    	
-		  $scope.myData = [];
-		  $.each($rootScope.arFinanceAccount, function(idx, obj) {
-	  			$scope.myData.push(angular.copy(obj));					
-			});			  
-	    });
-	    
-	    $scope.$on("FinanceAccountCategoryLoaded", function() {
-	    	$log.info("HIH FinanceAccount List: Category Loaded event fired!");
-	    });	
+	    var promise1 = utils.loadCurrenciesQ();
+	    var promise2 = utils.loadFinanceAccountCategoriesQ();
+	  
+	    $q.all([promise1, promise2])
+	  	    .then(function(response) {
+			    utils.loadFinanceAccountsQ()
+			  	    .then(function(response2) {
+					    if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
+						    $scope.myData = [];
+						    $.each($rootScope.arFinanceAccount, function(idx, obj) {
+							    $scope.myData.push(angular.copy(obj));					
+						    });
+					    }					  
+				    }, function(reason2) {
+					    // Error occurred
+					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				});
+		  }, function(reason) {
+			  // Error occurred!
+			  $rootScope.$broadcast("ShowMessage", "Error", reason);
+		});
 
-		// Remove to the real data holder
-		$scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length <= 0)
-				return;
-			
-			//var index = $scope.rowCollection.indexOf(row);
-		    //if (index !== -1) {
-		    	// Popup dialog for confirm
-		    	
-		    	// Then, communicate the sever for deleting
-		    	
-		    	// Last, update the UI part
-//		    	$scope.rowCollection.splice(index, 1);
-		    //}
-		 };
+	    // Remove to the real data holder
+	    $scope.removeItem = function removeItem(row) {
+	  	    if ($scope.selectedRows.length <= 0)
+			    return;
+				
+			// To-Do: delete multiple accounts as a batch
+	    };
 	    
-		// Display
-		$scope.displayItem = function (row) {
-			if ($scope.selectedRows.length <= 0)
+	    // Display
+	    $scope.displayItem = function (row) {
+	        if ($scope.selectedRows.length <= 0)
 				return;
 			
-	    	$state.go("home.finance.account.display",  { accountid : $scope.selectedRows[0].id });
-		};
+	    	$state.go("home.finance.account.display",  { accountid : $scope.selectedRows[0].ID });
+	    };
 		
-		// Edit
-		$scope.editItem = function (row) {
-			if ($scope.selectedRows.length <= 0)
-				return;
+	    // Edit
+	    $scope.editItem = function (row) {
+	        if ($scope.selectedRows.length <= 0)
+		        return;
 			
-		    $state.go("home.finance.account.maintain",  { accountid : $scope.selectedRows[0].id });
-		};
+		    $state.go("home.finance.account.maintain",  { accountid : $scope.selectedRows[0].ID });
+	    };
 		
-		// Create
-		$scope.newItem = function() {
-			//$location.path('/learnobject');
-			$state.go('home.finance.account.create');
-		};
+	    // Create
+	    $scope.newItem = function() {
+	        $state.go('home.finance.account.create');
+	    };
 	}])
 	
 	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', 
@@ -312,50 +301,65 @@
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', 
 	    function($scope, $rootScope, $state, $stateParams, $http, utils) {
 		$scope.Activity = "";
-		$scope.ErrorDetail = "";
 		$scope.isReadonly = false;
 		
-		$scope.AccountID = -1;
-		$scope.AccountCategory = {};
+		$scope.AccountObject = new hih.FinanceAccount();
+		$scope.AccountCategoryObject = {};
 		$scope.AllAccountCategories = $rootScope.arFinanceAccountCategory;
-		$scope.AccountName = "";
-		$scope.AccountComment = "";
-		$scope.AccountAssetFlag = "";
 		
-		 if (angular.isDefined($stateParams.accountid)) {
-			 $scope.AccountID = parseInt($stateParams.accountid);
-			 
-			 if ($state.current.name === "home.finance.account.maintain") {
-				 $scope.Activity = "Common.Edit";
-			 } else if ($state.current.name === "home.finance.account.display") {
-				 $scope.Activity = "Common.Display";
-				 $scope.isReadonly = true;
-			 }
-			 
-			 $.each($rootScope.arFinanceAccount, function (idx, obj) {
-				 if (obj.id === $stateParams.accountid) {
-					 // Category
-					 $.each($scope.AllAccountCategories, function(idx2, obj2){
-						 if (obj2.id === obj.ctgyid) {
-							 $scope.AccountCategory.selected = obj2;
-							 return false;
-						 }
-					 });
-					 $scope.AccountAssetFlag = utils.assetFormatter(obj.assetflag);
-					 $scope.AccountName = obj.name;
-					 $scope.AccountComment = obj.comment;
-					 
-					 return false;
-				 }
-			 });
-
-		 } else {
-			 $scope.Activity = "Common.Create";
-		 }
+        if (angular.isDefined($stateParams.accountid)) {
+			if ($state.current.name === "home.finance.account.maintain") {
+			    $scope.Activity = "Common.Edit";
+			} else if ($state.current.name === "home.finance.account.display") {
+				$scope.Activity = "Common.Display";
+				$scope.isReadonly = true;
+			}
+			
+			var nAcntID = parseInt($stateParams.accountid);
+			$.each($rootScope.arFinanceAccount, function (idx, obj) {				
+				if (obj.ID === nAcntID) {
+					$scope.AccountObject = angular.copy(obj);
+					$scope.AccountCategoryObject.selected = obj.CategoryObject;
+					return false;
+				}
+			});
+		} else {
+			$scope.Activity = "Common.Create";
+		}
 		 
-		 $scope.close = function() {
-			 $state.go("home.finance.account.list");
-		 };
+		$scope.submit = function() {
+			// Update the category id
+			if ($scope.AccountCategoryObject.selected) {
+				if ($scope.AccountObject.CategoryID !== $scope.AccountCategoryObject.selected.ID) {
+					$scope.AccountObject.CategoryID = $scope.AccountCategoryObject.selected.ID;					
+				}
+			} else {
+				$scope.AccountObject.CategoryID = -1;
+			}
+			
+			var errMsgs = $scope.AccountObject.Verify();
+			if (errMsgs && errMsgs.length > 0) {
+				// Show errors
+				return;
+			}
+			
+			// Now submit to the server side
+			$http.post('script/hihsrv.php', {
+				    objecttype : 'CREATEFINANCEACCOUNT',
+				    name: $scope.AccountObject.Name,
+				    ctgyid: $scope.AccountObject.CategoryID,
+				    comment: $scope.AccountObject.Comment 
+				})
+				.then(function(response) {
+					// Change to the display mode
+				}, function(response) {
+					// Failed, throw out error message
+				});
+		};
+		
+		$scope.close = function() {
+		    $state.go("home.finance.account.list");
+		};
 	}])	
 	
 	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
@@ -390,18 +394,18 @@
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
 			
- 			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				 if (row.isSelected) {
+ 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				if (row.isSelected) {
  					$scope.selectedRows.push(row.entity);     					
- 				 } else {
+ 				} else {
  					$.each($scope.selectedRows, function(idx, obj) {
 						if (obj.docid === row.entity.docid) {
 							$scope.selectedRows.splice(idx, 1);
 							return false;
 						}
 					});
- 				 }
-  		     });
+ 				}
+  		    });
 		};
 		
 		$scope.gridOptions.columnDefs = [
@@ -412,14 +416,14 @@
 			{ name:'trancurrname', field:'trancurrname', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
 			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
 			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
-	  ];
+	    ];
 	  
-	  if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
-		  $scope.myData = [];
+	    if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
+		    $scope.myData = [];
 			$.each($rootScope.arFinanceDocument, function(idx, obj) {
 	  			$scope.myData.push(angular.copy(obj));					
 			});			  
-	  };
+	    };
 		
 	    $scope.$on("FinanceDocumentLoaded", function() {
 	    	$log.info("HIH FinanceDocument List: Loaded event fired!");
@@ -440,15 +444,6 @@
 				return;
 				
 			// To-Do: delete mutliple accounts allowed?
-			//var index = $scope.rowCollection.indexOf(row);
-		    //if (index !== -1) {
-		    	// Popup dialog for confirm
-		    	
-		    	// Then, communicate the sever for deleting
-		    	
-		    	// Last, update the UI part
-//		    	$scope.rowCollection.splice(index, 1);
-		    //}
 		 };
 	    
 		// Display

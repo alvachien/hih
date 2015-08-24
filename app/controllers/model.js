@@ -322,8 +322,8 @@
 		// {"id":"4","ctgyid":"1","name":"aaa","comment":"aaa","ctgyname":"aaa","assetflag":"1"}
 		this.ID = parseInt(obj.id);
 		this.CategoryID = parseInt(obj.ctgyid);
-		var ctgyname = obj.ctgyname;
-		var assetflg = obj.assetflag;
+		//var ctgyname = obj.ctgyname;
+		//var assetflg = obj.assetflag;
 		this.Name = obj.name;
 		this.Comment = obj.comment;
 	};
@@ -338,6 +338,27 @@
 				}
 			});
 		}
+	};
+	hih.FinanceAccount.prototype.Verify = function() {
+		var errMsgs = [];
+		
+		// Call to the super class's verify
+		errMsgs = this._super.Verify.call(this);		
+		if (errMsgs.length > 0)
+			return errMsgs; 
+		
+		// Now do the verify in Frontend part
+		if (this.CategoryID === -1) {
+			// No category is assigned
+			errMsgs.push("Message.InvalidCategory");
+		}
+		
+		this.Name = this.Name.trim();
+		if (this.Name.length <= 0) {
+			errMsgs.push("Message.InvalidName");
+		}
+		
+		return errMsgs;
 	};
 	// 5. Controlling Center
 	// 6. Document Item

@@ -8,7 +8,7 @@
 
 			.factory(
 					'utils',
-					function($rootScope, $http) {
+					function($rootScope, $http, $q) {
 						
 						var rtnObj = {};
 						
@@ -389,6 +389,65 @@
 												});
 							}							
 						};
+						rtnObj.loadCurrenciesQ = function() {
+							// Load finance accounts with $q supports
+							var deferred = $q.defer();
+							if ($rootScope.isCurrencyLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETCURRENCYLIST' })
+									.then(function(response) {
+										$rootScope.arCurrency = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var curobj = new hih.Currency();
+												curobj.setContent(obj);
+												$rootScope.arCurrency.push(curobj);
+											});
+										}
+										$rootScope.isCurrencyLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						rtnObj.loadFinanceAccountsQ = function() {
+							// Load finance accounts with $q supports
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceAccountLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEACCOUNTLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										// data – {string|Object} – The response body transformed with the transform functions.
+										// status – {number} – HTTP status code of the response.
+										// headers – {function([headerName])} – Header getter function.
+										// config – {Object} – The configuration object that was used to generate the request.
+										// statusText – {string} – HTTP status text of the response.
+										$rootScope.arFinanceAccount = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var finacnt = new hih.FinanceAccount();
+												finacnt.setContent(obj);
+												finacnt.buildCategory($rootScope.arFinanceAccountCategory);
+												$rootScope.arFinanceAccount.push(finacnt);
+											});
+										}
+										$rootScope.isFinanceAccountLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
 						rtnObj.loadFinanceAccounts = function() {
 							if (!$rootScope.isFinanceAccountLoaded) {
 							    // Example JSON response
@@ -450,6 +509,32 @@
 												});
 							}							
 							
+						};
+						rtnObj.loadFinanceAccountCategoriesQ = function() {
+							// Load finance accounts with $q supports
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceAccountCategoryLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEACCOUNTCATEGORYLIST' })
+									.then(function(response) {
+										$rootScope.arFinanceAccountCategory = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var finacntctgy = new hih.FinanceAccountCategory();
+												finacntctgy.setContent(obj);
+												$rootScope.arFinanceAccountCategory.push(finacntctgy);
+											});
+										}
+										$rootScope.isFinanceAccountCategoryLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
 						};
 						rtnObj.loadFinanceAccountCategories = function() {
 							if (!$rootScope.isFinanceAccountCategoryLoaded) {
