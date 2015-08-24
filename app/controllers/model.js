@@ -343,7 +343,7 @@
 		var errMsgs = [];
 		
 		// Call to the super class's verify
-		errMsgs = this._super.Verify.call(this);		
+		errMsgs = this._super.Verify.call(this);
 		if (errMsgs.length > 0)
 			return errMsgs; 
 		

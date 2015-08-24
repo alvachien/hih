@@ -1,5 +1,6 @@
 /* global $ */
 /* global angular */
+/* global hih */
 (function() {
 	'use strict';
 
@@ -177,7 +178,7 @@
 						    $.each($rootScope.arFinanceAccount, function(idx, obj) {
 							    $scope.myData.push(angular.copy(obj));					
 						    });
-					    }					  
+					    }
 				    }, function(reason2) {
 					    // Error occurred
 					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
@@ -215,6 +216,22 @@
 	    $scope.newItem = function() {
 	        $state.go('home.finance.account.create');
 	    };
+		
+		// Refresh the list
+		$scope.refreshList = function() {
+			utils.loadFinanceAccountsQ(true)
+			    .then(function(response2) {
+				    if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
+					    $scope.myData = [];
+						$.each($rootScope.arFinanceAccount, function(idx, obj) {
+						    $scope.myData.push(angular.copy(obj));					
+						});
+					}
+				}, function(reason2) {
+					    // Error occurred
+					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				});
+		};
 	}])
 	
 	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', 
@@ -351,7 +368,13 @@
 				    comment: $scope.AccountObject.Comment 
 				})
 				.then(function(response) {
+					// First of all, update the rootScope
+					var acntObj = new hih.FinanceAccount();
+					acntObj.setContent(response.data[0]);
+					$rootScope.arFinanceAccount.push(acntObj);
+					
 					// Change to the display mode
+					$state.go("home.finance.account.display",  { accountid : acntObj.ID });
 				}, function(response) {
 					// Failed, throw out error message
 				});

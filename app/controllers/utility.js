@@ -415,10 +415,10 @@
 							}
 							return deferred.promise;
 						};
-						rtnObj.loadFinanceAccountsQ = function() {
+						rtnObj.loadFinanceAccountsQ = function(bForceReload) {
 							// Load finance accounts with $q supports
-							var deferred = $q.defer();
-							if ($rootScope.isFinanceAccountLoaded) {
+							var deferred = $q.defer();							
+							if ($rootScope.isFinanceAccountLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(

@@ -253,7 +253,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					
 					// To-Do: Validate!
 					
-					$arRst = finance_account_create($name, $comment);
+					$arRst = finance_account_create($name, $ctgyid, $comment);
 					if (! IsNullOrEmptyString ( $arRst [0] )) {
 						export_error ( $arRst [0] );
 					} else {
