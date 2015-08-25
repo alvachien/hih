@@ -415,10 +415,10 @@
 		$scope.gridOptions.selectionRowHeaderWidth = 35;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.DocID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.DocID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
@@ -428,7 +428,7 @@
  					$scope.selectedRows.push(row.entity);     					
  				} else {
  					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.docid === row.entity.docid) {
+						if (obj.DocID === row.entity.DocID) {
 							$scope.selectedRows.splice(idx, 1);
 							return false;
 						}
@@ -438,13 +438,13 @@
 		};
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'docid', field: 'docid', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'doctypename', field: 'doctypename', displayName: 'Finance.DocumentTypeID', headerCellFilter: "translate", width:90 },
-			{ name:'trandate', field: 'trandate', displayName: 'Common.Date', headerCellFilter: "translate", width: 150},
-			{ name:'trancurr', field:'trancurr', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'trancurrname', field:'trancurrname', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
-			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	    	{ name:'docid', field: 'DocID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'doctypename', field: 'DocTypeName', displayName: 'Finance.DocumentTypeID', headerCellFilter: "translate", width:90 },
+			{ name:'trandate', field: 'TranDate', displayName: 'Common.Date', headerCellFilter: "translate", width: 150},
+			{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'trancurrname', field:'TranCurrencyName', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
+			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	    ];
 	  
 	    if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {

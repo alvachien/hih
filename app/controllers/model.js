@@ -363,6 +363,31 @@
 	// 5. Controlling Center
 	// 6. Document Item
 	// 7. Document
+	hih.FinanceDocument = function FinanceDocument() {
+		this.DocID = -1; 
+		this.DocTypeID = -1;		
+		this.DocTypeName = "";
+		this.DocTypeObject = {};
+		this.TranDate = new Date();
+		this.TranCurrency = "";
+		this.TranCurrencyName = "";
+		this.TranCurrencyObject = {};
+		this.Desp = "";
+		this.TranAmount = 0.0;
+		// {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa",
+		// "desp":"aaa","tranamount":"-155"}
+	};
+	hih.extend(hih.FinanceDocument, hih.Model);
+	hih.FinanceDocument.prototype.setContent = function(obj) {
+		this.DocID = parseInt(obj.docid);
+		this.DocTypeID = parseInt(obj.doctype);
+		this.DocTypeName = obj.doctypename;
+		this.TranDate = obj.trandate;
+		this.TranCurrency = obj.trancurr;
+		this.TranCurrencyName = obj.trancurrname;
+		this.Desp = obj.desp;
+		this.TranAmount = parseFloat(obj.tranamount);
+	};
 	// 8. 
 }());
 

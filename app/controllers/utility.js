@@ -582,7 +582,14 @@
 												})
 										.success(
 												function(data, status, headers, config) {
-													$rootScope.arFinanceDocument = data;
+													$rootScope.arFinanceDocument = [];
+													if ($.isArray(data) && data.length > 0) {
+														$.each(data, function(idx, obj){
+															var fd = new hih.FinanceDocument();
+															fd.setContent(obj);
+															$rootScope.arFinanceDocument.push(fd);
+														});
+													}
 													$rootScope.isFinanceDocumentLoaded = true;
 
 													$rootScope.$broadcast("FinanceDocumentLoaded");
