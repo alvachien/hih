@@ -361,7 +361,30 @@
 		return errMsgs;
 	};
 	// 5. Controlling Center
+	hih.FinanceControllingCenter = function FinanceControllingCenter() {
+		
+	};
+	hih.extend(hih.FinanceControllingCenter, hih.Model);
+	hih.FinanceControllingCenter.prototype.setContent = function(obj) {
+		
+	};
+	// 5a. Internal Order
+	hih.FinanceInternalOrder = function FinanceInternalOrder() {
+		
+	};
+	hih.extend(hih.FinanceInternalOrder, hih.Model);
+	hih.FinanceInternalOrder.prototype.setContent = function(obj) {
+		
+	};
 	// 6. Document Item
+	hih.FinanceDocumentItem = function FinanceDocumentItem() {
+		this.DocID = -1;
+		this.ItemID = -1;
+	};
+	hih.extend(hih.FinanceDocumentItem, hih.Model);
+	hih.FinanceDocumentItem.prototype.setContent = function(obj) {
+		
+	};
 	// 7. Document
 	hih.FinanceDocument = function FinanceDocument() {
 		this.DocID = -1; 
@@ -374,6 +397,8 @@
 		this.TranCurrencyObject = {};
 		this.Desp = "";
 		this.TranAmount = 0.0;
+		
+		this.Items = [];		
 		// {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa",
 		// "desp":"aaa","tranamount":"-155"}
 	};
@@ -387,7 +412,7 @@
 		this.TranCurrencyName = obj.trancurrname;
 		this.Desp = obj.desp;
 		this.TranAmount = parseFloat(obj.tranamount);
-	};
+	};	
 	// 8. 
 }());
 

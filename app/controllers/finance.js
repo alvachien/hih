@@ -115,6 +115,41 @@
 			templateUrl: 'app/views/financecurrencylist.html',
 			controller: 'FinanceCurrencyListController'
 		})
+		.state("home.finance.controllingcenter", {
+			url: '/controllingcenter',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.controllingcenter.list", {
+			url: '',
+			templateUrl: 'app/views/financecclist.html',
+			controller: 'FinanceControllingCenterListController'
+		})
+		.state("home.finance.controllingcenter.hierarchy", {
+			url: '/hierarchy',
+			templateUrl: 'app/views/financecchierarchy.html',
+			controller: 'FinanceControllingCenterHierarchyController'
+		})
+		.state("home.finance.controllingcenter.maintain", {
+			url: '/maintain/:id',
+			templateUrl: 'app/views/financecc.html',
+			controller: 'FinanceControllingCenterController'
+		})
+		.state("home.finance.order", {
+			url: '/order',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.order.list", {
+			url: '',
+			templateUrl: 'app/views/financeorderlist.html',
+			controller: 'FinanceOrderListController'
+		})
+		.state("home.finance.order.maintain", {
+			url: '/maintain/:id',
+			templateUrl: 'app/views/financeorder.html',
+			controller: 'FinanceOrderController'
+		})
     ;
 	}])
 	
@@ -921,7 +956,22 @@
 				$scope.arList.push(angular.copy(obj));					
 			});
 		});
-	}])		
+	}])	
+	
+	.controller("FinanceControllingCenterListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	}])
+	
+	.controller("FinanceControllingCenterHierarchyController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	}])
+				
+	.controller("FinanceControllingCenterController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	}])
+				
+	.controller("FinanceOrderListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	}])
+				
+	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	}])			
 	;
 }()
 );
