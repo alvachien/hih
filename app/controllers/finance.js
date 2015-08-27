@@ -815,24 +815,19 @@
 	}])	
 	
 	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadFinanceTransactionTypes();
 		$scope.arList = [];
-
-		if (angular.isArray($rootScope.arFinanceTransactionType ) && $rootScope.arFinanceTransactionType.length > 0) {
-			$scope.arList = [];
-			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});	  
-		};
-
-		$scope.$on("FinanceTransactionTypeLoaded", function() {
-			$log.info("HIH FinanceTransactionType List: Loaded event fired!");
-	    	
-			$scope.arList = [];
-			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});	
-		});
+		
+		utils.loadFinanceTransactionTypesQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arFinanceTransactionType ) && $rootScope.arFinanceTransactionType.length > 0) {
+					$scope.arList = [];
+					$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
+						$scope.arList.push(angular.copy(obj));					
+					});	  
+				};
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 	}])
 	
 	.controller('FinanceTransactionTypeHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
@@ -895,70 +890,57 @@
 	}])
 	
 	.controller('FinanceDocumentTypeListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadFinanceDocumentTypes();
 		$scope.arList = [];
-	  
-		if (angular.isArray($rootScope.arFinanceDocumentType ) && $rootScope.arFinanceDocumentType.length > 0) {
-			$scope.arList = [];			
-			$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});			  
-		};
 
-		$scope.$on("FinanceDocumentTypeLoaded", function() {
-	    	console.log("HIH FinanceDocumentType List: Loaded event fired!");
-	    	
-			$scope.arList = [];
-			$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});	
-	    });
+		utils.loadFinanceDocumentTypesQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arFinanceDocumentType ) && $rootScope.arFinanceDocumentType.length > 0) {
+					$scope.arList = [];
+					$.each($rootScope.arFinanceDocumentType, function(idx, obj) {
+						$scope.arList.push(angular.copy(obj));					
+					});			  
+				};
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 	}])
 
 	.controller('FinanceAccountCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
-	                                                     function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadFinanceAccountCategories();
+		function($scope, $rootScope, $state, $http, $log, utils) {
 		$scope.arList = [];
 
-		if (angular.isArray($rootScope.arFinanceAccountCategory ) && $rootScope.arFinanceAccountCategory.length > 0) {
-			$scope.arList = [];
-			$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});			  
-		};
-
-	    $scope.$on("FinanceAccountCategoryLoaded", function() {
-	    	$log.info("HIH FinanceAccountCategory List: Loaded event fired!");
-	    	
-			$scope.arList = [];
-			$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});			  
-	    });
+		utils.loadFinanceAccountCategoriesQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arFinanceAccountCategory ) && $rootScope.arFinanceAccountCategory.length > 0) {
+					$scope.arList = [];
+					$.each($rootScope.arFinanceAccountCategory, function(idx, obj) {
+						$scope.arList.push(angular.copy(obj));					
+					});			  
+				};				
+			}, function(reason){
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 	}])	
 	
 	.controller('FinanceCurrencyListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadCurrencies();
 		$scope.arList = [];
-
-		if (angular.isArray($rootScope.arCurrency ) && $rootScope.arCurrency.length > 0) {
-			$scope.arList = [];
-			$.each($rootScope.arCurrency, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
+		
+		utils.loadCurrenciesQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arCurrency) && $rootScope.arCurrency.length > 0) {
+					$scope.arList = [];
+					$.each($rootScope.arCurrency, function(idx, obj) {
+						$scope.arList.push(angular.copy(obj));					
+					});
+				};
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
-		};
-
-		$scope.$on("CurrencyLoaded", function() {
-			$log.info("HIH Currency List: Loaded event fired!");
-	    	
-			$scope.arList = [];
-			$.each($rootScope.arCurrency, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});
-		});
 	}])	
 	
 	.controller("FinanceControllingCenterListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+		$scope.arList = [];
+		
 	}])
 	
 	.controller("FinanceControllingCenterHierarchyController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {

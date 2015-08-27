@@ -17,7 +17,7 @@
 		this.CreatedAt = new Date();
 		this.CreatedBy = {};
 	};
-	hih.Model.prototype.Version = "1.0";
+	hih.Model.prototype.Version = "1.1";
 	hih.Model.prototype.Verify = function() {
 		// Verify the data, returns the error messages!
 		return [];	
@@ -362,30 +362,128 @@
 	};
 	// 5. Controlling Center
 	hih.FinanceControllingCenter = function FinanceControllingCenter() {
+		this.ID = -1;
+		this.Name = "";
+		this.ParentID = -1;
+		this.Comment = "";
 		
+		// Runtime object
+		this.ParentObject = {}; 
 	};
 	hih.extend(hih.FinanceControllingCenter, hih.Model);
 	hih.FinanceControllingCenter.prototype.setContent = function(obj) {
-		
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		if (obj.parent) {
+			this.ParentID = parseInt(obj.parent);
+		} else {
+			this.ParentID = -1;
+		}
+		this.Comment = obj.comment;
 	};
-	// 5a. Internal Order
-	hih.FinanceInternalOrder = function FinanceInternalOrder() {
+	// 5a. Settlement Rule
+	hih.FinanceOrderSettlementRule = function FinanceOrderSettlementRule() {
+		this.OrderID = -1;
+		this.OrderName = "";
+		//this.ValidFrom = new Date();
+		//this.ValidTo = new Date();
+		this.RuleID = -1;
+		this.ControlCenterID = -1;
+		//this.ControlCenterName = "";
+		this.Precentage = 0.0;
+		this.Comment = "";
 		
+		// Runtime information
+		this.OrderObject = {};
+		this.ControlCenterObject = {};		
 	};
-	hih.extend(hih.FinanceInternalOrder, hih.Model);
-	hih.FinanceInternalOrder.prototype.setContent = function(obj) {
+	hih.extend(hih.FinanceOrderSettlementRule, hih.Model);
+	hih.FinanceOrderSettlementRule.prototype.setContent = function(obj) {
+		this.OrderID = parseInt(obj.intordid);
+		this.OrderName = obj.intordname;
+		//var ordvalidfrom = obj.intordvalidfrom;
+		//var ordvalidto = obj.intordvalidto;
 		
+		this.RuleID = parseInt(obj.ruleid);
+		this.ControlCenterID = parseInt(obj.controlcenterid);
+		//var ccname = obj.controlcentername;
+		this.Precentage = obj.precent;
+		this.Comment = obj.comment;
 	};
-	// 6. Document Item
+	// 5b. Internal Order
+	hih.FinanceOrder = function FinanceOrder() {
+		this.ID = -1;
+		this.Name = "";
+		this.ValidFrom = new Date();
+		this.ValidTo = new Date();
+		
+		this.SRules = [];
+	};
+	hih.extend(hih.FinanceOrder, hih.Model);
+	hih.FinanceOrder.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.ValidFrom = obj.valid_from;
+		this.ValidTo = obj.valid_to;
+		this.Comment = obj.comment;
+	};
+	// 6. Transaction type
+	hih.FinanceTransactionType = function FinanceTransactionType() {
+		this.ID = -1;
+		this.ParentID = -1;
+		this.Name = "";
+		this.ExpenseFlag = false;
+		this.Comment = "";
+	};
+	hih.extend(hih.FinanceTransactionType, hih.Model);
+	hih.FinanceTransactionType.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		if (obj.parent) {
+			this.ParentID = parseInt(obj.parent);
+		} else {
+			this.ParentID = -1;
+		}		
+		this.Name = obj.name;
+		this.Comment = obj.comment;
+		var expense = parseInt(obj.expense);
+		if (expense === 1) {
+			this.ExpenseFlag = true;
+		} else {
+			this.ExpenseFlag = false;
+		}
+	};
+	// 7. Document Item
 	hih.FinanceDocumentItem = function FinanceDocumentItem() {
 		this.DocID = -1;
 		this.ItemID = -1;
+		this.AccountID = -1;
+		//this.AccountName = "";
+		this.TranTypeID = -1;
+		this.TranAmount = 0.0;
+		this.ControlCenterID = -1;
+		this.OrderID = -1;
+		this.Desp = "";
 	};
 	hih.extend(hih.FinanceDocumentItem, hih.Model);
 	hih.FinanceDocumentItem.prototype.setContent = function(obj) {
-		
+		this.DocID = parseInt(obj.docid);
+		this.ItemID = parseInt(obj.itemid);
+		this.AccountID = parseInt(obj.accountid);
+		this.TranTypeID = parseInt(obj.trantype);
+		if (obj.controlcenterid) {
+			this.ControlCenterID = parseInt(obj.controlcenterid);
+		} else {
+			this.ControlCenterID = -1;
+		} 
+		if (obj.orderid) {
+			this.OrderID = parseInt(obj.orderid);
+		} else {
+			this.OrderID = -1;
+		}
+		this.TranAmount = parseFloat(obj.tranamount);
+		this.Desp = obj.desp;
 	};
-	// 7. Document
+	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
 		this.DocID = -1; 
 		this.DocTypeID = -1;		
@@ -398,9 +496,7 @@
 		this.Desp = "";
 		this.TranAmount = 0.0;
 		
-		this.Items = [];		
-		// {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa",
-		// "desp":"aaa","tranamount":"-155"}
+		this.Items = [];
 	};
 	hih.extend(hih.FinanceDocument, hih.Model);
 	hih.FinanceDocument.prototype.setContent = function(obj) {

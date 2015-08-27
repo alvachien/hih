@@ -602,7 +602,33 @@
 															"Error",
 															data.Message);
 												});
-							}							
+							}
+						};
+						rtnObj.loadFinanceDocumentTypesQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceDocumentTypeLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEDOCUMENTTYPELIST' })
+									.then(function(response) {
+										$rootScope.arFinanceDocumentType = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var fdt = new hih.FinanceDocumentType();
+												fdt.setContent(obj);
+												$rootScope.arFinanceDocumentType.push(fdt);
+											});
+										}
+										$rootScope.isFinanceDocumentTypeLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+
 						};
 						rtnObj.loadFinanceDocumentTypes = function() {
 						    if (!$rootScope.isFinanceDocumentTypeLoaded) {
@@ -709,6 +735,31 @@
 															data.Message);
 												});
 							}
+						};
+						rtnObj.loadFinanceTransactionTypesQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceTransactionTypeLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCETRANSACTIONTYPELIST' })
+									.then(function(response) {
+										$rootScope.arFinanceTransactionType = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var finatrantyp = new hih.FinanceTransactionType();
+												finatrantyp.setContent(obj);
+												$rootScope.arFinanceTransactionType.push(finatrantyp);
+											});
+										}
+										$rootScope.isFinanceTransactionTypeLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
 						};
 						rtnObj.loadFinanceTransactionTypeHierarchy = function() {
 							if (!$rootScope.isFinanceTransactionHierarchyLoaded) {
