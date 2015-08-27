@@ -315,6 +315,18 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETFINANCECONTROLCENTERLIST":
+			{
+				HIHSrv_Function_1Param( 'finance_controlcenter_listread', false );
+			}
+			break;
+			
+		case "GETFINANCEORDERLIST":
+			{
+				HIHSrv_Function( 'finance_internalorder_listread' );
+			}
+			break;
+						
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================

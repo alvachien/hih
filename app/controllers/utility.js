@@ -787,6 +787,56 @@
 										});
 							}
 						};
+						rtnObj.loadFinanceControlCentersQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceControlCenterLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCECONTROLCENTERLIST' })
+									.then(function(response) {
+										$rootScope.arFinanceControlCenter = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var finacc = new hih.FinanceControlCenter();
+												finacc.setContent(obj);
+												$rootScope.arFinanceControlCenter.push(finacc);
+											});
+										}
+										$rootScope.isFinanceControlCenterLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						rtnObj.loadFinanceOrderQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceOrderLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEORDERLIST' })
+									.then(function(response) {
+										$rootScope.arFinanceOrder = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var finorder = new hih.FinanceOrder();
+												finorder.setContent(obj);
+												$rootScope.arFinanceOrder.push(finorder);
+											});
+										}
+										$rootScope.isFinanceOrderLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
 						
 ////////////////////////////////////////////////////////////////////
 // Others

@@ -115,25 +115,25 @@
 			templateUrl: 'app/views/financecurrencylist.html',
 			controller: 'FinanceCurrencyListController'
 		})
-		.state("home.finance.controllingcenter", {
-			url: '/controllingcenter',
+		.state("home.finance.controlcenter", {
+			url: '/controlcenter',
 			abstract: true,
 			template: '<div ui-view></div>'			
 		})
-		.state("home.finance.controllingcenter.list", {
+		.state("home.finance.controlcenter.list", {
 			url: '',
 			templateUrl: 'app/views/financecclist.html',
-			controller: 'FinanceControllingCenterListController'
+			controller: 'FinanceControlCenterListController'
 		})
-		.state("home.finance.controllingcenter.hierarchy", {
+		.state("home.finance.controlcenter.hierarchy", {
 			url: '/hierarchy',
 			templateUrl: 'app/views/financecchierarchy.html',
-			controller: 'FinanceControllingCenterHierarchyController'
+			controller: 'FinanceControlCenterHierarchyController'
 		})
-		.state("home.finance.controllingcenter.maintain", {
+		.state("home.finance.controlcenter.maintain", {
 			url: '/maintain/:id',
 			templateUrl: 'app/views/financecc.html',
-			controller: 'FinanceControllingCenterController'
+			controller: 'FinanceControlCenterController'
 		})
 		.state("home.finance.order", {
 			url: '/order',
@@ -922,7 +922,8 @@
 			});
 	}])	
 	
-	.controller('FinanceCurrencyListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	.controller('FinanceCurrencyListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $log, utils) {
 		$scope.arList = [];
 		
 		utils.loadCurrenciesQ()
@@ -938,18 +939,134 @@
 			});
 	}])	
 	
-	.controller("FinanceControllingCenterListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		$scope.arList = [];
+	.controller("FinanceControlCenterListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, utils) {
+		// Grid options
+        $scope.selectedRows = [];
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.enableRowSelection = true;
+		$scope.gridOptions.enableFullRowSelection = true;
+		$scope.gridOptions.selectionRowHeaderWidth = 35;
 		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.ID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.ID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+			
+ 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				if (row.isSelected) {
+ 					$scope.selectedRows.push(row.entity);     					
+ 				} else {
+ 					$.each($scope.selectedRows, function(idx, obj) {
+						if (obj.id === row.entity.id) {
+							$scope.selectedRows.splice(idx, 1);
+							return false;
+						}
+					});
+ 				}
+  		    });
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	    ];
+	  
+	    utils.loadFinanceControlCentersQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arFinanceControlCenter ) && $rootScope.arFinanceControlCenter.length > 0) {
+					$scope.myData = [];
+					$.each($rootScope.arFinanceControlCenter, function(idx, obj) {
+						$scope.myData.push(angular.copy(obj));					
+				    });
+				}
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 	}])
 	
-	.controller("FinanceControllingCenterHierarchyController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	.controller("FinanceControlCenterHierarchyController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, utils) {
 	}])
 				
-	.controller("FinanceControllingCenterController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	.controller("FinanceControlCenterController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, utils) {
 	}])
 				
-	.controller("FinanceOrderListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
+	.controller("FinanceOrderListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, utils) {
+		// Grid options
+        $scope.selectedRows = [];
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.enableRowSelection = true;
+		$scope.gridOptions.enableFullRowSelection = true;
+		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.ID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.ID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+			
+ 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				if (row.isSelected) {
+ 					$scope.selectedRows.push(row.entity);     					
+ 				} else {
+ 					$.each($scope.selectedRows, function(idx, obj) {
+						if (obj.id === row.entity.id) {
+							$scope.selectedRows.splice(idx, 1);
+							return false;
+						}
+					});
+ 				}
+  		    });
+		};
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
+	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
+			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+	    ];
+	  
+	    utils.loadFinanceOrderQ()
+			.then(function(response) {
+				if (angular.isArray($rootScope.arFinanceOrder ) && $rootScope.arFinanceOrder.length > 0) {
+					$scope.myData = [];
+					$.each($rootScope.arFinanceOrder, function(idx, obj) {
+						$scope.myData.push(angular.copy(obj));					
+					});
+				}
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 	}])
 				
 	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {

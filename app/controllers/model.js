@@ -361,7 +361,7 @@
 		return errMsgs;
 	};
 	// 5. Controlling Center
-	hih.FinanceControllingCenter = function FinanceControllingCenter() {
+	hih.FinanceControlCenter = function FinanceControlCenter() {
 		this.ID = -1;
 		this.Name = "";
 		this.ParentID = -1;
@@ -370,8 +370,8 @@
 		// Runtime object
 		this.ParentObject = {}; 
 	};
-	hih.extend(hih.FinanceControllingCenter, hih.Model);
-	hih.FinanceControllingCenter.prototype.setContent = function(obj) {
+	hih.extend(hih.FinanceControlCenter, hih.Model);
+	hih.FinanceControlCenter.prototype.setContent = function(obj) {
 		this.ID = parseInt(obj.id);
 		this.Name = obj.name;
 		if (obj.parent) {
