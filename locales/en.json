@@ -36,6 +36,8 @@
 		"CategoryName": "Category Name",
 		"Parent": "Parent",
 		"Text": "Text",
+		"ValidFrom": "Valid From",
+		"ValidTo": "Valid To",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",

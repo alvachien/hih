@@ -980,10 +980,8 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'parent', field:'ParentID', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 90 },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	    ];
 	  
@@ -1049,10 +1047,9 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'validfrm', field:'ValidFrom', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'validto', field:'ValidTo', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	    ];
 	  

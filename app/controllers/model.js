@@ -416,6 +416,7 @@
 		this.Name = "";
 		this.ValidFrom = new Date();
 		this.ValidTo = new Date();
+		this.Comment = "";
 		
 		this.SRules = [];
 	};
