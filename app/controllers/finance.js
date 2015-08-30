@@ -1330,7 +1330,7 @@
 		
 		// For settlement rules
 		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'ItemsCollection';
+		$scope.gridOptions.data = 'OrderObject.SRules';
 		$scope.gridOptions.enableSorting = true;
 		$scope.gridOptions.enableColumnResizing = true;
 		$scope.gridOptions.enableFiltering = true;
@@ -1343,13 +1343,9 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ruleid', field: 'RuleID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
-	    	{ name:'ccid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
-			{ name:'accountname', field: 'accountname', displayName: 'Finance.Account', headerCellFilter: "translate", width: 100},
-			{ name:'accountcategoryname', field:'accountcategoryname', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
-			{ name:'trantypename', field:'trantypename', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
-			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
-			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
-			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
+	    	{ name:'ccid', field: 'ControlCenterID', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:50 },
+			{ name:'precent', field: 'Precentage', displayName: 'Finance.Precentage', headerCellFilter: "translate", width: 100},
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 90 },
 			{ name: 'edit', field:'itemid', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
@@ -1365,10 +1361,10 @@
 	   ];
 
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.RuleID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.RuleID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
