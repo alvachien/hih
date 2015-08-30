@@ -803,8 +803,35 @@
 												finacc.setContent(obj);
 												$rootScope.arFinanceControlCenter.push(finacc);
 											});
+											
+											$.each($rootScope.arFinanceControlCenter, function(idx, obj){
+												obj.buildParentObject($rootScope.arFinanceControlCenter);
+											});
 										}
 										$rootScope.isFinanceControlCenterLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						rtnObj.loadFinanceControlCenterHierarchyQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceControlCenterHierarchyLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCECONTROLCENTERHIERARCHY' })
+									.then(function(response) {
+										$rootScope.arFinanceControlCenterHierarchy = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												$rootScope.arFinanceControlCenterHierarchy.push(obj);
+											});
+										}
+										$rootScope.isFinanceControlCenterHierarchyLoaded = true;
 										deferred.resolve(true);
 									}, function(response) {
 										deferred.reject(response.data.Message);

@@ -1,7 +1,154 @@
 <div id="viewFinanceOrder">
 	<div class="page-header">
 		<h2>
-			<span translate="Finance.Order">Order</span><small> {{Activity | translate}}</small>
+			<span translate="Finance.InternalOrder">Order</span><small> {{Activity | translate}}</small>
 		</h2>
 	</div>	
+	
+    <!-- Buttons -->
+    <div class="form-group">
+    	<div class="col-sm-10">
+        	<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+            		ng-disabled="frmObj.$invalid || !frmObj.$dirty || ItemsChanged">Submit</button>
+            <button class="btn btn-danger" ng-click="close()">Cancel</button>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation" ng-class="showhdr ? 'active' : ''"><a role="button" ng-click="showhdr = true">Header</a></li>
+        <li role="presentation" ng-class="showhdr ? '' : 'active'"><a role="button" ng-click="showhdr = false">Settlement Rules</a></li>
+    </ul>
+
+    <!-- Header -->
+    <div class="container" ng-show="showhdr">
+        <form class="form-horizontal" role="form" name="frmObj">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="iptID">ID:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="iptID"
+                           readonly="readonly" placeholder="ID" ng-model="OrderObject.ID">
+                </div>
+            </div>
+            
+            <div class="form-group">
+			     <label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
+			     <div class="col-sm-10">
+				        <input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
+						  placeholder="{{'Common.Name' | translate}}" ng-model="ControlCenterObject.Name" required>
+			     </div>
+		     </div>
+
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Valid from</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="OrderObject.Validfrom" is-open="isDateOpened"
+                           datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Valid to</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="OrderObject.Validto" is-open="isDateOpened"
+                           datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="iptDocAmount">Amount</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="iptDocAmount" ng-readonly="isReadonly"
+                           placeholder="Amount" ng-model="DocumentHeader.DocumentAmount" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="iptDocDesp">Desp</label>
+                <div class="col-sm-10">
+                    <textarea id="iptDocDesp" rows="5" columns="50" ng-readonly="isReadonly" ng-model="DocumentHeader.DocumentDesp"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Items -->
+    <div class="container" ng-show="!showhdr">
+    	<div id="gridFinDocItems" ui-grid="gridOptions"
+		 	style="width: 100%; height: 500px;"></div>
+
+        <!-- Item Detail -->
+        <div class="container">
+            <div>{{ItemActivity | translate}}</div>
+            <form class="form-horizontal" role="form" name="frmItem">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemID">Item ID:</label>
+                    <div class="col-sm-10">
+      					<p class="form-control-static" id="iptItemID">{{SelectedDocumentItem.itemid}}</p>
+    				</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemAccount">Account:</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="SelectedDocumentItem.Account.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                            <ui-select-match placeholder="Select an account via the name...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="acnt in AllAccounts">
+                                <div ng-bind-html="acnt.name | highlight: $select.search"></div>
+                                <small>
+                                    ID: {{acnt.id}} <br />
+                                    Name: <span ng-bind-html="''+acnt.name | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptTranType">Transaction Type:</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="SelectedDocumentItem.TranType.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                            <ui-select-match placeholder="Select a type via the name...">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="tt in AllTransactionTypes">
+                                <div ng-bind-html="tt.name | highlight: $select.search"></div>
+                                <small>
+                                    ID: {{tt.id}} <br />
+                                    Name: <span ng-bind-html="''+tt.name | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemAmt">Amount:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.tranamount"></input>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemDesp">Desp: </label>
+                    <div class="col-sm-10">
+                        <textarea rows="5" id="iptItemDesp" ng-readonly="isReadonly" cols="50"
+                                    ng-model="SelectedDocumentItem.desp"></textarea>
+			        </div>
+		        </div>
+
+                <!-- Button group -->
+                <div class="form-group">
+                	<div class="col-sm-10">
+                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
+                        		ng-disabled="frmItem.$invalid || !frmItem.$dirty">Save Item</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Item Editing</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

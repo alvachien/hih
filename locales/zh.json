@@ -118,6 +118,7 @@
   		"Controlling": "财务控制",
   		"ControlCenter": "控制中心",
   		"InternalOrder": "内部订单",
+		"Order": "订单",
   		"ConfigObjects": "可配置对象",
   		"Currency": "货币",
   		"CurrencySymbol": "货币符号",

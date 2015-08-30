@@ -3270,6 +3270,28 @@ function HIHSrv_Function( $func_name ) {
 	}	
 } 
 
+function HIHSrv_Function_AfterProc( $func_name, $func_name2 ) {
+	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+		if (function_exists($func_name))
+		{
+			$arRst = $func_name ();
+			
+			if (! IsNullOrEmptyString ( $arRst [0] )) {
+				export_error ( $arRst [0] );
+			} else {
+				$arAftProc = $func_name2 ( $arRst [1] );
+				echo json_encode ( $arAftProc );
+			}
+		} else {
+			$sErrors = "Function does not available: ". $func_name;
+			export_error ( sErrors );				
+		}		
+	} else {
+		$sErrors = "User not login yet";
+		export_error ( sErrors );
+	}	
+} 
+
 function HIHSrv_Function_1Param( $func_name, $func_para ) {
 	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
 		if (function_exists($func_name))

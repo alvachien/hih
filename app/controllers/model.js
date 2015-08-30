@@ -381,6 +381,17 @@
 		}
 		this.Comment = obj.comment;
 	};
+	hih.FinanceControlCenter.prototype.buildParentObject = function(arCC) {
+		var that = this;
+		if (that.ParentID !== -1 && $.isArray(arCC) && arCC.length > 0) {
+			$.each(arCC, function(idx, obj){
+				if (that.ParentID === obj.ID) {
+					that.ParentObject = obj;
+					return false;
+				}
+			});
+		}
+	};
 	// 5a. Settlement Rule
 	hih.FinanceOrderSettlementRule = function FinanceOrderSettlementRule() {
 		this.OrderID = -1;

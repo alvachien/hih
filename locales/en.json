@@ -118,6 +118,7 @@
   		"Controlling": "Controlling",
   		"ControlCenter": "Control Center",
   		"InternalOrder": "Internal Order",
+		"Order": "Order",
   		"ConfigObjects": "Config Objects",
   		"Currency": "Currency",
   		"CurrencySymbol": "Currency Symbol",

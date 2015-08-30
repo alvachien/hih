@@ -321,6 +321,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "GETFINANCECONTROLCENTERHIERARCHY":
+			{
+				HIHSrv_Function_AfterProc( 'finance_controlcenter_listread', 'build_financecontrolcenter_tree' );
+			}
+			break;
+			
 		case "GETFINANCEORDERLIST":
 			{
 				HIHSrv_Function( 'finance_internalorder_listread' );
