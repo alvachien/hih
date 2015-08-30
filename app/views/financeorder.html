@@ -79,14 +79,14 @@
             <div>{{ItemActivity | translate}}</div>
             <form class="form-horizontal" role="form" name="frmItem">
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptItemID">Item ID:</label>
+                    <label class="control-label col-sm-2" for="iptRuleID">Rule ID:</label>
                     <div class="col-sm-10">
-      					<p class="form-control-static" id="iptItemID">{{SelectedDocumentItem.itemid}}</p>
+      					<p class="form-control-static" id="iptRuleID">{{SelectedRule.RuleID}}</p>
     				</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="iptItemAccount">Account:</label>
+                    <label class="control-label col-sm-2" translate="Finance.ControlCenter">Control Center:</label>
                     <div class="col-sm-10">
                         <ui-select ng-model="SelectedDocumentItem.Account.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
                             <ui-select-match placeholder="Select an account via the name...">{{$select.selected.name}}</ui-select-match>
