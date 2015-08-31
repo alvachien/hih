@@ -1402,7 +1402,6 @@
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
-			 
  			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
  				if (row.isSelected) {
 			 		$scope.SelectedRuleObject = {};
@@ -1413,6 +1412,22 @@
 					$scope.SelectedRuleObject.ControlCenterObject = {};
  				}
   		    });
+		};
+		
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
 		};
 		
 		$scope.submit = function() {

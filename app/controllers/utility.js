@@ -887,7 +887,7 @@
 											$.each(response.data, function(idx, obj) {
 												var sr = new hih.FinanceOrderSettlementRule();
 												sr.setContent(obj);
-												sr.buildRelationship($rootScope.arFinanceControlCenter, arFinanceOrder);
+												sr.buildRelationship($rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder);
 												ordObject.SRules.push(sr);
 											});
 										}
