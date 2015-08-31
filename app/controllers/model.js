@@ -421,6 +421,21 @@
 		this.Precentage = obj.precent;
 		this.Comment = obj.comment;
 	};
+	hih.FinanceOrderSettlementRule.prototype.buildRelationship = function(arCC, arOrders) {
+		var that = this;
+		$.each(arCC, function(idx, obj){
+			if (obj.ID === that.ControlCenterID) {
+				that.ControlCenterObject = obj;
+				return false;
+			}
+		});
+		$.each(arOrders, function(idx, obj){
+			if (obj.ID === that.OrderID) {
+				that.OrderObject = obj;
+				return false;
+			}
+		});
+	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
 		this.ID = -1;

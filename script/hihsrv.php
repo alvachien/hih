@@ -332,6 +332,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function( 'finance_internalorder_listread' );
 			}
 			break;
+			
+		case "GETSETTLEMENTRULELIST_BYORDER":
+			{
+				$orderid = escape ( $realParamArr ['orderid'] );
+				HIHSrv_Function_1Param( 'finance_internalordersr_listread', $orderid);
+			}
+			break;
 						
 		// ===========================================================================================
 		// Others

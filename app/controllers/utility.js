@@ -864,6 +864,41 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.loadFinanceSettlementRulesQ = function(orderid) {
+							var deferred = $q.defer();
+							var ordObject;
+							$.each($rootScope.arFinanceOrder, function(idx, obj){
+								if (obj.ID === parseInt(orderid)) {
+									ordObject = obj;
+									return false;
+								}
+							});
+							if (!ordObject) {
+								deferred.reject("Order not found!");
+							} else {
+								if (ordObject.SRules.length > 0) {
+									deferred.resolve(true);
+								} else {
+									$http.post(
+										'script/hihsrv.php',
+										{ objecttype: 'GETSETTLEMENTRULELIST_BYORDER', orderid: orderid})
+									.then(function(response){
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var sr = new hih.FinanceOrderSettlementRule();
+												sr.setContent(obj);
+												sr.buildRelationship($rootScope.arFinanceControlCenter, arFinanceOrder);
+												ordObject.SRules.push(sr);
+											});
+										}
+										deferred.resolve(true);
+									}, function(response){
+										deferred.reject(response.data.Message);
+									});
+								}								
+							}
+							return deferred.promise;
+						};
 						
 ////////////////////////////////////////////////////////////////////
 // Others

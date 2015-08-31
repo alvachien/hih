@@ -1327,6 +1327,43 @@
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
+		$scope.OrderObject = new hih.FinanceOrder();
+		$scope.SelectedRuleObject = {};
+		
+	    var promise1 = utils.loadFinanceControlCentersQ();
+        if (angular.isDefined($stateParams.id)) {
+			if ($state.current.name === "home.finance.order.maintain") {
+	    		$scope.Activity = "Common.Edit";
+			} else if ($state.current.name === "home.finance.order.display") {
+				$scope.Activity = "Common.Display";
+				$scope.isReadonly = true;
+			}
+			
+			var nOrdID = parseInt($stateParams.id);
+	    	var promise2 = utils.loadFinanceSettlementRulesQ(nOrdID);
+			$q.all(promise1, promise2)
+				.then(function(response) {
+					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;
+			
+					var nOrderID = parseInt($stateParams.id);
+					$.each($rootScope.arFinanceOrder, function (idx, obj) {				
+						if (obj.ID === nOrderID) {
+							$scope.OrderObject = angular.copy(obj);
+							return false;
+						}
+					});
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+		} else {
+			$scope.Activity = "Common.Create";
+			$q(promise1)
+				.then(function(response) {	
+					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;				
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);					
+				});
+		}
 		
 		// For settlement rules
 		$scope.gridOptions = {};
@@ -1337,16 +1374,13 @@
 		$scope.gridOptions.enableGridMenu = false;
 		$scope.gridOptions.enableColumnMenus = false;
 		$scope.gridOptions.showGridFooter = true;
-		//$scope.gridOptions.enableRowSelection = true;
-		//$scope.gridOptions.enableFullRowSelection = true;
-		//$scope.gridOptions.selectionRowHeaderWidth = 35;
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ruleid', field: 'RuleID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
 	    	{ name:'ccid', field: 'ControlCenterID', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:50 },
 			{ name:'precent', field: 'Precentage', displayName: 'Finance.Precentage', headerCellFilter: "translate", width: 100},
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 90 },
-			{ name: 'edit', field:'itemid', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
+			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
 							<div class="btn-group" role="group">\
@@ -1368,29 +1402,19 @@
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
+			 
+ 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 				if (row.isSelected) {
+			 		$scope.SelectedRuleObject = {};
+					angular.copy(row.entity, $scope.SelectedRuleObject);
+					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
+ 				} else {
+					$scope.SelectedRuleObject = {};
+					$scope.SelectedRuleObject.ControlCenterObject = {};
+ 				}
+  		    });
 		};
-
-		$scope.OrderObject = new hih.FinanceOrder();
 		
-        if (angular.isDefined($stateParams.id)) {
-			if ($state.current.name === "home.finance.order.maintain") {
-			    $scope.Activity = "Common.Edit";
-			} else if ($state.current.name === "home.finance.order.display") {
-				$scope.Activity = "Common.Display";
-				$scope.isReadonly = true;
-			}
-			
-			var nOrderID = parseInt($stateParams.id);
-			$.each($rootScope.arFinanceOrder, function (idx, obj) {				
-				if (obj.ID === nOrderID) {
-					$scope.OrderObject = angular.copy(obj);
-					return false;
-				}
-			});
-		} else {
-			$scope.Activity = "Common.Create";
-		}
-		 
 		$scope.submit = function() {
 			// // Update the category id
 			// if ($scope.AccountCategoryObject.selected) {
