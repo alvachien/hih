@@ -1328,6 +1328,7 @@
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
 		$scope.OrderObject = new hih.FinanceOrder();
+		$scope.RuleObjects = [];
 		$scope.SelectedRuleObject = {};
 		
 	    var promise1 = utils.loadFinanceControlCentersQ();
@@ -1346,9 +1347,14 @@
 					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;
 			
 					var nOrderID = parseInt($stateParams.id);
+					
 					$.each($rootScope.arFinanceOrder, function (idx, obj) {				
 						if (obj.ID === nOrderID) {
+							$scope.RuleObjects = [];
 							$scope.OrderObject = angular.copy(obj);
+							for(var i = 0; i < obj.SRules.length; i++) {
+								$scope.RuleObjects.push(obj.SRules[i]);
+							}
 							return false;
 						}
 					});
@@ -1367,7 +1373,7 @@
 		
 		// For settlement rules
 		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'OrderObject.SRules';
+		$scope.gridOptions.data = 'RuleObjects';
 		$scope.gridOptions.enableSorting = true;
 		$scope.gridOptions.enableColumnResizing = true;
 		$scope.gridOptions.enableFiltering = true;

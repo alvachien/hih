@@ -423,18 +423,22 @@
 	};
 	hih.FinanceOrderSettlementRule.prototype.buildRelationship = function(arCC, arOrders) {
 		var that = this;
-		$.each(arCC, function(idx, obj){
-			if (obj.ID === that.ControlCenterID) {
-				that.ControlCenterObject = obj;
-				return false;
-			}
-		});
-		$.each(arOrders, function(idx, obj){
-			if (obj.ID === that.OrderID) {
-				that.OrderObject = obj;
-				return false;
-			}
-		});
+		if (arCC && $.isArray(arCC) && arCC.length > 0) {
+			$.each(arCC, function(idx, obj){
+				if (obj.ID === that.ControlCenterID) {
+					that.ControlCenterObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arOrders && $.isArray(arOrders) && arOrders.length > 0) {
+			$.each(arOrders, function(idx, obj){
+				if (obj.ID === that.OrderID) {
+					that.OrderObject = obj;
+					return false;
+				}
+			});
+		}
 	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
