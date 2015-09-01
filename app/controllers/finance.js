@@ -1486,18 +1486,24 @@
 			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
 				if ($scope.RuleObjects[i].RuleID === ruleid) {
 					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
+					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
 					break;
 				}
 			}
+
+			$scope.ItemActivity = "Finance.DisplayItem";
 		};
 		
 		$scope.editItem = function(ruleid) {
 			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
 				if ($scope.RuleObjects[i].RuleID === ruleid) {
 					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
+					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
 					break;
 				}
-			}			
+			}
+			
+			$scope.ItemActivity = "Finance.EditItem";
 		};
 		
 		$scope.deleteItem = function(ruleid) {
@@ -1509,6 +1515,7 @@
 			// Control center
 			if ($scope.SelectedRuleObject.ControlCenterObject.selected) {
 				$scope.SelectedRuleObject.ControlCenterID = $scope.SelectedRuleObject.ControlCenterObject.selected.ID; 
+				$scope.SelectedRuleObject.ControlCenterObject = $scope.SelectedRuleObject.ControlCenterObject.selected;
 			} else {
 				// Error
 				$rootScope.$broadcast("ShowMessage", "Error", "Control Center is missing!");	
@@ -1525,9 +1532,11 @@
 			
 			// New item
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
-		};		
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
 		$scope.cancelCurrentItem = function() {
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
+			$scope.ItemActivity = "Finance.CreateItem";
 		};
 		
 		$scope.submit = function() {
