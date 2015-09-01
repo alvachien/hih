@@ -882,7 +882,7 @@
 									$http.post(
 										'script/hihsrv.php',
 										{ objecttype: 'GETSETTLEMENTRULELIST_BYORDER', orderid: orderid})
-									.then(function(response){
+									.then(function(response) {
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
 												var sr = new hih.FinanceOrderSettlementRule();

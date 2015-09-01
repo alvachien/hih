@@ -104,7 +104,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptPcnt">Precentage:</label>
                     <div class="col-sm-10">
-                        <input type="text" id="iptPcnt" ng-readonly="isReadonly" ng-model="SelectedRuleObject.Precentage"></input>
+                        <input type="number" id="iptPcnt" min="0" max="100" stringToNumber ng-readonly="isReadonly" ng-model="SelectedRuleObject.Precentage" required></input>
                     </div>
                 </div>
                 
@@ -121,7 +121,7 @@
                 	<div class="col-sm-10">
                     	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
                         		ng-disabled="frmItem.$invalid || !frmItem.$dirty">Save Item</button>
-                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Item Editing</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentItem()" ng-hide="isReadonly">Cancel Item Editing</button>
                     </div>
                 </div>
             </form>

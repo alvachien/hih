@@ -173,6 +173,20 @@
     ;
 	}])
 	
+	.directive('stringToNumber', function() {
+  		return {
+    		require: 'ngModel',
+    		link: function(scope, element, attrs, ngModel) {
+      			ngModel.$parsers.push(function(value) {
+        			return '' + value;
+      			});
+      			ngModel.$formatters.push(function(value) {
+        			return parseFloat(value, 10);
+      			});
+    		}
+  		};
+	})
+	
 	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, utils) {
 		// Grid options
@@ -1321,8 +1335,8 @@
 		};
 	}])
 				
-	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
+	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
@@ -1341,28 +1355,34 @@
 			}
 			
 			var nOrdID = parseInt($stateParams.id);
-	    	var promise2 = utils.loadFinanceSettlementRulesQ(nOrdID);
-			$q.all(promise1, promise2)
-				.then(function(response) {
+			promise1.then(
+				function(response) {
 					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;
-			
-					var nOrderID = parseInt($stateParams.id);					
-					$.each($rootScope.arFinanceOrder, function (idx, obj) {				
-						if (obj.ID === nOrderID) {
-							$scope.RuleObjects = [];
-							$scope.OrderObject = angular.copy(obj);
-							for(var i = 0; i < obj.SRules.length; i++) {
-								$scope.RuleObjects.push(obj.SRules[i]);
-							}
-							return false;
-						}
-					});
-				}, function(reason) {
+
+					utils.loadFinanceSettlementRulesQ(nOrdID)
+						.then(function(response2) {
+							$.each($rootScope.arFinanceOrder, function (idx, obj) {				
+								if (obj.ID === nOrdID) {
+									$scope.RuleObjects = [];
+									$scope.OrderObject = angular.copy(obj);
+									for(var i = 0; i < obj.SRules.length; i++) {
+										$scope.RuleObjects.push(obj.SRules[i]);
+									}
+									return false;
+								}
+							});							
+						},
+						function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						});
+				},
+				function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});
+				}
+			)
 		} else {
 			$scope.Activity = "Common.Create";
-			$q(promise1)
+			promise1
 				.then(function(response) {	
 					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;				
 				}, function(reason) {
@@ -1397,7 +1417,7 @@
 					</div>',
 					enableFiltering: false
 			}
-	   ];
+	    ];
 
 		$scope.gridOptions.rowIdentity = function(row) {
 		 	return row.RuleID;
@@ -1407,16 +1427,16 @@
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
- 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				if (row.isSelected) {
-			 		$scope.SelectedRuleObject = {};
-					angular.copy(row.entity, $scope.SelectedRuleObject);
-					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
- 				} else {
-					$scope.SelectedRuleObject = {};
-					$scope.SelectedRuleObject.ControlCenterObject = {};
- 				}
-  		    });
+ 			// gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+ 			// 	if (row.isSelected) {
+			//  		$scope.SelectedRuleObject = {};
+			// 		angular.copy(row.entity, $scope.SelectedRuleObject);
+			// 		$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
+ 			// 	} else {
+			// 		$scope.SelectedRuleObject = {};
+			// 		$scope.SelectedRuleObject.ControlCenterObject = {};
+ 			// 	}
+  		    // });
 		};
 		
         // For date control
@@ -1442,6 +1462,72 @@
 		    if (!$scope.isReadonly) {
 		        $scope.isValidtoDateOpened = true;				
 			}
+		};
+		
+		// Get the next Item ID
+		$scope.nextItemID = 0;
+		$scope.updateNextItemID = function () {
+			if (angular.isArray($scope.RuleObjects) && $scope.RuleObjects.length > 0) {
+				$scope.nextItemID = 0;
+				$.each($scope.RuleObjects, function (idx, obj) {
+						
+					if ($scope.nextItemID < obj.RuleID) {
+						$scope.nextItemID = obj.RuleID;
+		            }
+		        });
+				
+				$scope.nextItemID++;
+			} else {
+				$scope.nextItemID = 1;
+			}
+		};
+
+		$scope.displayItem = function(ruleid) {
+			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
+				if ($scope.RuleObjects[i].RuleID === ruleid) {
+					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
+					break;
+				}
+			}
+		};
+		
+		$scope.editItem = function(ruleid) {
+			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
+				if ($scope.RuleObjects[i].RuleID === ruleid) {
+					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
+					break;
+				}
+			}			
+		};
+		
+		$scope.deleteItem = function(ruleid) {
+			
+		};
+		
+		$scope.saveCurrentItem = function() {
+			// Check current item
+			// Control center
+			if ($scope.SelectedRuleObject.ControlCenterObject.selected) {
+				$scope.SelectedRuleObject.ControlCenterID = $scope.SelectedRuleObject.ControlCenterObject.selected.ID; 
+			} else {
+				// Error
+				$rootScope.$broadcast("ShowMessage", "Error", "Control Center is missing!");	
+			}
+			// Precentage
+			if ($scope.SelectedRuleObject.Precentage > 100 || $scope.SelectedRuleObject.Precentage <= 0) {
+				$rootScope.$broadcast("ShowMessage", "Error", "Invalid precentage!");
+			}
+			// Next item ID
+			$scope.updateNextItemID();
+			$scope.SelectedRuleObject.RuleID = $scope.nextItemID;
+			// Submit
+			$scope.RuleObjects.push($scope.SelectedRuleObject);
+			
+			// New item
+			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
+		};		
+		$scope.cancelCurrentItem = function() {
+			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
 		};
 		
 		$scope.submit = function() {
@@ -1488,7 +1574,7 @@
 		
 		$scope.close = function() {
 		    $state.go("home.finance.order.list");
-		};		
+		};				
 	}])			
 	;
 }()
