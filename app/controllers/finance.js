@@ -1258,8 +1258,8 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'validfrm', field:'ValidFrom', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
-			{ name:'validto', field:'ValidTo', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'validfrm', field:'ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width: 50 },
+			{ name:'validto', field:'ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width: 50 },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	    ];
 	  
@@ -1346,8 +1346,7 @@
 				.then(function(response) {
 					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;
 			
-					var nOrderID = parseInt($stateParams.id);
-					
+					var nOrderID = parseInt($stateParams.id);					
 					$.each($rootScope.arFinanceOrder, function (idx, obj) {				
 						if (obj.ID === nOrderID) {
 							$scope.RuleObjects = [];
@@ -1421,18 +1420,27 @@
 		};
 		
         // For date control
-		$scope.isDateOpened = false;
+		$scope.isValidfromDateOpened = false;
+		$scope.isValidtoDateOpened = false;
 		$scope.DateFormat = "yyyy-MM-dd";
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
 		};
-		$scope.openDate = function ($event) {
+		$scope.openValidfromDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
 		    if (!$scope.isReadonly) {
-		        $scope.isDateOpened = true;				
+		        $scope.isValidfromDateOpened = true;				
+			}
+		};
+		$scope.openValidtoDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isValidtoDateOpened = true;				
 			}
 		};
 		
