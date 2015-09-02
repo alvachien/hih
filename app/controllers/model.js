@@ -440,6 +440,17 @@
 			});
 		}
 	};
+	hih.FinanceOrderSettlementRule.prototype.Verify = function() {
+		var errMsgs = [];
+		
+		if (isNaN(this.ControlCenterID) || this.ControlCenterID === -1)	{
+			errMsgs.push("Message.InvalidControlCenter");
+		}
+		if (isNaN(this.Precentage) || this.Precentage <= 0.0 || this.Precentage > 1000.0 ) {
+			errMsgs.push("Message.InvalidPrecentage");
+		}
+		return errMsgs;
+	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
 		this.ID = -1;
@@ -457,6 +468,31 @@
 		this.ValidFrom = obj.valid_from;
 		this.ValidTo = obj.valid_to;
 		this.Comment = obj.comment;
+	};
+	hih.FinanceOrder.prototype.Verify = function() {
+		var errMsgs = [];
+		if (this.Name.trim().length <= 0) {
+			errMsgs.push("Message.InvalidName");
+		}
+		if (this.ValidTo <= this.ValidFrom) {
+			errMsgs.push("Message.InvalidValidDate");
+		}
+		if (this.SRules.length <= 0) {
+			errMsgs.push("Message.MissingSettlementRules");
+		}
+		var nTotalPrecent = 0.0;
+		for(var i = 0; i < this.SRules.length; i ++) {
+			var msg2 = this.SRules[i].Verify();
+			if (msg2.length > 0) {
+				Array.prototype.push.apply(errMsgs, msg2);
+			}
+			nTotalPrecent += this.SRules[i].Precentage;
+		}
+		if (Number(nTotalPrecent.toFixed(2)) !== 100.00) {
+			errMsgs.push("Message.InvalidTotalPrecentage");
+		}
+		
+		return errMsgs;
 	};
 	// 6. Transaction type
 	hih.FinanceTransactionType = function FinanceTransactionType() {

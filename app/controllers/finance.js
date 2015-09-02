@@ -1525,10 +1525,14 @@
 				$rootScope.$broadcast("ShowMessage", "Error", "Invalid precentage!");
 			}
 			// Next item ID
-			$scope.updateNextItemID();
-			$scope.SelectedRuleObject.RuleID = $scope.nextItemID;
-			// Submit
-			$scope.RuleObjects.push($scope.SelectedRuleObject);
+			if ($scope.SelectedRuleObject.RuleID === -1) {
+				$scope.updateNextItemID();
+				$scope.SelectedRuleObject.RuleID = $scope.nextItemID;				
+				$scope.RuleObjects.push($scope.SelectedRuleObject);
+			} else {
+				// Update the selected one
+				// It is updated automatically? Yes, it is!
+			}
 			
 			// New item
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
@@ -1540,6 +1544,17 @@
 		};
 		
 		$scope.submit = function() {
+			// Submit the SRules
+			$scope.OrderObject.SRules = [];
+			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
+				$scope.OrderObject.SRules.push($scope.RuleObjects[i]);
+			}
+			
+			var errMsgs = $scope.OrderObject.Verify();
+			if (errMsgs.length > 0) {
+				
+			}
+			
 			// // Update the category id
 			// if ($scope.AccountCategoryObject.selected) {
 			// 	if ($scope.AccountObject.CategoryID !== $scope.AccountCategoryObject.selected.ID) {

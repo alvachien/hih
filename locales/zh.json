@@ -119,6 +119,7 @@
   		"ControlCenter": "控制中心",
   		"InternalOrder": "内部订单",
 		"Order": "订单",
+		"SettlementRule": "结算规则",
   		"ConfigObjects": "可配置对象",
   		"Currency": "货币",
   		"CurrencySymbol": "货币符号",
@@ -147,6 +148,11 @@
 		"InvalidCategory": "不合法的类别",
 		"InvalidName": "不合法的名字",
 		"InvalidContent": "不合法的内容",
-		"InvalidID": "不合法的ID"
+		"InvalidID": "不合法的ID",
+		"InvalidControlCenter": "不合法的控制中心",
+		"InvalidPrecentage": "不合法的百分比",
+		"InvalidValidDate": "不合法的有效期",
+		"MissingSettlementRules": "缺少结算规则",
+		"InvalidTotalPrecentage": "不合法的百分比总和"
 	}
 }

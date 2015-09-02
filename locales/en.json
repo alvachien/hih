@@ -119,6 +119,7 @@
   		"ControlCenter": "Control Center",
   		"InternalOrder": "Internal Order",
 		"Order": "Order",
+		"SettlementRule": "Settlement Rule",
   		"ConfigObjects": "Config Objects",
   		"Currency": "Currency",
   		"CurrencySymbol": "Currency Symbol",
@@ -147,6 +148,11 @@
 		"InvalidCategory": "Category is invalid",
 		"InvalidName": "Name is invalid",
 		"InvalidContent": "Content is invalid",
-		"InvalidID": "ID is invalid"
+		"InvalidID": "ID is invalid",
+		"InvalidControlCenter": "Invalid control center",
+		"InvalidPrecentage": "Invalid precentage",
+		"InvalidValidDate": "Invalid valid from/to date",
+		"MissingSettlementRules": "Missing settlement rules",
+		"InvalidTotalPrecentage": "Invalid total precentage"
 	}
  }
