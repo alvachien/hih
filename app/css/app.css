@@ -72,8 +72,10 @@ to prevent collapsing during animation*/
 
 /* For the width of the textarea */
 /* However, it seems it doesn't working! 2015.8.24 */
+/*
 .boxsizingBorder {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
 }
+*/

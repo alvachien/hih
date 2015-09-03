@@ -181,7 +181,7 @@
         			return '' + value;
       			});
       			ngModel.$formatters.push(function(value) {
-        			return parseFloat(value, 10);
+        			return parseFloat(value);
       			});
     		}
   		};
@@ -1272,9 +1272,9 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'validfrm', field:'ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width: 50 },
-			{ name:'validto', field:'ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width: 50 },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+			{ name:'validfrm', field:'ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width: 90 },
+			{ name:'validto', field:'ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width: 90 },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 120 }
 	    ];
 	  
 	    utils.loadFinanceOrderQ()
@@ -1343,7 +1343,7 @@
 		$scope.ItemActivity = "Finance.CreateItem";
 		$scope.OrderObject = new hih.FinanceOrder();
 		$scope.RuleObjects = [];
-		$scope.SelectedRuleObject = {};
+		$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
 		
 	    var promise1 = utils.loadFinanceControlCentersQ();
         if (angular.isDefined($stateParams.id)) {
@@ -1403,8 +1403,10 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ruleid', field: 'RuleID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
 	    	{ name:'ccid', field: 'ControlCenterID', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:50 },
-			{ name:'precent', field: 'Precentage', displayName: 'Finance.Precentage', headerCellFilter: "translate", width: 100},
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 90 },
+			{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:100 },
+			{ name:'precent', field: 'Precentage', displayName: 'Common.Precent', headerCellFilter: "translate", width: 100,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 150 },
 			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
@@ -1448,6 +1450,8 @@
 		    startingDay: 1
 		};
 		$scope.openValidfromDate = function ($event) {
+			$scope.cleanReportMessages();
+			
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
@@ -1456,6 +1460,8 @@
 			}
 		};
 		$scope.openValidtoDate = function ($event) {
+			$scope.cleanReportMessages();
+			
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
@@ -1483,6 +1489,7 @@
 		};
 
 		$scope.displayItem = function(ruleid) {
+			$scope.cleanReportMessages();
 			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
 				if ($scope.RuleObjects[i].RuleID === ruleid) {
 					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
@@ -1495,6 +1502,7 @@
 		};
 		
 		$scope.editItem = function(ruleid) {
+			$scope.cleanReportMessages();
 			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
 				if ($scope.RuleObjects[i].RuleID === ruleid) {
 					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
@@ -1507,10 +1515,12 @@
 		};
 		
 		$scope.deleteItem = function(ruleid) {
-			
+			$scope.cleanReportMessages();
 		};
 		
 		$scope.saveCurrentItem = function() {
+			$scope.cleanReportMessages();
+			
 			// Check current item
 			// Control center
 			if ($scope.SelectedRuleObject.ControlCenterObject.selected) {
@@ -1539,8 +1549,14 @@
 			$scope.ItemActivity = "Finance.CreateItem";
 		};
 		$scope.cancelCurrentItem = function() {
+			$scope.cleanReportMessages();
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
 			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		
+		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
 		};
 		
 		$scope.submit = function() {
@@ -1550,9 +1566,16 @@
 				$scope.OrderObject.SRules.push($scope.RuleObjects[i]);
 			}
 			
-			var errMsgs = $scope.OrderObject.Verify();
-			if (errMsgs.length > 0) {
-				
+			var rptMsgs = $scope.OrderObject.Verify($translate);
+			if (rptMsgs.length > 0) {
+				// Show all the errors?
+				$q.all(rptMsgs).then(
+					function(response) {
+						
+					},
+					function(reason) {}	
+				);
+				return;
 			}
 			
 			// // Update the category id

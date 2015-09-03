@@ -153,6 +153,7 @@
 		"InvalidPrecentage": "Invalid precentage",
 		"InvalidValidDate": "Invalid valid from/to date",
 		"MissingSettlementRules": "Missing settlement rules",
-		"InvalidTotalPrecentage": "Invalid total precentage"
+		"InvalidTotalPrecentage": "Invalid total precentage",
+		"DuplicateControlCenterInSRule": "Control Center {{ccid}} with name {{ccname}} occurred more than once" 
 	}
  }

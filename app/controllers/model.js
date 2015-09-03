@@ -418,7 +418,7 @@
 		this.RuleID = parseInt(obj.ruleid);
 		this.ControlCenterID = parseInt(obj.controlcenterid);
 		//var ccname = obj.controlcentername;
-		this.Precentage = obj.precent;
+		this.Precentage = parseFloat(obj.precent);
 		this.Comment = obj.comment;
 	};
 	hih.FinanceOrderSettlementRule.prototype.buildRelationship = function(arCC, arOrders) {
@@ -440,14 +440,14 @@
 			});
 		}
 	};
-	hih.FinanceOrderSettlementRule.prototype.Verify = function() {
+	hih.FinanceOrderSettlementRule.prototype.Verify = function($translate) {
 		var errMsgs = [];
 		
 		if (isNaN(this.ControlCenterID) || this.ControlCenterID === -1)	{
-			errMsgs.push("Message.InvalidControlCenter");
+			errMsgs.push($translate("Message.InvalidControlCenter"));
 		}
 		if (isNaN(this.Precentage) || this.Precentage <= 0.0 || this.Precentage > 1000.0 ) {
-			errMsgs.push("Message.InvalidPrecentage");
+			errMsgs.push($translate("Message.InvalidPrecentage"));
 		}
 		return errMsgs;
 	};
@@ -469,27 +469,38 @@
 		this.ValidTo = obj.valid_to;
 		this.Comment = obj.comment;
 	};
-	hih.FinanceOrder.prototype.Verify = function() {
+	hih.FinanceOrder.prototype.Verify = function($translate) {
 		var errMsgs = [];
 		if (this.Name.trim().length <= 0) {
-			errMsgs.push("Message.InvalidName");
+			errMsgs.push($translate("Message.InvalidName"));
 		}
 		if (this.ValidTo <= this.ValidFrom) {
-			errMsgs.push("Message.InvalidValidDate");
+			errMsgs.push($translate("Message.InvalidValidDate"));
 		}
 		if (this.SRules.length <= 0) {
-			errMsgs.push("Message.MissingSettlementRules");
+			errMsgs.push($translate("Message.MissingSettlementRules"));
 		}
+		// Check the total precentage equals 100
+		//	and, no duplicated control center assigned.
 		var nTotalPrecent = 0.0;
+		var uniqueIDs = [];
 		for(var i = 0; i < this.SRules.length; i ++) {
-			var msg2 = this.SRules[i].Verify();
+			var msg2 = this.SRules[i].Verify($translate);
 			if (msg2.length > 0) {
 				Array.prototype.push.apply(errMsgs, msg2);
 			}
-			nTotalPrecent += this.SRules[i].Precentage;
+			nTotalPrecent += parseFloat(this.SRules[i].Precentage);
+			
+			if($.inArray(this.SRules[i].ControlCenterID, uniqueIDs) === -1) {
+				uniqueIDs.push(this.SRules[i].ControlCenterID);
+			} else {
+				errMsgs.push($translate("Message.DuplicateControlCenterInSRule", 
+					{ ccid: this.SRules[i].ControlCenterID,
+						ccname: this.SRules[i].ControlCenterObject.Name }));
+			}
 		}
 		if (Number(nTotalPrecent.toFixed(2)) !== 100.00) {
-			errMsgs.push("Message.InvalidTotalPrecentage");
+			errMsgs.push($translate("Message.InvalidTotalPrecentage"));
 		}
 		
 		return errMsgs;

@@ -153,6 +153,7 @@
 		"InvalidPrecentage": "不合法的百分比",
 		"InvalidValidDate": "不合法的有效期",
 		"MissingSettlementRules": "缺少结算规则",
-		"InvalidTotalPrecentage": "不合法的百分比总和"
+		"InvalidTotalPrecentage": "不合法的百分比总和",
+		"DuplicateControlCenterInSRule": "控制中心{{ccid}}(名称:{{ccname}})被使用了多次" 
 	}
 }
