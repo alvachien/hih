@@ -187,8 +187,8 @@
   		};
 	})
 	
-	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', 
-	    function($scope, $rootScope, $state, $http, $log, $q, utils) {
+	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 		// Grid options
         $scope.selectedRows = [];
 		$scope.gridOptions = {};
@@ -231,7 +231,12 @@
 	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
 			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50 },
+			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50,
+				cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+          			if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
+					else { return 'accountnotasset'; }
+        		}
+			 },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
 	    ];
 	  

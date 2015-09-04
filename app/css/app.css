@@ -79,3 +79,12 @@ to prevent collapsing during animation*/
             box-sizing: border-box;
 }
 */
+
+/* For Account List Grid */
+/* The commented part are not working! */
+/*
+.accountasset { color: floralwhite;  background-color: yellowgreen; }
+.accountnotasset { color: floralwhite; background-color: firebrick;  }
+*/
+.accountasset { color: yellowgreen; }
+.accountnotasset { color: firebrick;  }
