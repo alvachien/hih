@@ -2416,11 +2416,11 @@ function finance_internalorder_listread() {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"id" => $row [0],
-					"name" => $row [1],
-					"valid_from" => $row [2],
-					"valid_to" => $row [3],
-					"comment" => $row [4] 
+				"id" => $row [0],
+				"name" => $row [1],
+				"valid_from" => $row [2],
+				"valid_to" => $row [3],
+				"comment" => $row [4] 
 			);
 		}
 		
@@ -2459,15 +2459,15 @@ function finance_internalordersr_listread($ordid) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"intordid" => $row [0],
-					"intordname" => $row [1],
-					"intordvalidfrom" => $row [2],
-					"intordvalidto" => $row [3],
-					"ruleid" => $row [4],
-					"controlcenterid" => $row [5],
-					"controlcentername" => $row [6],
-					"precent" => $row [7],
-					"comment" => $row [8] 
+				"intordid" => $row [0],
+				"intordname" => $row [1],
+				"intordvalidfrom" => $row [2],
+				"intordvalidto" => $row [3],
+				"ruleid" => $row [4],
+				"controlcenterid" => $row [5],
+				"controlcentername" => $row [6],
+				"precent" => $row [7],
+				"comment" => $row [8] 
 			);
 		}
 		
@@ -2507,7 +2507,7 @@ function finance_internalorder_create($objIO) {
 	/* Prepare an insert statement on header */
 	$query = "INSERT INTO " . MySqlFinInternalOrderTable . " (`NAME`, `VALID_FROM`, `VALID_TO`, `COMMENT`) VALUES (?, ?, ?, ?);";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "ssss", $objIO->IntOrdName, $objIO->ValidFrom, $objIO->ValidTo, $objIO->Comment );
+		$stmt->bind_param ( "ssss", $objIO->Name, $objIO->ValidFrom, $objIO->ValidTo, $objIO->Comment );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nOrdID = $mysqli->insert_id;
@@ -2573,7 +2573,7 @@ function finance_internalorder_delete($ordid) {
 	/* Prepare an delete statement on header */
 	$query = "DELETE FROM " . MySqlFinInternalOrderTable . " WHERE ID=?;";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "i", $docid );
+		$stmt->bind_param ( "i", $ordid );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
@@ -2586,7 +2586,7 @@ function finance_internalorder_delete($ordid) {
 		$query = "DELETE FROM " . MySqlFinInternalOrderSettRuleTable . " WHERE INTORDID=?;";
 		
 		if ($newstmt = $mysqli->prepare ( $query )) {
-			$newstmt->bind_param ( "i", $docid );
+			$newstmt->bind_param ( "i", $ordid );
 			
 			/* Execute the statement */
 			if ($newstmt->execute ()) {
@@ -2610,7 +2610,7 @@ function finance_internalorder_delete($ordid) {
 	$mysqli->close ();
 	return array (
 			$sError,
-			$nDocID 
+			$ordid 
 	);
 }
 // 1.14 Finance control center

@@ -211,6 +211,9 @@ class HIHInternalOrderSRule {
 	public $ControlCenterName;
 
 	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
 	public function CheckValid() {
 		if (isset ( $this )) {
 			if (! isset ( $this->ControlCenterID )) {
@@ -224,10 +227,16 @@ class HIHInternalOrderSRule {
 		
 		return null;
 	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
 }
 class HIHInternalOrder {
 	// Properties
-	public $IntOrdName;
+	public $ID;
+	public $Name;
 	public $ValidFrom;
 	public $ValidTo;
 	public $Comment;
@@ -235,6 +244,10 @@ class HIHInternalOrder {
 	public $ItemsArray = array ();
 	
 	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON(json_decode($json, true));
+    }
+	
 	public function CheckValid() {
 		if (isset ( $this )) {
 			if (!isset($this->ValidFrom)) {
@@ -245,7 +258,7 @@ class HIHInternalOrder {
 				return "Valid to is manadatory!";
 			}
 			
-			if (!isset($this->IntOrdName)) {
+			if (!isset($this->Name)) {
 				return "Name is manadatory!";
 			}
 
@@ -311,6 +324,63 @@ class HIHInternalOrder {
 		if (array_key_exists ( $ruleID, $ItemsArray )) {
 			unset ( $ItemsArray [$ruleID] );
 		}
+	}
+	public function fromJSON($jsonData) {
+		// Example data:
+		// "{"ID":-1,"Name":"Test 2","ValidFrom":"2015-09-04","ValidTo":"2015-09-05","Comment":"Test",
+		// "SRules":[ ... ]
+		// }"
+		foreach ($jsonData as $key => $value) {
+			switch ($key) {
+				case "ID":
+				case "Comment":
+				case "Name":
+				$this->{$key} = $value;
+				break;
+				
+				case "ValidFrom": // ?
+				$this->{$key} = $value;
+				break;
+				
+				case "ValidTo": // ?
+				$this->{$key} = $value;
+				break;
+				
+				case "SRules":
+				{
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$sr = new HIHInternalOrderSRule( $value[ $i ] );
+							$this->ItemsArray [$sr->RuleID] = $sr;
+						}
+					}
+				}
+				break;
+				
+				default:
+				// Do nothing!
+				break;
+			}
+			
+			// Following sample codes copied from http://stackoverflow.com/questions/5397758/json-decode-to-custom-class 
+			//class JSONObject {
+			//	public function __construct($json = false) {
+			//		if ($json) $this->set(json_decode($json, true));
+			//	}
+			//
+			//	public function set($data) {
+			//		foreach ($data AS $key => $value) {
+			//			if (is_array($value)) {
+			//				$sub = new JSONObject;
+			//				$sub->set($value);
+			//				$value = $sub;
+			//			}
+			//			$this->{$key} = $value;
+			//		}
+			//	}
+			//}
+        }
 	}
 }
 

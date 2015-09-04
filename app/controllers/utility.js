@@ -839,9 +839,9 @@
 							}
 							return deferred.promise;
 						};
-						rtnObj.loadFinanceOrderQ = function() {
+						rtnObj.loadFinanceOrderQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceOrderLoaded) {
+							if ($rootScope.isFinanceOrderLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -899,7 +899,32 @@
 							}
 							return deferred.promise;
 						};
-						
+						rtnObj.createFinanceOrderQ = function(jsonData) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCEORDER', orderdata: jsonData})
+							.then(function(response) {
+								// It returns the new order id								
+								deferred.resolve(parseInt(response.data));
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
+						};
+						rtnObj.deleteFinanceOrderQ = function(orderid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'DELETEFINANCEORDER', orderid: orderid})
+							.then(function(response) {
+								// It returns the new order id								
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
+						};
 ////////////////////////////////////////////////////////////////////
 // Others
 ////////////////////////////////////////////////////////////////////

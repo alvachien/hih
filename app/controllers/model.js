@@ -9,7 +9,31 @@
 	hih.Constants = {
 		LearnHistorySplitChar: "_",
 		LearnCategorySplitChar: " > ",
-		IDSplitChar: ","
+		IDSplitChar: ",",
+		DateSplitChar: '-'
+	};
+	
+	/* Utility class: singleton instance */
+	hih.ModelUtility = {
+	};
+	hih.ModelUtility.DateFormatter = function(date) {
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		var d = date.getDate();
+		return y + hih.Constants.DateSplitChar + (m < 10 ? ('0' + m) : m) + hih.Constants.DateSplitChar + (d < 10 ? ('0' + d) : d);		
+	};
+	hih.ModelUtility.DateParser = function(s) {
+		if (!s)
+			return new Date();
+		var ss = (s.split(hih.Constants.DateSplitChar));
+		var y = parseInt(ss[0], 10);
+		var m = parseInt(ss[1], 10);
+		var d = parseInt(ss[2], 10);
+		if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+			return new Date(y, m - 1, d);
+		} else {
+			return new Date();
+		}
 	};
 	
 	/* Root Model */
@@ -451,6 +475,30 @@
 		}
 		return errMsgs;
 	};
+	hih.FinanceOrderSettlementRule.prototype.toJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "OrderID" || i === "OrderName" || i === "OrderObject" || i === "ControlCenterObject")
+				continue;
+			
+			if (i !== "Precentage")
+				forJSON[i] = this[i];
+			else 
+				forJSON["Precent"] = this[i];
+		}
+		// forJSON.RuleID = this.RuleID;
+		// forJSON.ControlCenterID = this.ControlCenterID;
+		// forJSON.Precent = this.Precentage;
+		// forJSON.Comment = this.Comment;
+		return forJSON;
+	};
+	hih.FinanceOrderSettlementRule.prototype.toJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON);
+		}
+		return JSON && JSON.stringify(this);
+	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
 		this.ID = -1;
@@ -480,6 +528,7 @@
 		if (this.SRules.length <= 0) {
 			errMsgs.push($translate("Message.MissingSettlementRules"));
 		}
+		
 		// Check the total precentage equals 100
 		//	and, no duplicated control center assigned.
 		var nTotalPrecent = 0.0;
@@ -504,6 +553,24 @@
 		}
 		
 		return errMsgs;
+	};
+	hih.FinanceOrder.prototype.toJSON = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "ValidFrom" || i === "ValidTo" || i === "SRules") 
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		// Valid from and Valid to
+		forJSON.ValidFrom = hih.ModelUtility.DateFormatter(this.ValidFrom);
+		forJSON.ValidTo = hih.ModelUtility.DateFormatter(this.ValidTo);		
+		for(var j = 0 ; j < this.SRules.length; ++j) {
+			if (!$.isArray(forJSON.SRules)) forJSON.SRules = [];
+			forJSON.SRules.push(this.SRules[j].toJSONObject());
+		}
+		
+		return JSON && JSON.stringify(forJSON);
 	};
 	// 6. Transaction type
 	hih.FinanceTransactionType = function FinanceTransactionType() {

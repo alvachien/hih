@@ -327,18 +327,30 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
-		case "GETFINANCEORDERLIST":
-			{
+		case "GETFINANCEORDERLIST": {
 				HIHSrv_Function( 'finance_internalorder_listread' );
-			}
-			break;
-			
-		case "GETSETTLEMENTRULELIST_BYORDER":
-			{
-				$orderid = escape ( $realParamArr ['orderid'] );
-				HIHSrv_Function_1Param( 'finance_internalordersr_listread', $orderid);
-			}
-			break;
+		}
+		break;
+		
+		case "GETSETTLEMENTRULELIST_BYORDER": {
+			$orderid = escape ( $realParamArr ['orderid'] );
+			HIHSrv_Function_1Param( 'finance_internalordersr_listread', $orderid);
+		}
+		break;
+		
+		case "CREATEFINANCEORDER":{
+			// For JSON-based parameter, can NOT escape it directly!
+			$orderdata = json_decode( $realParamArr ['orderdata'] );
+			$ordObj = new HIHInternalOrder($orderdata);
+			HIHSrv_Function_1Param( 'finance_internalorder_create', $ordObj);
+		}
+		break;
+		
+		case "DELETEFINANCEORDER": {
+			$orderid = escape ( $realParamArr ['orderid'] );
+			HIHSrv_Function_1Param( 'finance_internalorder_delete', $orderid);
+		}
+		break;
 						
 		// ===========================================================================================
 		// Others
