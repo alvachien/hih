@@ -35,6 +35,24 @@
 			return new Date();
 		}
 	};
+	hih.ModelUtility.FinanceAssetFlagCell = function finAssetflag(val) {
+		if (val === '1') {
+			return '<span style="color:green; font-weight: bold;">资产</span>';
+		} else if (val === '0') {
+			return '<span style="color:red; font-weight: bold;">负债</span>';
+		} else {
+			return '<span style="color:red;">Unknown</span>';
+		}	
+	}
+	hih.ModelUtility.FinanceExpenseFlagCell = function finExpenseFlag(val) {
+		if (val === '1' || val === 1) {
+			return '<span style="color:red; font-weight: bold;">开支</span>';
+		} else if (val === '0' || val === 0) {
+			return '<span style="color:green; font-weight: bold;">收入</span>';
+		} else {
+			return '<span style="color:red;">Unknown</span>';
+		}
+	}
 	
 	/* Root Model */
 	hih.Model = function() {
@@ -415,6 +433,18 @@
 				}
 			});
 		}
+	};
+	hih.FinanceControlCenter.prototype.Verify = function($translate) {
+		var errMsgs = [];
+		
+		if (this.Name.trim().length <= 0) {
+			if ($translate)
+				errMsgs.push($translate("Message.InvalidName"));
+			else
+				errMsgs.push("Message.InvalidName");
+		}
+
+		return errMsgs;
 	};
 	// 5a. Settlement Rule
 	hih.FinanceOrderSettlementRule = function FinanceOrderSettlementRule() {

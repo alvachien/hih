@@ -2752,6 +2752,52 @@ function finance_controlcenter_create($name, $parent, $comment) {
 			$rsttable 
 	);
 }
+function finance_controlcenter_delete($ccid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null 
+		);
+	}
+	$mysqli->autocommit ( false );
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	/* Prepare an delete statement on header */
+	$query = "DELETE FROM " . MySqlFinControlCenterTable . " WHERE ID=?;";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $ccid );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+	}
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$ccid 
+	);
+}
 // 1.15 Finance Report: Daily Balance Sheet
 function finance_report_dailybalance($fromdate, $todate) {
 	if (! isset ( $fromdate )) {
@@ -3318,6 +3364,48 @@ function HIHSrv_Function_2Param( $func_name, $func_para1, $func_para2 ) {
 		if (function_exists($func_name))
 		{
 			$arRst = $func_name ( $func_para1, $func_para2 );
+			
+			if (! IsNullOrEmptyString ( $arRst [0] )) {
+				export_error ( $arRst [0] );
+			} else {
+				echo json_encode ( $arRst [1] );
+			}
+		} else {
+			$sErrors = "Function does not available: ". $func_name;
+			export_error ( sErrors );				
+		}		
+	} else {
+		$sErrors = "User not login yet";
+		export_error ( sErrors );
+	}
+}
+
+function HIHSrv_Function_3Param( $func_name, $func_para1, $func_para2, $func_para3 ) {
+	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+		if (function_exists($func_name))
+		{
+			$arRst = $func_name ( $func_para1, $func_para2, $func_para3 );
+			
+			if (! IsNullOrEmptyString ( $arRst [0] )) {
+				export_error ( $arRst [0] );
+			} else {
+				echo json_encode ( $arRst [1] );
+			}
+		} else {
+			$sErrors = "Function does not available: ". $func_name;
+			export_error ( sErrors );				
+		}		
+	} else {
+		$sErrors = "User not login yet";
+		export_error ( sErrors );
+	}
+}
+
+function HIHSrv_Function_4Param( $func_name, $func_para1, $func_para2, $func_para3, $func_para4 ) {
+	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+		if (function_exists($func_name))
+		{
+			$arRst = $func_name ( $func_para1, $func_para2, $func_para3, $func_para4 );
 			
 			if (! IsNullOrEmptyString ( $arRst [0] )) {
 				export_error ( $arRst [0] );

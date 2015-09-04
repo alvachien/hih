@@ -5,6 +5,13 @@
 		</h2>
 	</div>	
 	
+    <!-- Messages -->
+    <div ng-if="ReportedMessages.length > 0">
+        <div class="alert alert-danger" role="alert" ng-repeat="rptmsg in ReportedMessages">
+            {{ rptmsg }}
+        </div>
+    </div>
+	
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID:</label>
@@ -30,7 +37,7 @@
                     <ui-select-choices repeat="allcc in AllControlCenters">
                         <div ng-bind-html="allcc.Name | highlight: $select.search"></div>
                         <small>
-                            ID: {{allcc.id}} <br />
+                            ID: {{allcc.ID}} <br />
                             Name: <span ng-bind-html="+allcc.Name | highlight: $select.search"></span>
                         </small>
                     </ui-select-choices>

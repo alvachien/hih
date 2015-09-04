@@ -238,11 +238,10 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================
-		case "GETFINANCEACCOUNTLIST": 
-			{
-				HIHSrv_Function( 'finance_account_listread' );
-			}
-			break;
+		case "GETFINANCEACCOUNTLIST": {
+			HIHSrv_Function( 'finance_account_listread' );
+		}
+		break;
 			
 		case "CREATEFINANCEACCOUNT":
 			{
@@ -266,69 +265,77 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
-		case "GETCURRENCYLIST": 
-			{
-				HIHSrv_Function( 'finance_currency_listread' );
-			}
-			break;
+		case "GETCURRENCYLIST": {
+			HIHSrv_Function( 'finance_currency_listread' );
+		}
+		break;
 			
-		case "GETFINANCEACCOUNTCATEGORYLIST":
-			{ 
-				HIHSrv_Function( 'finance_account_category_listread' );			
-			}
-			break;
+		case "GETFINANCEACCOUNTCATEGORYLIST": { 
+			HIHSrv_Function( 'finance_account_category_listread' );			
+		}
+		break;
 			
-		case "GETFINANCEDOCUMENTLIST":
-			{
-				HIHSrv_Function( 'finance_document_listread' );
-			}
-			break;
+		case "GETFINANCEDOCUMENTLIST": {
+			HIHSrv_Function( 'finance_document_listread' );
+		}
+		break;
 			
-		case "GETFINANCEDOCUMENTTYPELIST":
-			{
-				HIHSrv_Function( 'finance_doctype_listread' );
-			}
-			break;
+		case "GETFINANCEDOCUMENTTYPELIST": {
+			HIHSrv_Function( 'finance_doctype_listread' );
+		}
+		break;
 			
-		case "GETFINANCEDOCUMENTITEMLIST":
-			{
-				$docid = escape ( $realParamArr ['docid'] );
-				HIHSrv_Function_1Param( 'finance_documentitem_listread', $docid );
-			}
-			break;
+		case "GETFINANCEDOCUMENTITEMLIST": {
+			$docid = escape ( $realParamArr ['docid'] );
+			HIHSrv_Function_1Param( 'finance_documentitem_listread', $docid );
+		}
+		break;
 			
-		case "GETFINANCETRANSACTIONTYPELIST":
-			{
-				HIHSrv_Function_1Param( 'finance_trantype_listread', false );				
-			}
-			break;
+		case "GETFINANCETRANSACTIONTYPELIST": {
+			HIHSrv_Function_1Param( 'finance_trantype_listread', false );				
+		}
+		break;
 			
-		case "GETFINANCETRANSACTIONTYPEHIERARCHY":
-			{
-				HIHSrv_Function( 'finance_trantype_hierread' );				
-			}
-			break;
+		case "GETFINANCETRANSACTIONTYPEHIERARCHY": {
+			HIHSrv_Function( 'finance_trantype_hierread' );				
+		}
+		break;
 			
-		case "GETFINANCEACCOUNTHIERARCHY":
-			{
-				HIHSrv_Function( 'finance_account_hierread' );
-			}
-			break;
+		case "GETFINANCEACCOUNTHIERARCHY": {
+			HIHSrv_Function( 'finance_account_hierread' );
+		}
+		break;
 			
-		case "GETFINANCECONTROLCENTERLIST":
-			{
-				HIHSrv_Function_1Param( 'finance_controlcenter_listread', false );
-			}
-			break;
+		case "GETFINANCECONTROLCENTERLIST": {
+			HIHSrv_Function_1Param( 'finance_controlcenter_listread', false );
+		}
+		break;
 			
-		case "GETFINANCECONTROLCENTERHIERARCHY":
-			{
-				HIHSrv_Function_AfterProc( 'finance_controlcenter_listread', 'build_financecontrolcenter_tree' );
-			}
-			break;
+		case "GETFINANCECONTROLCENTERHIERARCHY": {
+			HIHSrv_Function_AfterProc( 'finance_controlcenter_listread', 'build_financecontrolcenter_tree' );
+		}
+		break;
+			
+		case "CREATEFINANCECONTROLCENTER": {
+			$ccname = escape ( $realParamArr ['name'] );
+			$ccparent = escape ( $realParamArr ['parent'] );
+			$cccomment = escape ( $realParamArr ['comment'] );
+			
+			HIHSrv_Function_3Param('finance_controlcenter_create', $ccname, $ccparent, $cccomment);
+		}
+		break;
+		
+		case "DELETEFINANCECONTROLCENTER": {
+			// ToDo: Check the usage first!
+			// Throw error if it is still in use;
+			
+			$ccid = escape ( $realParamArr ['ccid'] );
+			HIHSrv_Function_1Param( 'finance_controlcenter_delete', $ccid);			
+		}
+		break;
 			
 		case "GETFINANCEORDERLIST": {
-				HIHSrv_Function( 'finance_internalorder_listread' );
+			HIHSrv_Function( 'finance_internalorder_listread' );
 		}
 		break;
 		
@@ -338,7 +345,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
-		case "CREATEFINANCEORDER":{
+		case "CREATEFINANCEORDER": {
 			// For JSON-based parameter, can NOT escape it directly!
 			$orderdata = json_decode( $realParamArr ['orderdata'] );
 			$ordObj = new HIHInternalOrder($orderdata);
@@ -347,6 +354,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "DELETEFINANCEORDER": {
+			// ToDo: Check the usage first!
+			// Throw error if it is still in use;
 			$orderid = escape ( $realParamArr ['orderid'] );
 			HIHSrv_Function_1Param( 'finance_internalorder_delete', $orderid);
 		}

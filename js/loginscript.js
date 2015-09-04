@@ -4,14 +4,15 @@
  */
 
 function updatelength(field, output) {
-  curr_length = document.getElementById(field).value.length;
-  field_mlen = document.getElementById(field).maxLength;
+  var curr_length = document.getElementById(field).value.length;
+  var field_mlen = document.getElementById(field).maxLength;
   document.getElementById(output).innerHTML = curr_length+'/'+field_mlen;
   return 1;
 }
 
 function valid_length(field, minlength) {
-    length_df = document.getElementById(field).value.length;
+    var length_df = document.getElementById(field).value.length;
+    var ret_len;
     
     if (length_df >= minlength && length_df <= document.getElementById(field).maxLength) {
     	// Length is correct
@@ -26,9 +27,10 @@ function valid_length(field, minlength) {
 }
 
 function compare_valid(field, field2) {
-    fld_val = document.getElementById(field).value;
-    fld2_val = document.getElementById(field2).value;
-    if (fld_val == fld2_val) {
+    var fld_val = document.getElementById(field).value;
+    var fld2_val = document.getElementById(field2).value;
+    var p_valid_r;
+    if (fld_val === fld2_val) {
         //update_css_class(field2, 2);
         p_valid_r = 1;
     } else {
@@ -39,13 +41,14 @@ function compare_valid(field, field2) {
 }
 
 function check_v_mail(field) {
-    fld_value = document.getElementById(field).value;
-    is_m_valid = 0;
+    var fld_value = document.getElementById(field).value;
+    var is_m_valid = 0;
+    var m_valid_r;
     if (fld_value.indexOf('@') >= 1) {
-        m_valid_dom = fld_value.substr(fld_value.indexOf('@')+1);
-        if (m_valid_dom.indexOf('@') == -1) {
+        var m_valid_dom = fld_value.substr(fld_value.indexOf('@')+1);
+        if (m_valid_dom.indexOf('@') === -1) {
             if (m_valid_dom.indexOf('.') >= 1) {
-                m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.')+1);
+                var m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.')+1);
                 if (m_valid_dom_e.length >= 1) {
                     is_m_valid = 1;
                 }
@@ -63,8 +66,8 @@ function check_v_mail(field) {
 }
 
 function check_v_pass(field, output) {
-    pass_buf_value = document.getElementById(field).value;
-    pass_level = 0;
+    var pass_buf_value = document.getElementById(field).value;
+    var pass_level = 0;
     
     if (pass_buf_value.match(/[a-z]/g)) {
         pass_level++;
@@ -80,7 +83,7 @@ function check_v_pass(field, output) {
     } else if (pass_buf_value.length >= 20) {
         pass_level++;
     }
-    output_val = '';
+    var output_val = '';
     switch (pass_level) {
         case 1: output_val='Weak'; break;
         case 2: output_val='Normal'; break;
@@ -88,7 +91,7 @@ function check_v_pass(field, output) {
         case 4: output_val='Very strong'; break;
         default: output_val='Very weak'; break;
     }
-    if (document.getElementById(output).value != pass_level) {
+    if (document.getElementById(output).value !== pass_level) {
         document.getElementById(output).value = pass_level;
         document.getElementById(output).innerHTML = output_val;
     }
@@ -96,10 +99,10 @@ function check_v_pass(field, output) {
 }
 
 function validate_login() {
-    t1 = valid_length('loginuser', 6);
-    t2 = valid_length('password', 6);
+    var t1 = valid_length('loginuser', 6);
+    var t2 = valid_length('password', 6);
 	
-    errorlist = '';
+    var errorlist = '';
     if (! t1) {
         errorlist += 'Login is too short/long<br />';
     }
@@ -122,14 +125,14 @@ function validate_login() {
 }
 
 function validate_all() {
-    t1 = valid_length('login', 6);
-    t2 = valid_length('password', 6);
-    t3 = compare_valid('password', 'c_password');
-    t4 = check_v_mail('email');
+    var t1 = valid_length('login', 6);
+    var t2 = valid_length('password', 6);
+    var t3 = compare_valid('password', 'c_password');
+    var t4 = check_v_mail('email');
     //t5 = check_v_pass('password', 'pass_result');
-    t6 = valid_length('alias', 3);
+    var t6 = valid_length('alias', 3);
 
-    errorlist = '';
+    var errorlist = '';
     if (! t1) {
         errorlist += 'Login is too short/long<br />';
     }

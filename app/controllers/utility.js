@@ -780,16 +780,13 @@
 									 .error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast(
-														"ShowMessage",
-														"Error",
-														data.Message);
+												$rootScope.$broadcast("ShowMessage", "Error", data.Message);
 										});
 							}
 						};
-						rtnObj.loadFinanceControlCentersQ = function() {
+						rtnObj.loadFinanceControlCentersQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceControlCenterLoaded) {
+							if ($rootScope.isFinanceControlCenterLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -816,9 +813,9 @@
 							}
 							return deferred.promise;
 						};
-						rtnObj.loadFinanceControlCenterHierarchyQ = function() {
+						rtnObj.loadFinanceControlCenterHierarchyQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceControlCenterHierarchyLoaded) {
+							if ($rootScope.isFinanceControlCenterHierarchyLoaded  && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -838,6 +835,43 @@
 									});
 							}
 							return deferred.promise;
+						};
+						rtnObj.createControlCenterQ = function(ccObj) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCECONTROLCENTER', 
+									name: ccObj.Name, 
+									parent: ccObj.ParentID,
+									comment: ccObj.Comment })
+							.then(function(response) {
+								// The server returns the new object out
+								if ($.isArray(response.data) && response.data.length === 1) {
+									var fincc = new hih.FinanceControlCenter();
+									fincc.setContent(response.data[0]);
+									fincc.buildParentObject($rootScope.arFinanceControlCenter);
+									$rootScope.arFinanceControlCenter.push(fincc);
+	
+									deferred.resolve(fincc.ID);									
+								} else {
+									deferred.resolve(null);
+								} 								
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
+						};
+						rtnObj.deleteControlCenterQ = function(ccid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'DELETEFINANCECONTROLCENTER', ccid: ccid})
+							.then(function(response) {
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
 						};
 						rtnObj.loadFinanceOrderQ = function(bForceReload) {
 							var deferred = $q.defer();
@@ -918,7 +952,6 @@
 								'script/hihsrv.php',
 								{ objecttype: 'DELETEFINANCEORDER', orderid: orderid})
 							.then(function(response) {
-								// It returns the new order id								
 								deferred.resolve(true);
 							}, function(response){
 								deferred.reject(response.data.Message);

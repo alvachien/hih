@@ -155,6 +155,7 @@
 		"MissingSettlementRules": "Missing settlement rules",
 		"InvalidTotalPrecentage": "Invalid total precentage",
 		"DuplicateControlCenterInSRule": "Control Center {{ccid}} with name {{ccname}} occurred more than once",
-		"SelectSingleOrderForDeletion": "Select one Order for deletion" 
+		"SelectSingleOrderForDeletion": "Select one Order for deletion",
+		"SelectSingleItemForDeletion": "Select one single item for deletion" 
 	}
  }
