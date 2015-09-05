@@ -415,6 +415,42 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.createFinanceAccountQ = function(acntObj) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCEACCOUNT',
+								name: acntObj.Name,
+				    			ctgyid:acntObj.CategoryID,
+				    			comment: acntObj.Comment })
+							.then(function(response) {
+								if ($.isArray(response.data) && response.data.length === 1) {
+									var finacnt = new hih.FinanceAccount();
+									finacnt.setContent(response.data[0]);
+									finacnt.buildCategory($rootScope.arFinanceAccountCategory);
+									$rootScope.arFinanceAccount.push(finacnt);
+	
+									deferred.resolve(finacnt.ID);									
+								} else {
+									deferred.resolve(null);
+								} 								
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
+						};
+						rtnObj.deleteFinanceAccountQ = function(acntid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'DELETEFINANCEACCOUNT', acntid: acntid})
+							.then(function(response) {
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
+						};
 						rtnObj.loadFinanceAccountsQ = function(bForceReload) {
 							// Load finance accounts with $q supports
 							var deferred = $q.defer();							
@@ -452,12 +488,8 @@
 							if (!$rootScope.isFinanceAccountLoaded) {
 							    // Example JSON response
 							    // {"id":"4","ctgyid":"1","name":"aaa","comment":"aaa","ctgyname":"aaa","assetflag":"1"}
-							    $http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETFINANCEACCOUNTLIST'
-												})
+							    $http.post( 'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEACCOUNTLIST' })
 										.success(
 												function(data, status, headers, config) {
 													$rootScope.arFinanceAccount = [];
@@ -483,15 +515,28 @@
 												});
 							}							
 						};
+						rtnObj.loadFinanceAccountHierarchyQ = function(bForceReload) {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceAccountHierarchyLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post('script/hihsrv.php',
+										{ objecttype : 'GETFINANCEACCOUNTHIERARCHY' })
+									.then(function(response) {
+										$rootScope.arFinanceAccountHierarchy = response.data;
+										$rootScope.isFinanceAccountHierarchyLoaded = true;
+										deferred.resolve(true);
+									}, function(reason) {
+										deferred.reject(reason.data.Message);
+									})
+							}
+							return deferred.promise;
+						};
 						rtnObj.loadFinanceAccountHierarchy = function() {
 							if (!$rootScope.isFinanceAccountHierarchyLoaded) {
 							    // Example JSON response
-							    $http
-										.post(
-												'script/hihsrv.php',
-												{
-													objecttype : 'GETFINANCEACCOUNTHIERARCHY'
-												})
+							    $http.post('script/hihsrv.php',
+										{ objecttype : 'GETFINANCEACCOUNTHIERARCHY' })
 										.success(
 												function(data, status, headers, config) {
 													$rootScope.arFinanceAccountHierarchy = data;
@@ -510,10 +555,10 @@
 							}							
 							
 						};
-						rtnObj.loadFinanceAccountCategoriesQ = function() {
+						rtnObj.loadFinanceAccountCategoriesQ = function(bForceReload) {
 							// Load finance accounts with $q supports
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceAccountCategoryLoaded) {
+							if ($rootScope.isFinanceAccountCategoryLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -855,7 +900,7 @@
 									deferred.resolve(fincc.ID);									
 								} else {
 									deferred.resolve(null);
-								} 								
+								}
 							}, function(response){
 								deferred.reject(response.data.Message);
 							});

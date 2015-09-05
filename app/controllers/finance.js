@@ -264,10 +264,29 @@
 
 	    // Remove to the real data holder
 	    $scope.removeItem = function removeItem(row) {
-	  	    if ($scope.selectedRows.length <= 0)
-			    return;
-				
-			// To-Do: delete multiple accounts as a batch
+			if ($scope.selectedRows.length !== 1) {
+				$translate('Message.SelectSingleItemForDeletion')
+					.then(
+						function(response) {
+							$rootScope.$broadcast("ShowMessage", "Error", response);
+						},
+						function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+						}
+					);
+				return;				
+			}
+			
+			utils.deleteFinanceAccountQ($scope.selectedRows[0].ID)
+				.then(function(response) {
+					// Empty selection table
+					$scope.selectedRows = [];
+					
+					// Just refresh it!
+					$scope.refreshList();
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 	    };
 	    
 	    // Display
@@ -308,9 +327,36 @@
 		};
 	}])
 	
-	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', 
-		function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
-			utils.loadFinanceAccountHierarchy();
+	.controller('FinanceAccountHierarchyController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, utils) {
+			$scope.treeData = [];
+			
+			var promise1 = utils.loadCurrenciesQ();
+	    	var promise2 = utils.loadFinanceAccountCategoriesQ();
+	  
+	    	$q.all([promise1, promise2])
+				.then(function(response) {
+					utils.loadFinanceAccountHierarchyQ()
+						.then(function(response2) {
+							if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {				
+								$.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
+									var treenode = {};
+									angular.copy(obj, treenode);
+									treenode.state = {
+										opened: true	
+									};
+									
+									$scope.treeData.push(treenode); 
+								});
+								
+								$scope.treeConfig.version++;
+							}
+						}, function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						});
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});			
 		
 			$scope.ignoreModelChanges = function() { return false; };
 	        $scope.treeConfig = {
@@ -345,52 +391,37 @@
 				},
                  version : 1,
     			 plugins : [ 'wholerow', 'types' ]
-            };
-			
-			$scope.treeData = [];
-			if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {				
-				 $.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
-					var treenode = {};
-					angular.copy(obj, treenode);
-					treenode.state = {
-					 	opened: true	
-					};
-					
-					$scope.treeData.push(treenode); 
-				 });
-			 }
+            };			
 	         
-			 $scope.newItem = function() {
-				 // Navigate to the account create
-	 			 $state.go('home.finance.account.create');
-			 };
+		$scope.newItem = function() {
+			// Navigate to the account create
+	 		$state.go('home.finance.account.create');
+		};
 			 
-			 $scope.refreshHierarchy = function() {
-				// ToDo: Refresh the whole hierarchy 
-			 };
-			 
-	 		 $scope.$on("FinanceAccountHierarchyLoaded", function() {
-				$log.info("HIH FinanceAccount Hierarchy view: Hierarchy Loaded event fired!");
-				
-				if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {
-					$.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
-						var treenode = {};
-						angular.copy(obj, treenode);
-						treenode.state = {
-						 	opened: true	
-						};
-						
-						$scope.treeData.push(treenode); 
-					 });
-					 
-					// Re-create the hierarchy
-					$scope.treeConfig.version++;
-				}			
-			 });
+		$scope.refreshHierarchy = function() {
+			utils.loadFinanceAccountHierarchyQ(true)
+				.then(function(response2) {
+					if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {				
+						$.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
+							var treenode = {};
+							angular.copy(obj, treenode);
+							treenode.state = {
+								opened: true	
+							};
+									
+							$scope.treeData.push(treenode); 
+						});
+								
+						$scope.treeConfig.version++;
+					}
+				}, function(reason2) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+				});
+		};
 	}])
 
-	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', 'utils', 
-	    function($scope, $rootScope, $state, $stateParams, $http, $translate, utils) {
+	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils', 
+	    function($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		
@@ -398,6 +429,12 @@
 		$scope.AccountCategoryObject = {};
 		$scope.AllAccountCategories = $rootScope.arFinanceAccountCategory;
 		
+		// Messages
+		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+
         if (angular.isDefined($stateParams.accountid)) {
 			if ($state.current.name === "home.finance.account.maintain") {
 			    $scope.Activity = "Common.Edit";
@@ -419,6 +456,8 @@
 		}
 		 
 		$scope.submit = function() {
+			$scope.cleanReportMessages();
+			
 			// Update the category id
 			if ($scope.AccountCategoryObject.selected) {
 				if ($scope.AccountObject.CategoryID !== $scope.AccountCategoryObject.selected.ID) {
@@ -430,33 +469,26 @@
 			
 			var errMsgs = $scope.AccountObject.Verify();
 			if (errMsgs && errMsgs.length > 0) {
-				$translate(errMsgs).then(function (translations) {
-					// Show errors
-					$.foreach(translations, function(idx, obj) {
-						$rootScope.$broadcast("ShowMessage", "Error", obj);
-					});
-  				});				
+				$q.all(errMsgs).then(function (translations) {
+					Array.prototype.push.call($scope.cleanReportMessages, translations);
+  				}, function(reason) {
+					  $rootScope.$broadcast("ShowMessage", "Error", reason);
+				  });				
 				return;
 			}
 			
 			// Now submit to the server side
-			$http.post('script/hihsrv.php', {
-				    objecttype : 'CREATEFINANCEACCOUNT',
-				    name: $scope.AccountObject.Name,
-				    ctgyid: $scope.AccountObject.CategoryID,
-				    comment: $scope.AccountObject.Comment 
-				})
+			utils.createFinanceAccountQ($scope.AccountObject)
 				.then(function(response) {
 					// First of all, update the rootScope
-					var acntObj = new hih.FinanceAccount();
-					acntObj.setContent(response.data[0]);
-					acntObj.buildCategory($rootScope.arFinanceAccountCategory);
-					$rootScope.arFinanceAccount.push(acntObj);
-					
-					// Change to the display mode
-					$state.go("home.finance.account.display",  { accountid : acntObj.ID });
-				}, function(response) {
+					if (response) {
+						$state.go("home.finance.account.display",  { accountid : response });
+					} else {
+						$state.go("home.finance.account.list");
+					}
+				}, function(reason) {
 					// Failed, throw out error message
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
 		};
 		

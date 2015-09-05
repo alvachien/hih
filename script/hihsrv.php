@@ -265,6 +265,15 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "DELETEFINANCEACCOUNT": {
+			// ToDo: Check the usage first!
+			// Throw error if it is still in use;
+			
+			$acntid = escape ( $realParamArr ['acntid'] );
+			HIHSrv_Function_1Param( 'finance_account_delete', $acntid);	
+		}
+		break;
+			
 		case "GETCURRENCYLIST": {
 			HIHSrv_Function( 'finance_currency_listread' );
 		}

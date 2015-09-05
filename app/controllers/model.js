@@ -381,7 +381,7 @@
 			});
 		}
 	};
-	hih.FinanceAccount.prototype.Verify = function() {
+	hih.FinanceAccount.prototype.Verify = function($translate) {
 		var errMsgs = [];
 		
 		// Call to the super class's verify
@@ -392,12 +392,13 @@
 		// Now do the verify in Frontend part
 		if (this.CategoryID === -1) {
 			// No category is assigned
-			errMsgs.push("Message.InvalidCategory");
+			errMsgs.push($translate("Message.InvalidCategory"));
 		}
 		
+		// Name is must
 		this.Name = this.Name.trim();
 		if (this.Name.length <= 0) {
-			errMsgs.push("Message.InvalidName");
+			errMsgs.push($translate("Message.InvalidName"));
 		}
 		
 		return errMsgs;

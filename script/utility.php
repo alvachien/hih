@@ -1795,6 +1795,49 @@ function finance_account_create($name, $ctgyid, $comment) {
 			$rsttable 
 	);
 }
+function finance_account_delete($acntid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array ("Connect failed: %s\n" . mysqli_connect_error (), null );
+	}
+	$mysqli->autocommit ( false );
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	/* Prepare an delete statement on header */
+	$query = "DELETE FROM " . MySqlFinAccountTable . " WHERE ID=?;";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $acntid );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+	}
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$acntid 
+	);
+}
 // 1.7 Finance account category
 function finance_account_category_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
