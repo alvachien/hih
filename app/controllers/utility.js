@@ -355,6 +355,8 @@
 ////////////////////////////////////////////////////////////////////
 // Finance part
 ////////////////////////////////////////////////////////////////////
+
+// Finance part: Currencies
 						rtnObj.loadCurrencies = function() {
 						    if (!$rootScope.isCurrencyLoaded) {
 						        // Example JSON response
@@ -414,7 +416,8 @@
 									});
 							}
 							return deferred.promise;
-						};
+						};						
+// Finance part: Account
 						rtnObj.createFinanceAccountQ = function(acntObj) {
 							var deferred = $q.defer();
 							$http.post(
@@ -555,6 +558,7 @@
 							}							
 							
 						};
+// Finance part: Account category
 						rtnObj.loadFinanceAccountCategoriesQ = function(bForceReload) {
 							// Load finance accounts with $q supports
 							var deferred = $q.defer();
@@ -585,9 +589,7 @@
 							if (!$rootScope.isFinanceAccountCategoryLoaded) {
 							    // Example JSON response
 							    // {"id":"1","name":"aaa","assetflag":"1","comment":null}
-							    $http
-										.post(
-												'script/hihsrv.php',
+							    $http.post( 'script/hihsrv.php',
 												{
 													objecttype : 'GETFINANCEACCOUNTCATEGORYLIST'
 												})
@@ -615,13 +617,40 @@
 												});
 							}							
 						};
+// Finance part: Documents
+						rtnObj.loadFinanceDocumentsQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceDocumentLoaded) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEDOCUMENTLIST' })
+									.then(function(response) {
+										$rootScope.arFinanceDocument = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var fdt = new hih.FinanceDocument();
+												fdt.setContent(obj);
+												fdt.buildRelationship($rootScope.arFinanceDocumentType,
+													$rootScope.arCurrency)
+												$rootScope.arFinanceDocument.push(fdt);
+											});
+										}
+										$rootScope.isFinanceDocumentLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						
 						rtnObj.loadFinanceDocuments = function() {
 						    if (!$rootScope.isFinanceDocumentLoaded) {
 						        // Example JSON reponse
 						        // {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa","desp":"aaa","tranamount":"-155"}
-								$http
-										.post(
-												'script/hihsrv.php',
+								$http.post('script/hihsrv.php',
 												{
 													objecttype : 'GETFINANCEDOCUMENTLIST'
 												})
@@ -649,6 +678,87 @@
 												});
 							}
 						};
+						rtnObj.loadFinanceDocumentItemsQ = function(docid) {
+							var deferred = $q.defer();
+							var docObject;
+							$.each($rootScope.arFinanceDocument, function(idx, obj){
+								if (obj.DocID === parseInt(docid)) {
+									docObject = obj;
+									return false;
+								}
+							});
+							if (!docObject) {
+								deferred.reject("Order not found!");
+							} else {
+								if (docObject.Items.length > 0) {
+									deferred.resolve(true);
+								} else {
+									$http.post(
+										'script/hihsrv.php',
+										{ objecttype: 'GETFINANCEDOCUMENTITEMLIST_BYDOC', docid: docid})
+									.then(function(response) {
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var di = new hih.FinanceDocumentItem();
+												di.setContent(obj);
+												di.buildRelationship($rootScope.arFinanceAccount,
+													$rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder,
+													$rootScope.arFinanceTransactionType);
+												docObject.Items.push(di);
+											});
+										}
+										deferred.resolve(true);
+									}, function(response){
+										deferred.reject(response.data.Message);
+									});
+								}								
+							}
+							return deferred.promise;
+						};
+						rtnObj.loadFinanceDocumentItems = function (docid) {
+						    // Example JSON response
+						    // {    "docid":"6","itemid":"1","accountid":"4","accountname":"aaa","categoryname":"aaa","trantype":"46","trantypename":"aaa","tranamount":"-20",
+						    //      "controlcenterid":"0","controlcentername":null,"orderid":"6","ordername":"aaa","desp":"aaa","trantypeexpense":"1",
+						    //      "accountcategory":"1","accountcategoryname":"aaa","doctype":"1","doctypename":"aaa","trandate":"2015-04-09","trancurr":"CNY","trancurrname":"aaa"}
+						    var bDocItemExist = false;
+						    if (angular.isDefined($rootScope.arFinanceDocumentItem)) {
+						        $.each($rootScope.arFinanceDocumentItem, function (idx, obj) {
+						            if (obj.docid === docid) {
+						                bDocItemExist = true;
+						                return false;
+						            }
+						        });
+						    }
+
+						    if (bDocItemExist) {
+						    } else {
+						        $http.post(
+                                        'script/hihsrv.php',
+                                        {
+                                            objecttype: 'GETFINANCEDOCUMENTITEMLIST_BYDOC',
+                                            docid: docid
+                                        })
+                                    .success(
+                                        function (data, status, headers, config) {
+                                            if (angular.isDefined(data) && angular.isArray(data)) {
+                                                if (!angular.isDefined($rootScope.arFinanceDocumentItem))
+                                                    $rootScope.arFinanceDocumentItem = [];
+                                                $.merge($rootScope.arFinanceDocumentItem, data);
+                                            }
+
+                                            $rootScope.$broadcast("FinanceDocumentItemLoaded");
+                                        })
+                                    .error(
+                                        function (data, status, headers, config) {
+                                            // called asynchronously if an error occurs or server returns response with an error status.
+                                            $rootScope.$broadcast(
+                                                "ShowMessage",
+                                                "Error",
+                                                data.Message);
+                                        });
+						    }
+						};
+// Finance part: Document types
 						rtnObj.loadFinanceDocumentTypesQ = function() {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceDocumentTypeLoaded) {
@@ -673,15 +783,12 @@
 									});
 							}
 							return deferred.promise;
-
 						};
 						rtnObj.loadFinanceDocumentTypes = function() {
 						    if (!$rootScope.isFinanceDocumentTypeLoaded) {
 						        // Example JSON response
 						        // {"id":"1","name":"aaa","comment":"aaa"}
-								$http
-										.post(
-												'script/hihsrv.php',
+								$http.post( 'script/hihsrv.php',
 												{
 													objecttype : 'GETFINANCEDOCUMENTTYPELIST'
 												})
@@ -710,57 +817,12 @@
 												});
 							}							
 						};
-						rtnObj.loadFinanceDocumentItems = function (docid) {
-						    // Example JSON response
-						    // {    "docid":"6","itemid":"1","accountid":"4","accountname":"aaa","categoryname":"aaa","trantype":"46","trantypename":"aaa","tranamount":"-20",
-						    //      "controlcenterid":"0","controlcentername":null,"orderid":"6","ordername":"aaa","desp":"aaa","trantypeexpense":"1",
-						    //      "accountcategory":"1","accountcategoryname":"aaa","doctype":"1","doctypename":"aaa","trandate":"2015-04-09","trancurr":"CNY","trancurrname":"aaa"}
-						    var bDocItemExist = false;
-						    if (angular.isDefined($rootScope.arFinanceDocumentItem)) {
-						        $.each($rootScope.arFinanceDocumentItem, function (idx, obj) {
-						            if (obj.docid === docid) {
-						                bDocItemExist = true;
-						                return false;
-						            }
-						        });
-						    }
-
-						    if (bDocItemExist) {
-						    } else {
-						        $http
-                                    .post(
-                                        'script/hihsrv.php',
-                                        {
-                                            objecttype: 'GETFINANCEDOCUMENTITEMLIST',
-                                            docid: docid
-                                        })
-                                    .success(
-                                        function (data, status, headers, config) {
-                                            if (angular.isDefined(data) && angular.isArray(data)) {
-                                                if (!angular.isDefined($rootScope.arFinanceDocumentItem))
-                                                    $rootScope.arFinanceDocumentItem = [];
-                                                $.merge($rootScope.arFinanceDocumentItem, data);
-                                            }
-
-                                            $rootScope.$broadcast("FinanceDocumentItemLoaded");
-                                        })
-                                    .error(
-                                        function (data, status, headers, config) {
-                                            // called asynchronously if an error occurs or server returns response with an error status.
-                                            $rootScope.$broadcast(
-                                                "ShowMessage",
-                                                "Error",
-                                                data.Message);
-                                        });
-						    }
-						};
+// Finance part: Transaction types
 						rtnObj.loadFinanceTransactionTypes = function() {
 						    if (!$rootScope.isFinanceTransactionTypeLoaded) {
 						        // Example JSON response
 						        // {"id":"2","parent":null,"name":"\u4e3b\u4e1a\u6536\u5165","expense":"0","comment":null}
-								$http
-										.post(
-												'script/hihsrv.php',
+								$http.post( 'script/hihsrv.php',
 												{
 													objecttype : 'GETFINANCETRANSACTIONTYPELIST'
 												})
@@ -809,9 +871,7 @@
 						rtnObj.loadFinanceTransactionTypeHierarchy = function() {
 							if (!$rootScope.isFinanceTransactionHierarchyLoaded) {
 								// Example JSON reponse
-								$http
-									.post(
-											'script/hihsrv.php',
+								$http.post( 'script/hihsrv.php',
 											{
 												objecttype : 'GETFINANCETRANSACTIONTYPEHIERARCHY'
 											})
@@ -858,6 +918,7 @@
 							}
 							return deferred.promise;
 						};
+// Finance part: Control Center
 						rtnObj.loadFinanceControlCenterHierarchyQ = function(bForceReload) {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceControlCenterHierarchyLoaded  && !bForceReload) {
@@ -918,6 +979,7 @@
 							});
 							return deferred.promise;							
 						};
+// Finance part: Order
 						rtnObj.loadFinanceOrderQ = function(bForceReload) {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceOrderLoaded && !bForceReload) {

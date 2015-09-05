@@ -497,14 +497,34 @@
 		};
 	}])	
 	
-	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
-	    function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadFinanceDocuments();
-		utils.loadFinanceDocumentTypes();
-		utils.loadFinanceAccounts();
-		utils.loadFinanceAccountCategories();
-		utils.loadCurrencies();
-		utils.loadFinanceTransactionTypes();
+	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'uiGridConstants', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, uiGridConstants, utils) {
+		var promise1 = utils.loadCurrenciesQ();
+		var promise2 = utils.loadFinanceTransactionTypesQ();
+		var promise3 = utils.loadFinanceAccountCategoriesQ();
+		var promise4 = utils.loadFinanceDocumentTypesQ();
+		var promise10 = utils.loadFinanceControlCentersQ();
+		var promise11 = utils.loadFinanceOrderQ();
+		$q.all(promise1, promise2, promise3, promise4, promise10, promise11)
+			.then(function(response) {
+				utils.loadFinanceAccountsQ().then(function(response2) {
+					utils.loadFinanceDocumentsQ()
+						.then(function(response3) {
+						    if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
+								$scope.myData = [];
+								$.each($rootScope.arFinanceDocument, function(idx, obj) {
+									$scope.myData.push(angular.copy(obj));					
+								});			  
+							};
+						}, function(reason3) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason3);
+						});
+				}, function(reason2) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+				})
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 
 		// Grid options
         $scope.selectedRows = [];
@@ -519,6 +539,7 @@
 		$scope.gridOptions.enableRowSelection = true;
 		$scope.gridOptions.enableFullRowSelection = true;
 		$scope.gridOptions.selectionRowHeaderWidth = 35;
+		$scope.gridOptions.showColumnFooter = true;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
 		 	return row.DocID;
@@ -545,28 +566,17 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'docid', field: 'DocID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'doctypename', field: 'DocTypeName', displayName: 'Finance.DocumentTypeID', headerCellFilter: "translate", width:90 },
+	    	{ name:'doctypename', field: 'DocTypeObject.Name', displayName: 'Finance.DocumentType', headerCellFilter: "translate", width:90 },
 			{ name:'trandate', field: 'TranDate', displayName: 'Common.Date', headerCellFilter: "translate", width: 150},
-			{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'trancurrname', field:'TranCurrencyName', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
-			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
-	    ];
-	  
-	    if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
-		    $scope.myData = [];
-			$.each($rootScope.arFinanceDocument, function(idx, obj) {
-	  			$scope.myData.push(angular.copy(obj));					
-			});			  
-	    };
+			//{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'trancurrname', field:'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
+			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
+				 aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 200 }
+	    ];	  
 		
 	    $scope.$on("FinanceDocumentLoaded", function() {
 	    	$log.info("HIH FinanceDocument List: Loaded event fired!");
-	    	
-		  $scope.myData = [];
-			$.each($rootScope.arFinanceDocument, function(idx, obj) {
-				$scope.myData.push(angular.copy(obj));					
-			});			  
 	    });
 	    
 	    $scope.$on("FinanceDocumentTypeLoaded", function() {
@@ -585,14 +595,14 @@
 		$scope.displayItem = function (row) {
 			if ($scope.selectedRows.length <= 0)
 				return;
-	    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].docid });
+	    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].DocID });
 		};
 		
 		// Edit
 		$scope.editItem = function (row) {
 			if ($scope.selectedRows.length <= 0)
 				return;
-	    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].docid });
+	    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].DocID });
 		};
 		
 		// Create
@@ -602,11 +612,17 @@
 		};
 	}])
 		
-	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
+	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, uiGridConstants, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
+
+		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
 		
 		// For item table
 		$scope.gridOptions = {};
@@ -617,30 +633,29 @@
 		$scope.gridOptions.enableGridMenu = false;
 		$scope.gridOptions.enableColumnMenus = false;
 		$scope.gridOptions.showGridFooter = true;
-		//$scope.gridOptions.enableRowSelection = true;
-		//$scope.gridOptions.enableFullRowSelection = true;
-		//$scope.gridOptions.selectionRowHeaderWidth = 35;
+		$scope.gridOptions.showColumnFooter = true;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.ItemID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.docid;
+		 	return row.ItemID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
 		};
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'itemid', field: 'itemid', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
-	    	{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
-			{ name:'accountname', field: 'accountname', displayName: 'Finance.Account', headerCellFilter: "translate", width: 100},
+	    	{ name:'itemid', field: 'ItemID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
+	    	//{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
+			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 100},
 			{ name:'accountcategoryname', field:'accountcategoryname', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
-			{ name:'trantypename', field:'trantypename', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
+			{ name:'trantypename', field:'TranTypeObject.Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
 			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
-			{ name:'tranamount', field:'tranamount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 50 },
-			{ name:'desp', field:'desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
-			{ name: 'edit', field:'itemid', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
+			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
+			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
 							<div class="btn-group" role="group">\
@@ -661,20 +676,11 @@
 		$scope.AllTransactionTypes = $rootScope.arFinanceTransactionType;
 
         // Attributes
-		$scope.DocumentHeader = {};
+		$scope.DocumentObject = new hih.FinanceDocument();
 		$scope.ItemsCollection = [];
-		$scope.SelectedDocumentItem = {}; // Current edit item
-		$scope.SelectedDocumentItem.itemid = -1;
+		$scope.SelectedDocumentItem = new hih.FinanceDocumentItem(); // Current edit item
 		$scope.nextItemID = 0;
-		$scope.ItemsChanged = false;
 		
-		$scope.DocumentHeader.DocumentID = -1;
-		$scope.DocumentHeader.DocumentType = {};
-		$scope.DocumentHeader.DocumentCurrency = {};
-		$scope.DocumentHeader.DocumentTranDate = new Date();
-		$scope.DocumentHeader.DocumentDesp = "";
-		$scope.DocumentHeader.DocumentAmount = 0.0;
-
         // For date control
 		$scope.isDateOpened = false;
 		$scope.DateFormat = "yyyy-MM-dd";
@@ -696,7 +702,7 @@
 			if (angular.isArray($scope.ItemsCollection) && $scope.ItemsCollection.length > 0) {
 				$scope.nextItemID = 0;
 				$.each($scope.ItemsCollection, function (idx, obj) {
-	                var nItemID = parseInt(obj.itemid);
+	                var nItemID = parseInt(obj.ItemID);
 						
 					if ($scope.nextItemID < nItemID) {
 						$scope.nextItemID = nItemID;
@@ -710,51 +716,43 @@
 		};
 
 		if (angular.isDefined($stateParams.docid)) {
-		    utils.loadFinanceDocumentItems($stateParams.docid);
-
-		    $scope.DocumentHeader.DocumentID = parseInt($stateParams.docid);
-
 		    if ($state.current.name === "home.finance.document.maintain") {
 		        $scope.Activity = "Common.Edit";
 		    } else if ($state.current.name === "home.finance.document.display") {
 		        $scope.Activity = "Common.Display";
 		        $scope.isReadonly = true;
 		    }
+			
+		    utils.loadFinanceDocumentItemsQ($stateParams.docid)
+				.then(function(response) {
+					var nDocID = parseInt($stateParams.docid);
+					$.each($rootScope.arFinanceDocument, function (idx, obj) {
+						if (obj.DocID === nDocID) {
+							$scope.ItemsCollection = [];
+							$scope.DocumentObject = angular.copy(obj);
+							for(var i = 0; i < obj.Items.length; i++) {
+								$scope.ItemsCollection.push(obj.Items[i]);
+							}
 
-		    $.each($rootScope.arFinanceDocument, function (idx, obj) {
-		        if (obj.docid === $stateParams.docid) {
-
-		            $scope.DocumentHeader.DocumentAmount = parseFloat(obj.tranamount).toFixed(4);
-		            $scope.DocumentHeader.DocumentDesp = obj.desp;
-		            $scope.DocumentHeader.DocumentTranDate = obj.trandate;					
-
-		            $.each($scope.AllDocumentTypes, function (idx2, obj2) {
-		                if (obj2.id === obj.doctype) {
-		                    $scope.DocumentHeader.DocumentType.selected = obj2;
-		                    return false;
-		                }
-		            });
-		            $.each($scope.AllCurrencies, function (idx3, obj3) {
-		                if (obj3.curr === obj.trancurr) {
-		                    $scope.DocumentHeader.DocumentCurrency.selected = obj3;
-		                    return false;
-		                }
-		            });
-
-		            return false;
-		        }
-		    });
-
-		    if (angular.isDefined($rootScope.arFinanceDocumentItem) && $scope.ItemsCollection.length <= 0) {
-		        $.each($rootScope.arFinanceDocumentItem, function (idx10, obj10) {
-		            if (obj10.docid === $stateParams.docid) {
-		                $scope.ItemsCollection.push(obj10);
-		                return false;
-		            }
-		        });
-				
-				$scope.UpdateNextItemID();
-		    }
+							$.each($scope.AllDocumentTypes, function (idx2, obj2) {
+								if (obj2.ID === obj.DocTypeID) {
+									$scope.DocumentObject.DocTypeObject.selected = obj2;
+									return false;
+								}
+							});
+							$.each($scope.AllCurrencies, function (idx3, obj3) {
+								if (obj3.Currency === obj.TranCurrency) {
+									$scope.DocumentObject.TranCurrencyObject.selected = obj3;
+									return false;
+								}
+							});
+		
+							return false;
+						}
+					});					
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 		} else {
 		    $scope.Activity = "Common.Create";
 			$scope.UpdateNextItemID();
@@ -762,14 +760,6 @@
 		
 		$scope.$on("FinanceDocumentItemLoaded", function () {
 		    $log.info("HIH FinanceDocument: Items Loaded event fired!");
-		    if (angular.isDefined($rootScope.arFinanceDocumentItem) && $scope.ItemsCollection.length <= 0) {
-		        $.each($rootScope.arFinanceDocumentItem, function (idx11, obj11) {
-		            if (obj11.docid === $stateParams.docid) {
-		                $scope.ItemsCollection.push(angular.copy(obj11));
-		                return false;
-		            }
-		        });
-		    }
 		});
 
 		$scope.submit = function() {

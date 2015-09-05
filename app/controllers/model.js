@@ -633,12 +633,17 @@
 		this.DocID = -1;
 		this.ItemID = -1;
 		this.AccountID = -1;
-		//this.AccountName = "";
 		this.TranTypeID = -1;
 		this.TranAmount = 0.0;
 		this.ControlCenterID = -1;
 		this.OrderID = -1;
 		this.Desp = "";
+		
+		// Runtime information
+		this.ControlCenterObject = {};
+		this.OrderObject = {};
+		this.AccountObject = {};
+		this.TranTypeObject = {};
 	};
 	hih.extend(hih.FinanceDocumentItem, hih.Model);
 	hih.FinanceDocumentItem.prototype.setContent = function(obj) {
@@ -659,32 +664,121 @@
 		this.TranAmount = parseFloat(obj.tranamount);
 		this.Desp = obj.desp;
 	};
+	hih.FinanceDocumentItem.prototype.buildRelationship = function(arAccount, arCC, arOrder, arTranType) {
+		var that = this;
+		if (arAccount && $.isArray(arAccount) && arAccount.length > 0) {
+			$.each(arAccount, function(idx, obj){
+				if (obj.ID === that.AccountID) {
+					that.AccountObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arCC && $.isArray(arCC) && arCC.length > 0) {
+			$.each(arCC, function(idx, obj){
+				if (obj.ID === that.ControlCenterID) {
+					that.ControlCenterObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arOrder && $.isArray(arOrder) && arOrder.length > 0) {
+			$.each(arOrder, function(idx, obj){
+				if (obj.ID === that.OrderID) {
+					that.OrderObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arTranType && $.isArray(arTranType) && arTranType.length > 0) {
+			$.each(arTranType, function(idx, obj){
+				if (obj.ID === that.TranTypeID) {
+					that.TranTypeObject = obj;
+					return false;
+				}
+			});
+		}
+	};
+	hih.FinanceDocumentItem.prototype.Verify = function($translate) {
+		// ToDo
+	};
+	hih.FinanceDocumentItem.prototype.toJSONObject = function() {
+		// ToDo
+	};
+	hih.FinanceDocumentItem.prototype.toJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON);
+		}
+		return JSON && JSON.stringify(this);
+	};
 	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
 		this.DocID = -1; 
-		this.DocTypeID = -1;		
-		this.DocTypeName = "";
-		this.DocTypeObject = {};
+		this.DocTypeID = -1;
+		//this.DocTypeName = "";
 		this.TranDate = new Date();
 		this.TranCurrency = "";
-		this.TranCurrencyName = "";
-		this.TranCurrencyObject = {};
+		//this.TranCurrencyName = "";
 		this.Desp = "";
 		this.TranAmount = 0.0;
 		
 		this.Items = [];
+		
+		this.DocTypeObject = {};
+		this.TranCurrencyObject = {};		
 	};
 	hih.extend(hih.FinanceDocument, hih.Model);
 	hih.FinanceDocument.prototype.setContent = function(obj) {
 		this.DocID = parseInt(obj.docid);
 		this.DocTypeID = parseInt(obj.doctype);
-		this.DocTypeName = obj.doctypename;
+		//this.DocTypeName = obj.doctypename;
 		this.TranDate = obj.trandate;
 		this.TranCurrency = obj.trancurr;
-		this.TranCurrencyName = obj.trancurrname;
+		//this.TranCurrencyName = obj.trancurrname;
 		this.Desp = obj.desp;
-		this.TranAmount = parseFloat(obj.tranamount);
+		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 	};	
+	hih.FinanceDocument.prototype.buildRelationship = function(arDocType, arCurrency) {
+		var that = this;
+		if (arDocType && $.isArray(arDocType) && arDocType.length > 0) {
+			$.each(arDocType, function(idx, obj){
+				if (obj.ID === that.DocTypeID) {
+					that.DocTypeObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
+			$.each(arCurrency, function(idx, obj){
+				if (obj.Currency === that.TranCurrency) {
+					that.TranCurrencyObject = obj;
+					return false;
+				}
+			});
+		}		
+	};
+	hih.FinanceDocument.prototype.Verify = function($translate) {
+		// ToDo
+		
+		// Document type
+		// Tran. date
+		// Tran. currency
+		// Amount
+		// Desp.
+		
+		// Items
+	};
+	hih.FinanceDocument.prototype.toJSONObject = function() {
+		// ToDo
+	};
+	hih.FinanceDocument.prototype.toJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
 	// 8. 
 }());
 
