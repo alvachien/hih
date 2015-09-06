@@ -38,6 +38,7 @@
 		"Text": "Text",
 		"ValidFrom": "Valid From",
 		"ValidTo": "Valid To",
+		"Description": "Description",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",

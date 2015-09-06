@@ -648,14 +648,14 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'itemid', field: 'ItemID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
 	    	//{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
-			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 100},
+			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 150},
 			{ name:'accountcategoryname', field:'accountcategoryname', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
 			{ name:'trantypename', field:'TranTypeObject.Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
 			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
 			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
 				aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
-			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
+			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
 							<div class="btn-group" role="group">\
@@ -730,8 +730,8 @@
 						if (obj.DocID === nDocID) {
 							$scope.ItemsCollection = [];
 							$scope.DocumentObject = angular.copy(obj);
-							for(var i = 0; i < obj.Items.length; i++) {
-								$scope.ItemsCollection.push(obj.Items[i]);
+							for(var i = 0; i < $scope.DocumentObject.Items.length; i++) {
+								$scope.ItemsCollection.push($scope.DocumentObject.Items[i]);
 							}
 
 							$.each($scope.AllDocumentTypes, function (idx2, obj2) {
@@ -1498,7 +1498,7 @@
 			{ name:'precent', field: 'Precentage', displayName: 'Common.Precent', headerCellFilter: "translate", width: 100,
 				aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 150 },
-			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 200,
+			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
 							<div class="btn-group" role="group">\

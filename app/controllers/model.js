@@ -661,7 +661,7 @@
 		} else {
 			this.OrderID = -1;
 		}
-		this.TranAmount = parseFloat(obj.tranamount);
+		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 		this.Desp = obj.desp;
 	};
 	hih.FinanceDocumentItem.prototype.buildRelationship = function(arAccount, arCC, arOrder, arTranType) {
