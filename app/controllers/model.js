@@ -700,10 +700,30 @@
 		}
 	};
 	hih.FinanceDocumentItem.prototype.Verify = function($translate) {
-		// ToDo
+		var errMsgs = [];
+		
+		// 1. Account
+		if (isNaN(this.AccountID) || this.AccountID === -1) {
+			errMsgs.push($translate("Message.InvalidAccount"));
+		}
+		// 2. Transaction type
+		if (isNaN(this.TranTypeID) || this.TranTypeID === -1) {
+			errMsgs.push($translate("Message.InvalidTransactionType"));
+		}
+		// 3. Amount
+		if (isNaN(this.TranAmount) || this.TranAmount === 0) {
+			errMsgs.push($translate("Message.InvalidAmount"));
+		}
+		// 4. Control Center ID OR Order ID
+		// 5. Desp
+		
+		return errMsgs;
 	};
 	hih.FinanceDocumentItem.prototype.toJSONObject = function() {
 		// ToDo
+		var fJSON = {};
+		
+		return fJSON;
 	};
 	hih.FinanceDocumentItem.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
@@ -760,7 +780,7 @@
 	};
 	hih.FinanceDocument.prototype.Verify = function($translate) {
 		// ToDo
-		
+		var errMsgs = [];
 		// Document type
 		// Tran. date
 		// Tran. currency
@@ -768,9 +788,12 @@
 		// Desp.
 		
 		// Items
+		return errMsgs;
 	};
 	hih.FinanceDocument.prototype.toJSONObject = function() {
 		// ToDo
+		var fJSON = {};
+		return fJSON;
 	};
 	hih.FinanceDocument.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();

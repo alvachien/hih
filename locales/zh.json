@@ -157,6 +157,7 @@
 		"InvalidTotalPrecentage": "不合法的百分比总和",
 		"DuplicateControlCenterInSRule": "控制中心{{ccid}}(名称:{{ccname}})被使用了多次",
 		"SelectSingleOrderForDeletion": "选择一个定单来进行删除",
-		"SelectSingleItemForDeletion": "选择一个项来进行删除"
+		"SelectSingleItemForDeletion": "选择一个项来进行删除",
+		"InvalidAccount": "不合法的账户"
 	}
 }

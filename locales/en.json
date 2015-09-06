@@ -157,6 +157,7 @@
 		"InvalidTotalPrecentage": "Invalid total precentage",
 		"DuplicateControlCenterInSRule": "Control Center {{ccid}} with name {{ccname}} occurred more than once",
 		"SelectSingleOrderForDeletion": "Select one Order for deletion",
-		"SelectSingleItemForDeletion": "Select one single item for deletion" 
+		"SelectSingleItemForDeletion": "Select one single item for deletion",
+		"InvalidAccount": "Account is invalid"
 	}
  }

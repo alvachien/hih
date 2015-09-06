@@ -571,7 +571,7 @@
 			//{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
 			{ name:'trancurrname', field:'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
 			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
-				 aggregationType:uiGridConstants.aggregationTypes.sum },
+				 aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 200 }
 	    ];	  
 		
@@ -649,12 +649,14 @@
 	    	{ name:'itemid', field: 'ItemID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
 	    	//{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
 			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 150},
-			{ name:'accountcategoryname', field:'accountcategoryname', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
+			{ name:'accountcategoryname', field:'AccountObject.CategoryObject.Name', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
 			{ name:'trantypename', field:'TranTypeObject.Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
-			{ name:'trantypeexpense', field:'trantypeexpense', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
+			{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
 			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
+			{ name:'itemcc', field:'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width: 100 },
+			{ name:'itemord', field:'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width: 100 },
 			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
@@ -674,6 +676,8 @@
 		$scope.AllCurrencies = $rootScope.arCurrency;
 		$scope.AllDocumentTypes = $rootScope.arFinanceDocumentType;
 		$scope.AllTransactionTypes = $rootScope.arFinanceTransactionType;
+		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
+		$scope.AllOrders = $rootScope.arFinanceOrder;
 
         // Attributes
 		$scope.DocumentObject = new hih.FinanceDocument();
@@ -698,9 +702,10 @@
 		};
 		
 		// Get the next Item ID
-		$scope.UpdateNextItemID = function () {
+		$scope.updateNextItemID = function () {
 			if (angular.isArray($scope.ItemsCollection) && $scope.ItemsCollection.length > 0) {
 				$scope.nextItemID = 0;
+				
 				$.each($scope.ItemsCollection, function (idx, obj) {
 	                var nItemID = parseInt(obj.ItemID);
 						
@@ -755,90 +760,146 @@
 				});
 		} else {
 		    $scope.Activity = "Common.Create";
-			$scope.UpdateNextItemID();
 		}
 		
 		$scope.$on("FinanceDocumentItemLoaded", function () {
 		    $log.info("HIH FinanceDocument: Items Loaded event fired!");
 		});
 
+		$scope.displayItem = function(itemid) {
+			$scope.cleanReportMessages();
+			var nID = parseInt(itemid);
+			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
+				if ($scope.ItemsCollection[i].ItemID === nID) {
+					$scope.SelectedDocumentItem = $scope.ItemsCollection[i]; 
+					$scope.SelectedDocumentItem.AccountObject.selected = $scope.SelectedDocumentItem.AccountObject;
+					$scope.SelectedDocumentItem.TranTypeObject.selected = $scope.SelectedDocumentItem.TranTypeObject;
+					$scope.SelectedDocumentItem.ControlCenterObject.selected = $scope.SelectedDocumentItem.ControlCenterObject;
+					$scope.SelectedDocumentItem.OrderObject.selected = $scope.SelectedDocumentItem.OrderObject;
+					break;
+				}
+			}
+
+			$scope.ItemActivity = "Finance.DisplayItem";
+		};
+		
+		$scope.editItem = function(itemid) {
+			$scope.cleanReportMessages();
+			var nID = parseInt(itemid);
+			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
+				if ($scope.ItemsCollection[i].ItemID === nID) {
+					$scope.SelectedDocumentItem = $scope.ItemsCollection[i]; 
+					$scope.SelectedDocumentItem.AccountObject.selected = $scope.SelectedDocumentItem.AccountObject;
+					$scope.SelectedDocumentItem.TranTypeObject.selected = $scope.SelectedDocumentItem.TranTypeObject;
+					$scope.SelectedDocumentItem.ControlCenterObject.selected = $scope.SelectedDocumentItem.ControlCenterObject;
+					$scope.SelectedDocumentItem.OrderObject.selected = $scope.SelectedDocumentItem.OrderObject;
+					break;
+				}
+			}
+			
+			$scope.ItemActivity = "Finance.EditItem";
+		};
+		
+		$scope.deleteItem = function(itemid) {
+			$scope.cleanReportMessages();
+			// ToDo: delete the item
+		};
+		
+		$scope.saveCurrentItem = function() {
+			$scope.cleanReportMessages();
+			
+			// Account
+			if ($scope.SelectedDocumentItem.AccountObject.selected) {
+				$scope.SelectedDocumentItem.AccountID = $scope.SelectedDocumentItem.AccountObject.selected.ID; 
+				$scope.SelectedDocumentItem.AccountObject = $scope.SelectedDocumentItem.AccountObject.selected;
+			}
+			// Tran. type
+			if ($scope.SelectedDocumentItem.TranTypeObject.selected) {
+				$scope.SelectedDocumentItem.TranTypeID = $scope.SelectedDocumentItem.TranTypeObject.selected.ID; 
+				$scope.SelectedDocumentItem.TranTypeObject = $scope.SelectedDocumentItem.TranTypeObject.selected;				
+			}
+			
+			// Perform the check
+			var rptMsgs = $scope.SelectedDocumentItem.Verify($translate);
+			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+				$q.all(rptMsgs)
+					.then(function(response) {
+						$scope.cleanReportMessages();
+						Array.prototype.push.apply($scope.ReportedMessages, response);
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+					});
+				return;
+			}
+			
+			// Next item ID
+			if ($scope.SelectedDocumentItem.ItemID === -1) {
+				$scope.updateNextItemID();
+				$scope.SelectedDocumentItem.ItemID = $scope.nextItemID;				
+				$scope.ItemsCollection.push($scope.SelectedDocumentItem);
+			} else {
+				// Update the selected one
+				// It is updated automatically? Yes, it is!
+			}
+			
+			// New item
+			$scope.SelectedDocumentItem = new hih.FinanceDocumentItem();
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		$scope.cancelCurrentItem = function() {
+			$scope.cleanReportMessages();
+			$scope.SelectedDocumentItem = new hih.FinanceDocumentItem();
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		
 		$scope.submit = function() {
-			// Submit the current item
+			// Submit the items
+			$scope.DocumentObject.Items = [];
+			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
+				$scope.DocumentObject.Items.push($scope.ItemsCollection[i]);
+			}
+			
+			var rptMsgs = $scope.DocumentObject.Verify($translate);
+			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+				// Show all the errors?
+				$q.all(rptMsgs).then(
+					function(response) {
+						$scope.cleanReportMessages();
+						Array.prototype.push.apply($scope.ReportedMessages, response);
+					},
+					function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+					}	
+				);
+				return;
+			}
+			
+			// Now, ready for submit!
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			if (strJSON) {
+				if ($scope.DocumentObject.ID === -1) {
+					// // Create order
+					// utils.createFinanceDocumentQ(strJSON)
+					// 	.then(function(response) {
+					// 		// Take a look at the response
+					// 		if (response) {
+					// 			utils.loadFinanceOrderQ(true)
+					// 				.then(function(response2) {
+					// 					// Now navigate to display
+					// 					$state.go("home.finance.order.display",  { id : response });
+					// 				}, function(reason2) {
+					// 					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					// 				});							
+					// 		}
+					// 	}, function(reason) {
+					// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
+					// 	});
+				}
+			}			
 		};
 		
 		$scope.close = function() {
 		    $state.go("home.finance.document.list");
-		};
-
-		$scope.saveCurrentItem = function() {
-			// Save current editting item
-			if ($scope.SelectedDocumentItem.itemid === -1) {
-				var newItem = angular.copy($scope.SelectedDocumentItem);
-				newItem.itemid = $scope.nextItemID;	
-				newItem.accountid = newItem.Account.selected.id;
-				newItem.accountname = newItem.Account.selected.name;
-				//newItem.accountcategoryname = newItem.Accoun
-				$scope.ItemsCollection.push(newItem);
-				
-				$scope.UpdateNextItemID();				
-				$scope.cancelCurrentItem();
-			}
-		};
-		
-		$scope.cancelCurrentItem = function() {
-			$scope.SelectedDocumentItem = {}; 
-			$scope.SelectedDocumentItem.itemid = -1;
-		};
-		
-		$scope.displayItem = function (itemid) {
-			$.each($scope.ItemsCollection, function (idx, obj) {
-				if (obj.itemid === itemid) {
-					$scope.setSelectedDocumentItem(obj);
-					return false;
-				}
-		    });			
-		};
-		
-		$scope.setSelectedDocumentItem = function(docItem) {
-			$scope.SelectedDocumentItem = angular.copy(docItem);
-			$scope.SelectedDocumentItem.Account = {};
-			$scope.SelectedDocumentItem.TranType = {};
-			
-			// Account
-			$.each($scope.AllAccounts, function(idx, obj) {
-				if (obj.id === $scope.SelectedDocumentItem.accountid) {
-					$scope.SelectedDocumentItem.Account.selected = obj;
-					return false;
-				}
-			});			
-			
-			// Transaction type
-			$.each($scope.AllTransactionTypes, function(idx2, obj2) {
-				if (obj2.id === $scope.SelectedDocumentItem.trantype) {
-					$scope.SelectedDocumentItem.TranType.selected = obj2;
-					return false;
-				}
-			});
-		};
-		
-		$scope.editItem = function(itemid) {
-			// Load the specified item into the current item
-			$.each($scope.ItemsCollection, function (idx, obj) {
-				if (obj.itemid === itemid) {
-					$scope.setSelectedDocumentItem(obj);
-					return false;
-				}
-		    });
-		};
-		$scope.deleteItem = function(itemid) {
-			// Load the specified item into the current item
-			$.each($scope.ItemsCollection, function (idx, obj) {
-				if (obj.itemid === itemid) {
-					// Delete it!
-					//$scope.setSelectedDocumentItem(obj);
-					return false;
-				}
-		    });
 		};
 	}])	
 	
@@ -1607,6 +1668,7 @@
 		
 		$scope.deleteItem = function(ruleid) {
 			$scope.cleanReportMessages();
+			// ToDo: delete the settlement rule
 		};
 		
 		$scope.saveCurrentItem = function() {

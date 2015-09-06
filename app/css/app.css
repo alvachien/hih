@@ -88,3 +88,5 @@ to prevent collapsing during animation*/
 */
 .accountasset { color: yellowgreen; }
 .accountnotasset { color: firebrick;  }
+.amountcell { text-align: right; }
+
