@@ -403,6 +403,23 @@
 		
 		return errMsgs;
 	};
+	hih.FinanceAccount.prototype.toJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "CategoryObject" )
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		return forJSON;
+	};
+	hih.FinanceAccount.prototype.toJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);		
+	};
 	// 5. Controlling Center
 	hih.FinanceControlCenter = function FinanceControlCenter() {
 		this.ID = -1;
@@ -517,18 +534,14 @@
 			else 
 				forJSON["Precent"] = this[i];
 		}
-		// forJSON.RuleID = this.RuleID;
-		// forJSON.ControlCenterID = this.ControlCenterID;
-		// forJSON.Precent = this.Precentage;
-		// forJSON.Comment = this.Comment;
 		return forJSON;
 	};
 	hih.FinanceOrderSettlementRule.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON);
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
 		}
-		return JSON && JSON.stringify(this);
+		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
@@ -601,7 +614,7 @@
 			forJSON.SRules.push(this.SRules[j].toJSONObject());
 		}
 		
-		return JSON && JSON.stringify(forJSON);
+		return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
 	};
 	// 6. Transaction type
 	hih.FinanceTransactionType = function FinanceTransactionType() {
@@ -715,22 +728,43 @@
 			errMsgs.push($translate("Message.InvalidAmount"));
 		}
 		// 4. Control Center ID OR Order ID
+		if ((isNaN(this.ControlCenterID) || this.ControlCenterID === -1)
+			&& (isNaN(this.OrderID) || this.OrderID === -1)) {
+			errMsgs.push($translate("Message.MissingControlCenterOrOrder"));	
+		}
+		if ((!isNaN(this.ControlCenterID) && this.ControlCenterID !== -1)
+			&& (!isNaN(this.OrderID) && this.OrderID !== -1)) {
+			errMsgs.push($translate("Message.EitherControlCenterOrOrder"));
+		}
 		// 5. Desp
+		if (this.Desp.trim().length <= 0) {
+			errMsgs.push($translate("Message.InvalidDescription"));
+		}
 		
 		return errMsgs;
 	};
 	hih.FinanceDocumentItem.prototype.toJSONObject = function() {
-		// ToDo
-		var fJSON = {};
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "DocID" || i === "ControlCenterObject" || i === "OrderObject"
+				|| i === "AccountObject" || i === "TranTypeObject") 
+				continue;
+			
+			if (i === "TranAmount") {
+				forJSON[i] = parseFloat(this[i]);
+			} else {
+				forJSON[i] = this[i];
+			}			
+		}
 		
-		return fJSON;
+		return forJSON;
 	};
 	hih.FinanceDocumentItem.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this);
+		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
 	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
@@ -779,21 +813,54 @@
 		}		
 	};
 	hih.FinanceDocument.prototype.Verify = function($translate) {
-		// ToDo
 		var errMsgs = [];
 		// Document type
-		// Tran. date
+		if (isNaN(this.DocTypeID) || this.DocTypeID === -1) {
+			errMsgs.push($translate("Message.InvalidDocType"));
+		}
+		// Tran. date?
+		// Maybe not necessary
 		// Tran. currency
+		if (this.TranCurrency.trim().length <= 0) {
+			errMsgs.push($translate("Message.InvalidCurrency"));
+		}
 		// Amount
+		// Maybe not necessary
 		// Desp.
+		if (this.Desp.trim().length <= 0) {
+			errMsgs.push($translate("Message.InvalidDescription"));
+		}
 		
 		// Items
+		this.TranAmount = 0.0;
+		for(var i = 0; i < this.Items.length; i ++) {
+			var msg2 = this.Items[i].Verify($translate);
+			if (msg2.length > 0) {
+				Array.prototype.push.apply(errMsgs, msg2);
+			}
+			this.TranAmount += parseFloat(this.Items[i].Amount);
+		}
+		
 		return errMsgs;
 	};
 	hih.FinanceDocument.prototype.toJSONObject = function() {
-		// ToDo
-		var fJSON = {};
-		return fJSON;
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "DocTypeObject" || i === "Items" || i === "TranCurrencyObject"
+				|| i === "TranDate" || i === "TranAmount") 
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		// Tran Date
+		forJSON.TranDate = hih.ModelUtility.DateFormatter(this.TranDate);;
+		
+		for(var j = 0 ; j < this.Items.length; ++j) {
+			if (!$.isArray(forJSON.Items)) forJSON.Items = [];
+			forJSON.Items.push(this.Items[j].toJSONObject());
+		}
+		
+		return forJSON;
 	};
 	hih.FinanceDocument.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();

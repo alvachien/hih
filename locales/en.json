@@ -141,6 +141,13 @@
   		"ExpenseFlag": "Revenue/Expense",
   		"Incoming": "Incoming",
   		"Outgoing": "Outgoing",
+		"NormalDocument": "Normal Document",
+		"TransferDocument": "Transfer Document",
+		"CurrencyExchangeDocument": "Currency Exchange Document",
+		"InstallmentDocument": "Installment Document",
+		"DownPaymentDocument": "Down Payment Document",
+		"SourceAccount": "Source account",
+		"TargetAccount": "Target account",
   		
   		"CreateAccountTitle": "Create an Account"
   	},
@@ -158,6 +165,12 @@
 		"DuplicateControlCenterInSRule": "Control Center {{ccid}} with name {{ccname}} occurred more than once",
 		"SelectSingleOrderForDeletion": "Select one Order for deletion",
 		"SelectSingleItemForDeletion": "Select one single item for deletion",
-		"InvalidAccount": "Account is invalid"
+		"InvalidAccount": "Account is invalid",
+		"InvalidDescription": "Invalid description",
+		"InvalidTransactionType": "Invalid Transaction Type",
+		"MissingItems": "Missing items",
+		"MissingControlCenterOrOrder": "Missing Control Center/Order",
+		"EitherControlCenterOrOrder": "Use either Control Center or Order, but not both",
+		"InvalidCurrency": "Invalid Currency"
 	}
  }

@@ -6,12 +6,23 @@
 		</h2>
 
 		<div class="btn-toolbar" role="toolbar" aria-label="...">
-		  <div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn-group btn-primary" ng-click="newItem()" translate="Common.New">New</button>
+		  <div class="btn-group" role="group" aria-label="operation">
+			<div class="btn-group" role="group">
+            	<div class="dropdown" dropdown>
+	                <button role="button" class="btn-group btn-default dropdown-toggle" dropdown-toggle><span translate="Common.New">New</span><b class="caret"></b></button>
+	                <ul class="dropdown-menu">
+						<li><a ui-sref="home.finance.document.create"><span translate="Finance.NormalDocument">Normal Document</span></a></li>
+						<li><a ui-sref="home.finance.document.create_tran"><span translate="Finance.TransferDocument">Transfer Document</span></a></li>
+						<li><a ui-sref="home.finance.document.create_currexg"><span translate="Finance.CurrencyExchangeDocument">Currency Exchange Document</span></a></li>
+						<li><a ui-sref="home.finance.document.create_instal"><span translate="Finance.InstallmentDocument">Installment</span></a></li>
+						<li><a ui-sref="home.finance.document.create_downpay"><span translate="Finance.DownPaymentDocument">Down Payment</span></a></li>
+ 					</ul>
+                </div>
+			</div>
 			<button type="button" class="btn-group btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
 		  </div>
 		  
-		  <div class="btn-group" role="group" aria-label="...">
+		  <div class="btn-group" role="group" aria-label="">
   			<button type="button" ng-click="displayItem()" ng-disabled="selectedRows.length <= 0"
 					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
 					translate="Common.Display">					
@@ -31,4 +42,3 @@
 	<div id="gridFinDocs" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
 		 style="width: 100%; height: 500px;"></div>
 </div>
-

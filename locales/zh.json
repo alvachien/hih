@@ -141,6 +141,13 @@
   		"ExpenseFlag": "收支",
   		"Incoming": "收入",
   		"Outgoing": "开支",
+		"NormalDocument": "普通凭证",
+		"TransferDocument": "转账凭证",
+		"CurrencyExchangeDocument": "货币兑换凭证",
+		"InstallmentDocument": "分期付款凭证",
+		"DownPaymentDocument": "预付款凭证",  
+		"SourceAccount": "转出账户",
+		"TargetAccount": "转入账户",
 
   		"CreateAccountTitle": "创建账户"
   	},
@@ -158,6 +165,12 @@
 		"DuplicateControlCenterInSRule": "控制中心{{ccid}}(名称:{{ccname}})被使用了多次",
 		"SelectSingleOrderForDeletion": "选择一个定单来进行删除",
 		"SelectSingleItemForDeletion": "选择一个项来进行删除",
-		"InvalidAccount": "不合法的账户"
+		"InvalidAccount": "不合法的账户",
+		"InvalidDescription": "不合法的描述",
+		"InvalidTransactionType": "不合法的交易类型",
+		"MissingItems": "缺少行项目",
+		"MissingControlCenterOrOrder": "缺少控制中心/定单",
+		"EitherControlCenterOrOrder": "使用控制中心或定单，不能同时使用",
+		"InvalidCurrency": "不合法的货币"
 	}
 }

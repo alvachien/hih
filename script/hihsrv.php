@@ -245,23 +245,33 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			
 		case "CREATEFINANCEACCOUNT":
 			{
-				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$name = escape( $realParamArr['name'] );
-					$ctgyid = escape( $realParamArr['ctgyid'] );
-					$comment = escape( $realParamArr['comment'] );
-					
-					// To-Do: Validate!
-					
-					$arRst = finance_account_create($name, $ctgyid, $comment);
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
-					} else {
-						echo json_encode ( $arRst [1] );
-					}
+				// For JSON-based parameter, can NOT escape it directly!
+				$acdata = json_decode( $realParamArr ['acdata'] );
+				$acObj = new HIHAccount($acdata);
+				$errCodes = $acObj->CheckValid();
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
 				} else {
-					$sErrors = "User not login yet";
-					export_error ( sErrors );
+					HIHSrv_Function_1Param( 'finance_account_create', $acObj);
 				}
+				
+				// if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+				// 	$name = escape( $realParamArr['name'] );
+				// 	$ctgyid = escape( $realParamArr['ctgyid'] );
+				// 	$comment = escape( $realParamArr['comment'] );
+				// 	
+				// 	// To-Do: Validate!
+				// 	
+				// 	$arRst = finance_account_create($name, $ctgyid, $comment);
+				// 	if (! IsNullOrEmptyString ( $arRst [0] )) {
+				// 		export_error ( $arRst [0] );
+				// 	} else {
+				// 		echo json_encode ( $arRst [1] );
+				// 	}
+				// } else {
+				// 	$sErrors = "User not login yet";
+				// 	export_error ( sErrors );
+				// }
 			}
 			break;
 			
@@ -297,6 +307,20 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "GETFINANCEDOCUMENTITEMLIST_BYDOC": {
 			$docid = escape ( $realParamArr ['docid'] );
 			HIHSrv_Function_1Param( 'finance_documentitem_listread', $docid );
+		}
+		break;
+		
+		case "CREATEFINANCEDOCUMENT": {
+			// For JSON-based parameter, can NOT escape it directly!
+			$docdata = json_decode( $realParamArr ['docdata'] );
+			$docObj = new HIHDocument($docdata);
+			HIHSrv_Function_1Param( 'finance_document_post', $docObj);
+		}
+		break;
+		
+		case "DELETEFINANCEDOCUMENT": {
+			$docid = escape ( $realParamArr ['docid'] );
+			HIHSrv_Function_1Param( 'finance_document_delete', $docid);
 		}
 		break;
 			

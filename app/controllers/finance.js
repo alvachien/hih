@@ -60,6 +60,26 @@
         	templateUrl: 'app/views/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
+        .state("home.finance.document.create_tran", {
+        	url: '/create_tran',
+        	templateUrl: 'app/views/financedocument_tran.html',
+        	controller: 'FinanceDocumentTranController'
+        })
+		.state("home.finance.document.create_currexg", {
+        	url: '/create_currexg',
+        	templateUrl: 'app/views/financedocument_currexg.html',
+        	controller: 'FinanceDocumentCurrExgController'			
+		})
+		.state("home.finance.document.create_instal", {
+        	url: '/create_instal',
+        	templateUrl: 'app/views/financedocument_instal.html',
+        	controller: 'FinanceDocumentInstalController'			
+		})
+		.state("home.finance.document.create_downpay", {
+        	url: '/create_downpay',
+        	templateUrl: 'app/views/financedocument_downpay.html',
+        	controller: 'FinanceDocumentDownPayController'			
+		})
         .state("home.finance.document.display", {
         	url: '/display/:docid',
         	templateUrl: 'app/views/financedocument.html',
@@ -73,7 +93,7 @@
 		.state("home.finance.transactiontype", {
 			url: '/transactiontype',
 			abstract: true,
-			template: '<div ui-view></div>'			
+			template: '<div ui-view></div>'
 		})
 		.state("home.finance.transactiontype.list", {
 			url: '',
@@ -228,16 +248,16 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
+	    	//{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
 			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 50,
+			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 90,
 				cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
           			if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
 					else { return 'accountnotasset'; }
         		}
 			 },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
+			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 200 }
 	    ];
 	  
 	    var promise1 = utils.loadCurrenciesQ();
@@ -478,18 +498,23 @@
 			}
 			
 			// Now submit to the server side
-			utils.createFinanceAccountQ($scope.AccountObject)
-				.then(function(response) {
-					// First of all, update the rootScope
-					if (response) {
-						$state.go("home.finance.account.display",  { accountid : response });
-					} else {
-						$state.go("home.finance.account.list");
-					}
-				}, function(reason) {
-					// Failed, throw out error message
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});
+			var strJSON = JSON && JSON.stringify($scope.AccountObject) || $.toJSON($scope.AccountObject);
+			if (strJSON) {
+				utils.createFinanceAccountQ(strJSON)
+					.then(function(response) {
+						// First of all, update the rootScope
+						if (response) {
+							$state.go("home.finance.account.display",  { accountid : response });
+						} else {
+							$state.go("home.finance.account.list");
+						}
+					}, function(reason) {
+						// Failed, throw out error message
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			} else {
+				$rootScope.$broadcast("ShowMessage", "Error", "To-Do: reason");
+			}
 		};
 		
 		$scope.close = function() {
@@ -585,10 +610,30 @@
 
 		// Remove to the real data holder
 		$scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length <= 0)
-				return;
-				
-			// To-Do: delete mutliple accounts allowed?
+			if ($scope.selectedRows.length !== 1) {
+				$translate('Message.SelectSingleItemForDeletion')
+					.then(
+						function(response) {
+							$rootScope.$broadcast("ShowMessage", "Error", response);
+						},
+						function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+						}
+					);
+				return;				
+			}
+			
+			utils.deleteFinanceDocumentQ($scope.selectedRows[0].DocID)
+				.then(function(response) {
+					// Empty selection table
+					$scope.selectedRows = [];
+					
+					// Just refresh it!
+					// To-Do: for Performance
+					$scope.refreshList();
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 		 };
 	    
 		// Display
@@ -609,6 +654,105 @@
 		$scope.newItem = function() {
 			//$location.path('/learnobject');
 			$state.go('home.finance.document.create');
+		};
+
+		// Refresh the list
+		$scope.refreshList = function() {
+			utils.loadFinanceDocumentsQ(true)
+			    .then(function(response) {
+					if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
+						$scope.myData = [];
+						$.each($rootScope.arFinanceDocument, function(idx, obj) {
+							$scope.myData.push(angular.copy(obj));					
+						});	  
+					};
+				}, function(reason2) {
+				    // Error occurred
+				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				});
+		};
+	}])
+
+	.controller('FinanceDocumentTranController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+		// This class serviced for the creation of Transfer document 
+		$scope.Activity = "Common.Create"; // By default, it's create!
+		$scope.isReadonly = false;
+		$scope.ReportedMessages = [];
+		$scope.DocumentObject = new hih.FinanceDocument();
+		$scope.SourceAccountObject = {};
+		$scope.TargetAccountObject = {};
+		$scope.TranAmount = 0.0;
+		$scope.AllAccounts = $rootScope.arFinanceAccount;
+		$scope.AllCurrencies = $rootScope.arCurrency;
+
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
+		};		
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+		
+		$scope.submit = function() {
+			// Set source account, target account and currency first
+		};
+		$scope.close = function() {
+			$state.go("home.finance.document.list");
+		};
+	}])		
+
+	.controller('FinanceDocumentCurrExgController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+		// This class serviced for the creation of Currency Exchange document
+		$scope.Activity = "";
+		$scope.isReadonly = false;
+		$scope.ReportedMessages = [];
+		$scope.DocumentObject = new hih.FinanceDocument();
+		$scope.SourceAccountObject = {};
+		$scope.TargetAccountObject = {};
+		$scope.AllAccounts = $rootScope.arFinanceAccount;
+		$scope.AllCurrencies = $rootScope.arCurrency;
+		
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+	}])		
+
+	.controller('FinanceDocumentInstalController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+		// This class serviced for the creation of Installment document
+		$scope.Activity = "";
+		$scope.isReadonly = false;
+		$scope.ReportedMessages = [];
+		$scope.DocumentObject = new hih.FinanceDocument();
+
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+	}])
+
+	.controller('FinanceDocumentDownPayController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+		// This class serviced for the creation of Down payment document
+		$scope.Activity = "";
+		$scope.isReadonly = false;
+		$scope.ReportedMessages = [];
+		$scope.DocumentObject = new hih.FinanceDocument();
+		
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
 		};
 	}])
 		
@@ -811,12 +955,22 @@
 			// Account
 			if ($scope.SelectedDocumentItem.AccountObject.selected) {
 				$scope.SelectedDocumentItem.AccountID = $scope.SelectedDocumentItem.AccountObject.selected.ID; 
-				$scope.SelectedDocumentItem.AccountObject = $scope.SelectedDocumentItem.AccountObject.selected;
+				//$scope.SelectedDocumentItem.AccountObject = $scope.SelectedDocumentItem.AccountObject.selected;
 			}
 			// Tran. type
 			if ($scope.SelectedDocumentItem.TranTypeObject.selected) {
 				$scope.SelectedDocumentItem.TranTypeID = $scope.SelectedDocumentItem.TranTypeObject.selected.ID; 
-				$scope.SelectedDocumentItem.TranTypeObject = $scope.SelectedDocumentItem.TranTypeObject.selected;				
+				//$scope.SelectedDocumentItem.TranTypeObject = $scope.SelectedDocumentItem.TranTypeObject.selected;				
+			}
+			// Control center
+			if ($scope.SelectedDocumentItem.ControlCenterObject.selected) {
+				$scope.SelectedDocumentItem.ControlCenterID = $scope.SelectedDocumentItem.ControlCenterObject.selected.ID; 
+				//$scope.SelectedDocumentItem.ControlCenterObject = $scope.SelectedDocumentItem.ControlCenterObject.selected;				
+			}
+			// Order
+			if ($scope.SelectedDocumentItem.OrderObject.selected) {
+				$scope.SelectedDocumentItem.OrderID = $scope.SelectedDocumentItem.OrderObject.selected.ID; 
+				//$scope.SelectedDocumentItem.OrderObject = $scope.SelectedDocumentItem.OrderObject.selected;				
 			}
 			
 			// Perform the check
@@ -859,6 +1013,17 @@
 				$scope.DocumentObject.Items.push($scope.ItemsCollection[i]);
 			}
 			
+			// Document type
+			if ($scope.DocumentObject.DocTypeObject.selected) {
+				$scope.DocumentObject.DocTypeID = $scope.DocumentObject.DocTypeObject.selected.ID; 
+				//$scope.DocumentObject.DocTypeObject = $scope.DocumentObject.DocTypeObject.selected;				
+			}
+			// Currency
+			if ($scope.DocumentObject.TranCurrencyObject.selected) {
+				$scope.DocumentObject.TranCurrency = $scope.DocumentObject.TranCurrencyObject.selected.Currency; 
+				//$scope.DocumentObject.TranCurrencyObject = $scope.DocumentObject.TranCurrencyObject.selected;				
+			}
+			
 			var rptMsgs = $scope.DocumentObject.Verify($translate);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
@@ -877,65 +1042,28 @@
 			// Now, ready for submit!
 			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
 			if (strJSON) {
-				if ($scope.DocumentObject.ID === -1) {
-					// // Create order
-					// utils.createFinanceDocumentQ(strJSON)
-					// 	.then(function(response) {
-					// 		// Take a look at the response
-					// 		if (response) {
-					// 			utils.loadFinanceOrderQ(true)
-					// 				.then(function(response2) {
-					// 					// Now navigate to display
-					// 					$state.go("home.finance.order.display",  { id : response });
-					// 				}, function(reason2) {
-					// 					$rootScope.$broadcast("ShowMessage", "Error", reason2);
-					// 				});							
-					// 		}
-					// 	}, function(reason) {
-					// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
-					// 	});
+				if ($scope.DocumentObject.DocID === -1) {
+					utils.createFinanceDocumentQ(strJSON)
+						.then(function(response) {
+							// Take a look at the response
+							if (response) {
+								// Now navigate to display
+								$state.go("home.finance.document.display",  { id : response });
+							}
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
 				}
-			}			
+			} else {
+				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+			}
 		};
 		
 		$scope.close = function() {
 		    $state.go("home.finance.document.list");
 		};
 	}])	
-	
-	.controller('FinanceDocumentDialogController', ['$scope', '$rootScope', '$modalInstance', 'utils', function($scope, $rootScope, $modalInstance, utils) {
-		$scope.Activity = "Create";
-		$scope.DocumentHeader = {};
-		$scope.DocumentItem = {};
-		$scope.isReadonly = false;
-		
-		if (angular.isDefined($rootScope.CurrentDocumentItem) && angular.isArray($rootScope.CurrentDocumentItem) && $rootScope.CurrentDocumentItem.length > 2) {
-			$scope.Activity = $rootScope.CurrentDocumentItem[1];
-			$scope.DocumentHeader = $rootScope.CurrentDocumentItem[0];
-			$scope.DocumentItem = $rootScope.CurrentDocumentItem[2];	
-			if ( $scope.Activity === "Display" ) {
-				$scope.isReadonly = true;				
-			}
-		}
-		
-		$scope.ok = function () {
-		    $modalInstance.close();
-		  };
-		  
-        $scope.cancel = function () {
-		    $modalInstance.dismiss('cancel');
-		  };		  
-		
-		$scope.$on('modal.closing', function($event) {
-			if ($scope.isReadonly) {
-				
-			} else {
-				//if (frmIt)
-				//$event.preventDefault();
-			}
-		});
-	}])	
-	
+
 	.controller('FinanceTransactionTypeListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		$scope.arList = [];
 		
@@ -1677,7 +1805,7 @@
 			// Control center
 			if ($scope.SelectedRuleObject.ControlCenterObject.selected) {
 				$scope.SelectedRuleObject.ControlCenterID = $scope.SelectedRuleObject.ControlCenterObject.selected.ID; 
-				$scope.SelectedRuleObject.ControlCenterObject = $scope.SelectedRuleObject.ControlCenterObject.selected;
+				//$scope.SelectedRuleObject.ControlCenterObject = $scope.SelectedRuleObject.ControlCenterObject.selected;
 			}
 			
 			// Perform the check
@@ -1741,7 +1869,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.OrderObject);
+			var strJSON = JSON && JSON.stringify($scope.OrderObject) || $.toJSON($scope.OrderObject);
 			if (strJSON) {
 				if ($scope.OrderObject.ID === -1) {
 					// Create order
@@ -1761,6 +1889,8 @@
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
 				}
+			} else {
+				$rootScope.$broadcast("ShowMessage", "Error", "To-Do: reason");
 			}
 		};
 		

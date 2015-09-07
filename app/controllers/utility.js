@@ -418,14 +418,12 @@
 							return deferred.promise;
 						};						
 // Finance part: Account
-						rtnObj.createFinanceAccountQ = function(acntObj) {
+						rtnObj.createFinanceAccountQ = function(jsonAcnt) {
 							var deferred = $q.defer();
 							$http.post(
 								'script/hihsrv.php',
 								{ objecttype: 'CREATEFINANCEACCOUNT',
-								name: acntObj.Name,
-				    			ctgyid:acntObj.CategoryID,
-				    			comment: acntObj.Comment })
+								acdata: jsonAcnt })
 							.then(function(response) {
 								if ($.isArray(response.data) && response.data.length === 1) {
 									var finacnt = new hih.FinanceAccount();
@@ -758,6 +756,31 @@
                                         });
 						    }
 						};
+						rtnObj.createFinanceDocumentQ = function(jsonData) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCEDOCUMENT', docdata: jsonData})
+							.then(function(response) {
+								// It returns the new document id
+								deferred.resolve(parseInt(response.data));
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
+						};
+						rtnObj.deleteFinanceDocumentQ = function(docid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'DELETEFINANCEDOCUMENT', docid: docid})
+							.then(function(response) {
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
+						};
 // Finance part: Document types
 						rtnObj.loadFinanceDocumentTypesQ = function() {
 							var deferred = $q.defer();
@@ -1063,7 +1086,7 @@
 							}, function(response){
 								deferred.reject(response.data.Message);
 							});
-							return deferred.promise;							
+							return deferred.promise;
 						};
 ////////////////////////////////////////////////////////////////////
 // Others

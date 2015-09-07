@@ -1,5 +1,48 @@
 <?php
 
+class HIHConstants {
+	// Abbreivation definition:
+	//	1. EC: Error Code
+	//  2. DT: Database table
+	//  3. DV: Database view
+	//  4. DP: Database procedure
+	// ...
+	
+	const EC_Unknown = 0; // Access it like: HIHConstants::EC_Unknown
+	
+	// EC Number range for Common part, 001 - 100
+	const EC_InvalidName = 1;
+	const EC_InvalidDesp = 2;
+	const EC_InvalidValidFrom = 3;
+	const EC_InvalidValidTo = 4;
+	const EC_ValidToLessValidFrom = 5;	
+	
+	// EC Number range for Finance part: 101 - 200
+	const EC_InvalidAccount = 101;
+	const EC_InvalidTranType = 102;
+	const EC_InvalidAmount = 103;
+	const EC_InvalidCategory = 104;
+	const EC_NoCCNoOrd = 105;
+	const EC_BothCCOrd = 106;
+	const EC_InvalidDocDate = 107;
+	const EC_InvalidDocType = 108;
+	const EC_InvalidCurrency = 109;
+	const EC_InvalidItems = 110;
+	const EC_InvalidTotalPrecentage = 111;
+	const EC_InvalidConctrolCenter = 112;
+	const EC_InvalidOrder = 113;
+	
+	public static function getECUnknown() { return self::EC_Unknown; }
+	
+	// Database part
+	const DT_FinDocument = 't_fin_document';
+	const DT_FinDocumentItem = 't_fin_document_item';
+	const DT_FinAccount = 't_fin_account';
+	
+	const DV_FinAccount = 'v_fin_account';
+	
+	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
+}
 
 class HIHUser {
 	public $ID;
@@ -19,141 +62,248 @@ class HIHLearnObject {
 	public $CategoryName;
 	public $Content;
 }
+class HIHAccount {
+	// Properties
+	public $ID;
+	public $CategoryID;
+	public $Name;
+	public $Comment;
+	
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON(json_decode($json, true));
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidAccount;
+			}
+			
+			if (! isset ( $this->CategoryID )) {
+				$errCodes[] = HIHConstants::EC_InvalidCategory;
+			}
+			
+			$strTemp = trim($this->Name);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidName;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
+}
+
 class HIHDocumentItem {
 	// Properties
-	public $AccountID;
 	public $ItemID;
-	public $TranType;
+
+	public $AccountID;
+	public $TranTypeID;
 	public $TranAmount;
-	public $TranDesp;
-	public $TranControlCenter;
+	public $Desp;
+	public $ControlCenterID;
+	public $OrderID;
+
 	public $AccountName;
 	public $TranTypeName;
 	public $TranCurrencyName;
-	public $TranControlCenterName;
-	public $ControlCenterID;
 	public $ControlCenterName;
-	public $OrderID;
 	public $OrderName;
 	public $OrderValidfrom;
 	public $OrderValidto;
 	
 	// Function
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
 	public function CheckValid() {
+		$errCodes = array();
 		if (isset ( $this )) {
 			if (! isset ( $this->AccountID )) {
-				return "Account ID is mandatory!";
+				$errCodes[] = HIHConstants::EC_InvalidAccount;
 			}
 			
-			if (! isset ( $this->TranType )) {
-				return "Transaction Type is mandatory!";
+			if (! isset ( $this->TranTypeID )) {
+				$errCodes[] = HIHConstants::EC_InvalidTranType;
 			}
 			
 			if (! isset ( $this->TranAmount )) {
-				return "Amount is mandatory!";
+				$errCodes[] = HIHConstants::EC_InvalidAmount;
 			}
 			
 			if (($this->OrderID != 0) && ($this->ControlCenterID != 0)) {
-				return "Cannot set Control Center and Order both!";
+				$errCodes[] = HIHConstants::EC_BothCCOrd;
 			}
 			
 			if (($this->OrderID === 0) && ($this->ControlCenterID === 0)) {
-				return "Need either Control Center or Order.";
+				$errCodes[] = HIHConstants::EC_NoCCNoOrd;
 			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
 		}
 		
-		return null;
+		return $errCodes;
+	}
+	public function fromJSON($jsonData) {
+		// jsonData contains ItemID, AccountID, TranTypeID, TranAmount, ControlCenterID, OrderID, Desp
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
 	}
 }
 class HIHDocument {
 	// Header
+	public $DocID;
 	public $DocDate;
 	public $DocDesp;
 	public $DocCurrency;
-	public $DocType;
+	public $DocTypeID;
 	
 	// Items
 	public $ItemsArray = array ();
+
+	// Constructors	
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON(json_decode($json, true));
+    }
 	
 	// Methods
+	public function fromJSON($jsonData) {
+		$this->ItemsArray = array();
+		foreach ($jsonData as $key => $value) {
+			switch ($key) {
+				case "DocID":
+				case "DocTypeID":
+				$this->{$key} = $value;
+				break;
+				
+				case "TranDate":
+				$this->DocDate = $value;
+				break;
+
+				case "TranCurrency":
+				$this->DocCurrency = $value;
+				break;
+				
+				case "Desp": 
+				$this->DocDesp = $value;
+				break;
+				
+				case "Items":
+				{
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHDocumentItem( $value[ $i ] );
+							$this->ItemsArray [$di->ItemID] = $di;
+						}
+					}
+				}
+				break;
+				
+				default:
+				// Do nothing!
+				break;
+			}
+		}
+	}
 	public function CheckValid() {
+		$errCodes = array();
+		
 		if (isset ( $this )) {
 			if (!isset($this->DocDate)) {
-				return "Document Date is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidDocDate;
 			}
 			
-			if (!isset($this->DocType)) {
-				return "Document Type is manadatory!";
+			if (!isset($this->DocTypeID)) {
+				$errCodes[] = HIHConstants::EC_InvalidDocType;
 			}
 			
 			if (! isset ( $this->DocCurrency )) {
-				return "Currency is mandatory!";
+				$errCodes[] = HIHConstants::EC_InvalidCurrency;
 			}
 			
 			if (!isset($this->DocDesp)) {
-				return "Document Description is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidDesp;
 			}
 			
 			if (count ( $this->ItemsArray ) == 0){
-				return "Items is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidItems;
 			} else {
 				$inAmt = 0;
 				$outAmt = 0;
 				foreach( $this->ItemsArray as $itemVal) {
 					$itemRst = $itemVal->CheckValid();
+					$errCodes = array_merge($errCodes, $itemRst);
 					
-					if (IsNullOrEmptyString($itemRst) ) 
-					{
-						// Internal order's validity check
-						if ($itemVal->OrderID == 0) {							
-						} else {
-							date_default_timezone_set(date_default_timezone_get());
-							$docdt = strtotime($this->DocDate);
-							$ordBg = strtotime($itemVal->OrderValidfrom);
-							$ordEd = strtotime($itemVal->OrderValidto);
+					// if (IsNullOrEmptyString($itemRst) ) 
+					// {
+						// // Internal order's validity check
+						// if ($itemVal->OrderID == 0) {							
+						// } else {
+							// date_default_timezone_set(date_default_timezone_get());
+							// $docdt = strtotime($this->DocDate);
+							// $ordBg = strtotime($itemVal->OrderValidfrom);
+							// $ordEd = strtotime($itemVal->OrderValidto);
 							
-							if ($docdt >= $ordBg && $docdt <= $ordEd) {								
-							} else {
-								return "That order is not valid: ". $docdt. "; Bg:". $ordBg. "; End:". $ordEd;
-							}
-						}
+							// if ($docdt >= $ordBg && $docdt <= $ordEd) {								
+							// } else {
+								// return "That order is not valid: ". $docdt. "; Bg:". $ordBg. "; End:". $ordEd;
+							// }
+						// }
 						
-						// Success
-						if (((int)$this->DocType) === HIH_FIN_DOCTYPE_Transfer ) { // Transfer
-							switch($itemVal->TranType)
-							{
-								case HIH_FIN_TranType_TransferIn: {
-									$inAmt += $itemVal->TranAmount;
-								}
-								break;
+						// // Success
+						// if (((int)$this->DocTypeID) === HIH_FIN_DOCTYPE_Transfer ) { // Transfer
+							// switch($itemVal->TranType)
+							// {
+								// case HIH_FIN_TranType_TransferIn: {
+									// $inAmt += $itemVal->TranAmount;
+								// }
+								// break;
 								
-								case HIH_FIN_TranType_TransferOut: {
-									$outAmt += $itemVal->TranAmount;
-								}
-								break;
+								// case HIH_FIN_TranType_TransferOut: {
+									// $outAmt += $itemVal->TranAmount;
+								// }
+								// break;
 								
-								default: {
-									return "Only Transfer In/Out Transaction Type are allowed to use!";										
-								}
-								break;
-							}
-						}
-					} else {
-						return $itemRst;
-					}						
+								// default: {
+									// return "Only Transfer In/Out Transaction Type are allowed to use!";										
+								// }
+								// break;
+							// }
+						// }
+					// } else {
+						// return $itemRst;
+					// }						
 				}
 				
-				if (((int)$this->DocType) === HIH_FIN_DOCTYPE_Transfer ) { // Transfer
-					if ($inAmt === 0
-						|| $outAmt ===0
-						|| $inAmt !== $outAmt) {
-							return "For transfer document, the amount is invalid." . $inAmt . "    ". $outAmt;
-						}
-				}				
+				// if (((int)$this->DocType) === HIH_FIN_DOCTYPE_Transfer ) { // Transfer
+					// if ($inAmt === 0
+						// || $outAmt ===0
+						// || $inAmt !== $outAmt) {
+							// return "For transfer document, the amount is invalid." . $inAmt . "    ". $outAmt;
+						// }
+				// }
 			}			
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
 		}
 		
-		return null;
+		return $errCodes;
 	}
 	public function AddItem($item) {
 		if (isset ( $this )) {
@@ -243,27 +393,29 @@ class HIHInternalOrder {
 	// Items
 	public $ItemsArray = array ();
 	
-	// Function
+	// Constructor
 	public function __construct($json = false) {
         if ($json) $this->fromJSON(json_decode($json, true));
     }
 	
 	public function CheckValid() {
+		$errCodes = array();
 		if (isset ( $this )) {
 			if (!isset($this->ValidFrom)) {
-				return "Valid from is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidValidFrom;
 			}
 				
 			if (!isset($this->ValidTo)) {
-				return "Valid to is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidValidTo;
 			}
 			
+			$this->Name = trim($this->Name);
 			if (!isset($this->Name)) {
-				return "Name is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidValidName;
 			}
 
 			if (count ( $this->ItemsArray ) == 0){
-				return "S. Rule is manadatory!";
+				$errCodes[] = HIHConstants::EC_InvalidItems;
 			}
 			
 			$precentcnt = 0;
@@ -276,8 +428,10 @@ class HIHInternalOrder {
 			}
 			
 			if ($precentcnt !== 100) {
-				return "Precent must equal 100";
+				return "Percent must equal 100";
 			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
 		}
 		
 		return null;		

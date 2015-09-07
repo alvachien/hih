@@ -1712,14 +1712,14 @@ function finance_account_hierread() {
 			$rsttable 
 	);
 }
-function finance_account_create($name, $ctgyid, $comment) {
+function finance_account_create($acntObj) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -1735,10 +1735,10 @@ function finance_account_create($name, $ctgyid, $comment) {
 	
 	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlFinAccountCreateProc . " (?,?,?);";
+	$query = "CALL " . HIHConstants::DP_CreateFinAccount . " (?,?,?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "iss", $ctgyid, $name, $comment );
+		$stmt->bind_param ( "iss", $acntObj->CategoryID, $acntObj->Name, $acntObj->Comment );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
@@ -1766,7 +1766,7 @@ function finance_account_create($name, $ctgyid, $comment) {
 	if ($nCode > 0) {
 		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
-		$query = "SELECT * FROM " . MySqlFinAccountView . " WHERE id = " . $nNewid;
+		$query = "SELECT * FROM " . HIHConstants::DV_FinAccount . " WHERE id = " . $nNewid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
@@ -1791,8 +1791,8 @@ function finance_account_create($name, $ctgyid, $comment) {
 	$mysqli->close ();
 	
 	return array (
-			$sError,
-			$rsttable 
+		$sError,
+		$rsttable 
 	);
 }
 function finance_account_delete($acntid) {
@@ -2137,8 +2137,8 @@ function finance_document_post($docobj) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$mysqli->autocommit ( false );
@@ -2152,9 +2152,9 @@ function finance_document_post($docobj) {
 	$nDocID = 0;
 	
 	/* Prepare an insert statement on header */
-	$query = "INSERT INTO " . MySqlFinDocumentTable . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`) VALUES (?, ?, ?, ?);";
+	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`) VALUES (?, ?, ?, ?);";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "isss", $docobj->DocType, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp );
+		$stmt->bind_param ( "isss", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
@@ -2162,13 +2162,14 @@ function finance_document_post($docobj) {
 			$sError = "Failed to execute query: " . $query;
 		}
 	}
-	/* Prepare an insert statement on header */
+	
+	/* Prepare an insert statement on item */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO " . MySqlFinDocumentItemTable . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranType, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
+				$newstmt->bind_param ( "iiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
@@ -2192,8 +2193,8 @@ function finance_document_post($docobj) {
 	/* close connection */
 	$mysqli->close ();
 	return array (
-			$sError,
-			$nDocID 
+		$sError,
+		$nDocID 
 	);
 }
 function finance_document_delete($docid) {
@@ -2202,8 +2203,8 @@ function finance_document_delete($docid) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$mysqli->autocommit ( false );
@@ -2216,7 +2217,7 @@ function finance_document_delete($docid) {
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
-	$query = "DELETE FROM " . MySqlFinDocumentTable . " WHERE ID=?;";
+	$query = "DELETE FROM " . HIHConstants::DT_FinDocument . " WHERE ID=?;";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $docid );
 		/* Execute the statement */
@@ -2228,7 +2229,7 @@ function finance_document_delete($docid) {
 	
 	/* Prepare an delete statement on items */
 	if (empty ( $sError )) {
-		$query = "DELETE FROM " . MySqlFinDocumentItemTable . " WHERE DOCID=?;";
+		$query = "DELETE FROM " . HIHConstants::DT_FinDocumentItem . " WHERE DOCID=?;";
 		
 		if ($newstmt = $mysqli->prepare ( $query )) {
 			$newstmt->bind_param ( "i", $docid );
@@ -2254,8 +2255,8 @@ function finance_document_delete($docid) {
 	/* close connection */
 	$mysqli->close ();
 	return array (
-			$sError,
-			$nDocID 
+		$sError,
+		$docid 
 	);
 }
 // 1.12 Finance document item
