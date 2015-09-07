@@ -680,6 +680,7 @@
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
+		$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Transfer;
 		$scope.SourceAccountObject = {};
 		$scope.TargetAccountObject = {};
 		$scope.TranAmount = 0.0;
@@ -707,6 +708,21 @@
 		
 		$scope.submit = function() {
 			// Set source account, target account and currency first
+			$scope.DocumentObject.Items = [];
+			
+			var item1 = new hih.FinanceDocumentItem();
+			var item2 = new hih.FinanceDocumentItem();
+			if ($scope.SourceAccountObject.selected) {
+				item1.AccountID = $scope.SourceAccountObject.selected.ID;
+			}
+			item1.TranTypeID = hih.Constants.FinTranType_TransferOut;
+			
+			
+			if ($scope.TargetAccountObject.selected) {
+				item2.AccountID = $scope.TargetAccountObject.selected.ID;
+			}
+			item1.TranTypeID = hih.Constants.FinTranType_TransferOut;
+			
 		};
 		$scope.close = function() {
 			$state.go("home.finance.document.list");
@@ -725,6 +741,21 @@
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
 		
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
+		};		
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
 		};
@@ -738,6 +769,21 @@
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
 
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
+		};		
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
 		};

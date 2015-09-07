@@ -10,7 +10,11 @@
 		LearnHistorySplitChar: "_",
 		LearnCategorySplitChar: " > ",
 		IDSplitChar: ",",
-		DateSplitChar: '-'
+		DateSplitChar: '-',
+		
+		FinDocType_Transfer: 2,
+		FinTranType_TransferIn: 37,
+		FinTranType_TransferOut: 60
 	};
 	
 	/* Utility class: singleton instance */
