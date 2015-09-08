@@ -148,6 +148,12 @@
 		"DownPaymentDocument": "Down Payment Document",
 		"SourceAccount": "Source account",
 		"TargetAccount": "Target account",
+		"SourceControlCenter": "Source Control Center",
+		"SourceOrder": "Source Order",
+		"TargetControlCenter": "Target Control Center",
+		"TargetOrder": "Target Order",
+		"SourceCurrency": "Source Currency",
+		"TargetCurrency": "Target Currency",
   		
   		"CreateAccountTitle": "Create an Account"
   	},
@@ -171,6 +177,8 @@
 		"MissingItems": "Missing items",
 		"MissingControlCenterOrOrder": "Missing Control Center/Order",
 		"EitherControlCenterOrOrder": "Use either Control Center or Order, but not both",
-		"InvalidCurrency": "Invalid Currency"
+		"InvalidCurrency": "Invalid Currency",
+		"InvalidTransferAmount": "Invalid transfer amount",
+		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account"
 	}
  }

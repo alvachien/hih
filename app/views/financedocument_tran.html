@@ -12,6 +12,7 @@
         </div>
     </div>
     
+    <!-- Form -->
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
 			<label class="control-label col-sm-2" translate="Finance.SourceAccount">Src Account:</label>
@@ -62,20 +63,84 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label col-sm-2" translate="Common.Date">Date</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
+                        datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="control-label col-sm-2" for="iptAmt" translate="Finance.Amount">Amount:</label>
             <div class="col-sm-10">
                 <input type="text" id="iptAmt" ng-readonly="isReadonly" ng-model="TranAmount" required></input>
             </div>
         </div>
+        
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Finance.SourceControlCenter">Source Control Center </label>
+            <div class="col-sm-10">
+                <ui-select ng-model="SourceControlCenterObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                    <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
+                    <ui-select-choices repeat="scc in AllControlCenters">
+                        <div ng-bind-html="scc.Name | highlight: $select.search"></div>
+                        <small>
+                            ID: {{scc.ID}} <br />
+                            Name: <span ng-bind-html="''+scc.Name | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" translate="Common.Date">Date</label>
+            <label class="control-label col-sm-2" translate="Finance.SourceOrder">Source Order:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
-                        datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                </span>
+                <ui-select ng-model="SourceOrderObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                    <ui-select-match placeholder="Select an order via the name...">{{$select.selected.Name}}</ui-select-match>
+                    <ui-select-choices repeat="sord in AllOrders">
+                        <div ng-bind-html="sord.Name | highlight: $select.search"></div>
+                        <small>
+                            ID: {{sord.ID}} <br />
+                            Name: <span ng-bind-html="''+sord.Name | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Finance.TargetControlCenter">Target Control Center</label>
+            <div class="col-sm-10">
+                <ui-select ng-model="TargetControlCenterObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                    <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
+                    <ui-select-choices repeat="cc in AllControlCenters">
+                        <div ng-bind-html="cc.Name | highlight: $select.search"></div>
+                        <small>
+                            ID: {{cc.ID}} <br />
+                            Name: <span ng-bind-html="''+cc.Name | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Finance.TargetOrder">Target Order:</label>
+            <div class="col-sm-10">
+                <ui-select ng-model="TargetOrderObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
+                    <ui-select-match placeholder="Select an order via the name...">{{$select.selected.Name}}</ui-select-match>
+                    <ui-select-choices repeat="ord in AllOrders">
+                        <div ng-bind-html="ord.Name | highlight: $select.search"></div>
+                        <small>
+                            ID: {{ord.ID}} <br />
+                            Name: <span ng-bind-html="''+ord.Name | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
             </div>
         </div>
 		

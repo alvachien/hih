@@ -45,7 +45,7 @@
                             <div ng-bind-html="doctype.Name | highlight: $select.search"></div>
                             <small>
                                 ID: {{doctype.ID}} <br />
-                                Name: <span ng-bind-html="+doctype.Name | highlight: $select.search"></span>
+                                Comment: <span ng-bind-html="+doctype.Comment | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -61,7 +61,7 @@
                             <div ng-bind-html="acur.Name | highlight: $select.search"></div>
                             <small>
                                 ID: {{acur.Currency}} <br />
-                                Name: <span ng-bind-html="+acur.Name | highlight: $select.search"></span>
+                                Symbol: <span ng-bind-html="+acur.Symbol | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>

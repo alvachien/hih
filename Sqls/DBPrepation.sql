@@ -4,9 +4,13 @@
  * Updated: 2015/05/16
  *
  * == Version Histories
+ *  1. 2015.9.8, adding table t_fin_setting 
  */
 
-/* Tables */
+/*======================================================
+    Tables 
+  ====================================================== */
+
 -- Table Creation: Finance part
 CREATE TABLE IF NOT EXISTS `t_fin_account` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,8 +143,9 @@ CREATE TABLE IF NOT EXISTS `t_user` (
   PRIMARY KEY (`USERID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
 
-
-/* View */
+/*======================================================
+    Views 
+  ====================================================== */
 -- Finance part
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
@@ -206,8 +211,6 @@ VIEW `v_fin_document` AS
         join `t_fin_currency` ON ((`t_fin_document`.`TRANCURR` = `t_fin_currency`.`CURR`)))
     group by `t_fin_document`.`ID`;
 	
-		
-
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
@@ -390,7 +393,9 @@ VIEW `v_learn_obj2` AS
         (`t_learn_ctg` `a`
         left join `t_learn_obj` `b` ON ((`a`.`ID` = `b`.`CATEGORY`)));
 
-/* Stored Procedures */
+/*======================================================
+    Stored Procedures 
+  ====================================================== */
 -- Finance part
 DELIMITER $$
 
@@ -657,7 +662,10 @@ proc_main:BEGIN
 	SELECT code, msg, LAST_INSERT_ID();
 END;
 
-/* Pre-delivered content */
+/*======================================================
+    Pre-delivered content 
+  ====================================================== */
+
 --Finance part
 -- Account categoryINSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (2,'存储卡',1,NULL);
@@ -791,6 +799,53 @@ INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (12,10,'语
 INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (13,NULL,'日语','日语类');
 INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (14,13,'词汇','日语词汇');
 INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (15,13,'语法','日语语法');
+
+/*======================================================
+    Delta parts on 2015.9.8
+  ====================================================== */
+
+-- Table: Setting for Finance
+CREATE TABLE IF NOT EXISTS `t_fin_setting` (
+  `SETID` varchar(20) NOT NULL,
+  `SETVALUE` varchar(80) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`SETID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Finance Setting';
+
+-- Default content for setting
+INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('LocalCurrency','CNY','本币');
+-- Default content for document type
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (3,'货币兑换', '兑换不同的货币');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (4,'分期付款', '分期付款');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (5,'预付款', '预付款');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (6,'预收款', '预收款');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (7,'借入款', '借入款项');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (8,'借出款', '借出款项');
+
+-- ALTER TABLE for document
+ALTER TABLE `t_fin_document` 
+ADD COLUMN `TRANTGTCURR` VARCHAR(5) NULL AFTER `DESP`,
+ADD COLUMN `REFCUREXGDOC` INT(11) NULL AFTER `TRANTGTCURR`;
+
+-- Replace view for document
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document` AS
+    select 
+        `t_fin_document`.`ID` AS `id`,
+        `t_fin_document`.`DOCTYPE` AS `doctype`,
+        `t_fin_document`.`TRANDATE` AS `trandate`,
+        `t_fin_document`.`TRANCURR` AS `trancurr`,
+        `t_fin_document`.`TRANTGTCURR` AS `trantgtcurr`,
+        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
+        `t_fin_document`.`DESP` AS `desp`,
+        sum(`v_fin_document_item1`.`tranamount`) AS `tranamount`
+    from
+        `t_fin_document`
+        left join `v_fin_document_item1` ON (`t_fin_document`.`ID` = `v_fin_document_item1`.`docid`)    
+    group by `t_fin_document`.`ID`;
 
 /* The End */ 
 

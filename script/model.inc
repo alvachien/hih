@@ -40,6 +40,7 @@ class HIHConstants {
 	const DT_FinAccount = 't_fin_account';
 	
 	const DV_FinAccount = 'v_fin_account';
+	const DV_FinDocument = 'v_fin_document';
 	
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 }

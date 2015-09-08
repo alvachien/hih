@@ -668,12 +668,12 @@
 		this.ItemID = parseInt(obj.itemid);
 		this.AccountID = parseInt(obj.accountid);
 		this.TranTypeID = parseInt(obj.trantype);
-		if (obj.controlcenterid) {
+		if (isNaN(obj.controlcenterid)) {
 			this.ControlCenterID = parseInt(obj.controlcenterid);
 		} else {
 			this.ControlCenterID = -1;
 		} 
-		if (obj.orderid) {
+		if (isNaN(obj.orderid)) {
 			this.OrderID = parseInt(obj.orderid);
 		} else {
 			this.OrderID = -1;
@@ -772,12 +772,15 @@
 	};
 	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
-		this.DocID = -1; 
+		this.DocID = -1;
+		 
 		this.DocTypeID = -1;
-		//this.DocTypeName = "";
 		this.TranDate = new Date();
+		
 		this.TranCurrency = "";
-		//this.TranCurrencyName = "";
+		this.TranTargetCurrency = "";
+		this.RefCurrExgDocID = -1;
+		
 		this.Desp = "";
 		this.TranAmount = 0.0;
 		
@@ -790,10 +793,13 @@
 	hih.FinanceDocument.prototype.setContent = function(obj) {
 		this.DocID = parseInt(obj.docid);
 		this.DocTypeID = parseInt(obj.doctype);
-		//this.DocTypeName = obj.doctypename;
 		this.TranDate = obj.trandate;
-		this.TranCurrency = obj.trancurr;
-		//this.TranCurrencyName = obj.trancurrname;
+		this.TranCurrency = obj.trancurr;		
+		this.TranTargetCurrency = obj.trantgtcurr;		
+		if (isNaN(obj.curexgdoc))
+			this.RefCurrExgDocID = parseInt(obj.curexgdoc);
+		else
+			this.RefCurrExgDocID = -1;
 		this.Desp = obj.desp;
 		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 	};	
@@ -837,12 +843,32 @@
 		
 		// Items
 		this.TranAmount = 0.0;
+		var uniqueIDs = [];
 		for(var i = 0; i < this.Items.length; i ++) {
 			var msg2 = this.Items[i].Verify($translate);
 			if (msg2.length > 0) {
 				Array.prototype.push.apply(errMsgs, msg2);
 			}
-			this.TranAmount += parseFloat(this.Items[i].Amount);
+			
+			if (this.Items[i].TranTypeObject.ExpenseFlag) {
+				this.TranAmount -= parseFloat(this.Items[i].TranAmount);
+			} else {
+				this.TranAmount += parseFloat(this.Items[i].TranAmount);
+			}
+
+			if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {				
+				if($.inArray(this.Items[i].AccountID, uniqueIDs) === -1) {
+					uniqueIDs.push(this.Items[i].AccountID);
+				} else {
+					errMsgs.push($translate("Message.DuplicateAccountsInTransferDoc"));
+				}
+			}
+		}
+		if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {
+			if (this.TranAmount !== 0.0) {
+				// Transfer document shall be zero balance!
+				errMsgs.push($translate("Message.InvalidTransferAmount"));
+			}
 		}
 		
 		return errMsgs;

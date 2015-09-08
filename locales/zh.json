@@ -148,6 +148,12 @@
 		"DownPaymentDocument": "预付款凭证",  
 		"SourceAccount": "转出账户",
 		"TargetAccount": "转入账户",
+		"SourceControlCenter": "转出控制中心",
+		"SourceOrder": "转出订单",
+		"TargetControlCenter": "转入控制中心",
+		"TargetOrder": "转入订单",
+		"SourceCurrency": "转出货币",
+		"TargetCurrency": "转入货币",
 
   		"CreateAccountTitle": "创建账户"
   	},
@@ -169,8 +175,10 @@
 		"InvalidDescription": "不合法的描述",
 		"InvalidTransactionType": "不合法的交易类型",
 		"MissingItems": "缺少行项目",
-		"MissingControlCenterOrOrder": "缺少控制中心/定单",
-		"EitherControlCenterOrOrder": "使用控制中心或定单，不能同时使用",
-		"InvalidCurrency": "不合法的货币"
+		"MissingControlCenterOrOrder": "缺少控制中心/订单",
+		"EitherControlCenterOrOrder": "使用控制中心或订单，不能同时使用",
+		"InvalidCurrency": "不合法的货币",
+		"InvalidTransferAmount": "不合法的转账金额",
+		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账"	
 	}
 }

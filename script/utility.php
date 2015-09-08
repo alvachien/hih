@@ -2101,20 +2101,20 @@ function finance_document_listread() {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlFinDocumentView;
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"docid" => $row [0],
-					"doctype" => $row [1],
-					"doctypename" => $row [2],
-					"trandate" => $row [3],
-					"trancurr" => $row [4],
-					"trancurrname" => $row [5],
-					"desp" => $row [6],
-					"tranamount" => $row [7] 
+				"docid" => $row [0],
+				"doctype" => $row [1],
+				"trandate" => $row [2],
+				"trancurr" => $row [3],	
+				"trantgtcurr" => $row[4],
+				"curexgdoc" => $row[5],
+				"desp" => $row [6],
+				"tranamount" => $row [7] 
 			);
 		}
 		

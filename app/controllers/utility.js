@@ -391,10 +391,10 @@
 												});
 							}							
 						};
-						rtnObj.loadCurrenciesQ = function() {
+						rtnObj.loadCurrenciesQ = function(bForceReload) {
 							// Load finance accounts with $q supports
 							var deferred = $q.defer();
-							if ($rootScope.isCurrencyLoaded) {
+							if ($rootScope.isCurrencyLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -616,9 +616,9 @@
 							}							
 						};
 // Finance part: Documents
-						rtnObj.loadFinanceDocumentsQ = function() {
+						rtnObj.loadFinanceDocumentsQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceDocumentLoaded) {
+							if ($rootScope.isFinanceDocumentLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -642,8 +642,7 @@
 									});
 							}
 							return deferred.promise;
-						};
-						
+						};						
 						rtnObj.loadFinanceDocuments = function() {
 						    if (!$rootScope.isFinanceDocumentLoaded) {
 						        // Example JSON reponse
@@ -686,7 +685,7 @@
 								}
 							});
 							if (!docObject) {
-								deferred.reject("Order not found!");
+								deferred.reject("Document does not exist!");
 							} else {
 								if (docObject.Items.length > 0) {
 									deferred.resolve(true);
@@ -782,9 +781,9 @@
 							return deferred.promise;
 						};
 // Finance part: Document types
-						rtnObj.loadFinanceDocumentTypesQ = function() {
+						rtnObj.loadFinanceDocumentTypesQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceDocumentTypeLoaded) {
+							if ($rootScope.isFinanceDocumentTypeLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -866,9 +865,9 @@
 												});
 							}
 						};
-						rtnObj.loadFinanceTransactionTypesQ = function() {
+						rtnObj.loadFinanceTransactionTypesQ = function(bForceReload) {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceTransactionTypeLoaded) {
+							if ($rootScope.isFinanceTransactionTypeLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
 								$http.post(
@@ -1038,7 +1037,7 @@
 								}
 							});
 							if (!ordObject) {
-								deferred.reject("Order not found!");
+								deferred.reject("Order does not exist!");
 							} else {
 								if (ordObject.SRules.length > 0) {
 									deferred.resolve(true);
