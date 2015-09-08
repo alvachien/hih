@@ -2959,7 +2959,7 @@ function finance_report_balancesheet() {
 	
 	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "SELECT * FROM " . MySqlFinBalanceSheetView . ";";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinReportBS . ";";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		

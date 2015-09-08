@@ -190,6 +190,21 @@
 			templateUrl: 'app/views/financeorder.html',
 			controller: 'FinanceOrderController'
 		})
+		.state("home.finance.report", {
+			url: '/report',
+			abstract: true,
+			template: '<div ui-view></div>'			
+		})
+		.state("home.finance.report.balancesheet", {
+			url: '',
+			templateUrl: 'app/views/financereportbs.html',
+			controller: 'FinanceReportBSController'
+		})
+		.state("home.finance.report.orderbalance", {
+			url: '/order',
+			templateUrl: 'app/views/financereportorder.html',
+			controller: 'FinanceReportOrderController'
+		})
     ;
 	}])
 	
@@ -1836,7 +1851,7 @@
 				});
 		};
 	}])
-				
+
 	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
 		$scope.Activity = "";
@@ -2120,7 +2135,105 @@
 		$scope.close = function() {
 		    $state.go("home.finance.order.list");
 		};				
-	}])			
+	}])
+
+	.controller("FinanceReportBSController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+		// The class sevice for Balance sheet
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'dataReport';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.showColumnFooter = true;
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'acntname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width:150 },
+	    	{ name:'dbtbalance', field: 'DebitBalance', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'cdtbalance', field: 'CreditBalance', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+		];
+
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.AccountID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.AccountID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+		};
+		
+		$scope.dataReport = [];
+		var promise1 = utils.loadFinanceAccountsQ();
+		var promise2 = utils.loadCurrenciesQ();
+		$q.all(promise1, promise2)
+			.then(function(response) {
+				utils.loadFinanceReportBSQ()
+					.then(function(response2) {
+						$scope.dataReport = $rootScope.arFinanceReportBS;
+					}, function(reason2) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					});
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+	}])
+	
+	.controller("FinanceReportOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+		// The class sevice for Balance sheet
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'dataReport';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.showColumnFooter = true;
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'ordername', field: 'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width:150 },
+	    	{ name:'ordvalfrm', field: 'OrderObject.ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width:100 },
+	    	{ name:'ordvalto', field: 'OrderObject.ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width:100 },
+			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+		];
+
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.AccountID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.AccountID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+		};
+		
+		$scope.dataReport = [];
+		var promise1 = utils.loadFinanceOrderQ();
+		var promise2 = utils.loadCurrenciesQ();
+		$q.all(promise1, promise2)
+			.then(function(response) {
+				utils.loadFinanceReportOrderQ()
+					.then(function(response2) {
+						$scope.dataReport = $rootScope.arFinanceReportOrder;
+					}, function(reason2) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					});
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+	}])
 	;
 }()
 );

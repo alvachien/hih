@@ -393,6 +393,16 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function_1Param( 'finance_internalorder_delete', $orderid);
 		}
 		break;
+		
+		case "GETFINANCEREPORTBS": {
+			HIHSrv_Function( 'finance_report_balancesheet' );
+		}
+		break;
+
+		case "GETFINANCEREPORTORDER": {
+			HIHSrv_Function( 'finance_report_internalorder' );
+		}
+		break;
 						
 		// ===========================================================================================
 		// Others

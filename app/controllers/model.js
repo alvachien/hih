@@ -899,6 +899,79 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
-	// 8. 
+	// 8. Balance sheet report
+	hih.FinanceReportBalanceSheet = function FinanceReportBalanceSheet() {
+		this.AccountID = -1;
+		this.DebitBalance = 0.0;
+		this.CreditBalance = 0.0;
+		this.Balance = 0.0;
+		this.TranCurrency = "";
+		
+		this.AccountObject = {};
+		this.TranCurrencyObject = {};
+	};
+	hih.extend(hih.FinanceReportBalanceSheet, hih.Model);
+	hih.FinanceReportBalanceSheet.prototype.setContent = function(obj) {
+		this.AccountID = parseInt(obj.accountid);
+		this.DebitBalance = parseFloat(obj.debitbalance).toFixed(2);
+		this.CreditBalance = parseFloat(obj.creditbalance).toFixed(2);
+		this.Balance = parseFloat(obj.balance).toFixed(2);
+		this.TranCurrency = obj.trancurr;
+	};
+	hih.FinanceReportBalanceSheet.prototype.buildRelationship = function(arAccount, arCurrency) {
+		var that = this;
+		if (arAccount && $.isArray(arAccount) && arAccount.length > 0) {
+			$.each(arAccount, function(idx, obj){
+				if (obj.ID === that.AccountID) {
+					that.AccountObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
+			$.each(arCurrency, function(idx, obj){
+				if (obj.Currency === that.TranCurrency) {
+					that.TranCurrencyObject = obj;
+					return false;
+				}
+			});
+		}		
+	};
+	// 11. Report on CC
+	// 12. Report on Order
+	hih.FinanceReportOrder = function FinanceReportOrder() {
+		this.OrderID = -1;
+		this.Balance = 0.0;
+		this.TranCurrency = "";
+		
+		this.OrderObject = {};
+		this.TranCurrencyObject = {};
+	};
+	hih.extend(hih.FinanceReportOrder, hih.Model);
+	hih.FinanceReportOrder.prototype.setContent = function(obj) {
+		this.OrderID = parseInt(obj.ordid);
+		this.Balance = parseFloat(obj.balance).toFixed(2);
+		this.TranCurrency = obj.trancurr;
+	};
+	hih.FinanceReportOrder.prototype.buildRelationship = function(arOrder, arCurrency) {
+		var that = this;
+		if (arOrder && $.isArray(arOrder) && arOrder.length > 0) {
+			$.each(arOrder, function(idx, obj){
+				if (obj.ID === that.OrderID) {
+					that.OrderObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
+			$.each(arCurrency, function(idx, obj){
+				if (obj.Currency === that.TranCurrency) {
+					that.TranCurrencyObject = obj;
+					return false;
+				}
+			});
+		}		
+	};
+	// 13. 
 }());
 

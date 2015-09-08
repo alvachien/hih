@@ -91,6 +91,7 @@
         .when('/finance', '/home/finance')
 		.when('/financeaccount', '/home/finance/account')
 		.when('/financedocument', '/home/finance/document')
+		.when('/financereport', '/home/finance/report')
 
         // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
         .otherwise('/home');

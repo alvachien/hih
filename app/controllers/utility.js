@@ -1087,6 +1087,62 @@
 							});
 							return deferred.promise;
 						};
+// Finance part: report - balance sheet
+						rtnObj.loadFinanceReportBSQ = function(bForceReload) {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceReportBSLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEREPORTBS' })
+									.then(function(response) {
+										$rootScope.arFinanceReportBS = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var bs = new hih.FinanceReportBalanceSheet();
+												bs.setContent(obj);
+												bs.buildRelationship($rootScope.arFinanceAccount,
+													$rootScope.arCurrency);
+												$rootScope.arFinanceReportBS.push(bs);
+											});
+										}
+										$rootScope.isFinanceReportBSLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+// Finance part: report - order
+						rtnObj.loadFinanceReportOrderQ = function(bForceReload) {
+							var deferred = $q.defer();
+							if ($rootScope.isFinanceReportOrderLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETFINANCEREPORTORDER' })
+									.then(function(response) {
+										$rootScope.arFinanceReportOrder = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var bs = new hih.FinanceReportOrder();
+												bs.setContent(obj);
+												bs.buildRelationship($rootScope.arFinanceOrder,
+													$rootScope.arCurrency);
+												$rootScope.arFinanceReportOrder.push(bs);
+											});
+										}
+										$rootScope.isFinanceReportOrderLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
 ////////////////////////////////////////////////////////////////////
 // Others
 ////////////////////////////////////////////////////////////////////
