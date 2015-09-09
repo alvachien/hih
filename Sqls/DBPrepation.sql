@@ -827,6 +827,18 @@ ALTER TABLE `t_fin_document`
 ADD COLUMN `TRANTGTCURR` VARCHAR(5) NULL AFTER `DESP`,
 ADD COLUMN `REFCUREXGDOC` INT(11) NULL AFTER `TRANTGTCURR`;
 
+/* ======================================================
+    Delta parts on 2015.9.9
+   ====================================================== */
+
+-- Table change: document
+ALTER TABLE `t_fin_document`
+DROP COLUMN `TRANTGTCURR`;
+
+-- Table change: document item
+ALTER TABLE `t_fin_document_item` 
+ADD COLUMN `TRANCURR` VARCHAR(5) NULL AFTER `TRANTYPE`;
+
 -- Replace view for document
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
@@ -838,14 +850,29 @@ VIEW `v_fin_document` AS
         `t_fin_document`.`DOCTYPE` AS `doctype`,
         `t_fin_document`.`TRANDATE` AS `trandate`,
         `t_fin_document`.`TRANCURR` AS `trancurr`,
-        `t_fin_document`.`TRANTGTCURR` AS `trantgtcurr`,
         `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
         `t_fin_document`.`DESP` AS `desp`,
         sum(`v_fin_document_item1`.`tranamount`) AS `tranamount`
     from
         `t_fin_document`
-        left join `v_fin_document_item1` ON (`t_fin_document`.`ID` = `v_fin_document_item1`.`docid`)    
-    group by `t_fin_document`.`ID`;
+        left join `v_fin_document_item1` ON (`t_fin_document`.`ID` = `v_fin_document_item1`.`docid`)  
+    where `t_fin_document`.`DOCTYPE` != 3 AND `t_fin_document`.`DOCTYPE` != 2    
+    group by `t_fin_document`.`ID`
+    
+    union all
+    
+    select 
+        `t_fin_document`.`ID` AS `id`,
+        `t_fin_document`.`DOCTYPE` AS `doctype`,
+        `t_fin_document`.`TRANDATE` AS `trandate`,
+        `t_fin_document`.`TRANCURR` AS `trancurr`,
+        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
+        `t_fin_document`.`DESP` AS `desp`,
+        0 AS `tranamount`
+    from
+        `t_fin_document`
+    where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
+
 
 /* The End */ 
 

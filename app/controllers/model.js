@@ -13,6 +13,7 @@
 		DateSplitChar: '-',
 		
 		FinDocType_Transfer: 2,
+		FinDocType_CurrExchange: 3,
 		FinTranType_TransferIn: 37,
 		FinTranType_TransferOut: 60
 	};
@@ -651,6 +652,7 @@
 		this.ItemID = -1;
 		this.AccountID = -1;
 		this.TranTypeID = -1;
+		this.TranCurrency = ""; // Only relevant for currency exchange doc!
 		this.TranAmount = 0.0;
 		this.ControlCenterID = -1;
 		this.OrderID = -1;
@@ -660,7 +662,7 @@
 		this.ControlCenterObject = {};
 		this.OrderObject = {};
 		this.AccountObject = {};
-		this.TranTypeObject = {};
+		this.TranTypeObject = {};		
 	};
 	hih.extend(hih.FinanceDocumentItem, hih.Model);
 	hih.FinanceDocumentItem.prototype.setContent = function(obj) {
@@ -668,6 +670,7 @@
 		this.ItemID = parseInt(obj.itemid);
 		this.AccountID = parseInt(obj.accountid);
 		this.TranTypeID = parseInt(obj.trantype);
+		this.TranCurrency = obj.trancurr;
 		if (isNaN(obj.controlcenterid)) {
 			this.ControlCenterID = parseInt(obj.controlcenterid);
 		} else {
@@ -772,15 +775,11 @@
 	};
 	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
-		this.DocID = -1;
-		 
+		this.DocID = -1;		 
 		this.DocTypeID = -1;
-		this.TranDate = new Date();
-		
+		this.TranDate = new Date();	
 		this.TranCurrency = "";
-		this.TranTargetCurrency = "";
-		this.RefCurrExgDocID = -1;
-		
+		this.RefCurrExgDocID = -1;		
 		this.Desp = "";
 		this.TranAmount = 0.0;
 		
@@ -794,8 +793,7 @@
 		this.DocID = parseInt(obj.docid);
 		this.DocTypeID = parseInt(obj.doctype);
 		this.TranDate = obj.trandate;
-		this.TranCurrency = obj.trancurr;		
-		this.TranTargetCurrency = obj.trantgtcurr;		
+		this.TranCurrency = obj.trancurr;
 		if (isNaN(obj.curexgdoc))
 			this.RefCurrExgDocID = parseInt(obj.curexgdoc);
 		else
@@ -938,6 +936,7 @@
 		}		
 	};
 	// 11. Report on CC
+	// Todo....
 	// 12. Report on Order
 	hih.FinanceReportOrder = function FinanceReportOrder() {
 		this.OrderID = -1;

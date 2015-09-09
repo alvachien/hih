@@ -827,7 +827,7 @@
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
-		$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Transfer;
+		$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_CurrExchange;
 		$scope.SourceAccountObject = {};
 		$scope.TargetAccountObject = {};
 		$scope.SourceControlCenterObject = {};
@@ -836,7 +836,8 @@
 		$scope.TargetOrderObject = {};
 		$scope.SourceTranCurrencyObject = {};
 		$scope.TargetTranCurrencyObject = {};
-		$scope.TranAmount = 0.0;
+		$scope.SourceTranAmount = 0.0;
+		$scope.TargetTranAmount = 0.0;
 		
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;

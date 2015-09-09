@@ -35,13 +35,16 @@ class HIHConstants {
 	public static function getECUnknown() { return self::EC_Unknown; }
 	
 	// Database part
+	// Tables
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
 	const DT_FinAccount = 't_fin_account';
-	
+	// Views
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs3';
+	const DV_FinDocumentItem = 'v_fin_document_item3';
+	const DV_FinReportOrder = 'v_fin_report_io2';
 	
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 }
@@ -117,6 +120,7 @@ class HIHDocumentItem {
 	public $Desp;
 	public $ControlCenterID;
 	public $OrderID;
+	public $TranCurrency;
 
 	public $AccountName;
 	public $TranTypeName;
@@ -174,6 +178,7 @@ class HIHDocument {
 	public $DocDesp;
 	public $DocCurrency;
 	public $DocTypeID;
+	public $RefCurrExgDocID;
 	
 	// Items
 	public $ItemsArray = array ();
@@ -190,6 +195,7 @@ class HIHDocument {
 			switch ($key) {
 				case "DocID":
 				case "DocTypeID":
+				case "RefCurrExgDocID":
 				$this->{$key} = $value;
 				break;
 				
@@ -539,5 +545,4 @@ class HIHInternalOrder {
         }
 	}
 }
-
 ?>

@@ -2101,7 +2101,7 @@ function finance_document_listread() {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument;
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " ORDER BY trandate DESC";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -2111,10 +2111,9 @@ function finance_document_listread() {
 				"doctype" => $row [1],
 				"trandate" => $row [2],
 				"trancurr" => $row [3],	
-				"trantgtcurr" => $row[4],
-				"curexgdoc" => $row[5],
-				"desp" => $row [6],
-				"tranamount" => $row [7] 
+				"curexgdoc" => $row[4],
+				"desp" => $row [5],
+				"tranamount" => $row [6] 
 			);
 		}
 		
@@ -2276,7 +2275,7 @@ function finance_documentitem_listread($docid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlFinDocumentItemView3 . " WHERE docid = '" . $docid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE docid = '" . $docid . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -2335,7 +2334,7 @@ function finance_documentitem_listreadbyaccount($accountid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlFinDocumentItemView3 . " WHERE accountid = '" . $accountid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE accountid = '" . $accountid . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -2394,7 +2393,7 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlFinDocumentItemView3 . " WHERE accountcategory = '" . $acntctgyid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE accountcategory = '" . $acntctgyid . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -3032,7 +3031,7 @@ function finance_report_internalorder() {
 	
 	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "SELECT * FROM " . MySqlFinIOReportView . ";";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinReportOrder . ";";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		
