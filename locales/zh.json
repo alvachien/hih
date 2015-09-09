@@ -135,6 +135,10 @@
 		"DeleteItem": "删除行项目",
 		"ItemID": "行项目ID",
 		"Balance": "余额",
+		"DocumentHeader": "头信息",
+		"DocumentItem": "行项目",
+		"SaveCurrentItem": "保存当前行项目",
+		"CancelItemEditing": "取消当前行项目",
 
   		"AccountsDesp": "当前系统中所有的账户以列表形式呈现。",
   		"Asset": "资产",

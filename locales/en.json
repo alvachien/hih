@@ -136,6 +136,10 @@
 		"DeleteItem": "Delete an Item",
 		"ItemID": "Item ID",
 		"Balance": "Balance",
+		"DocumentHeader": "Header",
+		"DocumentItem": "Item",
+		"SaveCurrentItem": "Save Current Item",
+		"CancelItemEditing": "Cancel Item Editing",
   		
   		"AccountsDesp": "Finance accounts show all accounts in the list view.",
   		"Asset": "Asset",

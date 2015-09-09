@@ -822,7 +822,6 @@
 	.controller('FinanceDocumentCurrExgController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
 		// This class serviced for the creation of Currency Exchange document
-		// This class serviced for the creation of Transfer document 
 		$scope.Activity = "Common.Create"; // By default, it's create!
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
@@ -866,9 +865,9 @@
 		$scope.submit = function() {
 			// Set source account, target account and currency first
 			$scope.DocumentObject.Items = [];
-			if ($scope.DocumentObject.TranCurrencyObject.selected) {
-				$scope.DocumentObject.TranCurrency = $scope.DocumentObject.TranCurrencyObject.selected.Currency;
-			}	
+			if ($scope.SourceTranCurrencyObject.selected) {
+				$scope.DocumentObject.TranCurrency = $scope.SourceTranCurrencyObject.selected.Currency;
+			}
 			
 			var item1 = new hih.FinanceDocumentItem();
 			item1.ItemID = 1;
@@ -884,7 +883,7 @@
 					return false;
 				}
 			});
-			item1.TranAmount = parseFloat($scope.TranAmount);
+			item1.TranAmount = parseFloat($scope.SourceTranAmount);
 			if ($scope.SourceControlCenterObject.selected) {
 				item1.ControlCenterID = $scope.SourceControlCenterObject.selected.ID;
 			}
@@ -904,7 +903,10 @@
 					return false;
 				}
 			});
-			item2.TranAmount = parseFloat($scope.TranAmount);
+			item2.TranAmount = parseFloat($scope.TargetTranAmount);
+			if ($scope.TargetTranCurrencyObject.selected) {
+				item2.TranCurrency = $scope.TargetTranCurrencyObject.selected.Currency;
+			}			
 			if ($scope.TargetControlCenterObject.selected) {
 				item2.ControlCenterID = $scope.TargetControlCenterObject.selected.ID;
 			}
