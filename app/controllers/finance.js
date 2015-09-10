@@ -281,13 +281,12 @@
 	    ];
 	  
 	    var promise1 = utils.loadCurrenciesQ();
-	    var promise2 = utils.loadFinanceAccountCategoriesQ();
-	  
+	    var promise2 = utils.loadFinanceAccountCategoriesQ();	  
 	    $q.all([promise1, promise2])
 	  	    .then(function(response) {
 			    utils.loadFinanceAccountsQ()
 			  	    .then(function(response2) {
-					    if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
+					    if (angular.isArray($rootScope.arFinanceAccount) && $rootScope.arFinanceAccount.length > 0) {
 						    $scope.myData = [];
 						    $.each($rootScope.arFinanceAccount, function(idx, obj) {
 							    $scope.myData.push(angular.copy(obj));					
@@ -1302,6 +1301,7 @@
 						.then(function(response) {
 							// Take a look at the response
 							if (response) {
+								$rootScope.arFinanceDocument.push($scope.DocumentObject);
 								// Now navigate to display
 								$state.go("home.finance.document.display",  { id : response });
 							}
@@ -1940,7 +1940,7 @@
 	    	{ name:'ccid', field: 'ControlCenterID', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:50 },
 			{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:100 },
 			{ name:'precent', field: 'Precentage', displayName: 'Common.Precent', headerCellFilter: "translate", width: 100,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 150 },
 			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
@@ -2170,11 +2170,11 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'acntname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width:150 },
 	    	{ name:'dbtbalance', field: 'DebitBalance', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'cdtbalance', field: 'CreditBalance', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
 		];
 
@@ -2220,7 +2220,7 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
 			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
 		];
 
@@ -2305,7 +2305,7 @@
 	    	{ name:'ordvalfrm', field: 'OrderObject.ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width:100 },
 	    	{ name:'ordvalto', field: 'OrderObject.ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width:100 },
 			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				aggregationType:uiGridConstants.aggregationTypes.sum },
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
 		];
 

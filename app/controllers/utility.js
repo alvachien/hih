@@ -570,7 +570,6 @@
 															data.Message);
 												});
 							}							
-							
 						};
 // Finance part: Account category
 						rtnObj.loadFinanceAccountCategoriesQ = function(bForceReload) {
