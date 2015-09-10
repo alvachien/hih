@@ -183,6 +183,14 @@
 		function($scope, $rootScope, $state, $http, $log, $translate, i18nService, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		
+		// Load the setting out
+		utils.loadFinanceSettingQ()
+			.then(function(response) {
+				// Do nothing here~~~
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+		
 		$scope.displayedCollection = [
 			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},
 			{userobj: 'Display As', usercont: $scope.CurrentUser.userdisplayas},

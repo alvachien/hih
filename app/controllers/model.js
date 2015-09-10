@@ -11,9 +11,13 @@
 		LearnCategorySplitChar: " > ",
 		IDSplitChar: ",",
 		DateSplitChar: '-',
+		FinanceTranTypeSplitChar: " > ",
+		
+		FinSetting_LocalCurrency: "LocalCurrency",
 		
 		FinDocType_Transfer: 2,
 		FinDocType_CurrExchange: 3,
+		
 		FinTranType_TransferIn: 37,
 		FinTranType_TransferOut: 60
 	};
@@ -26,6 +30,12 @@
 		var m = date.getMonth() + 1;
 		var d = date.getDate();
 		return y + hih.Constants.DateSplitChar + (m < 10 ? ('0' + m) : m) + hih.Constants.DateSplitChar + (d < 10 ? ('0' + d) : d);		
+	};
+	hih.ModelUtility.DatabaseDateFormatter = function(date) {
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		var d = date.getDate();
+		return y + (m < 10 ? ('0' + m) : m) + (d < 10 ? ('0' + d) : d);		
 	};
 	hih.ModelUtility.DateParser = function(s) {
 		if (!s)
@@ -315,7 +325,26 @@
 		this.Reason = obj.reason;
 	};
 	
+	// =========================================================
 	// Finance part
+	// =========================================================
+	// 0. Setting
+	hih.FinanceSetting = function() {
+		this.LocalCurrency = "";
+		this.LocalCurrencyComment = "";
+	};
+	hih.extend(hih.FinanceSetting, hih.Model);
+	hih.FinanceSetting.prototype.setContent = function(arData) {
+		var that = this;
+		if (arData && $.isArray(arData) && arData.length > 0) {
+			$.each(arData, function(idx, obj) {
+				if (obj.setid === hih.Constants.FinSetting_LocalCurrency) {												
+					that.LocalCurrency = obj.setvalue;
+					that.LocalCurrencyComment = obj.comment;
+				}
+			});
+		}
+	};
 	// 1. Currency
 	hih.Currency = function Currency() {
 		this.Currency = "";
@@ -628,6 +657,10 @@
 		this.Name = "";
 		this.ExpenseFlag = false;
 		this.Comment = "";
+		
+		// Runtime information
+		this.FullDisplayName = "";
+		this.Parent = {};
 	};
 	hih.extend(hih.FinanceTransactionType, hih.Model);
 	hih.FinanceTransactionType.prototype.setContent = function(obj) {
@@ -645,6 +678,32 @@
 		} else {
 			this.ExpenseFlag = false;
 		}
+	};
+	hih.FinanceTransactionType.prototype.buildParentInfo = function(arTranTypes) {
+		if (this.ParentID === -1) {
+			this.Parent = null;
+		} else {
+			if ($.isArray(arTranTypes) && arTranTypes.length > 0) {
+				var that = this;
+				$.each(arTranTypes, function(idx, obj){
+					if (that.ParentID === obj.ID) {
+						that.Parent = arTranTypes[idx];
+						return false;
+					}
+				});
+			}			
+		}
+	};
+	hih.FinanceTransactionType.prototype.buildFullName = function() {
+		if (this.ParentID === -1) {
+			// Root type
+			this.FullDisplayName = this.Name;
+		} else {
+			if (this.Parent) {
+				this.FullDisplayName = this.Parent.buildFullName().concat(hih.Constants.FinanceTranTypeSplitChar, this.Name);				 
+			}
+		}
+		return this.FullDisplayName;
 	};
 	// 7. Document Item
 	hih.FinanceDocumentItem = function FinanceDocumentItem() {
@@ -936,7 +995,40 @@
 		}		
 	};
 	// 11. Report on CC
-	// Todo....
+	hih.FinanceReportControlCenter = function FinanceReportControlCenter() {
+		this.ControlCenterID = -1;
+		this.TranAmount = 0.0;
+		this.TranCurrency = "";
+		
+		// Runtime information
+		this.ControlCenterObject = {};
+		this.TranCurrencyObject = {};
+	};
+	hih.extend(hih.FinanceReportControlCenter, hih.Model);
+	hih.FinanceReportControlCenter.prototype.setContent = function(obj) {
+		this.ControlCenterID = parseInt(obj.ccid);
+		this.TranAmount = parseFloat(obj.tranamt);
+		this.TranCurrency = obj.trancurr;
+	};
+	hih.FinanceReportControlCenter.prototype.buildRelationship = function(arCC, arCurrency) {
+		var that = this;
+		if (arCC && $.isArray(arCC) && arCC.length > 0) {
+			$.each(arCC, function(idx, obj){
+				if (obj.ID === that.ControlCenterID) {
+					that.ControlCenterObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
+			$.each(arCurrency, function(idx, obj){
+				if (obj.Currency === that.TranCurrency) {
+					that.TranCurrencyObject = obj;
+					return false;
+				}
+			});
+		}		
+	};
 	// 12. Report on Order
 	hih.FinanceReportOrder = function FinanceReportOrder() {
 		this.OrderID = -1;

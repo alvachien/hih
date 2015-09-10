@@ -238,6 +238,11 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		// Finance Part
 		// ===========================================================================================
+		case "GETFINANCESETTING": {
+			HIHSrv_Function( 'finance_setting_listread' );
+		}
+		break;
+		
 		case "GETFINANCEACCOUNTLIST": {
 			HIHSrv_Function( 'finance_account_listread' );
 		}
@@ -401,6 +406,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 
 		case "GETFINANCEREPORTORDER": {
 			HIHSrv_Function( 'finance_report_internalorder' );
+		}
+		break;
+		
+		case "GETFINANCEREPORTCC": {
+			$startdate = escape( $realParamArr['startdate'] );
+			$enddate = escape( $realParamArr['enddate'] );
+			HIHSrv_Function_2Param( 'finance_report_controlcenter', $startdate, $enddate );
 		}
 		break;
 						

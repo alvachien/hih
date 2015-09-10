@@ -34,7 +34,7 @@
                         <div ng-bind-html="acur.Name | highlight: $select.search"></div>
                         <small>
                             ID: {{acur.Currency}} <br />
-                            Name: <span ng-bind-html="+acur.Name | highlight: $select.search"></span>
+                            Name: <span ng-bind-html="''+acur.Name | highlight: $select.search"></span>
                         </small>
                     </ui-select-choices>
                 </ui-select>
@@ -67,7 +67,7 @@
                             <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
                             <small>
                                 ID: {{allacnt.ID}} <br />
-                                Name: <span ng-bind-html="+allacnt.Name | highlight: $select.search"></span>
+                                Name: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -117,7 +117,7 @@
                             <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
                             <small>
                                 ID: {{allacnt.ID}} <br />
-                                Name: <span ng-bind-html="+allacnt.Name | highlight: $select.search"></span>
+                                Name: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>

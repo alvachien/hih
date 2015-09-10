@@ -38,7 +38,7 @@
                         <div ng-bind-html="allcc.Name | highlight: $select.search"></div>
                         <small>
                             ID: {{allcc.ID}} <br />
-                            Name: <span ng-bind-html="+allcc.Name | highlight: $select.search"></span>
+                            Name: <span ng-bind-html="''+allcc.Name | highlight: $select.search"></span>
                         </small>
                     </ui-select-choices>
                 </ui-select>

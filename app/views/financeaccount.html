@@ -30,7 +30,7 @@
 			      		<div ng-bind-html="acntctgy.Name | highlight: $select.search"></div>
 			      		<small>
 			      			ID: {{acntctgy.ID}} <br />			      			
-			        		Name: <span ng-bind-html="+acntctgy.Name | highlight: $select.search"></span>
+			        		Name: <span ng-bind-html="''+acntctgy.Name | highlight: $select.search"></span>
 			      		</small>
 			    	</ui-select-choices>
 				</ui-select>

@@ -356,14 +356,30 @@
 // Finance part
 ////////////////////////////////////////////////////////////////////
 
+// Finance part: Setting
+						rtnObj.loadFinanceSettingQ = function() {
+							// Load finance accounts with $q supports
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype : 'GETFINANCESETTING' })
+								.then(function(response) {
+									$rootScope.arCurrency = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										var fs = new hih.FinanceSetting();
+										fs.setContent(response.data);
+										$rootScope.objFinanceSetting = fs;
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;							
+						};
 // Finance part: Currencies
 						rtnObj.loadCurrencies = function() {
 						    if (!$rootScope.isCurrencyLoaded) {
 						        // Example JSON response
 						        // {"curr":"CNY","name":"aaa","symbol":null}
-								$http
-										.post(
-												'script/hihsrv.php',
+								$http.post('script/hihsrv.php',
 												{
 													objecttype : 'GETCURRENCYLIST'
 												})
@@ -700,7 +716,8 @@
 												di.setContent(obj);
 												di.buildRelationship($rootScope.arFinanceAccount,
 													$rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder,
-													$rootScope.arFinanceTransactionType);
+													$rootScope.arFinanceTransactionType,
+													$rootScope.arCurrency);
 												docObject.Items.push(di);
 											});
 										}
@@ -840,31 +857,6 @@
 							}							
 						};
 // Finance part: Transaction types
-						rtnObj.loadFinanceTransactionTypes = function() {
-						    if (!$rootScope.isFinanceTransactionTypeLoaded) {
-						        // Example JSON response
-						        // {"id":"2","parent":null,"name":"\u4e3b\u4e1a\u6536\u5165","expense":"0","comment":null}
-								$http.post( 'script/hihsrv.php',
-												{
-													objecttype : 'GETFINANCETRANSACTIONTYPELIST'
-												})
-										.success(
-												function(data, status, headers, config) {
-													$rootScope.arFinanceTransactionType = data;
-													$rootScope.isFinanceTransactionTypeLoaded = true;
-
-													$rootScope.$broadcast("FinanceTransactionTypeLoaded");
-												})
-										 .error(
-												function(data, status, headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
-												});
-							}
-						};
 						rtnObj.loadFinanceTransactionTypesQ = function(bForceReload) {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceTransactionTypeLoaded && !bForceReload) {
@@ -878,10 +870,23 @@
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
 												var finatrantyp = new hih.FinanceTransactionType();
-												finatrantyp.setContent(obj);
+												finatrantyp.setContent(obj);												
 												$rootScope.arFinanceTransactionType.push(finatrantyp);
 											});
 										}
+										$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
+											obj.buildParentInfo($rootScope.arFinanceTransactionType);
+											obj.buildFullName();
+										});
+										// Sort it!
+										$rootScope.arFinanceTransactionType.sort(function(a, b) {
+											if (a.ExpenseFlag !== b.ExpenseFlag) {
+												if (a.ExpenseFlag) return -1;
+												return 1;
+											}
+											
+											return a.FullDisplayName.localeCompare(b.FullDisplayName);
+										});
 										$rootScope.isFinanceTransactionTypeLoaded = true;
 										deferred.resolve(true);
 									}, function(response) {
@@ -911,6 +916,7 @@
 										});
 							}
 						};
+// Finance part: Control Center
 						rtnObj.loadFinanceControlCentersQ = function(bForceReload) {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceControlCenterLoaded && !bForceReload) {
@@ -940,7 +946,6 @@
 							}
 							return deferred.promise;
 						};
-// Finance part: Control Center
 						rtnObj.loadFinanceControlCenterHierarchyQ = function(bForceReload) {
 							var deferred = $q.defer();
 							if ($rootScope.isFinanceControlCenterHierarchyLoaded  && !bForceReload) {
@@ -1143,6 +1148,30 @@
 							}
 							return deferred.promise;
 						};
+// Finance part: report - cc
+						rtnObj.loadFinanceReportControlCenterQ = function(startdt, enddt) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEREPORTCC', startdate: startdt, enddate: enddt })
+								.then(function(response) {
+									$rootScope.arFinanceReportCC = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.FinanceReportControlCenter();
+											bs.setContent(obj);
+											bs.buildRelationship($rootScope.arFinanceControlCenter,
+												$rootScope.arCurrency);
+											$rootScope.arFinanceReportCC.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+
 ////////////////////////////////////////////////////////////////////
 // Others
 ////////////////////////////////////////////////////////////////////

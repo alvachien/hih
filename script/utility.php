@@ -1520,7 +1520,48 @@ function learn_award_multidelete($ids) {
 			$ids 
 	);
 }
-
+// 1.6.0 Finance setting
+function finance_setting_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DT_FinSetting;
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"setid" => $row [0],
+				"setvalue" => $row [1],
+				"comment" => $row [2]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query.";
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array ( $sError, $rsttable );	
+}
 // 1.6 Finance account
 function finance_account_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -1930,7 +1971,7 @@ function finance_currency_listread() {
 	);
 }
 // 1.9 Finance transaction type
-function finance_trantype_listread($usetext) {
+function finance_trantype_listread($usetext = false) {
 	// NOTE:
 	// This method reserved for using jeasyui
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -1948,7 +1989,7 @@ function finance_trantype_listread($usetext) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT ID, PARID, NAME, EXPENSE, COMMENT FROM " . MySqlFinTranTypeTable . " ORDER BY EXPENSE";
+	$query = "SELECT ID, PARID, NAME, EXPENSE, COMMENT FROM " . MySqlFinTranTypeTable . " ORDER BY PARID";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -3071,25 +3112,14 @@ function finance_report_internalorder() {
 	);
 }
 // 1.18 Finance Report: Control Center List
-function finance_report_controlcenter($fromdate, $todate) {
-	if (! isset ( $fromdate )) {
-		// $fromdate = new DateTime();
-		// $fromdate->setDate(1990, 1, 1);
-		$fromdate = "19900101";
-	}
-	if (! isset ( $todate )) {
-		// $todate = new DateTime();
-		// $todate->setDate(9999, 12, 31);
-		$todate = "99991231";
-	}
-	
+function finance_report_controlcenter($fromdate = '19000101', $todate = '99991231') {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -3111,7 +3141,7 @@ function finance_report_controlcenter($fromdate, $todate) {
 	
 	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlFinCCReportProc . " (?, ?);";
+	$query = "CALL " . HIHConstants::DP_FinReportCC . " (?, ?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "ss", $fromdate, $todate );
@@ -3124,12 +3154,12 @@ function finance_report_controlcenter($fromdate, $todate) {
 			/* fetch values */
 			while ( $stmt->fetch () ) {
 				$rstAr [] = array (
-						"ccid" => $ccid,
-						"ccname" => $ccname,
-						"ccparid" => $ccparid,
-						"tranamt" => $tranamt,
-						"trancurr" => $trancurr,
-						"trancurrname" => $trancurrname 
+					"ccid" => $ccid,
+					"ccname" => $ccname,
+					"ccparid" => $ccparid,
+					"tranamt" => $tranamt,
+					"trancurr" => $trancurr,
+					"trancurrname" => $trancurrname 
 				);
 			}
 		} else {
@@ -3144,10 +3174,7 @@ function finance_report_controlcenter($fromdate, $todate) {
 		$sMsg = "Failed to parpare statement: " . $query;
 	}
 	
-	return array (
-			$sMsg,
-			$rstAr 
-	);
+	return array ( $sMsg, $rstAr );
 }
 
 //
@@ -3317,7 +3344,7 @@ function build_financecontrolcenter_tree_int($ctgytable, $parhavechld) {
 	return $parhavechld;
 }
 
-/* Following parts For testing purpose only */
+/* Following function For testing purpose only */
 function getExchangeRt($from_Currency, $to_Currency) {
 	
 	// $amount = urlencode($amount);

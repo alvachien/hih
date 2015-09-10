@@ -32,10 +32,15 @@ class HIHConstants {
 	const EC_InvalidConctrolCenter = 112;
 	const EC_InvalidOrder = 113;
 	
+	// EC Number range of DB part: 201 - 250
+	const EC_ConnectionFail = 201;
+	const EC_QueryExecuteFail = 202;
+	
 	public static function getECUnknown() { return self::EC_Unknown; }
 	
 	// Database part
 	// Tables
+	const DT_FinSetting = 't_fin_setting';
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
 	const DT_FinAccount = 't_fin_account';
@@ -47,6 +52,7 @@ class HIHConstants {
 	const DV_FinReportOrder = 'v_fin_report_io2';
 	
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
+	const DP_FinReportCC = 'REPORT_FIN_CC';
 }
 
 class HIHUser {

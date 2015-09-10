@@ -205,6 +205,11 @@
 			templateUrl: 'app/views/financereportorder.html',
 			controller: 'FinanceReportOrderController'
 		})
+		.state("home.finance.report.ccbalance", {
+			url:'/cc',
+			templateUrl: 'app/views/financereportcc.html',
+			controller: 'FinanceReportCCController'
+		})
     ;
 	}])
 	
@@ -1033,15 +1038,24 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'itemid', field: 'ItemID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
 	    	//{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
-			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 150},
-			{ name:'accountcategoryname', field:'AccountObject.CategoryObject.Name', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
+			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 150 },
+			//	cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+            //			if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
+			//		else { return 'accountnotasset'; }
+        	//	}},
+			//{ name:'accountcategoryname', field:'AccountObject.CategoryObject.Name', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
 			{ name:'trantypename', field:'TranTypeObject.Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
-			{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
+			//	cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+          	//		if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
+			//		else { return 'accountnotasset'; }
+        	//	} },
+			//{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
+			{ name:'itemcurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 80 },
 			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
 				aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
 			{ name:'itemcc', field:'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width: 100 },
-			{ name:'itemord', field:'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width: 100 },
+			{ name:'itemord', field:'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width: 100 },			
 			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
 					cellTemplate:'<div class="ui-grid-cell-contents">\
 						<div class="btn-toolbar" role="toolbar">\
@@ -2188,6 +2202,89 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+	}])
+	
+	.controller("FinanceReportCCController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+		// The class sevice for Balance sheet
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'dataReport';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		$scope.gridOptions.showGridFooter = true;
+		$scope.gridOptions.showColumnFooter = true;
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
+			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+		];
+
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.AccountID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.AccountID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+		};
+		
+		$scope.dataReport = [];
+		$scope.ValidFromDate = new Date();
+		$scope.ValidToDate = new Date();
+
+        // For date control
+		$scope.isValidfromDateOpened = false;
+		$scope.isValidtoDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openValidfromDate = function ($event) {			
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isValidfromDateOpened = true;				
+			}
+		};
+		$scope.openValidtoDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isValidtoDateOpened = true;				
+			}
+		};
+		
+		var promise1 = utils.loadFinanceControlCentersQ();
+		var promise2 = utils.loadCurrenciesQ();
+		$q.all(promise1, promise2).
+			then(function(response) {
+				utils.loadFinanceReportControlCenterQ('19900101', '99991231')
+					.then(function(response) {
+						$scope.dataReport = $rootScope.arFinanceReportCC;
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+		
+		$scope.submit = function() {
+			utils.loadFinanceReportControlCenterQ(hih.ModelUtility.DatabaseDateFormatter($scope.ValidFromDate), hih.ModelUtility.DatabaseDateFormatter($scope.ValidToDate))
+				.then(function(response) {
+					$scope.dataReport = $rootScope.arFinanceReportCC;
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+		};	
 	}])
 	
 	.controller("FinanceReportOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
