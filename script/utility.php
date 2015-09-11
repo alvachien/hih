@@ -2171,6 +2171,51 @@ function finance_document_listread() {
 			$rsttable 
 	);
 }
+function finance_document_curexg_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return "Connect failed: %s\n" . mysqli_connect_error ();
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Read category
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " WHERE doctype = 3 ORDER BY trandate DESC";
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"docid" => $row [0],
+				"doctype" => $row [1],
+				"trandate" => $row [2],
+				"trancurr" => $row [3],	
+				"curexgdoc" => $row[4],
+				"desp" => $row [5],
+				"tranamount" => $row [6] 
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query.";
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+			$sError,
+			$rsttable 
+	);	
+}
 function finance_document_post($docobj) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

@@ -75,7 +75,8 @@
  		"FinanceTrace": "Finance Trace",
  		"About": "About",
  		"Acknowledgements": "Acknowledgements",
- 		"Version": "Version"
+ 		"Version": "Version",
+		"Libraries": "Libraries"
  	},
  	
  	"Learn": {
@@ -139,8 +140,9 @@
 		"DocumentHeader": "Header",
 		"DocumentItem": "Item",
 		"SaveCurrentItem": "Save Current Item",
-		"CancelItemEditing": "Cancel Item Editing",
-  		
+		"CancelItemEditing": "Cancel Item Editing",		
+  		"Setting": "Finance Setting",
+		  
   		"AccountsDesp": "Finance accounts show all accounts in the list view.",
   		"Asset": "Asset",
   		"Amount": "Amount",
@@ -185,6 +187,7 @@
 		"EitherControlCenterOrOrder": "Use either Control Center or Order, but not both",
 		"InvalidCurrency": "Invalid Currency",
 		"InvalidTransferAmount": "Invalid transfer amount",
-		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account"
+		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account",
+		"InvalidRefCurrExgDoc": "Invalid reference currency exchange document"
 	}
  }

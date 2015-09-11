@@ -75,7 +75,8 @@
  		"FinanceTrace": "财务记录系统",
  		"About": "关于",
  		"Acknowledgements": "致谢",
- 		"Version": "版本"
+ 		"Version": "版本",
+		"Libraries": "资料库"
  	},
  	
  	"Learn": {
@@ -139,6 +140,7 @@
 		"DocumentItem": "行项目",
 		"SaveCurrentItem": "保存当前行项目",
 		"CancelItemEditing": "取消当前行项目",
+		"Setting": "财务设置",
 
   		"AccountsDesp": "当前系统中所有的账户以列表形式呈现。",
   		"Asset": "资产",
@@ -184,6 +186,7 @@
 		"EitherControlCenterOrOrder": "使用控制中心或订单，不能同时使用",
 		"InvalidCurrency": "不合法的货币",
 		"InvalidTransferAmount": "不合法的转账金额",
-		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账"	
+		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账",
+		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证"
 	}
 }

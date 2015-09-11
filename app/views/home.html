@@ -107,6 +107,8 @@
 	                            <li><a ui-sref="home.userdetail"><span translate="Nav.UserDetail">User Detail</span></a></li>
 								<li><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
 	                            <li role="separator" class="divider"></li>
+								<li><a ui-sref="home.userlist"><span translate="Finance.Setting">Finance Setting</span></a></li>
+								<li role="separator" class="divider"></li>
 	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
 	                    </li>
@@ -157,9 +159,18 @@
 	                        </ul>
 	                    </li>
 	                    <li class="dropdown" dropdown>
+	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.Libraries">Libraries</span><b class="caret"></b></a>
+	                        <ul class="dropdown-menu">
+								<li class="dropdown-header">Books</li>
+								<li><a ui-sref="home.lib.book.list"><span translate="Common.ListView">List View</span></a></li>
+								<li role="separator" class="divider"></li>
+								<li class="dropdown-header">Movies</li>
+								<li><a ui-sref="home.lib.book.list"><span translate="Common.ListView">List View</span></a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.Acknowledgements">Acknowledgements</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
-								<li class="dropdown-header">Libraries</li>
 								<li><a target="_blank" href="https://www.angularjs.org/">Angular JS</a></li>
 								<li><a target="_blank" href="http://getbootstrap.com/">Bootstrap</a></li>
 								<li><a target="_blank" href="http://www.tinymce.com/">TinyMCE</a></li>
@@ -169,6 +180,7 @@
 								<li><a target="_blank" href="https://github.com/ezraroi/ngJsTree">ngJsTree</a></li>
 								<li><a target="_blank" href="https://github.com/thomaspark/bootswatch/">bootswatch</a></li>
 								<li><a target="_blank" href="https://angular-translate.github.io/">Angular Translate</a></li>
+								<li><a target="_blank" href="http://www.chartjs.org/">Chart.js</a></li>
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header">Angular UI</li>
 								<li><a target="_blank" href="http://angular-ui.github.io/">Angular UI</a></li>
@@ -177,12 +189,11 @@
 								<li><a target="_blank" href="https://github.com/angular-ui/ui-tinymce">UI-tinymce</a></li>
 								<li><a target="_blank" href="https://github.com/angular-ui/ui-select">UI-Select</a></li>
 								<li><a target="_blank" href="http://ui-grid.info/">UI-Grid</a></li>
+								<li><a target="_blank" href="http://jtblin.github.io/angular-chart.js/">Angular Chart</a></li>
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header">CDNs</li>
 								<li><a target="_blank" href="http://www.bootcdn.cn/">BootCDN</a></li>
 								<li role="separator" class="divider"></li>
-								<li class="dropdown-header">Others</li>
-								<li><a target="_blank" href="http://jtblin.github.io/angular-chart.js/">Angular Chart</a></li>
 								<li><a target="_blank" href="https://github.com/lorenzofox3/Smart-Table">Smart-Table</a></li>
 								<li><a target="_blank" href="http://cdn.code.baidu.com/">Baidu CDN</a></li>
 	                        </ul>

@@ -658,6 +658,28 @@
 							}
 							return deferred.promise;
 						};						
+						rtnObj.loadFinanceCurrencyExchangeDocumentsQ = function() {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEDOCUMENTLIST_CURREXG' })
+								.then(function(response) {
+									$rootScope.arFinanceCurrencyExchangeDocument = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var fdt = new hih.FinanceDocument();
+											fdt.setContent(obj);
+											fdt.buildRelationship($rootScope.arFinanceDocumentType,
+												$rootScope.arCurrency)
+											$rootScope.arFinanceCurrencyExchangeDocument.push(fdt);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};						
 						rtnObj.loadFinanceDocuments = function() {
 						    if (!$rootScope.isFinanceDocumentLoaded) {
 						        // Example JSON reponse

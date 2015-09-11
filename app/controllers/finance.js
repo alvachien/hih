@@ -569,6 +569,12 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+       utils.loadFinanceCurrencyExchangeDocumentsQ()
+			.then(function(response){
+				// Do nothing
+			}, function(reason) {
+				// Do nothing
+			});
 
 		// Grid options
         $scope.selectedRows = [];
@@ -784,7 +790,7 @@
 			$scope.DocumentObject.Items.push(item2);
 			
 			// Verify
-			var rptMsgs = $scope.DocumentObject.Verify($translate);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(
@@ -921,7 +927,7 @@
 			$scope.DocumentObject.Items.push(item2);
 			
 			// Verify
-			var rptMsgs = $scope.DocumentObject.Verify($translate);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(
@@ -1082,6 +1088,7 @@
 		$scope.ItemsCollection = [];
 		$scope.SelectedDocumentItem = new hih.FinanceDocumentItem(); // Current edit item
 		$scope.nextItemID = 0;
+		$scope.RefCurrExgDocObject = {};
 		
         // For date control
 		$scope.isDateOpened = false;
@@ -1277,8 +1284,12 @@
 				$scope.DocumentObject.TranCurrency = $scope.DocumentObject.TranCurrencyObject.selected.Currency; 
 				//$scope.DocumentObject.TranCurrencyObject = $scope.DocumentObject.TranCurrencyObject.selected;				
 			}
+			// Reference currency exchange document
+			if ($scope.RefCurrExgDocObject.selected) {
+				$scope.DocumentObject.RefCurrExgDocID = $scope.RefCurrExgDocObject.selected.DocID;
+			}
 			
-			var rptMsgs = $scope.DocumentObject.Verify($translate);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency, $scope.RefCurrExgDocObject.selected);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(

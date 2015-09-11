@@ -721,7 +721,7 @@
 		this.ControlCenterObject = {};
 		this.OrderObject = {};
 		this.AccountObject = {};
-		this.TranTypeObject = {};		
+		this.TranTypeObject = {};
 	};
 	hih.extend(hih.FinanceDocumentItem, hih.Model);
 	hih.FinanceDocumentItem.prototype.setContent = function(obj) {
@@ -879,7 +879,7 @@
 			});
 		}		
 	};
-	hih.FinanceDocument.prototype.Verify = function($translate) {
+	hih.FinanceDocument.prototype.Verify = function($translate, locCurr, objCurrExgDoc) {
 		var errMsgs = [];
 		// Document type
 		if (isNaN(this.DocTypeID) || this.DocTypeID === -1) {
@@ -888,11 +888,35 @@
 		// Tran. date?
 		// Maybe not necessary
 		// Tran. currency
-		if (this.TranCurrency.trim().length <= 0) {
+		this.TranCurrency = this.TranCurrency.trim();
+		if (this.TranCurrency.length <= 0) {
 			errMsgs.push($translate("Message.InvalidCurrency"));
-		}
+		} else if (locCurr) {
+			// Check for Foreign currency
+			if( this.TranCurrency !== locCurr ) {
+				// The RefCurrExgDocID is must for foreign document
+				if (this.RefCurrExgDocID === -1 || !objCurrExgDoc) {
+					errMsgs.push($translate("Message.InvalidRefCurrExgDoc"));
+				}
+				
+				// Then the currency must exist in that document
+				var bcurrexist = false;
+				var that = this;
+				$.each(this.objCurrExgDoc.Items, function(idx2, obj2) {
+					if (obj2.TranCurrency && obj2.TranCurrency === that.TranCurrency) {
+						bcurrexist = true;
+						return false;
+					}
+				});
+				
+				if (bcurrexist) {
+				} else {
+					errMsgs.push($translate("Message.InvalidRefCurrExgDoc"));
+				}
+			}
+		}		
 		// Amount
-		// Maybe not necessary
+		// It's a working Maybe not necessary
 		// Desp.
 		if (this.Desp.trim().length <= 0) {
 			errMsgs.push($translate("Message.InvalidDescription"));

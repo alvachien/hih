@@ -308,6 +308,11 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function( 'finance_doctype_listread' );
 		}
 		break;
+		
+		case "GETFINANCEDOCUMENTLIST_CURREXG": {
+			HIHSrv_Function( 'finance_document_curexg_listread' );
+		}
+		break;
 			
 		case "GETFINANCEDOCUMENTITEMLIST_BYDOC": {
 			$docid = escape ( $realParamArr ['docid'] );

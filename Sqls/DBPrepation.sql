@@ -4,7 +4,8 @@
  * Updated: 2015/05/16
  *
  * == Version Histories
- *  1. 2015.9.8, adding table t_fin_setting 
+ *  1. 2015.9.8, adding table t_fin_setting ;
+ *  2. 2015.9.11, changing the logic for foreign currency part;
  */
 
 /*======================================================
@@ -872,6 +873,18 @@ VIEW `v_fin_document` AS
     from
         `t_fin_document`
     where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
+
+/* ======================================================
+    Delta parts on 2015.9.11
+   ====================================================== */
+
+-- Change tables
+ALTER TABLE `t_fin_document` 
+ADD COLUMN `EXGRATE` DOUBLE NULL DEFAULT NULL AFTER `REFCUREXGDOC`,
+ADD COLUMN `EXGRATE_PLAN` DOUBLE NULL DEFAULT NULL AFTER `EXGRATE`;
+
+ALTER TABLE `t_fin_exrate` 
+ADD COLUMN `refdocid` INT(11) NULL AFTER `rate`;
 
 
 /* The End */ 
