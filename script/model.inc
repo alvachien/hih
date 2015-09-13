@@ -185,7 +185,9 @@ class HIHDocument {
 	public $DocCurrency;
 	public $DocTypeID;
 	public $RefCurrExgDocID;
-	
+	public $ExchangeRate;
+	public $ProposedExchangeRate;
+
 	// Items
 	public $ItemsArray = array ();
 
@@ -202,6 +204,8 @@ class HIHDocument {
 				case "DocID":
 				case "DocTypeID":
 				case "RefCurrExgDocID":
+				case "ExchangeRate":
+				case "ProposedExchangeRate":
 				$this->{$key} = $value;
 				break;
 				

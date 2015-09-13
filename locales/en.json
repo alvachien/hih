@@ -142,6 +142,8 @@
 		"SaveCurrentItem": "Save Current Item",
 		"CancelItemEditing": "Cancel Item Editing",		
   		"Setting": "Finance Setting",
+		"ExchangeRate": "Exchange Rate",
+		"ProposedExchangeRate": "Proposed Exchange Rate",
 		  
   		"AccountsDesp": "Finance accounts show all accounts in the list view.",
   		"Asset": "Asset",

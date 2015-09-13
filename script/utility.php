@@ -2154,7 +2154,9 @@ function finance_document_listread() {
 				"trancurr" => $row [3],	
 				"curexgdoc" => $row[4],
 				"desp" => $row [5],
-				"tranamount" => $row [6] 
+				"exgrate" => $row[6],
+				"exgrate_plan" => $row[7],
+				"tranamount" => $row [8] 
 			);
 		}
 		
@@ -2199,7 +2201,9 @@ function finance_document_curexg_listread() {
 				"trancurr" => $row [3],	
 				"curexgdoc" => $row[4],
 				"desp" => $row [5],
-				"tranamount" => $row [6] 
+				"exgrate" => $row[6],
+				"exgrate_plan" => $row[7],
+				"tranamount" => $row [8] 
 			);
 		}
 		
@@ -2237,9 +2241,10 @@ function finance_document_post($docobj) {
 	$nDocID = 0;
 	
 	/* Prepare an insert statement on header */
-	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`) VALUES (?, ?, ?, ?);";
+	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `REFCUREXGDOC`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "isss", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp );
+		$stmt->bind_param ( "issisdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->RefCurExgDoc, $docobj->DocDesp,
+			$docobj->ExgRate, $docobj->ProposedExgRate );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
@@ -2250,11 +2255,11 @@ function finance_document_post($docobj) {
 	
 	/* Prepare an insert statement on item */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANCURR`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
+				$newstmt->bind_param ( "iiiisdiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->TranCurrency, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {

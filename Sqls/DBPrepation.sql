@@ -840,6 +840,18 @@ DROP COLUMN `TRANTGTCURR`;
 ALTER TABLE `t_fin_document_item` 
 ADD COLUMN `TRANCURR` VARCHAR(5) NULL AFTER `TRANTYPE`;
 
+/* ======================================================
+    Delta parts on 2015.9.11
+   ====================================================== */
+
+-- Change tables
+ALTER TABLE `t_fin_document` 
+ADD COLUMN `EXGRATE` DOUBLE NULL DEFAULT NULL AFTER `REFCUREXGDOC`,
+ADD COLUMN `EXGRATE_PLAN` DOUBLE NULL DEFAULT NULL AFTER `EXGRATE`;
+
+ALTER TABLE `t_fin_exrate` 
+ADD COLUMN `refdocid` INT(11) NULL AFTER `rate`;
+
 -- Replace view for document
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
@@ -853,6 +865,8 @@ VIEW `v_fin_document` AS
         `t_fin_document`.`TRANCURR` AS `trancurr`,
         `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
         `t_fin_document`.`DESP` AS `desp`,
+        `t_fin_document`.`EXGRATE` AS `exgrate`,
+        `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
         sum(`v_fin_document_item1`.`tranamount`) AS `tranamount`
     from
         `t_fin_document`
@@ -869,22 +883,12 @@ VIEW `v_fin_document` AS
         `t_fin_document`.`TRANCURR` AS `trancurr`,
         `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
         `t_fin_document`.`DESP` AS `desp`,
+        `t_fin_document`.`EXGRATE` AS `exgrate`,
+        `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
         0 AS `tranamount`
     from
         `t_fin_document`
     where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
-
-/* ======================================================
-    Delta parts on 2015.9.11
-   ====================================================== */
-
--- Change tables
-ALTER TABLE `t_fin_document` 
-ADD COLUMN `EXGRATE` DOUBLE NULL DEFAULT NULL AFTER `REFCUREXGDOC`,
-ADD COLUMN `EXGRATE_PLAN` DOUBLE NULL DEFAULT NULL AFTER `EXGRATE`;
-
-ALTER TABLE `t_fin_exrate` 
-ADD COLUMN `refdocid` INT(11) NULL AFTER `rate`;
 
 
 /* The End */ 

@@ -841,7 +841,8 @@
 		this.RefCurrExgDocID = -1;		
 		this.Desp = "";
 		this.TranAmount = 0.0;
-		
+		this.ExchangeRate = 1.0;
+		this.ProposedExchangeRate = 1.0;
 		this.Items = [];
 		
 		this.DocTypeObject = {};
@@ -853,12 +854,18 @@
 		this.DocTypeID = parseInt(obj.doctype);
 		this.TranDate = obj.trandate;
 		this.TranCurrency = obj.trancurr;
-		if (isNaN(obj.curexgdoc))
+		this.Desp = obj.desp;
+		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
+		if (obj.exgrate && !isNaN(obj.exgrate)) {
+			this.ExchangeRate = parseFloat(obj.exgrate);
+		}
+		if (obj.exgrate_plan && !isNaN(obj.exgrate_plan)) {
+			this.ProposedExchangeRate = parseFloat(obj.exgrate_plan);
+		}
+		if (obj.curexgdoc && !isNaN(obj.curexgdoc))
 			this.RefCurrExgDocID = parseInt(obj.curexgdoc);
 		else
 			this.RefCurrExgDocID = -1;
-		this.Desp = obj.desp;
-		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 	};	
 	hih.FinanceDocument.prototype.buildRelationship = function(arDocType, arCurrency) {
 		var that = this;
@@ -916,7 +923,7 @@
 			}
 		}		
 		// Amount
-		// It's a working Maybe not necessary
+		// It's a runtime information, Maybe not necessary for checking
 		// Desp.
 		if (this.Desp.trim().length <= 0) {
 			errMsgs.push($translate("Message.InvalidDescription"));

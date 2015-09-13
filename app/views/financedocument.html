@@ -87,6 +87,21 @@
                 </div>
             </div>
             
+            <div class="form-group">
+                <label class="control-label col-sm-2" translate="Finance.ExchangeRate">Exchange Rate</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="iptExgRate" readonly
+                           placeholder="Exchange Rate" ng-model="DocumentObject.ExchangeRate" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" translate="Finance.ProposedExchangeRate">Proposed Exchange Rate</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="iptExgRate" readonly
+                           placeholder="Exchange Rate" ng-model="DocumentObject.ProposedExchangeRate" required>
+                </div>
+            </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.CurrencyExchangeDocument">Currency Exchange:</label>
@@ -97,7 +112,7 @@
                             <div ng-bind-html="adoc.DocID | highlight: $select.search"></div>
                             <small>
                                 ID: {{adoc.DocID}} <br />
-                                Symbol: <span ng-bind-html="''+adoc.Desp | highlight: $select.search"></span>
+                                Desp: <span ng-bind-html="''+adoc.Desp | highlight: $select.search"></span>
                             </small>
                         </ui-select-choices>
                     </ui-select>
