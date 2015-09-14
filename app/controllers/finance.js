@@ -1056,7 +1056,7 @@
         	//	} },
 			//{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
 			{ name:'itemcurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 80 },
-			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
+			{ name:'tranamountlc', field:'TranAmountInLC', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
 				aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
 			{ name:'itemcc', field:'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width: 100 },
@@ -1233,7 +1233,7 @@
 				$scope.SelectedDocumentItem.OrderID = $scope.SelectedDocumentItem.OrderObject.selected.ID; 
 				//$scope.SelectedDocumentItem.OrderObject = $scope.SelectedDocumentItem.OrderObject.selected;				
 			}
-			
+		
 			// Perform the check
 			var rptMsgs = $scope.SelectedDocumentItem.Verify($translate);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
@@ -1246,6 +1246,8 @@
 					});
 				return;
 			}
+			// Amount
+			$scope.SelectedDocumentItem.TranAmountInLC = $scope.SelectedDocumentItem.TranAmount;
 			
 			// Next item ID
 			if ($scope.SelectedDocumentItem.ItemID === -1) {

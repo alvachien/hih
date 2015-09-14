@@ -890,6 +890,95 @@ VIEW `v_fin_document` AS
         `t_fin_document`
     where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
 
+/* ======================================================
+    Delta parts on 2015.9.14
+   ====================================================== */
+
+-- View redefinition: v_fin_document_item1  
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item1` AS
+    select 
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+        (case when (`t_fin_document_item`.`TRANCURR` is null or `t_fin_document_item`.`TRANCURR` = '') then (`t_fin_document`.`TRANCURR`)
+        else (`t_fin_document_item`.`TRANCURR`)
+        end) AS `trancurr`,
+        (case
+            when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+            when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+        end) AS `tranamount`,
+        (case when (`t_fin_document_item`.`TRANCURR` is null or `t_fin_document_item`.`TRANCURR` = '') 
+			then (case
+					when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+					when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+				end)
+        else ( case when (`t_fin_document`.`EXGRATE` IS NOT NULL) then (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`  * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`
+					end)
+				when(`t_fin_document`.`EXGRATE_PLAN` IS NOT NULL) then(
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE_PLAN` * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE_PLAN`
+					end) 
+				end)
+        end) AS `tranamount_lc`,
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`
+    from
+        `t_fin_document_item`
+		join `t_fin_tran_type` on `t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`
+        left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
+
+-- View rredefinition: v_fin_document
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document` AS
+    select 
+        `t_fin_document`.`ID` AS `id`,
+        `t_fin_document`.`DOCTYPE` AS `doctype`,
+        `t_fin_document`.`TRANDATE` AS `trandate`,
+        `t_fin_document`.`TRANCURR` AS `trancurr`,
+        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
+        `t_fin_document`.`DESP` AS `desp`,
+        `t_fin_document`.`EXGRATE` AS `exgrate`,
+        `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
+        sum(`v_fin_document_item1`.`tranamount_lc`) AS `tranamount`
+    from
+        `t_fin_document`
+        left join `v_fin_document_item1` ON (`t_fin_document`.`ID` = `v_fin_document_item1`.`docid`)  
+    where `t_fin_document`.`DOCTYPE` != 3 AND `t_fin_document`.`DOCTYPE` != 2    
+    group by `t_fin_document`.`ID`
+    
+    union all
+    
+    select 
+        `t_fin_document`.`ID` AS `id`,
+        `t_fin_document`.`DOCTYPE` AS `doctype`,
+        `t_fin_document`.`TRANDATE` AS `trandate`,
+        `t_fin_document`.`TRANCURR` AS `trancurr`,
+        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
+        `t_fin_document`.`DESP` AS `desp`,
+        `t_fin_document`.`EXGRATE` AS `exgrate`,
+        `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
+        0 AS `tranamount`
+    from
+        `t_fin_document`
+    where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
+
+-- Drop unnecessary Views;
+DROP VIEW v_fin_document_item3;
+DROP VIEW v_fin_doucment_item2;
+
 
 /* The End */ 
 

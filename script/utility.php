@@ -2244,7 +2244,7 @@ function finance_document_post($docobj) {
 	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `REFCUREXGDOC`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "issisdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->RefCurExgDoc, $docobj->DocDesp,
-			$docobj->ExgRate, $docobj->ProposedExgRate );
+			$docobj->ExchangeRate, $docobj->ProposedExchangeRate );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
@@ -2255,7 +2255,7 @@ function finance_document_post($docobj) {
 	
 	/* Prepare an insert statement on item */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANCURR`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANCURR`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
@@ -2372,27 +2372,16 @@ function finance_documentitem_listread($docid) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"docid" => $row [0],
-					"itemid" => $row [1],
-					"accountid" => $row [2],
-					"accountname" => $row [3],
-					"categoryname" => $row [4],
-					"trantype" => $row [5],
-					"trantypename" => $row [6],
-					"tranamount" => $row [7],
-					"controlcenterid" => $row [8],
-					"controlcentername" => $row [9],
-					"orderid" => $row [10],
-					"ordername" => $row [11],
-					"desp" => $row [12],
-					"trantypeexpense" => $row [13],
-					"accountcategory" => $row [14],
-					"accountcategoryname" => $row [15],
-					"doctype" => $row [16],
-					"doctypename" => $row [17],
-					"trandate" => $row [18],
-					"trancurr" => $row [19],
-					"trancurrname" => $row [20] 
+				"docid" => $row [0],
+				"itemid" => $row [1],
+				"accountid" => $row [2],
+				"trantype" => $row [3],
+				"trancurr" => $row [4],
+				"tranamount" => $row [5],
+				"tranamount_lc" => $row [6],
+				"controlcenterid" => $row [7],
+				"orderid" => $row [8],
+				"desp" => $row [9],
 			);
 		}
 		
@@ -2431,27 +2420,16 @@ function finance_documentitem_listreadbyaccount($accountid) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"docid" => $row [0],
-					"itemid" => $row [1],
-					"accountid" => $row [2],
-					"accountname" => $row [3],
-					"categoryname" => $row [4],
-					"trantype" => $row [5],
-					"trantypename" => $row [6],
-					"tranamount" => $row [7],
-					"controlcenterid" => $row [8],
-					"controlcentername" => $row [9],
-					"orderid" => $row [10],
-					"ordername" => $row [11],
-					"desp" => $row [12],
-					"trantypeexpense" => $row [13],
-					"accountcategory" => $row [14],
-					"accountcategoryname" => $row [15],
-					"doctype" => $row [16],
-					"doctypename" => $row [17],
-					"trandate" => $row [18],
-					"trancurr" => $row [19],
-					"trancurrname" => $row [20] 
+				"docid" => $row [0],
+				"itemid" => $row [1],
+				"accountid" => $row [2],
+				"trantype" => $row [3],
+				"trancurr" => $row [4],
+				"tranamount" => $row [5],
+				"tranamount_lc" => $row [6],
+				"controlcenterid" => $row [7],
+				"orderid" => $row [8],
+				"desp" => $row [9],
 			);
 		}
 		
@@ -2490,27 +2468,16 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"docid" => $row [0],
-					"itemid" => $row [1],
-					"accountid" => $row [2],
-					"accountname" => $row [3],
-					"categoryname" => $row [4],
-					"trantype" => $row [5],
-					"trantypename" => $row [6],
-					"tranamount" => $row [7],
-					"controlcenterid" => $row [8],
-					"controlcentername" => $row [9],
-					"orderid" => $row [10],
-					"ordername" => $row [11],
-					"desp" => $row [12],
-					"trantypeexpense" => $row [13],
-					"accountcategory" => $row [14],
-					"accountcategoryname" => $row [15],
-					"doctype" => $row [16],
-					"doctypename" => $row [17],
-					"trandate" => $row [18],
-					"trancurr" => $row [19],
-					"trancurrname" => $row [20] 
+				"docid" => $row [0],
+				"itemid" => $row [1],
+				"accountid" => $row [2],
+				"trantype" => $row [3],
+				"trancurr" => $row [4],
+				"tranamount" => $row [5],
+				"tranamount_lc" => $row [6],
+				"controlcenterid" => $row [7],
+				"orderid" => $row [8],
+				"desp" => $row [9],
 			);
 		}
 		

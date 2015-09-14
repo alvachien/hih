@@ -189,6 +189,7 @@
 		"InvalidCurrency": "不合法的货币",
 		"InvalidTransferAmount": "不合法的转账金额",
 		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账",
-		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证"
+		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证",
+		"InvalidExchangeRate": "不合法的汇率"
 	}
 }

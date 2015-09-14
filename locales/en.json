@@ -190,6 +190,7 @@
 		"InvalidCurrency": "Invalid Currency",
 		"InvalidTransferAmount": "Invalid transfer amount",
 		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account",
-		"InvalidRefCurrExgDoc": "Invalid reference currency exchange document"
+		"InvalidRefCurrExgDoc": "Invalid reference currency exchange document",
+		"InvalidExchangeRate": "Invalid exchange rate"
 	}
  }

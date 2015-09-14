@@ -718,6 +718,7 @@
 		this.Desp = "";
 		
 		// Runtime information
+		this.TranAmountInLC = 0.0;
 		this.ControlCenterObject = {};
 		this.OrderObject = {};
 		this.AccountObject = {};
@@ -741,6 +742,7 @@
 			this.OrderID = -1;
 		}
 		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
+		this.TranAmountInLC = parseFloat(obj.tranamount_lc).toFixed(2);
 		this.Desp = obj.desp;
 	};
 	hih.FinanceDocumentItem.prototype.buildRelationship = function(arAccount, arCC, arOrder, arTranType) {
@@ -921,13 +923,22 @@
 					errMsgs.push($translate("Message.InvalidRefCurrExgDoc"));
 				}
 			}
-		}		
+		}
 		// Amount
 		// It's a runtime information, Maybe not necessary for checking
 		// Desp.
 		if (this.Desp.trim().length <= 0) {
 			errMsgs.push($translate("Message.InvalidDescription"));
 		}
+		// Exg. rate
+		if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+			if (isNaN(this.ExchangeRate) || this.ExchangeRate === 0.0) {
+				errMsgs.push($translate("Message.InvalidExchangeRate"));
+			}
+		} else {
+			
+		}
+		// Proposed exchange rate
 		
 		// Items
 		this.TranAmount = 0.0;
@@ -950,6 +961,8 @@
 				} else {
 					errMsgs.push($translate("Message.DuplicateAccountsInTransferDoc"));
 				}
+			} else if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				
 			}
 		}
 		if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {
@@ -971,11 +984,26 @@
 			forJSON[i] = this[i];
 		}
 		// Tran Date
-		forJSON.TranDate = hih.ModelUtility.DateFormatter(this.TranDate);;
+		forJSON.TranDate = hih.ModelUtility.DateFormatter(this.TranDate);
+		
+		// Currency exchange document
+		if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+			delete forJSON.RefCurrExgDocID; // By default, it is -1 which is not correct!
+			delete forJSON.ProposedExchangeRate; 
+		}
 		
 		for(var j = 0 ; j < this.Items.length; ++j) {
 			if (!$.isArray(forJSON.Items)) forJSON.Items = [];
-			forJSON.Items.push(this.Items[j].toJSONObject());
+			var jsonItem = this.Items[j].toJSONObject();
+			if (jsonItem.ControlCenterID === -1) {
+				delete jsonItem.ControlCenterID;
+			}
+			if (jsonItem.OrderID === -1) {
+				delete jsonItem.OrderID;
+			}
+			if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+			}
+			forJSON.Items.push(jsonItem);
 		}
 		
 		return forJSON;

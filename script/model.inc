@@ -48,7 +48,7 @@ class HIHConstants {
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs3';
-	const DV_FinDocumentItem = 'v_fin_document_item3';
+	const DV_FinDocumentItem = 'v_fin_document_item1';
 	const DV_FinReportOrder = 'v_fin_report_io2';
 	
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
@@ -175,6 +175,13 @@ class HIHDocumentItem {
 		foreach ($jsonData AS $key => $value) {
 			$this->{$key} = $value;
 		}
+		
+		if ($this->ControlCenterID == -1) {
+			$this->ControlCenterID = NULL;
+		}
+		if ($this->OrderID === -1) {
+			$this->OrderID = NULL;
+		}
 	}
 }
 class HIHDocument {
@@ -237,6 +244,9 @@ class HIHDocument {
 				// Do nothing!
 				break;
 			}
+		}
+		if ($this->RefCurrExgDocID == -1) {
+			$this->RefCurrExgDocID = NULL;
 		}
 	}
 	public function CheckValid() {
