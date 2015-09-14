@@ -1,4 +1,4 @@
-# HIH (website version)
+# HIH (web version)
 HIH stands for Home Information Hub, which targets to build the warehouse for all necessary information among all family members. Key components are:
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
@@ -24,10 +24,11 @@ If you have more than two computers, no doubtly you will feel it's hard to synch
 It's ture that the cloud solution, like Apple iCloud, Microsoft OneDrive gets popular recent days for the storage, but it still cannot solve the issues for the business data (not the documents or files).
  
 
-##HIH Website Version 0.5.*;
+## Development History
+Current Version: Web 0.5.*;
 Built with AngularJS, Angular UI, TinyMCE, etc.
 
-### Development History
+### Development Key Directions/Decisions
 - 2015.7.1, Switch from native BootStrp to UI Bootstrap;
 - 2015.7.2, Switch from Baidu CDN to Bootcss CDN, because the number of the components;
 - 2015.7.15, Switch from Modal dialog to Sweet Alert. The dialog in HIH only for Message/Warn/Error; 
@@ -40,12 +41,10 @@ Built with AngularJS, Angular UI, TinyMCE, etc.
 - 2015.9.3， It's DECIDED that displaying all error messages during the input validation;
 - To be updated.
 
-
-# HIH, webstie version 0.1 to 0.3
+### HIH, version web 0.1 to web 0.3
 Using: jQuery, jEasyUI.
 
-
-#HIH, desktop version history
+### HIH, desktop version history
 1. Version 1.0, named as PIH, built with MFC, Visual C++;
 2. Version 2.0 - 4.0, ....
 3. Version 4.0, named changed as HIH, built with .NET, Visual Stuido;
