@@ -1,11 +1,13 @@
 /* 
- * SQL file for preparing HIH running on MySql
- * Version: 0.1
- * Updated: 2015/05/16
+ * SQL file for preparing HIH running on MySql/MadriaDB
+ * Version: 0.5
+ * Created: 2015/05/16
+ * (C) Copyright by Alva Chien, 2014 - 2015
  *
  * == Version Histories
  *  1. 2015.9.8, adding table t_fin_setting ;
  *  2. 2015.9.11, changing the logic for foreign currency part;
+ *  3. 2015.9.15, changing the tables and views for foreign currency support;
  */
 
 /*======================================================
@@ -894,7 +896,39 @@ VIEW `v_fin_document` AS
     Delta parts on 2015.9.14
    ====================================================== */
 
--- View redefinition: v_fin_document_item1  
+-- View redefinition: v_fin_document_item1 
+-- Overwritted by the version on 2015.9.15 
+
+-- View redefinition: v_fin_document
+-- Overwritted by the version on 2015.9.15
+
+-- Drop unnecessary Views;
+DROP VIEW v_fin_document_item3;
+DROP VIEW v_fin_doucment_item2;
+
+/* ======================================================
+    Delta parts on 2015.9.15
+   ====================================================== */
+
+-- Must ensure all documents with document type 3 have been deleted!
+
+-- Add the foreign currency exchange another foreign currency support on header.
+ALTER TABLE `t_fin_document` 
+DROP COLUMN `REFCUREXGDOC`,
+CHANGE COLUMN `EXGRATE_PLAN` `EXGRATE_PLAN` TINYINT NULL DEFAULT NULL ,
+ADD COLUMN `TRANCURR2` VARCHAR(5) NULL DEFAULT NULL AFTER `EXGRATE_PLAN`,
+ADD COLUMN `EXGRATE2` DOUBLE NULL DEFAULT NULL AFTER `TRANCURR2`,
+ADD COLUMN `EXGRATE_PLAN2` TINYINT NULL DEFAULT NULL AFTER `EXGRATE2`;
+
+-- Change the explicit currency information from item.
+ALTER TABLE `t_fin_document_item` 
+DROP COLUMN `TRANCURR`,
+ADD COLUMN `USECURR2` TINYINT NULL DEFAULT NULL AFTER `TRANAMOUNT`;
+
+-- Adjust the item view for the new table defintion. 
+-- And all the report views
+
+-- View redefinition: v_fin_document_item1
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
@@ -905,29 +939,38 @@ VIEW `v_fin_document_item1` AS
         `t_fin_document_item`.`ITEMID` AS `itemid`,
         `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
         `t_fin_document_item`.`TRANTYPE` AS `trantype`,
-        (case when (`t_fin_document_item`.`TRANCURR` is null or `t_fin_document_item`.`TRANCURR` = '') then (`t_fin_document`.`TRANCURR`)
-        else (`t_fin_document_item`.`TRANCURR`)
+		`t_fin_document_item`.`USECURR2` AS `usecurr2`,
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') then (`t_fin_document`.`TRANCURR`)
+        else (`t_fin_document`.`TRANCURR2`)
         end) AS `trancurr`,
         (case
             when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
             when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
         end) AS `tranamount`,
-        (case when (`t_fin_document_item`.`TRANCURR` is null or `t_fin_document_item`.`TRANCURR` = '') 
-			then (case
-					when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
-					when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
-				end)
-        else ( case when (`t_fin_document`.`EXGRATE` IS NOT NULL) then (
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') 
+			then (
+                case when (`t_fin_document`.`EXGRATE` IS NOT NULL) then (
 					case
 						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`  * -(1))
 						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`
 					end)
-				when(`t_fin_document`.`EXGRATE_PLAN` IS NOT NULL) then(
-					case
-						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE_PLAN` * -(1))
-						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE_PLAN`
-					end) 
+                else (
+                case
+					when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+					when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
 				end)
+                end)
+        else ( case when (`t_fin_document`.`EXGRATE2` IS NOT NULL) then (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`  * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`
+					end)
+                else (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+					end)
+                end)
         end) AS `tranamount_lc`,
         `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
         `t_fin_document_item`.`ORDERID` AS `ORDERID`,
@@ -937,7 +980,7 @@ VIEW `v_fin_document_item1` AS
 		join `t_fin_tran_type` on `t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`
         left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
 
--- View rredefinition: v_fin_document
+-- View redefinition: v_fin_document
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
@@ -948,10 +991,12 @@ VIEW `v_fin_document` AS
         `t_fin_document`.`DOCTYPE` AS `doctype`,
         `t_fin_document`.`TRANDATE` AS `trandate`,
         `t_fin_document`.`TRANCURR` AS `trancurr`,
-        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
         `t_fin_document`.`DESP` AS `desp`,
         `t_fin_document`.`EXGRATE` AS `exgrate`,
         `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
+        `t_fin_document`.`TRANCURR2` AS `trancurr2`,
+        `t_fin_document`.`EXGRATE2` AS `exgrate2`,
+        `t_fin_document`.`EXGRATE_PLAN2` AS `exgrate_plan2`,
         sum(`v_fin_document_item1`.`tranamount_lc`) AS `tranamount`
     from
         `t_fin_document`
@@ -966,18 +1011,16 @@ VIEW `v_fin_document` AS
         `t_fin_document`.`DOCTYPE` AS `doctype`,
         `t_fin_document`.`TRANDATE` AS `trandate`,
         `t_fin_document`.`TRANCURR` AS `trancurr`,
-        `t_fin_document`.`REFCUREXGDOC` AS `curexgdoc`,        
         `t_fin_document`.`DESP` AS `desp`,
         `t_fin_document`.`EXGRATE` AS `exgrate`,
         `t_fin_document`.`EXGRATE_PLAN` AS `exgrate_plan`,
+        `t_fin_document`.`TRANCURR2` AS `trancurr2`,
+        `t_fin_document`.`EXGRATE2` AS `exgrate2`,
+        `t_fin_document`.`EXGRATE_PLAN2` AS `exgrate_plan2`,
         0 AS `tranamount`
     from
         `t_fin_document`
     where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
-
--- Drop unnecessary Views;
-DROP VIEW v_fin_document_item3;
-DROP VIEW v_fin_doucment_item2;
 
 
 /* The End */ 

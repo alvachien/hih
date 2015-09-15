@@ -873,16 +873,19 @@
 		};
 		
 		$scope.submit = function() {
-			// Set source account, target account and currency first
 			$scope.DocumentObject.Items = [];
+			
+			// Header
 			if ($scope.SourceTranCurrencyObject.selected) {
 				$scope.DocumentObject.TranCurrency = $scope.SourceTranCurrencyObject.selected.Currency;
 			}
+			if ($scope.TargetTranCurrencyObject.selected) {
+				$scope.DocumentObject.TranCurrency2 = $scope.TargetTranCurrencyObject.selected.Currency;
+			}
 			
+			// Item 1
 			var item1 = new hih.FinanceDocumentItem();
 			item1.ItemID = 1;
-			var item2 = new hih.FinanceDocumentItem();
-			item2.ItemID = 2;
 			if ($scope.SourceAccountObject.selected) {
 				item1.AccountID = $scope.SourceAccountObject.selected.ID;
 			}
@@ -892,7 +895,7 @@
 					item1.TranTypeObject = obj;
 					return false;
 				}
-			});
+			});			
 			item1.TranAmount = parseFloat($scope.SourceTranAmount);
 			if ($scope.SourceControlCenterObject.selected) {
 				item1.ControlCenterID = $scope.SourceControlCenterObject.selected.ID;
@@ -903,6 +906,10 @@
 			item1.Desp = $scope.DocumentObject.Desp;
 			$scope.DocumentObject.Items.push(item1);
 			
+			// Item 2
+			var item2 = new hih.FinanceDocumentItem();
+			item2.ItemID = 2;
+			item2.UseCurrency2 = true;
 			if ($scope.TargetAccountObject.selected) {
 				item2.AccountID = $scope.TargetAccountObject.selected.ID;
 			}
@@ -914,9 +921,6 @@
 				}
 			});
 			item2.TranAmount = parseFloat($scope.TargetTranAmount);
-			if ($scope.TargetTranCurrencyObject.selected) {
-				item2.TranCurrency = $scope.TargetTranCurrencyObject.selected.Currency;
-			}			
 			if ($scope.TargetControlCenterObject.selected) {
 				item2.ControlCenterID = $scope.TargetControlCenterObject.selected.ID;
 			}

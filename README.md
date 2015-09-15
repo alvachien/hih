@@ -3,10 +3,13 @@ HIH stands for Home Information Hub, which targets to build the warehouse for al
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase). 
-HIH was designed to run on a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices inside the family network. Ideally it runs on a NAS or Family Server with HTTP/PHP enabling.  
+
+HIH is expected to run on a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices.
+As it name indicates, HIH shall be used inside the family network. So, ideally, it runs on a NAS or Family Server with HTTP/PHP enabling.  
 
 ## What's HIH
 As described above,  HIH, Home Info. Hub, is a warehouse storing the necessary information among all family memebers. 
+
 ### Finance trace
 - Accounts
 - Documents
@@ -26,19 +29,19 @@ It's ture that the cloud solution, like Apple iCloud, Microsoft OneDrive gets po
 
 ## Development History
 Current Version: Web 0.5.*;
-Built with AngularJS, Angular UI, TinyMCE, etc.
+Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 
-### Development Key Directions/Decisions
+### Key Directions/Decisions in Design/Development phrase
 - 2015.7.1, Switch from native BootStrp to UI Bootstrap;
 - 2015.7.2, Switch from Baidu CDN to Bootcss CDN, because the number of the components;
 - 2015.7.15, Switch from Modal dialog to Sweet Alert. The dialog in HIH only for Message/Warn/Error; 
 - 2015.7.22, Switch from Smart-Table to UI-Grid, because the column footer feature;
 - 2015.7.29, Switch for ng-i18next to Angular Translate because UI-Grid integer it;
 - 2015.8.2, It's DECIDED that the switch from ngJstree to UI-Grid tree mode suspended;
-- 2015.8.4. It's DECIDED that all non-operatable (search, edit) using the native table not the UI-grid. 
--- First batch: User Detail, User List, Document Type List, Transaction Type List, Currency List, Account Category List;
+- 2015.8.4. It's DECIDED that all non-operatable (search, edit) using the native table not the UI-grid. First batch: User Detail, User List, Document Type List, Transaction Type List, Currency List, Account Category List;
 - 2015.8.22, It's DECIDED that using promise concept($q) for asynchronously data loading;
 - 2015.9.3， It's DECIDED that displaying all error messages during the input validation;
+- 2015.9.15, It's DECIDED that exchange rate stands for the rate between the currency in use and the local currency;
 - To be updated.
 
 ### HIH, version web 0.1 to web 0.3

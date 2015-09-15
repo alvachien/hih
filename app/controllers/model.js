@@ -711,11 +711,11 @@
 		this.ItemID = -1;
 		this.AccountID = -1;
 		this.TranTypeID = -1;
-		this.TranCurrency = ""; // Only relevant for currency exchange doc!
 		this.TranAmount = 0.0;
 		this.ControlCenterID = -1;
 		this.OrderID = -1;
 		this.Desp = "";
+		this.UseCurrency2 = false;
 		
 		// Runtime information
 		this.TranAmountInLC = 0.0;
@@ -730,7 +730,6 @@
 		this.ItemID = parseInt(obj.itemid);
 		this.AccountID = parseInt(obj.accountid);
 		this.TranTypeID = parseInt(obj.trantype);
-		this.TranCurrency = obj.trancurr;
 		if (isNaN(obj.controlcenterid)) {
 			this.ControlCenterID = parseInt(obj.controlcenterid);
 		} else {
@@ -740,6 +739,12 @@
 			this.OrderID = parseInt(obj.orderid);
 		} else {
 			this.OrderID = -1;
+		}
+		var usecurr2 = parseInt(obj.usecurr2);
+		if (usecurr2 === 1) {
+			this.UseCurrency2 = true;
+		} else {
+			this.UseCurrency2 = false;
 		}
 		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 		this.TranAmountInLC = parseFloat(obj.tranamount_lc).toFixed(2);
@@ -815,11 +820,14 @@
 		var forJSON = {};
 		for(var i in this) {
 			if (!this.hasOwnProperty(i) || i === "DocID" || i === "ControlCenterObject" || i === "OrderObject"
-				|| i === "AccountObject" || i === "TranTypeObject") 
+				|| i === "AccountObject" || i === "TranTypeObject" || i === "TranAmountInLC") 
 				continue;
 			
 			if (i === "TranAmount") {
 				forJSON[i] = parseFloat(this[i]);
+			} else if(i === "UseCurrency2") {
+				if (this[i]) forJSON[i] = 1;
+				else forJSON[i] = 0;				
 			} else {
 				forJSON[i] = this[i];
 			}			
@@ -840,15 +848,18 @@
 		this.DocTypeID = -1;
 		this.TranDate = new Date();	
 		this.TranCurrency = "";
-		this.RefCurrExgDocID = -1;		
 		this.Desp = "";
 		this.TranAmount = 0.0;
 		this.ExchangeRate = 1.0;
-		this.ProposedExchangeRate = 1.0;
+		this.ProposedExchangeRate = false;
+		this.TranCurrency2 = "";
+		this.ExchangeRate2 = 1.0;
+		this.ProposedExchangeRate2 = false;
 		this.Items = [];
 		
 		this.DocTypeObject = {};
-		this.TranCurrencyObject = {};		
+		this.TranCurrencyObject = {};
+		this.TranCurrency2Object = {};
 	};
 	hih.extend(hih.FinanceDocument, hih.Model);
 	hih.FinanceDocument.prototype.setContent = function(obj) {
@@ -862,13 +873,24 @@
 			this.ExchangeRate = parseFloat(obj.exgrate);
 		}
 		if (obj.exgrate_plan && !isNaN(obj.exgrate_plan)) {
-			this.ProposedExchangeRate = parseFloat(obj.exgrate_plan);
+			var ep = parseInt(obj.exgrate_plan);
+			
+			if (ep === 1) this.ProposedExchangeRate = true;
+			else this.ProposedExchangeRate = false;
 		}
-		if (obj.curexgdoc && !isNaN(obj.curexgdoc))
-			this.RefCurrExgDocID = parseInt(obj.curexgdoc);
-		else
-			this.RefCurrExgDocID = -1;
-	};	
+		if (obj.trancurr2 && obj.trancurr2.length > 0) {
+			this.TranCurrency2 = obj.trancurr2;
+		}
+		if (obj.exgrate2 && !isNaN(obj.exgrate2)) {
+			this.ExchangeRate2 = parseFloat(obj.exgrate2);
+		}
+		if (obj.exgrate_plan2 && !isNaN(obj.exgrate_plan2)) {
+			var ep2 = parseInt(obj.exgrate_plan2);
+			
+			if (ep2 === 1) this.ProposedExchangeRate2 = true;
+			else this.ProposedExchangeRate2 = false;
+		}
+	};
 	hih.FinanceDocument.prototype.buildRelationship = function(arDocType, arCurrency) {
 		var that = this;
 		if (arDocType && $.isArray(arDocType) && arDocType.length > 0) {
@@ -883,10 +905,12 @@
 			$.each(arCurrency, function(idx, obj){
 				if (obj.Currency === that.TranCurrency) {
 					that.TranCurrencyObject = obj;
-					return false;
+				}
+				if (that.TranCurrency2 && obj.Currency === that.TranCurrency2) {
+					that.TranCurrencyObject2 = obj;
 				}
 			});
-		}		
+		}
 	};
 	hih.FinanceDocument.prototype.Verify = function($translate, locCurr, objCurrExgDoc) {
 		var errMsgs = [];
@@ -903,25 +927,6 @@
 		} else if (locCurr) {
 			// Check for Foreign currency
 			if( this.TranCurrency !== locCurr ) {
-				// The RefCurrExgDocID is must for foreign document
-				if (this.RefCurrExgDocID === -1 || !objCurrExgDoc) {
-					errMsgs.push($translate("Message.InvalidRefCurrExgDoc"));
-				}
-				
-				// Then the currency must exist in that document
-				var bcurrexist = false;
-				var that = this;
-				$.each(this.objCurrExgDoc.Items, function(idx2, obj2) {
-					if (obj2.TranCurrency && obj2.TranCurrency === that.TranCurrency) {
-						bcurrexist = true;
-						return false;
-					}
-				});
-				
-				if (bcurrexist) {
-				} else {
-					errMsgs.push($translate("Message.InvalidRefCurrExgDoc"));
-				}
 			}
 		}
 		// Amount
@@ -938,7 +943,6 @@
 		} else {
 			
 		}
-		// Proposed exchange rate
 		
 		// Items
 		this.TranAmount = 0.0;
@@ -981,15 +985,21 @@
 				|| i === "TranDate" || i === "TranAmount") 
 				continue;
 			
-			forJSON[i] = this[i];
+			if (i === "ProposedExchangeRate" || i === "ProposedExchangeRate2") {
+				if (this[i]) forJSON[i] = 1;
+				else forJSON[i] = 0;
+			} else {
+				forJSON[i] = this[i];	
+			}			
 		}
 		// Tran Date
 		forJSON.TranDate = hih.ModelUtility.DateFormatter(this.TranDate);
 		
 		// Currency exchange document
-		if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-			delete forJSON.RefCurrExgDocID; // By default, it is -1 which is not correct!
-			delete forJSON.ProposedExchangeRate; 
+		if (this.DocTypeID !== hih.Constants.FinDocType_CurrExchange) {
+			delete forJSON.TranCurrency2;
+			delete forJSON.ExchangeRate2;
+			delete forJSON.ProposedExchangeRate2;
 		}
 		
 		for(var j = 0 ; j < this.Items.length; ++j) {

@@ -2152,11 +2152,13 @@ function finance_document_listread() {
 				"doctype" => $row [1],
 				"trandate" => $row [2],
 				"trancurr" => $row [3],	
-				"curexgdoc" => $row[4],
-				"desp" => $row [5],
-				"exgrate" => $row[6],
-				"exgrate_plan" => $row[7],
-				"tranamount" => $row [8] 
+				"desp" => $row [4],
+				"exgrate" => $row[5],
+				"exgrate_plan" => $row[6],
+				"trancurr2" => $row [7],	
+				"exgrate2" => $row[8],
+				"exgrate_plan2" => $row[9],
+				"tranamount" => $row [10] 
 			);
 		}
 		
@@ -2199,11 +2201,13 @@ function finance_document_curexg_listread() {
 				"doctype" => $row [1],
 				"trandate" => $row [2],
 				"trancurr" => $row [3],	
-				"curexgdoc" => $row[4],
-				"desp" => $row [5],
-				"exgrate" => $row[6],
-				"exgrate_plan" => $row[7],
-				"tranamount" => $row [8] 
+				"desp" => $row [4],
+				"exgrate" => $row[5],
+				"exgrate_plan" => $row[6],
+				"trancurr2" => $row [7],	
+				"exgrate2" => $row[8],
+				"exgrate_plan2" => $row[9],
+				"tranamount" => $row [10] 
 			);
 		}
 		
@@ -2221,8 +2225,9 @@ function finance_document_curexg_listread() {
 	);	
 }
 function finance_document_post($docobj) {
-	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	var_dump($docobj);
 	
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
@@ -2241,10 +2246,10 @@ function finance_document_post($docobj) {
 	$nDocID = 0;
 	
 	/* Prepare an insert statement on header */
-	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `REFCUREXGDOC`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE`, `EXGRATE_PLAN`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "issisdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->RefCurExgDoc, $docobj->DocDesp,
-			$docobj->ExchangeRate, $docobj->ProposedExchangeRate );
+		$stmt->bind_param ( "isssddsdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp,
+			$docobj->ExchangeRate, $docobj->ProposedExchangeRate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $docobj->ProposedExchangeRate2 );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
@@ -2255,11 +2260,11 @@ function finance_document_post($docobj) {
 	
 	/* Prepare an insert statement on item */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `TRANCURR`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `USECURR2`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiisdiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->TranCurrency, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
+				$newstmt->bind_param ( "iiiisdiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UserCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
@@ -2376,12 +2381,13 @@ function finance_documentitem_listread($docid) {
 				"itemid" => $row [1],
 				"accountid" => $row [2],
 				"trantype" => $row [3],
-				"trancurr" => $row [4],
-				"tranamount" => $row [5],
-				"tranamount_lc" => $row [6],
-				"controlcenterid" => $row [7],
-				"orderid" => $row [8],
-				"desp" => $row [9],
+				"usecurr2" => $row[4],
+				"trancurr" => $row [5],
+				"tranamount" => $row [6],
+				"tranamount_lc" => $row [7],
+				"controlcenterid" => $row [8],
+				"orderid" => $row [9],
+				"desp" => $row [10],
 			);
 		}
 		
@@ -2424,12 +2430,13 @@ function finance_documentitem_listreadbyaccount($accountid) {
 				"itemid" => $row [1],
 				"accountid" => $row [2],
 				"trantype" => $row [3],
-				"trancurr" => $row [4],
-				"tranamount" => $row [5],
-				"tranamount_lc" => $row [6],
-				"controlcenterid" => $row [7],
-				"orderid" => $row [8],
-				"desp" => $row [9],
+				"usecurr2" => $row[4],
+				"trancurr" => $row [5],
+				"tranamount" => $row [6],
+				"tranamount_lc" => $row [7],
+				"controlcenterid" => $row [8],
+				"orderid" => $row [9],
+				"desp" => $row [10],
 			);
 		}
 		
@@ -2472,12 +2479,13 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 				"itemid" => $row [1],
 				"accountid" => $row [2],
 				"trantype" => $row [3],
-				"trancurr" => $row [4],
-				"tranamount" => $row [5],
-				"tranamount_lc" => $row [6],
-				"controlcenterid" => $row [7],
-				"orderid" => $row [8],
-				"desp" => $row [9],
+				"usecurr2" => $row[4],
+				"trancurr" => $row [5],
+				"tranamount" => $row [6],
+				"tranamount_lc" => $row [7],
+				"controlcenterid" => $row [8],
+				"orderid" => $row [9],
+				"desp" => $row [10],
 			);
 		}
 		

@@ -126,7 +126,7 @@ class HIHDocumentItem {
 	public $Desp;
 	public $ControlCenterID;
 	public $OrderID;
-	public $TranCurrency;
+	public $UseCurrency2;
 
 	public $AccountName;
 	public $TranTypeName;
@@ -182,6 +182,9 @@ class HIHDocumentItem {
 		if ($this->OrderID === -1) {
 			$this->OrderID = NULL;
 		}
+		if ($this->UseCurrency2 != 1) {
+			$this->UseCurrency2 = NULL;
+		}
 	}
 }
 class HIHDocument {
@@ -191,9 +194,11 @@ class HIHDocument {
 	public $DocDesp;
 	public $DocCurrency;
 	public $DocTypeID;
-	public $RefCurrExgDocID;
 	public $ExchangeRate;
 	public $ProposedExchangeRate;
+	public $DocCurrency2;
+	public $ExchangeRate2;
+	public $ProposedExchangeRate2;
 
 	// Items
 	public $ItemsArray = array ();
@@ -210,9 +215,10 @@ class HIHDocument {
 			switch ($key) {
 				case "DocID":
 				case "DocTypeID":
-				case "RefCurrExgDocID":
 				case "ExchangeRate":
 				case "ProposedExchangeRate":
+				case "ExchangeRate2":
+				case "ProposedExchangeRate2":
 				$this->{$key} = $value;
 				break;
 				
@@ -222,6 +228,10 @@ class HIHDocument {
 
 				case "TranCurrency":
 				$this->DocCurrency = $value;
+				break;
+				
+				case "TranCurrency2":
+				$this->DocCurrency2 = $value;
 				break;
 				
 				case "Desp": 
@@ -245,8 +255,20 @@ class HIHDocument {
 				break;
 			}
 		}
-		if ($this->RefCurrExgDocID == -1) {
-			$this->RefCurrExgDocID = NULL;
+		
+		if ($this->ExchangeRate == 1.0) {
+			$this->ExchangeRate = NULL;
+			$this->ProposedExchangeRate = NULL;
+		}
+		if (!isset($this->DocCurrency2)) {
+			$this->DocCurrency2 = NULL;
+			$this->ExchangeRate2 = NULL;
+			$this->ProposedExchangeRate2 = NULL;
+		} else {
+			if ($this->ExchangeRate2 == 1.0) {
+				$this->ExchangeRate2 = NULL;
+				$this->ProposedExchangeRate2 = NULL;
+			}
 		}
 	}
 	public function CheckValid() {
