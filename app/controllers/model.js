@@ -711,6 +711,7 @@
 		this.ItemID = -1;
 		this.AccountID = -1;
 		this.TranTypeID = -1;
+		this.TranAmount_Org = 0.0;
 		this.TranAmount = 0.0;
 		this.ControlCenterID = -1;
 		this.OrderID = -1;
@@ -730,12 +731,12 @@
 		this.ItemID = parseInt(obj.itemid);
 		this.AccountID = parseInt(obj.accountid);
 		this.TranTypeID = parseInt(obj.trantype);
-		if (isNaN(obj.controlcenterid)) {
+		if (!isNaN(obj.controlcenterid)) {
 			this.ControlCenterID = parseInt(obj.controlcenterid);
 		} else {
 			this.ControlCenterID = -1;
 		} 
-		if (isNaN(obj.orderid)) {
+		if (!isNaN(obj.orderid)) {
 			this.OrderID = parseInt(obj.orderid);
 		} else {
 			this.OrderID = -1;
@@ -746,6 +747,7 @@
 		} else {
 			this.UseCurrency2 = false;
 		}
+		this.TranAmount_Org = parseFloat(obj.tranamount_org).toFixed(2);
 		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
 		this.TranAmountInLC = parseFloat(obj.tranamount_lc).toFixed(2);
 		this.Desp = obj.desp;
@@ -760,7 +762,7 @@
 				}
 			});
 		}
-		if (arCC && $.isArray(arCC) && arCC.length > 0) {
+		if (this.ControlCenterID !== -1 && arCC && $.isArray(arCC) && arCC.length > 0) {
 			$.each(arCC, function(idx, obj){
 				if (obj.ID === that.ControlCenterID) {
 					that.ControlCenterObject = obj;
@@ -768,7 +770,7 @@
 				}
 			});
 		}
-		if (arOrder && $.isArray(arOrder) && arOrder.length > 0) {
+		if (this.OrderID !== -1 && arOrder && $.isArray(arOrder) && arOrder.length > 0) {
 			$.each(arOrder, function(idx, obj){
 				if (obj.ID === that.OrderID) {
 					that.OrderObject = obj;
@@ -797,7 +799,7 @@
 			errMsgs.push($translate("Message.InvalidTransactionType"));
 		}
 		// 3. Amount
-		if (isNaN(this.TranAmount) || this.TranAmount === 0) {
+		if (isNaN(this.TranAmount_Org) || this.TranAmount_Org === 0) {
 			errMsgs.push($translate("Message.InvalidAmount"));
 		}
 		// 4. Control Center ID OR Order ID
@@ -820,11 +822,11 @@
 		var forJSON = {};
 		for(var i in this) {
 			if (!this.hasOwnProperty(i) || i === "DocID" || i === "ControlCenterObject" || i === "OrderObject"
-				|| i === "AccountObject" || i === "TranTypeObject" || i === "TranAmountInLC") 
+				|| i === "AccountObject" || i === "TranTypeObject" || i === "TranAmountInLC" || i === "TranAmount") 
 				continue;
 			
-			if (i === "TranAmount") {
-				forJSON[i] = parseFloat(this[i]);
+			if (i === "TranAmount_Org") {
+				forJSON["TranAmount"] = parseFloat(this[i]);
 			} else if(i === "UseCurrency2") {
 				if (this[i]) forJSON[i] = 1;
 				else forJSON[i] = 0;				
@@ -907,7 +909,7 @@
 					that.TranCurrencyObject = obj;
 				}
 				if (that.TranCurrency2 && obj.Currency === that.TranCurrency2) {
-					that.TranCurrencyObject2 = obj;
+					that.TranCurrency2Object = obj;
 				}
 			});
 		}
@@ -982,7 +984,7 @@
 		var forJSON = {};
 		for(var i in this) {
 			if (!this.hasOwnProperty(i) || i === "DocTypeObject" || i === "Items" || i === "TranCurrencyObject"
-				|| i === "TranDate" || i === "TranAmount") 
+				|| i === "TranDate" || i === "TranAmount" || i === "TranCurrency2Object") 
 				continue;
 			
 			if (i === "ProposedExchangeRate" || i === "ProposedExchangeRate2") {

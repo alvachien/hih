@@ -2381,11 +2381,12 @@ function finance_documentitem_listread($docid) {
 				"trantype" => $row [3],
 				"usecurr2" => $row[4],
 				"trancurr" => $row [5],
-				"tranamount" => $row [6],
-				"tranamount_lc" => $row [7],
-				"controlcenterid" => $row [8],
-				"orderid" => $row [9],
-				"desp" => $row [10],
+				"tranamount_org" => $row [6],
+				"tranamount" => $row [7],
+				"tranamount_lc" => $row [8],
+				"controlcenterid" => $row [9],
+				"orderid" => $row [10],
+				"desp" => $row [11],
 			);
 		}
 		
@@ -2430,11 +2431,12 @@ function finance_documentitem_listreadbyaccount($accountid) {
 				"trantype" => $row [3],
 				"usecurr2" => $row[4],
 				"trancurr" => $row [5],
-				"tranamount" => $row [6],
-				"tranamount_lc" => $row [7],
-				"controlcenterid" => $row [8],
-				"orderid" => $row [9],
-				"desp" => $row [10],
+				"tranamount_org" => $row [6],
+				"tranamount" => $row [7],
+				"tranamount_lc" => $row [8],
+				"controlcenterid" => $row [9],
+				"orderid" => $row [10],
+				"desp" => $row [11],
 			);
 		}
 		
@@ -2479,11 +2481,12 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 				"trantype" => $row [3],
 				"usecurr2" => $row[4],
 				"trancurr" => $row [5],
-				"tranamount" => $row [6],
-				"tranamount_lc" => $row [7],
-				"controlcenterid" => $row [8],
-				"orderid" => $row [9],
-				"desp" => $row [10],
+				"tranamount_org" => $row [6],
+				"tranamount" => $row [7],
+				"tranamount_lc" => $row [8],
+				"controlcenterid" => $row [9],
+				"orderid" => $row [10],
+				"desp" => $row [11],
 			);
 		}
 		

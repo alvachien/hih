@@ -912,36 +912,22 @@
 							$scope.DocumentObject = angular.copy(obj);
 							$scope.SourceTranCurrencyObject.selected = obj.TranCurrencyObject;
 							$scope.TargetTranCurrencyObject.selected = obj.TranCurrency2Object;
+							
 							for(var i = 0; i < $scope.DocumentObject.Items.length; i++) {
 								if (i === 0) {
 									$scope.SourceAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
 									$scope.SourceControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
 									$scope.SourceOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
-									$scope.SourceTranAmount = $scope.DocumentObject.Items[i].TranAmount;
+									$scope.SourceTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else if(i === 1) {
 									$scope.TargetAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
 									$scope.TargetControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
 									$scope.TargetOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
-									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount;
+									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else {
-									// Error handling!
+									$rootScope.$broadcast("ShowMessage", "Error", "fatal error!");
 								}
-								//$scope.ItemsCollection.push($scope.DocumentObject.Items[i]);
 							}
-
-							$.each($scope.AllDocumentTypes, function (idx2, obj2) {
-								if (obj2.ID === obj.DocTypeID) {
-									$scope.DocumentObject.DocTypeObject.selected = obj2;
-									return false;
-								}
-							});
-							$.each($scope.AllCurrencies, function (idx3, obj3) {
-								if (obj3.Currency === obj.TranCurrency) {
-									$scope.DocumentObject.TranCurrencyObject.selected = obj3;
-									return false;
-								}
-							});
-							
 							return false;
 						}
 					});					
@@ -977,7 +963,7 @@
 					return false;
 				}
 			});			
-			item1.TranAmount = parseFloat($scope.SourceTranAmount);
+			item1.TranAmount_Org = parseFloat($scope.SourceTranAmount);
 			if ($scope.SourceControlCenterObject.selected) {
 				item1.ControlCenterID = $scope.SourceControlCenterObject.selected.ID;
 			}
@@ -1001,7 +987,7 @@
 					return false;
 				}
 			});
-			item2.TranAmount = parseFloat($scope.TargetTranAmount);
+			item2.TranAmount_Org = parseFloat($scope.TargetTranAmount);
 			if ($scope.TargetControlCenterObject.selected) {
 				item2.ControlCenterID = $scope.TargetControlCenterObject.selected.ID;
 			}

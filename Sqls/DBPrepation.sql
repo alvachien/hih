@@ -1022,6 +1022,62 @@ VIEW `v_fin_document` AS
         `t_fin_document`
     where `t_fin_document`.`DOCTYPE` = 3 OR `t_fin_document`.`DOCTYPE` = 2;
 
-
+/* ======================================================
+    Delta parts on 2015.9.16
+   ====================================================== */
+   
+-- redefinition view v_fin_document_item1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item1` AS
+    select 
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+		`t_fin_document_item`.`USECURR2` AS `usecurr2`,
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') then (`t_fin_document`.`TRANCURR`)
+        else (`t_fin_document`.`TRANCURR2`)
+        end) AS `trancurr`,
+        `t_fin_document_item`.`TRANAMOUNT` as `tranamount_org`,
+        (case
+            when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+            when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+        end) AS `tranamount`,
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') 
+			then (
+                case when (`t_fin_document`.`EXGRATE` IS NOT NULL) then (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`  * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`
+					end)
+                else (
+                case
+					when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+					when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+				end)
+                end)
+        else ( case when (`t_fin_document`.`EXGRATE2` IS NOT NULL) then (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`  * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`
+					end)
+                else (
+					case
+						when (`t_fin_tran_type`.`EXPENSE` = 1) then (`t_fin_document_item`.`TRANAMOUNT` * -(1))
+						when (`t_fin_tran_type`.`EXPENSE` = 0) then `t_fin_document_item`.`TRANAMOUNT`
+					end)
+                end)
+        end) AS `tranamount_lc`,
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`
+    from
+        `t_fin_document_item`
+		join `t_fin_tran_type` on `t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`
+        left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
+        
 /* The End */ 
 
