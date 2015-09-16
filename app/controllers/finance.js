@@ -85,6 +85,16 @@
         	templateUrl: 'app/views/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
+        .state("home.finance.document.display_currexg", {
+        	url: '/display_currexg/:docid',
+        	templateUrl: 'app/views/financedocument_currexg.html',
+        	controller: 'FinanceDocumentCurrExgController'
+        })
+        .state("home.finance.document.display_tran", {
+        	url: '/display_tran/:docid',
+        	templateUrl: 'app/views/financedocument_tran.html',
+        	controller: 'FinanceDocumentTranController'
+        })
         .state("home.finance.document.maintain", {
         	url: '/maintain/:docid',
         	templateUrl: 'app/views/financedocument.html',
@@ -665,14 +675,27 @@
 		$scope.displayItem = function (row) {
 			if ($scope.selectedRows.length <= 0)
 				return;
-	    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].DocID });
+			
+			if ($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.display_tran",  { docid : $scope.selectedRows[0].DocID });	
+			} else if($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.display_currexg",  { docid : $scope.selectedRows[0].DocID });
+			} else {
+		    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].DocID });				
+			}
 		};
 		
 		// Edit
 		$scope.editItem = function (row) {
 			if ($scope.selectedRows.length <= 0)
 				return;
-	    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].DocID });
+			if ($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.maintain_tran",  { docid : $scope.selectedRows[0].DocID });
+			} else if($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.maintain_currexg",  { docid : $scope.selectedRows[0].DocID });
+			} else {
+		    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].DocID });				
+			}	    	
 		};
 		
 		// Create
@@ -814,7 +837,7 @@
 							// Take a look at the response
 							if (response) {
 								// Now navigate to display
-								$state.go("home.finance.document.display",  { id : response });
+								$state.go("home.finance.document.display_tran",  { id : response });
 							}
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
@@ -832,7 +855,6 @@
 	.controller('FinanceDocumentCurrExgController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
 		// This class serviced for the creation of Currency Exchange document
-		$scope.Activity = "Common.Create"; // By default, it's create!
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
@@ -867,11 +889,70 @@
 		    if (!$scope.isReadonly) {
 		        $scope.isDateOpened = true;				
 			}
-		};		
+		};
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
 		};
 		
+		// Handle the input parameter
+		if (angular.isDefined($stateParams.docid)) {
+			if ($state.current.name === "home.finance.document.maintain_currexg") {
+			    $scope.Activity = "Common.Edit";
+			} else if ($state.current.name === "home.finance.document.display_currexg") {
+				$scope.Activity = "Common.Display";
+				$scope.isReadonly = true;
+			}
+			
+		    utils.loadFinanceDocumentItemsQ($stateParams.docid)
+				.then(function(response) {
+					var nDocID = parseInt($stateParams.docid);
+					$.each($rootScope.arFinanceDocument, function (idx, obj) {
+						if (obj.DocID === nDocID) {
+							//$scope.ItemsCollection = [];
+							$scope.DocumentObject = angular.copy(obj);
+							$scope.SourceTranCurrencyObject.selected = obj.TranCurrencyObject;
+							$scope.TargetTranCurrencyObject.selected = obj.TranCurrency2Object;
+							for(var i = 0; i < $scope.DocumentObject.Items.length; i++) {
+								if (i === 0) {
+									$scope.SourceAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
+									$scope.SourceControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
+									$scope.SourceOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
+									$scope.SourceTranAmount = $scope.DocumentObject.Items[i].TranAmount;
+								} else if(i === 1) {
+									$scope.TargetAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
+									$scope.TargetControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
+									$scope.TargetOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
+									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount;
+								} else {
+									// Error handling!
+								}
+								//$scope.ItemsCollection.push($scope.DocumentObject.Items[i]);
+							}
+
+							$.each($scope.AllDocumentTypes, function (idx2, obj2) {
+								if (obj2.ID === obj.DocTypeID) {
+									$scope.DocumentObject.DocTypeObject.selected = obj2;
+									return false;
+								}
+							});
+							$.each($scope.AllCurrencies, function (idx3, obj3) {
+								if (obj3.Currency === obj.TranCurrency) {
+									$scope.DocumentObject.TranCurrencyObject.selected = obj3;
+									return false;
+								}
+							});
+							
+							return false;
+						}
+					});					
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+
+		} else {
+			$scope.Activity = "Common.Create";
+		}
+
 		$scope.submit = function() {
 			$scope.DocumentObject.Items = [];
 			
@@ -955,7 +1036,7 @@
 							// Take a look at the response
 							if (response) {
 								// Now navigate to display
-								$state.go("home.finance.document.display",  { id : response });
+								$state.go("home.finance.document.display_currexg",  { id : response });
 							}
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
@@ -1059,7 +1140,6 @@
 			//		else { return 'accountnotasset'; }
         	//	} },
 			//{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
-			{ name:'itemcurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 80 },
 			{ name:'tranamountlc', field:'TranAmountInLC', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
 				aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
 			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },

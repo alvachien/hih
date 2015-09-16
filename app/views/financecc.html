@@ -37,8 +37,8 @@
                     <ui-select-choices repeat="allcc in AllControlCenters">
                         <div ng-bind-html="allcc.Name | highlight: $select.search"></div>
                         <small>
-                            ID: {{allcc.ID}} <br />
-                            Name: <span ng-bind-html="''+allcc.Name | highlight: $select.search"></span>
+                            {{'Common.ID' | translate}}: {{allcc.ID}} <br />
+                            {{'Common.Name' | translate}}: <span ng-bind-html="''+allcc.Name | highlight: $select.search"></span>
                         </small>
                     </ui-select-choices>
                 </ui-select>
