@@ -2225,8 +2225,6 @@ function finance_document_curexg_listread() {
 	);	
 }
 function finance_document_post($docobj) {
-	var_dump($docobj);
-	
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	/* check connection */
 	if (mysqli_connect_errno ()) {
@@ -2246,7 +2244,7 @@ function finance_document_post($docobj) {
 	$nDocID = 0;
 	
 	/* Prepare an insert statement on header */
-	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE`, `EXGRATE_PLAN`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	
+	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE2`, `EXGRATE_PLAN2`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "isssddsdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp,
 			$docobj->ExchangeRate, $docobj->ProposedExchangeRate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $docobj->ProposedExchangeRate2 );
@@ -2260,11 +2258,11 @@ function finance_document_post($docobj) {
 	
 	/* Prepare an insert statement on item */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `USECURR2`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `USECURR2`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiisdiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UserCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
+				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
