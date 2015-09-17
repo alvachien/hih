@@ -1084,6 +1084,7 @@
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
+		$scope.DocumentTranCurrencyObject = {};
 
 		$scope.ReportedMessages = [];
 		$scope.cleanReportMessages = function() {
@@ -1195,6 +1196,7 @@
 			}
 		};
 
+		// Handle the paramter
 		if (angular.isDefined($stateParams.docid)) {
 		    if ($state.current.name === "home.finance.document.maintain") {
 		        $scope.Activity = "Common.Edit";
@@ -1234,6 +1236,20 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
 		} else {
+			// Set the default currency to local currency
+			$.each($scope.AllCurrencies, function (idx, obj) {
+				if (obj.IsLocalCurrency) {
+					$scope.DocumentObject.TranCurrencyObject.selected = obj;
+					return false;
+				}
+			});
+			$.each($scope.AllDocumentTypes, function (idx, obj) {
+				if (obj.ID === hih.Constants.FinDocType_Normal) {
+					$scope.DocumentObject.DocTypeObject.selected = obj;
+					return false;
+				}
+			});
+
 		    $scope.Activity = "Common.Create";
 		}
 		

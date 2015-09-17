@@ -144,6 +144,7 @@
   		"Setting": "Finance Setting",
 		"ExchangeRate": "Exchange Rate",
 		"ProposedExchangeRate": "Proposed Exchange Rate",
+		"LocalCurrency": "Local Currency",
 		  
   		"AccountsDesp": "Finance accounts show all accounts in the list view.",
   		"Asset": "Asset",

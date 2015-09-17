@@ -55,10 +55,10 @@
 			<label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
 			<div class="col-sm-10">
                 <div class="input-group">
-                    <input type="text" ng-readonly="isReadonly" id="iptExgRate" required class="form-control"
+                    <input type="text" ng-disabled="isReadonly" id="iptExgRate" required class="form-control"
                             ng-model="DocumentObject.ExchangeRate"></input>
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-readonly="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
+                        <input type="checkbox" ng-disabled="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
                     </span>		
                 </div>
         	</div>
@@ -95,7 +95,6 @@
         
         <!-- Source part -->
         <div class="col-lg-6">
-
             <div class="form-group">
                 <label class="control-label col-sm-2" for="iptSAmt" translate="Finance.Amount">Source Amount:</label>
                 <div class="col-sm-10">

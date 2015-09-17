@@ -15,6 +15,7 @@
 		
 		FinSetting_LocalCurrency: "LocalCurrency",
 		
+		FinDocType_Normal: 1,
 		FinDocType_Transfer: 2,
 		FinDocType_CurrExchange: 3,
 		
@@ -350,12 +351,21 @@
 		this.Currency = "";
 		this.Name = "";
 		this.Symbol = "";
+		this.IsLocalCurrency = false;
 	};
 	hih.extend(hih.Currency, hih.Model);
-	hih.Currency.prototype.setContent = function(obj) {
+	hih.Currency.prototype.setContent = function(obj, objFinSetting) {
 		this.Currency = obj.curr;
 		this.Name = obj.name;
 		this.Symbol = obj.symbol;
+		
+		if (objFinSetting) {
+			if (this.Currency === objFinSetting.LocalCurrency) {
+				this.IsLocalCurrency = true;
+			} else {
+				this.IsLocalCurrency = false;
+			}
+		}
 	};
 	// 2. Account category
 	hih.FinanceAccountCategory = function FinanceAccountCategory() {

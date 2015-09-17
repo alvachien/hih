@@ -389,7 +389,7 @@
 													if ($.isArray(data) && data.length > 0) {
 														$.each(data, function(idx, obj) {
 															var curobj = new hih.Currency();
-															curobj.setContent(obj);
+															curobj.setContent(obj, $rootScope.objFinanceSetting);
 															$rootScope.arCurrency.push(curobj);
 														});
 													}

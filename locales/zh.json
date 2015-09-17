@@ -143,6 +143,7 @@
 		"Setting": "财务设置",
 		"ExchangeRate": "汇率",
 		"ProposedExchangeRate": "预测汇率",
+		"LocalCurrency": "本币",
 
   		"AccountsDesp": "当前系统中所有的账户以列表形式呈现。",
   		"Asset": "资产",
