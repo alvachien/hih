@@ -20,27 +20,27 @@
 	        })
 	        .state("home.learn.object.list", {
 	        	url: "",
-	        	templateUrl: 'app/views/learnobjectlist.html',
+	        	templateUrl: 'app/views/learn/learnobjectlist.html',
 	        	controller: 'LearnObjectListController'
 	        })
 	        .state("home.learn.object.hierarchy", {
 	        	url: "/hierarchy",
-	        	templateUrl: 'app/views/learnobjecthierarchy.html',
+	        	templateUrl: 'app/views/learn/learnobjecthierarchy.html',
 	        	controller: 'LearnObjectHierarchyController'
 	        })
 	        .state("home.learn.object.create", {
 	        	url: '/create',
-	        	templateUrl: 'app/views/learnobject.html',
+	        	templateUrl: 'app/views/learn/learnobject.html',
 	        	controller: 'LearnObjectController'
 	        })
 	        .state("home.learn.object.display", {
 	        	url: '/display/:objid',
-	        	templateUrl: 'app/views/learnobject.html',
+	        	templateUrl: 'app/views/learn/learnobject.html',
 	        	controller: 'LearnObjectController'
 	        })
 	        .state("home.learn.object.maintain", {
 	        	url: '/maintain/:objid',
-	        	templateUrl: 'app/views/learnobject.html',
+	        	templateUrl: 'app/views/learn/learnobject.html',
 	        	controller: 'LearnObjectController'
 	        })
 	        .state("home.learn.history", {
@@ -50,22 +50,22 @@
 	        })
 	        .state("home.learn.history.list", {
 	        	url: "",
-	        	templateUrl: 'app/views/learnhistorylist.html',
+	        	templateUrl: 'app/views/learn/learnhistorylist.html',
 	        	controller: 'LearnHistoryListController'
 	        })
 	        .state("home.learn.history.create", {
 	        	url: '/create',
-	        	templateUrl: 'app/views/learnhistory.html',
+	        	templateUrl: 'app/views/learn/learnhistory.html',
 	        	controller: 'LearnHistoryController'
 	        })
 	        .state("home.learn.history.display", {
 	        	url: '/display/:histid',
-	        	templateUrl: 'app/views/learnhistory.html',
+	        	templateUrl: 'app/views/learn/learnhistory.html',
 	        	controller: 'LearnHistoryController'
 	        })
 	        .state("home.learn.history.maintain", {
 	        	url: '/maintain/:histid',
-	        	templateUrl: 'app/views/learnhistory.html',
+	        	templateUrl: 'app/views/learn/learnhistory.html',
 	        	controller: 'LearnHistoryController'
 	        })
 	        .state("home.learn.award", {
@@ -75,22 +75,22 @@
 	        })
 	        .state("home.learn.award.list", {
 	        	url: "",
-	        	templateUrl: 'app/views/learnawardlist.html',
+	        	templateUrl: 'app/views/learn/learnawardlist.html',
 	        	controller: 'LearnAwardListController'
 	        })
 	        .state("home.learn.award.create", {
 	        	url: '/create',
-	        	templateUrl: 'app/views/learnaward.html',
+	        	templateUrl: 'app/views/learn/learnaward.html',
 	        	controller: 'LearnAwardController'
 	        })
 	        .state("home.learn.award.display", {
 	        	url: '/display/:objid',
-	        	templateUrl: 'app/views/learnaward.html',
+	        	templateUrl: 'app/views/learn/learnaward.html',
 	        	controller: 'LearnAwardController'
 	        })
 	        .state("home.learn.award.maintain", {
 	        	url: '/maintain/:objid',
-	        	templateUrl: 'app/views/learnaward.html',
+	        	templateUrl: 'app/views/learn/learnaward.html',
 	        	controller: 'LearnAwardController'
 	        })
 	        .state("home.learn.category", {
@@ -100,12 +100,12 @@
 	        })
 	        .state("home.learn.category.list", {
 	        	url: "",
-	        	templateUrl: 'app/views/learncategorylist.html',
+	        	templateUrl: 'app/views/learn/learncategorylist.html',
 	        	controller: 'LearnCategoryListController'
 	        })
 	        .state("home.learn.category.hierarchy", {
 	        	url: "/hierarchy",
-	        	templateUrl: 'app/views/learncategoryhierarchy.html',
+	        	templateUrl: 'app/views/learn/learncategoryhierarchy.html',
 	        	controller: 'LearnCategoryHierarchyController'
 	        })
 			;

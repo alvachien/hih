@@ -1,0 +1,41 @@
+<div id="viewFinanceReportCC">
+	<div class="page-header">
+		<h2>
+			<span translate="Finance.ControlCenterReport">CC Report</span><small translate="Common.ListView">List View</small>
+		</h2>
+	</div>
+
+	<form class="form-horizontal" role="form" name="frmObj" style="margin: 30px, 10px;">
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Common.ValidFrom">Valid from</label>
+			<div class="input-group">
+				<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="ValidFromDate" is-open="isValidfromDateOpened"
+						datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="openValidfromDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+				</span>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Common.ValidTo">Valid to</label>
+			<div class="input-group">
+				<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="ValidToDate" is-open="isValidtoDateOpened"
+						datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="openValidtoDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+				</span>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-10">
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+						ng-disabled="frmObj.$invalid || !frmObj.$dirty">Submit</button>
+			</div>
+		</div>
+	</form>
+	
+	<div id="gridFinReportCC" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
+		 style="width: 100%; height: 500px;"></div>
+</div>

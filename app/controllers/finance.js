@@ -22,27 +22,27 @@
         })
         .state("home.finance.account.list", {
         	url: "",
-        	templateUrl: 'app/views/financeaccountlist.html',
+        	templateUrl: 'app/views/finance/financeaccountlist.html',
         	controller: 'FinanceAccountListController'
         })
         .state("home.finance.account.hierarchy", {
         	url: "/hierarchy",
-        	templateUrl: 'app/views/financeaccounthierarchy.html',
+        	templateUrl: 'app/views/finance/financeaccounthierarchy.html',
         	controller: 'FinanceAccountHierarchyController'
         })
         .state("home.finance.account.create", {
         	url: '/create',
-        	templateUrl: 'app/views/financeaccount.html',
+        	templateUrl: 'app/views/finance/financeaccount.html',
         	controller: 'FinanceAccountController'
         })
         .state("home.finance.account.display", {
         	url: '/display/:accountid',
-        	templateUrl: 'app/views/financeaccount.html',
+        	templateUrl: 'app/views/finance/financeaccount.html',
         	controller: 'FinanceAccountController'
         })
         .state("home.finance.account.maintain", {
         	url: '/maintain/:accountid',
-        	templateUrl: 'app/views/financeaccount.html',
+        	templateUrl: 'app/views/finance/financeaccount.html',
         	controller: 'FinanceAccountController'
         })
         .state("home.finance.document", {
@@ -52,52 +52,52 @@
         })
         .state("home.finance.document.list", {
         	url: "",
-        	templateUrl: 'app/views/financedocumentlist.html',
+        	templateUrl: 'app/views/finance/financedocumentlist.html',
         	controller: 'FinanceDocumentListController'
         })
         .state("home.finance.document.create", {
         	url: '/create',
-        	templateUrl: 'app/views/financedocument.html',
+        	templateUrl: 'app/views/finance/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
         .state("home.finance.document.create_tran", {
         	url: '/create_tran',
-        	templateUrl: 'app/views/financedocument_tran.html',
+        	templateUrl: 'app/views/finance/financedocument_tran.html',
         	controller: 'FinanceDocumentTranController'
         })
 		.state("home.finance.document.create_currexg", {
         	url: '/create_currexg',
-        	templateUrl: 'app/views/financedocument_currexg.html',
+        	templateUrl: 'app/views/finance/financedocument_currexg.html',
         	controller: 'FinanceDocumentCurrExgController'			
 		})
 		.state("home.finance.document.create_instal", {
         	url: '/create_instal',
-        	templateUrl: 'app/views/financedocument_instal.html',
+        	templateUrl: 'app/views/finance/financedocument_instal.html',
         	controller: 'FinanceDocumentInstalController'			
 		})
 		.state("home.finance.document.create_downpay", {
         	url: '/create_downpay',
-        	templateUrl: 'app/views/financedocument_downpay.html',
+        	templateUrl: 'app/views/finance/financedocument_downpay.html',
         	controller: 'FinanceDocumentDownPayController'			
 		})
         .state("home.finance.document.display", {
         	url: '/display/:docid',
-        	templateUrl: 'app/views/financedocument.html',
+        	templateUrl: 'app/views/finance/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
         .state("home.finance.document.display_currexg", {
         	url: '/display_currexg/:docid',
-        	templateUrl: 'app/views/financedocument_currexg.html',
+        	templateUrl: 'app/views/finance/financedocument_currexg.html',
         	controller: 'FinanceDocumentCurrExgController'
         })
         .state("home.finance.document.display_tran", {
         	url: '/display_tran/:docid',
-        	templateUrl: 'app/views/financedocument_tran.html',
+        	templateUrl: 'app/views/finance/financedocument_tran.html',
         	controller: 'FinanceDocumentTranController'
         })
         .state("home.finance.document.maintain", {
         	url: '/maintain/:docid',
-        	templateUrl: 'app/views/financedocument.html',
+        	templateUrl: 'app/views/finance/financedocument.html',
         	controller: 'FinanceDocumentController'
         })
 		.state("home.finance.transactiontype", {
@@ -107,12 +107,12 @@
 		})
 		.state("home.finance.transactiontype.list", {
 			url: '',
-			templateUrl: 'app/views/financetransactiontypelist.html',
+			templateUrl: 'app/views/finance/financetransactiontypelist.html',
 			controller: 'FinanceTransactionTypeListController'
 		})
 		.state("home.finance.transactiontype.hierarchy", {
 			url: '/hierarchy',
-			templateUrl: 'app/views/financetransactiontypehierarchy.html',
+			templateUrl: 'app/views/finance/financetransactiontypehierarchy.html',
 			controller: 'FinanceTransactionTypeHierarchyController'
 		})
 		.state("home.finance.documenttype", {
@@ -122,7 +122,7 @@
 		})
 		.state("home.finance.documenttype.list", {
 			url: '',
-			templateUrl: 'app/views/financedocumenttypelist.html',
+			templateUrl: 'app/views/finance/financedocumenttypelist.html',
 			controller: 'FinanceDocumentTypeListController'
 		})
 		.state("home.finance.accountcategory", {
@@ -132,7 +132,7 @@
 		})
 		.state("home.finance.accountcategory.list", {
 			url: '',
-			templateUrl: 'app/views/financeaccountcategorylist.html',
+			templateUrl: 'app/views/finance/financeaccountcategorylist.html',
 			controller: 'FinanceAccountCategoryListController'
 		})
 		.state("home.finance.currency", {
@@ -142,7 +142,7 @@
 		})
 		.state("home.finance.currency.list", {
 			url: '',
-			templateUrl: 'app/views/financecurrencylist.html',
+			templateUrl: 'app/views/finance/financecurrencylist.html',
 			controller: 'FinanceCurrencyListController'
 		})
 		.state("home.finance.controlcenter", {
@@ -152,27 +152,27 @@
 		})
 		.state("home.finance.controlcenter.list", {
 			url: '',
-			templateUrl: 'app/views/financecclist.html',
+			templateUrl: 'app/views/finance/financecclist.html',
 			controller: 'FinanceControlCenterListController'
 		})
 		.state("home.finance.controlcenter.hierarchy", {
 			url: '/hierarchy',
-			templateUrl: 'app/views/financecchierarchy.html',
+			templateUrl: 'app/views/finance/financecchierarchy.html',
 			controller: 'FinanceControlCenterHierarchyController'
 		})
 		.state("home.finance.controlcenter.maintain", {
 			url: '/maintain/:id',
-			templateUrl: 'app/views/financecc.html',
+			templateUrl: 'app/views/finance/financecc.html',
 			controller: 'FinanceControlCenterController'
 		})
 		.state("home.finance.controlcenter.display", {
 			url: '/display/:id',
-			templateUrl: 'app/views/financecc.html',
+			templateUrl: 'app/views/finance/financecc.html',
 			controller: 'FinanceControlCenterController'
 		})
 		.state("home.finance.controlcenter.create", {
 			url: '/create',
-			templateUrl: 'app/views/financecc.html',
+			templateUrl: 'app/views/finance/financecc.html',
 			controller: 'FinanceControlCenterController'
 		})
 		.state("home.finance.order", {
@@ -182,22 +182,22 @@
 		})
 		.state("home.finance.order.list", {
 			url: '',
-			templateUrl: 'app/views/financeorderlist.html',
+			templateUrl: 'app/views/finance/financeorderlist.html',
 			controller: 'FinanceOrderListController'
 		})
 		.state("home.finance.order.maintain", {
 			url: '/maintain/:id',
-			templateUrl: 'app/views/financeorder.html',
+			templateUrl: 'app/views/finance/financeorder.html',
 			controller: 'FinanceOrderController'
 		})
 		.state("home.finance.order.display", {
 			url: '/display/:id',
-			templateUrl: 'app/views/financeorder.html',
+			templateUrl: 'app/views/finance/financeorder.html',
 			controller: 'FinanceOrderController'
 		})
 		.state("home.finance.order.create", {
 			url: '/create',
-			templateUrl: 'app/views/financeorder.html',
+			templateUrl: 'app/views/finance/financeorder.html',
 			controller: 'FinanceOrderController'
 		})
 		.state("home.finance.report", {
@@ -207,17 +207,17 @@
 		})
 		.state("home.finance.report.balancesheet", {
 			url: '',
-			templateUrl: 'app/views/financereportbs.html',
+			templateUrl: 'app/views/finance/financereportbs.html',
 			controller: 'FinanceReportBSController'
 		})
 		.state("home.finance.report.orderbalance", {
 			url: '/order',
-			templateUrl: 'app/views/financereportorder.html',
+			templateUrl: 'app/views/finance/financereportorder.html',
 			controller: 'FinanceReportOrderController'
 		})
 		.state("home.finance.report.ccbalance", {
 			url:'/cc',
-			templateUrl: 'app/views/financereportcc.html',
+			templateUrl: 'app/views/finance/financereportcc.html',
 			controller: 'FinanceReportCCController'
 		})
     ;
@@ -579,12 +579,6 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
-       utils.loadFinanceCurrencyExchangeDocumentsQ()
-			.then(function(response){
-				// Do nothing
-			}, function(reason) {
-				// Do nothing
-			});
 
 		// Grid options
         $scope.selectedRows = [];
@@ -875,6 +869,23 @@
 		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
 		$scope.AllOrders = $rootScope.arFinanceOrder;
 
+		// For source currency control
+		$scope.SourceCurrency;		
+		$scope.sourceCurrOptions = []; //{value: '1', text: 'Jordy'}];
+		$.each($rootScope.arCurrency, function(idx, obj) {
+			var newOption = {};
+			newOption.value = obj.Currency;
+			newOption.text = obj.Name;
+			$scope.sourceCurrOptions.push(newOption);
+		});
+		$scope.sourceCurrConfig = {
+			create: true,
+			onChange: function(value){
+      			console.log('onChange', value)
+    		},
+		    // maxItems: 1,
+    		// required: true,
+  		};
         // For date control
 		$scope.isDateOpened = false;
 		$scope.DateFormat = "yyyy-MM-dd";

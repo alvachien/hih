@@ -5,7 +5,9 @@
     
     var hih = window.hih || (window.hih = {});
 
-	/* Constants */
+	// =========================================================
+	// Constants
+	// =========================================================
 	hih.Constants = {
 		LearnHistorySplitChar: "_",
 		LearnCategorySplitChar: " > ",
@@ -23,7 +25,9 @@
 		FinTranType_TransferOut: 60
 	};
 	
-	/* Utility class: singleton instance */
+	// =========================================================
+	// Model Utility
+	// =========================================================
 	hih.ModelUtility = {
 	};
 	hih.ModelUtility.DateFormatter = function(date) {
@@ -70,6 +74,9 @@
 		}
 	}
 	
+	// =========================================================
+	// Root model
+	// =========================================================
 	/* Root Model */
 	hih.Model = function() {
 		this.CreatedAt = new Date();
@@ -81,6 +88,9 @@
 		return [];	
 	};
 	
+	// =========================================================
+	// Learn part and OO concept adopt in JavaScript
+	// =========================================================
 	/* Method 1: using apply(or call) in the children's constructor */
 	/* User */
 	hih.User = function() {
