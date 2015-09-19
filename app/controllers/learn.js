@@ -5,7 +5,7 @@
 	
 	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  
 		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
+		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {

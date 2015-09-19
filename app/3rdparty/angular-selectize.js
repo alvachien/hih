@@ -78,7 +78,7 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
       };
 
       settings.onInitialize = function() {
-        selectize = element[0].selectize;
+        selectize = $(element)[0].selectize;
 
         setSelectizeOptions(scope.options);
 
@@ -93,7 +93,7 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
         scope.$watch('ngDisabled', toggle);
       };
 
-      element.selectize(settings);
+      $(element).selectize(settings);
 
       element.on('$destroy', function() {
         if (selectize) {

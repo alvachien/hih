@@ -6,7 +6,7 @@
 
 	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select',
 	 	'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping'])
+	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize'])
 	    
 	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
       $stateProvider
@@ -879,12 +879,12 @@
 			$scope.sourceCurrOptions.push(newOption);
 		});
 		$scope.sourceCurrConfig = {
-			create: true,
+			create: false,
 			onChange: function(value){
       			console.log('onChange', value)
     		},
 		    // maxItems: 1,
-    		// required: true,
+    		required: true
   		};
         // For date control
 		$scope.isDateOpened = false;
