@@ -859,10 +859,11 @@
 		$scope.SourceOrderObject = {};
 		$scope.TargetControlCenterObject = {};
 		$scope.TargetOrderObject = {};
-		$scope.SourceTranCurrencyObject = {};
-		$scope.TargetTranCurrencyObject = {};
 		$scope.SourceTranAmount = 0.0;
 		$scope.TargetTranAmount = 0.0;
+		$scope.SourceCurrencyNotLocalCurrency = false;
+		$scope.TargetCurrencyNotLocalCurrency = true;
+		$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
 		
 		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
@@ -870,20 +871,35 @@
 		$scope.AllOrders = $rootScope.arFinanceOrder;
 
 		// For source currency control
-		$scope.SourceCurrency;		
-		$scope.sourceCurrOptions = []; //{value: '1', text: 'Jordy'}];
-		$.each($rootScope.arCurrency, function(idx, obj) {
-			var newOption = {};
-			newOption.value = obj.Currency;
-			newOption.text = obj.Name;
-			$scope.sourceCurrOptions.push(newOption);
-		});
 		$scope.sourceCurrConfig = {
 			create: false,
 			onChange: function(value){
-      			console.log('onChange', value)
+      			$log.info('Source Currency control, event onChange, ', value);
+				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
+					$scope.SourceCurrencyNotLocalCurrency = false;
+				} else {
+					$scope.SourceCurrencyNotLocalCurrency = true;
+				}				
     		},
-		    // maxItems: 1,
+			valueField: 'Currency',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// For Target currency control
+		$scope.targetCurrConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('Target Currency control, event onChange, ', value);
+				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
+					$scope.TargetCurrencyNotLocalCurrency = false;
+				} else {
+					$scope.TargetCurrencyNotLocalCurrency = true;
+				}				
+    		},
+			valueField: 'Currency',
+			labelField: 'Name',
+		    maxItems: 1,
     		required: true
   		};
         // For date control
