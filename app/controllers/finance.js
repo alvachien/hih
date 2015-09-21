@@ -853,51 +853,72 @@
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
 		$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_CurrExchange;
-		$scope.SourceAccountObject = {};
-		$scope.TargetAccountObject = {};
+		$scope.SourceAccountID = null;
+		$scope.TargetAccountID = null;
 		$scope.SourceControlCenterObject = {};
 		$scope.SourceOrderObject = {};
 		$scope.TargetControlCenterObject = {};
 		$scope.TargetOrderObject = {};
 		$scope.SourceTranAmount = 0.0;
 		$scope.TargetTranAmount = 0.0;
-		$scope.SourceCurrencyNotLocalCurrency = false;
-		$scope.TargetCurrencyNotLocalCurrency = true;
 		$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+		$scope.SourceCurrencyIsLocal = true;
+		$scope.TargetCurrencyIsLocal = false;
 		
-		$scope.AllAccounts = $rootScope.arFinanceAccount;
 		$scope.AllCurrencies = $rootScope.arCurrency;
 		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
 		$scope.AllOrders = $rootScope.arFinanceOrder;
 
-		// For source currency control
+		// Source currency control
 		$scope.sourceCurrConfig = {
 			create: false,
 			onChange: function(value){
-      			$log.info('Source Currency control, event onChange, ', value);
+      			$log.info('FinanceDocumentCurrExgController, Source Currency control, event onChange, ', value);
 				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
-					$scope.SourceCurrencyNotLocalCurrency = false;
+					$scope.SourceCurrencyIsLocal = true;
 				} else {
-					$scope.SourceCurrencyNotLocalCurrency = true;
-				}				
+					$scope.SourceCurrencyIsLocal = false;
+				}
+				$scope.$apply();
     		},
 			valueField: 'Currency',
 			labelField: 'Name',
 		    maxItems: 1,
     		required: true
   		};
-		// For Target currency control
+		// Target currency control
 		$scope.targetCurrConfig = {
 			create: false,
 			onChange: function(value){
-      			$log.info('Target Currency control, event onChange, ', value);
+      			$log.info('FinanceDocumentCurrExgController, Target Currency control, event onChange, ', value);
 				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
-					$scope.TargetCurrencyNotLocalCurrency = false;
+					$scope.TargetCurrencyIsLocal = true;
 				} else {
-					$scope.TargetCurrencyNotLocalCurrency = true;
-				}				
+					$scope.TargetCurrencyIsLocal = false;
+				}
+				$scope.$apply();
     		},
 			valueField: 'Currency',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		$scope.sourceAccountConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Source Account control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		$scope.targetAccountConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Target Account control, event onChange, ', value);
+    		},
+			valueField: 'ID',
 			labelField: 'Name',
 		    maxItems: 1,
     		required: true
@@ -942,12 +963,14 @@
 							
 							for(var i = 0; i < $scope.DocumentObject.Items.length; i++) {
 								if (i === 0) {
-									$scope.SourceAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
+									$scope.SourceAccountID = $scope.DocumentObject.Items[i].AccountID;
+									
 									$scope.SourceControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
 									$scope.SourceOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
 									$scope.SourceTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else if(i === 1) {
-									$scope.TargetAccountObject.selected = $scope.DocumentObject.Items[i].AccountObject;
+									$scope.TargetAccountID = $scope.DocumentObject.Items[i].AccountID;
+									
 									$scope.TargetControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
 									$scope.TargetOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
 									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
@@ -969,20 +992,10 @@
 		$scope.submit = function() {
 			$scope.DocumentObject.Items = [];
 			
-			// Header
-			if ($scope.SourceTranCurrencyObject.selected) {
-				$scope.DocumentObject.TranCurrency = $scope.SourceTranCurrencyObject.selected.Currency;
-			}
-			if ($scope.TargetTranCurrencyObject.selected) {
-				$scope.DocumentObject.TranCurrency2 = $scope.TargetTranCurrencyObject.selected.Currency;
-			}
-			
 			// Item 1
 			var item1 = new hih.FinanceDocumentItem();
 			item1.ItemID = 1;
-			if ($scope.SourceAccountObject.selected) {
-				item1.AccountID = $scope.SourceAccountObject.selected.ID;
-			}
+			item1.AccountID = $scope.SourceAccountID;
 			item1.TranTypeID = hih.Constants.FinTranType_TransferOut;
 			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
 				if (obj.ID === item1.TranTypeID) {
@@ -1004,9 +1017,7 @@
 			var item2 = new hih.FinanceDocumentItem();
 			item2.ItemID = 2;
 			item2.UseCurrency2 = true;
-			if ($scope.TargetAccountObject.selected) {
-				item2.AccountID = $scope.TargetAccountObject.selected.ID;
-			}
+			item2.AccountID = $scope.TargetAccountID;
 			item2.TranTypeID = hih.Constants.FinTranType_TransferIn;
 			$.each($rootScope.arFinanceTransactionType, function(idx, obj) {
 				if (obj.ID === item2.TranTypeID) {

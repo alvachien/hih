@@ -43,7 +43,7 @@
             </div>
         </div>
 
-		<div id="row_sourcecurr_rate" class="form-group animate-show" ng-show="SourceCurrencyNotLocalCurrency">
+		<div id="row_sourcecurr_rate" class="form-group animate-show" data-ng-hide="SourceCurrencyIsLocal">
 			<label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
 			<div class="col-sm-10">
                 <div class="input-group">
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-		<div id="row_targetcurr_rate" class="form-group animate-show" ng-show="TargetCurrencyNotLocalCurrency">
+		<div id="row_targetcurr_rate" class="form-group animate-show" data-ng-hide="TargetCurrencyIsLocal">
 			<label class="control-label col-sm-2" for="iptExgRate2" translate="Finance.ExchangeRate">Exg. rate</label>
 			<div class="col-sm-10">
                 <div class="input-group">
@@ -89,16 +89,8 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.SourceAccount">Src Account:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="SourceAccountObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an account via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="allacnt in AllAccounts">
-                            <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{allacnt.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick source account...' options='arFinanceAccount' config="sourceAccountConfig" ng-model="SourceAccountID" 
+                                required></selectize>
                 </div>
             </div>
             
@@ -147,16 +139,8 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.TargetAccount">Tgt Account:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="TargetAccountObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an account via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="allacnt in AllAccounts">
-                            <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{allacnt.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick target account...' options='arFinanceAccount' config="targetAccountConfig" ng-model="TargetAccountID" 
+                                required></selectize>
                 </div>
             </div>            
             
