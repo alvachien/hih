@@ -76,8 +76,7 @@
 								}
 							};
 							
-							if (angular.isArray(arFlat) && arFlat.length > 0) {
-								 
+							if (angular.isArray(arFlat) && arFlat.length > 0) {								 
 								 rec_func("#");
 							} 
 							

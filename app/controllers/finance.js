@@ -910,8 +910,18 @@
     		},
 			valueField: 'ID',
 			labelField: 'Name',
+			optgroups: $rootScope.arFinanceAccountCategory,
+			optgroupField: 'CategoryID',
+			optgroupLabelField: 'Name',
+			optgroupValueField: 'ID',
 		    maxItems: 1,
-    		required: true
+    		required: true,
+			searchField: ['Name'],
+			render: {
+				optgroup_header: function(data, escape) {
+					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				}
+			}
   		};
 		$scope.targetAccountConfig = {
 			create: false,
@@ -920,8 +930,18 @@
     		},
 			valueField: 'ID',
 			labelField: 'Name',
+			optgroups: $rootScope.arFinanceAccountCategory,
+			optgroupField: 'CategoryID',
+			optgroupLabelField: 'Name',
+			optgroupValueField: 'ID',
 		    maxItems: 1,
-    		required: true
+    		required: true,
+			searchField: ['Name'],
+			render: {
+				optgroup_header: function(data, escape) {
+					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				}
+			}
   		};
         // For date control
 		$scope.isDateOpened = false;
