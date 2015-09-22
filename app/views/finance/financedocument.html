@@ -39,40 +39,24 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.Docu mentType">Doc. Type:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="DocumentObject.DocTypeObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select a document type via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="doctype in AllDocumentTypes">
-                            <div ng-bind-html="doctype.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{doctype.ID}} <br />
-                                {{'Common.Comment' | translate}}: <span ng-bind-html="''+doctype.Comment | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick document type...' options='arFinanceDocumentType' config="docTypeConfig" ng-model="DocumentObject.DocTypeID"
+                        ng-disabled="isReadonly" required></selectize>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.Currency">Currency:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="DocumentTranCurrencyObject" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select a currency via the name...">{{$select.Name}}</ui-select-match>
-                        <ui-select-choices repeat="acur in AllCurrencies">
-                            <div ng-bind-html="acur.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{acur.Currency}} <br />
-                                Symbol: <span ng-bind-html="''+acur.Symbol | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick currency...' options='arCurrency' config="currConfig" ng-model="DocumentObject.TranCurrency"
+                        ng-disabled="isReadonly" required></selectize>
                 </div>
             </div>
             
-            <div class="form-group" ng-hide="DocumentTranCurrencyObject && DocumentTranCurrencyObject.IsLocalCurrency">
+            <div class="form-group animate-show" data-ng-hide="TranCurrencyIsLocal">
                 <label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" ng-disabled="isReadonly" id="iptExgRate" required class="form-control"
+                        <input type="text" ng-readonly="isReadonly" id="iptExgRate" required class="form-control"
                                 ng-model="DocumentObject.ExchangeRate"></input>
                         <span class="input-group-addon">
                             <input type="checkbox" ng-disabled="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
@@ -131,32 +115,16 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" translate="Finance.Account">Account:</label>
                     <div class="col-sm-10">
-                        <ui-select ng-model="SelectedDocumentItem.AccountObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                            <ui-select-match placeholder="Select an account via the name...">{{$select.selected.Name}}</ui-select-match>
-                            <ui-select-choices repeat="acnt in AllAccounts">
-                                <div ng-bind-html="acnt.Name | highlight: $select.search"></div>
-                                <small>
-                                    {{'Common.ID' | translate}}: {{acnt.ID}} <br />
-                                    {{'Common.Name' | translate}}: <span ng-bind-html="''+acnt.Name | highlight: $select.search"></span>
-                                </small>
-                            </ui-select-choices>
-                        </ui-select>
+                        <selectize placeholder='Pick account...' options='arFinanceAccount' config="accountConfig" ng-model="SelectedDocumentItem.AccountID"
+                                   ng-disabled="isReadonly" required></selectize>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label class="control-label col-sm-2" translate="Finance.TransactionType">Transaction Type:</label>
                     <div class="col-sm-10">
-                        <ui-select ng-model="SelectedDocumentItem.TranTypeObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                            <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
-                            <ui-select-choices repeat="tt in AllTransactionTypes">
-                                <div ng-class="{trantypeexpense: tt.ExpenseFlag, trantypenonexpense: !tt.ExpenseFlag}" ng-bind-html="tt.Name | highlight: $select.search"></div>
-                                <small>
-                                    {{'Common.ID' | translate}}: {{tt.ID}} <br />
-                                    {{'Common.Name' | translate}}: <span ng-bind-html="''+tt.FullDisplayName | highlight: $select.search"></span>
-                                </small>
-                            </ui-select-choices>
-                        </ui-select>
+                        <selectize placeholder='Pick tran type...' options='arFinanceTransactionType' config="trantypeConfig" ng-model="SelectedDocumentItem.TranTypeID"
+                                   ng-disabled="isReadonly" required></selectize>
                     </div>
                 </div>
 
@@ -178,32 +146,16 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" translate="Finance.ControlCenter">Control Center</label>
                     <div class="col-sm-10">
-                        <ui-select ng-model="SelectedDocumentItem.ControlCenterObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                            <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
-                            <ui-select-choices repeat="cc in AllControlCenters">
-                                <div ng-bind-html="cc.Name | highlight: $select.search"></div>
-                                <small>
-                                    {{'Common.ID' | translate}}: {{cc.ID}} <br />
-                                    {{'Common.Name' | translate}}: <span ng-bind-html="''+cc.Name | highlight: $select.search"></span>
-                                </small>
-                            </ui-select-choices>
-                        </ui-select>
+                        <selectize placeholder='Pick control center...' options='arFinanceControlCenter' config="ccConfig" ng-model="SelectedDocumentItem.ControlCenterID"
+                                ng-disabled="isReadonly" required></selectize>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" translate="Finance.Order">Order:</label>
                     <div class="col-sm-10">
-                        <ui-select ng-model="SelectedDocumentItem.OrderObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                            <ui-select-match placeholder="Select an order via the name...">{{$select.selected.Name}}</ui-select-match>
-                            <ui-select-choices repeat="ord in AllOrders">
-                                <div ng-bind-html="ord.Name | highlight: $select.search"></div>
-                                <small>
-                                    {{'Common.ID' | translate}}: {{ord.ID}} <br />
-                                    {{'Common.Name' | translate}}: <span ng-bind-html="''+ord.Name | highlight: $select.search"></span>
-                                </small>
-                            </ui-select-choices>
-                        </ui-select>
+                        <selectize placeholder='Pick order ...' options='arFinanceOrder' config="orderConfig" ng-model="SelectedDocumentItem.OrderID"
+                            ng-disabled="isReadonly" required></selectize>
                     </div>
                 </div>
 

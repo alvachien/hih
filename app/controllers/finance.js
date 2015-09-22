@@ -855,10 +855,10 @@
 		$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_CurrExchange;
 		$scope.SourceAccountID = null;
 		$scope.TargetAccountID = null;
-		$scope.SourceControlCenterObject = {};
-		$scope.SourceOrderObject = {};
-		$scope.TargetControlCenterObject = {};
-		$scope.TargetOrderObject = {};
+		$scope.SourceCCID = null;
+		$scope.TargetCCID = null;
+		$scope.SourceOrderID = null;
+		$scope.TargetOrderID = null;
 		$scope.SourceTranAmount = 0.0;
 		$scope.TargetTranAmount = 0.0;
 		$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
@@ -866,7 +866,6 @@
 		$scope.TargetCurrencyIsLocal = false;
 		
 		$scope.AllCurrencies = $rootScope.arCurrency;
-		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
 		$scope.AllOrders = $rootScope.arFinanceOrder;
 
 		// Source currency control
@@ -903,6 +902,7 @@
 		    maxItems: 1,
     		required: true
   		};
+		// Source account
 		$scope.sourceAccountConfig = {
 			create: false,
 			onChange: function(value){
@@ -923,6 +923,7 @@
 				}
 			}
   		};
+		// Target accountr
 		$scope.targetAccountConfig = {
 			create: false,
 			onChange: function(value){
@@ -942,6 +943,50 @@
 					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
 				}
 			}
+  		};
+		// Source control center
+		$scope.sourceCCConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Source Control Center control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Target control center
+		$scope.targetCCConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Target Control Center control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Source order
+		$scope.sourceOrderConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Source Order control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Target order
+		$scope.targetOrderConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentCurrExgController, Target Order control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
   		};
         // For date control
 		$scope.isDateOpened = false;
@@ -978,21 +1023,17 @@
 						if (obj.DocID === nDocID) {
 							//$scope.ItemsCollection = [];
 							$scope.DocumentObject = angular.copy(obj);
-							$scope.SourceTranCurrencyObject.selected = obj.TranCurrencyObject;
-							$scope.TargetTranCurrencyObject.selected = obj.TranCurrency2Object;
 							
 							for(var i = 0; i < $scope.DocumentObject.Items.length; i++) {
 								if (i === 0) {
 									$scope.SourceAccountID = $scope.DocumentObject.Items[i].AccountID;
-									
-									$scope.SourceControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
-									$scope.SourceOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
+									$scope.SourceCCID = $scope.DocumentObject.Items[i].ControlCenterID;
+									$scope.SourceOrderID = $scope.DocumentObject.Items[i].OrderID;
 									$scope.SourceTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else if(i === 1) {
 									$scope.TargetAccountID = $scope.DocumentObject.Items[i].AccountID;
-									
-									$scope.TargetControlCenterObject.selected = $scope.DocumentObject.Items[i].ControlCenterObject;
-									$scope.TargetOrderObject.selected = $scope.DocumentObject.Items[i].OrderObject;
+									$scope.TargetCCID = $scope.DocumentObject.Items[i].ControlCenterID;
+									$scope.TargetOrderID = $scope.DocumentObject.Items[i].OrderID;
 									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else {
 									$rootScope.$broadcast("ShowMessage", "Error", "fatal error!");
@@ -1000,7 +1041,8 @@
 							}
 							return false;
 						}
-					});					
+					});	
+					$scope.$apply();
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
@@ -1024,12 +1066,8 @@
 				}
 			});			
 			item1.TranAmount_Org = parseFloat($scope.SourceTranAmount);
-			if ($scope.SourceControlCenterObject.selected) {
-				item1.ControlCenterID = $scope.SourceControlCenterObject.selected.ID;
-			}
-			if ($scope.SourceOrderObject.selected) {
-				item1.OrderID = $scope.SourceOrderObject.selected.ID;
-			}
+			item1.ControlCenterID = $scope.SourceCCID;
+			item1.OrderID = $scope.SourceOrderID;
 			item1.Desp = $scope.DocumentObject.Desp;
 			$scope.DocumentObject.Items.push(item1);
 			
@@ -1046,12 +1084,8 @@
 				}
 			});
 			item2.TranAmount_Org = parseFloat($scope.TargetTranAmount);
-			if ($scope.TargetControlCenterObject.selected) {
-				item2.ControlCenterID = $scope.TargetControlCenterObject.selected.ID;
-			}
-			if ($scope.TargetOrderObject.selected) {
-				item2.OrderID = $scope.TargetOrderObject.selected.ID;
-			}
+			item2.ControlCenterID = $scope.TargetCCID;
+			item2.OrderID = $scope.TargetOrderID;
 			item2.Desp = $scope.DocumentObject.Desp;
 			$scope.DocumentObject.Items.push(item2);
 			
@@ -1143,6 +1177,7 @@
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
 		$scope.DocumentTranCurrencyObject = {};
+		$scope.TranCurrencyIsLocal = true;
 
 		$scope.ReportedMessages = [];
 		$scope.cleanReportMessages = function() {
@@ -1219,6 +1254,100 @@
 		$scope.nextItemID = 0;
 		$scope.RefCurrExgDocObject = {};
 		
+		// Doc type select control
+		$scope.docTypeConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Doc. Type control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Currency select control
+		$scope.currConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Currency control, event onChange, ', value);
+				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
+					$scope.TranCurrencyIsLocal = true;
+				} else {
+					$scope.TranCurrencyIsLocal = false;
+				}
+				$scope.$apply();				  
+    		},
+			valueField: 'Currency',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Account select control
+		$scope.accountConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Account control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+			optgroups: $rootScope.arFinanceAccountCategory,
+			optgroupField: 'CategoryID',
+			optgroupLabelField: 'Name',
+			optgroupValueField: 'ID',
+		    maxItems: 1,
+    		required: true,
+			searchField: ['Name'],
+			render: {
+				optgroup_header: function(data, escape) {
+					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				}
+			}
+  		};
+		// Tran type select control 
+		$scope.trantypeConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Tran. Type control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'FullDisplayName',
+			optgroups: [
+				{ Value: true, Name: 'Expense' },
+				{ Value: false, Name: 'Revenue' }
+			],
+			optgroupField: 'ExpenseFlag',
+			optgroupLabelField: 'Name',
+			optgroupValueField: 'Value',
+		    maxItems: 1,
+    		required: true,
+			render: {
+				optgroup: function(data, escape) {
+					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				}
+			}
+  		};
+		// CC select control
+		$scope.ccConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Control Center control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Order select control
+		$scope.orderConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentController, Order control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};		  
         // For date control
 		$scope.isDateOpened = false;
 		$scope.DateFormat = "yyyy-MM-dd";
@@ -1295,18 +1424,9 @@
 				});
 		} else {
 			// Set the default currency to local currency
-			$.each($scope.AllCurrencies, function (idx, obj) {
-				if (obj.IsLocalCurrency) {
-					$scope.DocumentObject.TranCurrencyObject.selected = obj;
-					return false;
-				}
-			});
-			$.each($scope.AllDocumentTypes, function (idx, obj) {
-				if (obj.ID === hih.Constants.FinDocType_Normal) {
-					$scope.DocumentObject.DocTypeObject.selected = obj;
-					return false;
-				}
-			});
+			$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+			$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Normal;
+			$scope.TranCurrencyIsLocal = true;
 
 		    $scope.Activity = "Common.Create";
 		}
@@ -1420,16 +1540,8 @@
 				$scope.DocumentObject.Items.push($scope.ItemsCollection[i]);
 			}
 			
-			// Document type
-			if ($scope.DocumentObject.DocTypeObject.selected) {
-				$scope.DocumentObject.DocTypeID = $scope.DocumentObject.DocTypeObject.selected.ID; 
-				//$scope.DocumentObject.DocTypeObject = $scope.DocumentObject.DocTypeObject.selected;				
-			}
-			// Currency
-			if ($scope.DocumentObject.TranCurrencyObject.selected) {
-				$scope.DocumentObject.TranCurrency = $scope.DocumentObject.TranCurrencyObject.selected.Currency; 
-				//$scope.DocumentObject.TranCurrencyObject = $scope.DocumentObject.TranCurrencyObject.selected;				
-			}
+			// Document type - bind
+			// Currency - bind
 			// Reference currency exchange document
 			if ($scope.RefCurrExgDocObject.selected) {
 				$scope.DocumentObject.RefCurrExgDocID = $scope.RefCurrExgDocObject.selected.DocID;
