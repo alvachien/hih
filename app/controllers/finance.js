@@ -1176,9 +1176,9 @@
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
-		$scope.DocumentTranCurrencyObject = {};
 		$scope.TranCurrencyIsLocal = true;
-
+		
+		// Error messges
 		$scope.ReportedMessages = [];
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
@@ -1311,18 +1311,12 @@
     		},
 			valueField: 'ID',
 			labelField: 'FullDisplayName',
-			optgroups: [
-				{ Value: true, Name: 'Expense' },
-				{ Value: false, Name: 'Revenue' }
-			],
-			optgroupField: 'ExpenseFlag',
-			optgroupLabelField: 'Name',
-			optgroupValueField: 'Value',
 		    maxItems: 1,
     		required: true,
 			render: {
-				optgroup: function(data, escape) {
-					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				 option: function(data, escape) {
+					return data.ExpenseFlag ? '<div class="trantypeexpense">' + escape(data.FullDisplayName) + '</div>'
+							: '<div class="trantypenonexpense">' + escape(data.FullDisplayName) + '</div>';
 				}
 			}
   		};
@@ -1403,19 +1397,6 @@
 								$scope.ItemsCollection.push($scope.DocumentObject.Items[i]);
 							}
 
-							$.each($scope.AllDocumentTypes, function (idx2, obj2) {
-								if (obj2.ID === obj.DocTypeID) {
-									$scope.DocumentObject.DocTypeObject.selected = obj2;
-									return false;
-								}
-							});
-							$.each($scope.AllCurrencies, function (idx3, obj3) {
-								if (obj3.Currency === obj.TranCurrency) {
-									$scope.DocumentObject.TranCurrencyObject.selected = obj3;
-									return false;
-								}
-							});
-		
 							return false;
 						}
 					});					
@@ -1441,10 +1422,6 @@
 			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
 				if ($scope.ItemsCollection[i].ItemID === nID) {
 					$scope.SelectedDocumentItem = $scope.ItemsCollection[i]; 
-					$scope.SelectedDocumentItem.AccountObject.selected = $scope.SelectedDocumentItem.AccountObject;
-					$scope.SelectedDocumentItem.TranTypeObject.selected = $scope.SelectedDocumentItem.TranTypeObject;
-					$scope.SelectedDocumentItem.ControlCenterObject.selected = $scope.SelectedDocumentItem.ControlCenterObject;
-					$scope.SelectedDocumentItem.OrderObject.selected = $scope.SelectedDocumentItem.OrderObject;
 					break;
 				}
 			}
@@ -1458,10 +1435,6 @@
 			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
 				if ($scope.ItemsCollection[i].ItemID === nID) {
 					$scope.SelectedDocumentItem = $scope.ItemsCollection[i]; 
-					$scope.SelectedDocumentItem.AccountObject.selected = $scope.SelectedDocumentItem.AccountObject;
-					$scope.SelectedDocumentItem.TranTypeObject.selected = $scope.SelectedDocumentItem.TranTypeObject;
-					$scope.SelectedDocumentItem.ControlCenterObject.selected = $scope.SelectedDocumentItem.ControlCenterObject;
-					$scope.SelectedDocumentItem.OrderObject.selected = $scope.SelectedDocumentItem.OrderObject;
 					break;
 				}
 			}
@@ -1477,27 +1450,6 @@
 		$scope.saveCurrentItem = function() {
 			$scope.cleanReportMessages();
 			
-			// Account
-			if ($scope.SelectedDocumentItem.AccountObject.selected) {
-				$scope.SelectedDocumentItem.AccountID = $scope.SelectedDocumentItem.AccountObject.selected.ID; 
-				//$scope.SelectedDocumentItem.AccountObject = $scope.SelectedDocumentItem.AccountObject.selected;
-			}
-			// Tran. type
-			if ($scope.SelectedDocumentItem.TranTypeObject.selected) {
-				$scope.SelectedDocumentItem.TranTypeID = $scope.SelectedDocumentItem.TranTypeObject.selected.ID; 
-				//$scope.SelectedDocumentItem.TranTypeObject = $scope.SelectedDocumentItem.TranTypeObject.selected;				
-			}
-			// Control center
-			if ($scope.SelectedDocumentItem.ControlCenterObject.selected) {
-				$scope.SelectedDocumentItem.ControlCenterID = $scope.SelectedDocumentItem.ControlCenterObject.selected.ID; 
-				//$scope.SelectedDocumentItem.ControlCenterObject = $scope.SelectedDocumentItem.ControlCenterObject.selected;				
-			}
-			// Order
-			if ($scope.SelectedDocumentItem.OrderObject.selected) {
-				$scope.SelectedDocumentItem.OrderID = $scope.SelectedDocumentItem.OrderObject.selected.ID; 
-				//$scope.SelectedDocumentItem.OrderObject = $scope.SelectedDocumentItem.OrderObject.selected;				
-			}
-		
 			// Perform the check
 			var rptMsgs = $scope.SelectedDocumentItem.Verify($translate);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
