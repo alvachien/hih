@@ -16,43 +16,37 @@
 	<form class="form-horizontal" role="form" name="frmObj">
         <div class="form-group">
             <label class="control-label col-sm-2" translate="Common.Date">Date</label>
-            <div class="input-group">
-                <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
-                        datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                </span>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
+                            datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
             </div>
         </div>
         
         <div class="form-group">
             <label class="control-label col-sm-2" translate="Finance.Currency">Currency:</label>
             <div class="col-sm-10">
-                <ui-select ng-model="DocumentObject.TranCurrencyObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                    <ui-select-match placeholder="Select a currency via the name...">{{$select.selected.Name}}</ui-select-match>
-                    <ui-select-choices repeat="acur in AllCurrencies">
-                        <div ng-bind-html="acur.Name | highlight: $select.search"></div>
-                        <small>
-                            {{'Common.ID' | translate}}: {{acur.Currency}} <br />
-                            {{'Common.Name' | translate}}: <span ng-bind-html="''+acur.Name | highlight: $select.search"></span>
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
+                <selectize placeholder='Pick currency...' options='arCurrency' config="currConfig" ng-model="DocumentObject.TranCurrency"
+                    ng-disabled="isReadonly" required></selectize>
             </div>
         </div>
-
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
-			<div class="col-sm-10">
+        
+        <div class="form-group animate-show" data-ng-hide="TranCurrencyIsLocal">
+            <label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
+            <div class="col-sm-10">
                 <div class="input-group">
                     <input type="text" ng-readonly="isReadonly" id="iptExgRate" required class="form-control"
                             ng-model="DocumentObject.ExchangeRate"></input>
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-readonly="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
+                        <input type="checkbox" ng-disabled="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
                     </span>		
                 </div>
-        	</div>
-		</div>
+            </div>
+        </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptAmt" translate="Finance.Amount">Amount:</label>
@@ -75,48 +69,24 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.SourceAccount">Src Account:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="SourceAccountObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an account via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="allacnt in AllAccounts">
-                            <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{allacnt.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick source account...' options='arFinanceAccount' config="sourceAccountConfig" ng-model="SourceAccountID" 
+                            ng-disabled="isReadonly" required></selectize>
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.SourceControlCenter">Source Control Center </label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="SourceControlCenterObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="scc in AllControlCenters">
-                            <div ng-bind-html="scc.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{scc.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+scc.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick source control center...' options='arFinanceControlCenter' config="sourceCCConfig" ng-model="SourceCCID"
+                            ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
     
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.SourceOrder">Source Order:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="SourceOrderObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an order via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="sord in AllOrders">
-                            <div ng-bind-html="sord.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{sord.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+sord.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick source order...' options='arFinanceOrder' config="sourceOrderConfig" ng-model="SourceOrderID" 
+                            ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
         </div>
@@ -126,48 +96,24 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.TargetAccount">Tgt Account:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="TargetAccountObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an account via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="allacnt in AllAccounts">
-                            <div ng-bind-html="allacnt.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{allacnt.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+allacnt.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick target account...' options='arFinanceAccount' config="targetAccountConfig" ng-model="TargetAccountID" 
+                                ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.TargetControlCenter">Target Control Center</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="TargetControlCenterObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select a type via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="cc in AllControlCenters">
-                            <div ng-bind-html="cc.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{cc.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+cc.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick target control center...' options='arFinanceControlCenter' config="targetCCConfig" ng-model="TargetCCID"
+                                ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
     
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Finance.TargetOrder">Target Order:</label>
                 <div class="col-sm-10">
-                    <ui-select ng-model="TargetOrderObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                        <ui-select-match placeholder="Select an order via the name...">{{$select.selected.Name}}</ui-select-match>
-                        <ui-select-choices repeat="ord in AllOrders">
-                            <div ng-bind-html="ord.Name | highlight: $select.search"></div>
-                            <small>
-                                {{'Common.ID' | translate}}: {{ord.ID}} <br />
-                                {{'Common.Name' | translate}}: <span ng-bind-html="''+ord.Name | highlight: $select.search"></span>
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
+                    <selectize placeholder='Pick target order...' options='arFinanceOrder' config="targetOrderConfig" ng-model="TargetOrderID" 
+                               ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
         </div>

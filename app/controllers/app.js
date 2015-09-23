@@ -8,10 +8,10 @@
 		'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns', 
 		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize'])
 		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log) {
-			    $rootScope.$state = $state;
-			    $rootScope.$stateParams = $stateParams;
+			 $rootScope.$state = $state;
+			 $rootScope.$stateParams = $stateParams;
 			    
-			    $rootScope.$on('$stateChangeStart', 
+			 $rootScope.$on('$stateChangeStart', 
 		    		function(event, toState, toParams, fromState, fromParams) {
 		    			console.log('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
 		    			
@@ -33,41 +33,6 @@
 	    		    	$state.go("login");
 			    	}
 			    );
-			    
-			    $rootScope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType, conf_func) {
-					console.log('HIH: ShowMessage event occurred');
-					
-					if (conf_func && angular.isFunction(conf_func)) {
-						window.swal({ title: msgHeader,   
-							text: msgDetail,   
-							type: msgType || "warning", 
-							showCancelButton: true, 
-							confirmButtonColor: "#DD6B55", 
-							confirmButtonText: "Yes, delete it!", 
-							closeOnConfirm: true }, 
-							conf_func
-							// function() { 
-							// 	window.swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
-							// }
-							);
-					} else {
-						window.swal(msgHeader, msgDetail, msgType || "error");
-					}
-//					$rootScope.MessageHeader = msgHeader;
-//					$rootScope.MessageDetail = msgDetail;
-//					
-//					var modalInstance = $modal.open({
-//					      animation: true,
-//					      templateUrl: 'app/views/messagedialog.html',
-//					      controller: 'MessageBoxController'
-//				      });
-//					
-//					modalInstance.result.then(function () {
-//					      //$scope.selected = selectedItem;
-//					    }, function () {
-//					      $log.info('HIH: Message dialog dismissed at: ' + new Date());
-//					    });
-				});
 			}
 		])
 
@@ -176,6 +141,50 @@
 				$scope.bootstrapcss = arCSS[0];
 				$scope.bootstrap_defaultcss = arCSS[1];
 			}
+		});
+		
+		$scope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType, conf_func) {
+			console.log('HIH: ShowMessage event occurred');
+			
+			if (conf_func && angular.isFunction(conf_func)) {
+				window.swal({ title: msgHeader,   
+					text: msgDetail,   
+					type: msgType || "warning", 
+					showCancelButton: true, 
+					confirmButtonColor: "#DD6B55", 
+					confirmButtonText: "Yes, delete it!", 
+					closeOnConfirm: true }, 
+					conf_func
+					// function() { 
+					// 	window.swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
+					// }
+					);
+			} else {
+				window.swal(msgHeader, msgDetail, msgType || "error");
+			}
+		});
+		
+		$scope.$on('ShowMessageNeedTranslate', function (oEvent, msgHeaderStr, msgDetailStr, msgType, conf_func) {
+			console.log('HIH: ShowMessage event occurred');
+			
+			$translate([msgHeaderStr, msgDetailStr]).then(function (translations) {
+				var hdr = translations[msgHeaderStr];
+				var dtal = translations[msgDetailStr];
+
+				if (conf_func && angular.isFunction(conf_func)) {
+					window.swal({ title: hdr,   
+								text: dtal,   
+								type: msgType || "warning", 
+								showCancelButton: true, 
+								confirmButtonColor: "#DD6B55", 
+								confirmButtonText: "Yes, delete it!", 
+								closeOnConfirm: true }, 
+								conf_func
+					);
+				} else {
+					window.swal(hdr, dtal, msgType || "error");
+				}
+			});
 		});
 	}])
 	

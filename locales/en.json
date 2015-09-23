@@ -26,6 +26,7 @@
         "Object": "Object",
         "Value": "Value",
         "Search":  "Search",
+		"Warning": "Warning",
 		
 		"ID": "ID",
 		"Category": "Category",
@@ -190,6 +191,7 @@
 		"EitherControlCenterOrOrder": "Use either Control Center or Order, but not both",
 		"InvalidCurrency": "Invalid Currency",
 		"InvalidTransferAmount": "Invalid transfer amount",
+		"InvalidAmount": "Invalid amount",
 		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account",
 		"InvalidRefCurrExgDoc": "Invalid reference currency exchange document",
 		"InvalidExchangeRate": "Invalid exchange rate"

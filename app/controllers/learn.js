@@ -181,13 +181,6 @@
 		  	    console.log("HIH LearnObject List: Category Loaded event fired!");
 		    });	
 
-			if (!$rootScope.DeletionDialogTitle || !$rootScope.DeletionDialogMsg) {
-				$translate(['Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem']).then(function (translations) {
-    				$rootScope.DeletionDialogTitle = translations['Common.DeleteConfirmation'];
-    				$rootScope.DeletionDialogMsg = translations['Common.ConfirmToDeleteSelectedItem'];
-  				});				
-			}
-		  
             // Remove to the real data holder
             $scope.removeItem = function removeItem(row) {
                 if ($scope.selectedRows.length <= 0)
@@ -205,7 +198,7 @@
 				});
 				
 		    	// Popup dialog for confirm
-				$rootScope.$broadcast('ShowMessage', $rootScope.DeletionDialogTitle, $rootScope.DeletionDialogMsg, "warning", function() {
+				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
 					$http.post(
 							'script/hihsrv.php',
 							{

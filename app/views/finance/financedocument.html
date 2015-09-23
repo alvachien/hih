@@ -37,7 +37,7 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" translate="Finance.Docu mentType">Doc. Type:</label>
+                <label class="control-label col-sm-2" translate="Finance.DocumentType">Doc. Type:</label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick document type...' options='arFinanceDocumentType' config="docTypeConfig" ng-model="DocumentObject.DocTypeID"
                         ng-disabled="isReadonly" required></selectize>
@@ -67,12 +67,14 @@
 
             <div class="form-group">
                 <label class="control-label col-sm-2" translate="Common.Date">Date</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
-                           datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="Close" />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
+                                datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -116,7 +118,7 @@
                     <label class="control-label col-sm-2" translate="Finance.Account">Account:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Pick account...' options='arFinanceAccount' config="accountConfig" ng-model="SelectedDocumentItem.AccountID"
-                                   ng-disabled="isReadonly" required></selectize>
+                                   ng-disabled="isReadonly" required="required"></selectize>
                     </div>
                 </div>
                 
@@ -124,22 +126,21 @@
                     <label class="control-label col-sm-2" translate="Finance.TransactionType">Transaction Type:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Pick tran type...' options='arFinanceTransactionType' config="trantypeConfig" ng-model="SelectedDocumentItem.TranTypeID"
-                                   ng-disabled="isReadonly" required></selectize>
+                                   ng-disabled="isReadonly" required="required"></selectize>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptItemAmt" translate="Finance.Amount">Amount:</label>
                     <div class="col-sm-10">
-                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.TranAmount_Org"></input>
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.TranAmount_Org" required="required"></input>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptItemDesp" translate="Common.Description">Desp: </label>
                     <div class="col-sm-10">
-                        <textarea rows="5" id="iptItemDesp" ng-readonly="isReadonly" cols="50"
-                                  ng-model="SelectedDocumentItem.Desp"></textarea>
+                        <input type="text" id="iptItemDesp" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.Desp" required="required"></input>
 			        </div>
 		        </div>
 
@@ -147,7 +148,7 @@
                     <label class="control-label col-sm-2" translate="Finance.ControlCenter">Control Center</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Pick control center...' options='arFinanceControlCenter' config="ccConfig" ng-model="SelectedDocumentItem.ControlCenterID"
-                                ng-disabled="isReadonly" required></selectize>
+                                ng-disabled="isReadonly" optional></selectize>
                     </div>
                 </div>
 
@@ -155,7 +156,7 @@
                     <label class="control-label col-sm-2" translate="Finance.Order">Order:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Pick order ...' options='arFinanceOrder' config="orderConfig" ng-model="SelectedDocumentItem.OrderID"
-                            ng-disabled="isReadonly" required></selectize>
+                                 ng-disabled="isReadonly" optional></selectize>
                     </div>
                 </div>
 
@@ -163,7 +164,8 @@
                 <div class="form-group">
                 	<div class="col-sm-10">
                     	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
-                        		ng-disabled="frmItem.$invalid || !frmItem.$dirty" translate="Finance.SaveCurrentItem">Save Item</button>
+                            translate="Finance.SaveCurrentItem">Save Item</button>
+                        		<!--ng-disabled="frmItem.$invalid || !frmItem.$dirty" -->                                
                         <button class="btn btn-danger" ng-click="cancelCurrentItem()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                     </div>
                 </div>
@@ -172,5 +174,4 @@
         </div>
     </div>
 </div>
-
 

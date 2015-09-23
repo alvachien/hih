@@ -26,6 +26,7 @@
         "Object": "对象",
         "Value":  "值",
 		"Search":  "搜索",
+		"Warning": "警告",
 
 		"ID": "ID",
 		"Category": "类别",
@@ -189,6 +190,7 @@
 		"EitherControlCenterOrOrder": "使用控制中心或订单，不能同时使用",
 		"InvalidCurrency": "不合法的货币",
 		"InvalidTransferAmount": "不合法的转账金额",
+		"InvalidAmount": "不合法的金额",
 		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账",
 		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证",
 		"InvalidExchangeRate": "不合法的汇率"

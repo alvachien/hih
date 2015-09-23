@@ -100,7 +100,7 @@
                 <label class="control-label col-sm-2" translate="Finance.SourceControlCenter">Source Control Center </label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick source control center...' options='arFinanceControlCenter' config="sourceCCConfig" ng-model="SourceCCID"
-                            ng-disabled="isReadonly" required></selectize>
+                            ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
     
@@ -108,7 +108,7 @@
                 <label class="control-label col-sm-2" translate="Finance.SourceOrder">Source Order:</label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick source order...' options='arFinanceOrder' config="sourceOrderConfig" ng-model="SourceOrderID" 
-                            ng-disabled="isReadonly" required></selectize>
+                            ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
         </div>
@@ -126,8 +126,7 @@
                 <label class="control-label col-sm-2" translate="Finance.TargetAccount">Tgt Account:</label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick target account...' options='arFinanceAccount' config="targetAccountConfig" ng-model="TargetAccountID" 
-                                ng-disabled="isReadonly"
-                                required></selectize>
+                                ng-disabled="isReadonly"></selectize>
                 </div>
             </div>            
             
@@ -135,8 +134,7 @@
                 <label class="control-label col-sm-2" translate="Finance.TargetControlCenter">Target Control Center</label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick target control center...' options='arFinanceControlCenter' config="targetCCConfig" ng-model="TargetCCID"
-                                ng-disabled="isReadonly" 
-                                required></selectize>
+                                ng-disabled="isReadonly"></selectize>
                 </div>
             </div>
     
@@ -144,8 +142,7 @@
                 <label class="control-label col-sm-2" translate="Finance.TargetOrder">Target Order:</label>
                 <div class="col-sm-10">
                     <selectize placeholder='Pick target order...' options='arFinanceOrder' config="targetOrderConfig" ng-model="TargetOrderID" 
-                               ng-disabled="isReadonly"
-                                required></selectize>
+                               ng-disabled="isReadonly" ></selectize>
                 </div>
             </div>
         </div>
