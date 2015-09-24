@@ -44,6 +44,7 @@ class HIHConstants {
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
 	const DT_FinAccount = 't_fin_account';
+	const DT_FinExchangeRate = 't_fin_exrate';
 	// Views
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';

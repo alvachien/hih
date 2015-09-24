@@ -851,8 +851,9 @@ ALTER TABLE `t_fin_document`
 ADD COLUMN `EXGRATE` DOUBLE NULL DEFAULT NULL AFTER `REFCUREXGDOC`,
 ADD COLUMN `EXGRATE_PLAN` DOUBLE NULL DEFAULT NULL AFTER `EXGRATE`;
 
-ALTER TABLE `t_fin_exrate` 
-ADD COLUMN `refdocid` INT(11) NULL AFTER `rate`;
+
+--ALTER TABLE `t_fin_exrate` 
+--ADD COLUMN `refdocid` INT(11) NULL AFTER `rate`;
 
 -- Replace view for document
 CREATE OR REPLACE
@@ -1078,6 +1079,18 @@ VIEW `v_fin_document_item1` AS
         `t_fin_document_item`
 		join `t_fin_tran_type` on `t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`
         left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
+        
+/* ======================================================
+    Delta parts on 2015.9.24
+   ====================================================== */
+   
+CREATE TABLE IF NOT EXISTS `t_fin_exrate` (
+  `TRANDATE` date NOT NULL,
+  `CURR` varchar(5) NOT NULL,
+  `RATE` DOUBLE DEFAULT NULL,
+  `REFDOCID` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`SETID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Finance Exg. Rate';
         
 /* The End */ 
 

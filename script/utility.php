@@ -2274,6 +2274,42 @@ function finance_document_post($docobj) {
 		}
 	}
 	
+	/* Prepare an insert into currency exchange */
+	if (empty ( $sError ) && $docobj->DocTypeID == 3) {
+		if (isset($docobj->ExchangeRate) && $docobj->ExchangeRate != 1.0 && (!isset($docobj->ProposedExchangeRate) || $docobj->ProposedExchangeRate != 1)) {
+			$query = "INSERT INTO " . HIHConstants::DT_FinExchangeRate . "(`TRANDATE`, `CURR`, `RATE`, `REFDOCID`) VALUES (?, ?, ?, ?);";
+			
+			foreach ( $docobj->ItemsArray as $value ) {
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency, $docobj->ExchangeRate, $nDocID );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query;
+						break;
+					}
+				}
+			}			
+		}		
+		if (isset($docobj->ExchangeRate2) && $docobj->ExchangeRate2 != 1.0 && (!isset($docobj->ProposedExchangeRate2) || $docobj->ProposedExchangeRate2 != 1)) {
+			$query = "INSERT INTO " . HIHConstants::DT_FinExchangeRate . "(`TRANDATE`, `CURR`, `RATE`, `REFDOCID`) VALUES (?, ?, ?, ?);";
+			
+			foreach ( $docobj->ItemsArray as $value ) {
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $nDocID );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query;
+						break;
+					}
+				}
+			}			
+		}		
+	}
+	
 	if (empty ( $sError )) {
 		if (! $mysqli->errno) {
 			$mysqli->commit ();
