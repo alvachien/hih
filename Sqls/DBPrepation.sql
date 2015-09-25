@@ -1081,16 +1081,18 @@ VIEW `v_fin_document_item1` AS
         left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
         
 /* ======================================================
-    Delta parts on 2015.9.24
+    Delta parts on 2015.9.25
    ====================================================== */
    
+-- Create table for Exchange Rate
 CREATE TABLE IF NOT EXISTS `t_fin_exrate` (
   `TRANDATE` date NOT NULL,
   `CURR` varchar(5) NOT NULL,
   `RATE` DOUBLE DEFAULT NULL,
   `REFDOCID` INT(11) DEFAULT NULL,
-  PRIMARY KEY (`SETID`)
+  PRIMARY KEY (`TRANDATE`, `CURR`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Finance Exg. Rate';
-        
+
+
 /* The End */ 
 

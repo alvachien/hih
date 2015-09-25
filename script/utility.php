@@ -2276,35 +2276,28 @@ function finance_document_post($docobj) {
 	
 	/* Prepare an insert into currency exchange */
 	if (empty ( $sError ) && $docobj->DocTypeID == 3) {
-		if (isset($docobj->ExchangeRate) && $docobj->ExchangeRate != 1.0 && (!isset($docobj->ProposedExchangeRate) || $docobj->ProposedExchangeRate != 1)) {
+		if ( isset($docobj->ExchangeRate) and $docobj->ExchangeRate != 1.0 and (!isset($docobj->ProposedExchangeRate) or $docobj->ProposedExchangeRate != 1.0) ) {
 			$query = "INSERT INTO " . HIHConstants::DT_FinExchangeRate . "(`TRANDATE`, `CURR`, `RATE`, `REFDOCID`) VALUES (?, ?, ?, ?);";
 			
-			foreach ( $docobj->ItemsArray as $value ) {
-				if ($newstmt = $mysqli->prepare ( $query )) {
-					$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency, $docobj->ExchangeRate, $nDocID );
-					
-					/* Execute the statement */
-					if ($newstmt->execute ()) {
-					} else {
-						$sError = "Failed to execute query: " . $query;
-						break;
-					}
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency, $docobj->ExchangeRate, $nDocID );
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query;
 				}
-			}			
+			}
 		}		
-		if (isset($docobj->ExchangeRate2) && $docobj->ExchangeRate2 != 1.0 && (!isset($docobj->ProposedExchangeRate2) || $docobj->ProposedExchangeRate2 != 1)) {
+		if (isset($docobj->ExchangeRate2) and $docobj->ExchangeRate2 != 1.0 and (!isset($docobj->ProposedExchangeRate2) or $docobj->ProposedExchangeRate2 != 1.0)) {
 			$query = "INSERT INTO " . HIHConstants::DT_FinExchangeRate . "(`TRANDATE`, `CURR`, `RATE`, `REFDOCID`) VALUES (?, ?, ?, ?);";
 			
-			foreach ( $docobj->ItemsArray as $value ) {
-				if ($newstmt = $mysqli->prepare ( $query )) {
-					$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $nDocID );
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ssdi", $docobj->DocDate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $nDocID );
 					
-					/* Execute the statement */
-					if ($newstmt->execute ()) {
-					} else {
-						$sError = "Failed to execute query: " . $query;
-						break;
-					}
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query;
 				}
 			}			
 		}		
@@ -2357,6 +2350,22 @@ function finance_document_delete($docid) {
 	}
 	
 	/* Prepare an delete statement on items */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM " . HIHConstants::DT_FinExchangeRate . " WHERE REFDOCID=?;";
+		
+		if ($newstmt = $mysqli->prepare ( $query )) {
+			$newstmt->bind_param ( "i", $docid );
+			
+			/* Execute the statement */
+			if ($newstmt->execute ()) {
+			} else {
+				$sError = "Failed to execute query: " . $query;
+				break;
+			}
+		}
+	}
+
+	/* Prepare an delete statement on exchange rates */
 	if (empty ( $sError )) {
 		$query = "DELETE FROM " . HIHConstants::DT_FinDocumentItem . " WHERE DOCID=?;";
 		

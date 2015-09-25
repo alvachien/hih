@@ -899,7 +899,6 @@
 							return false;
 						}
 					});	
-					$scope.$apply();
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
@@ -1172,7 +1171,6 @@
 							return false;
 						}
 					});	
-					$scope.$apply();
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
