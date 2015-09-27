@@ -1640,12 +1640,7 @@
 			// Document type - change string to integer
 			$scope.DocumentObject.DocTypeID = parseInt($scope.DocumentObject.DocTypeID);
 			// Currency - bind
-			// Reference currency exchange document
-			if ($scope.RefCurrExgDocObject.selected) {
-				$scope.DocumentObject.RefCurrExgDocID = $scope.RefCurrExgDocObject.selected.DocID;
-			}
-			
-			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency, $scope.RefCurrExgDocObject.selected);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(

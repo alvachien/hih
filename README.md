@@ -41,7 +41,8 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 - 2015.8.4. It's DECIDED that all non-operatable (search, edit) using the native table not the UI-grid. First batch: User Detail, User List, Document Type List, Transaction Type List, Currency List, Account Category List;
 - 2015.8.22, It's DECIDED that using promise concept($q) for asynchronously data loading;
 - 2015.9.3， It's DECIDED that displaying all error messages during the input validation;
-- 2015.9.15, It's DECIDED that exchange rate stands for the rate between the currency in use and the local currency;
+- 2015.9.15, It's DECIDED that exchange rate stands for the rate between the currency in use and the local currency; and the value is:
+	rate = 1 Local Currency / Used Currency;
 - 2015.9.17, It's DECIDED that using auglar-selectize instead of ui-select, because its requires .selected on the attribute which causes it is not easy to use ng-model directly on other controls;
 - To be updated.
 

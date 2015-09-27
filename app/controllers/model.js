@@ -934,7 +934,7 @@
 			});
 		}
 	};
-	hih.FinanceDocument.prototype.Verify = function($translate, locCurr, objCurrExgDoc) {
+	hih.FinanceDocument.prototype.Verify = function($translate, locCurr) {
 		var errMsgs = [];
 		// Document type
 		if (isNaN(this.DocTypeID) || this.DocTypeID === -1) {
