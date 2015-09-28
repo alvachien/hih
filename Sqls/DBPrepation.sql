@@ -905,7 +905,7 @@ VIEW `v_fin_document` AS
 
 -- Drop unnecessary Views;
 DROP VIEW v_fin_document_item3;
-DROP VIEW v_fin_doucment_item2;
+DROP VIEW v_fin_document_item2;
 
 /* ======================================================
     Delta parts on 2015.9.15
