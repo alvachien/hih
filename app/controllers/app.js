@@ -192,8 +192,14 @@
 		function($scope, $rootScope, $state, $http, $log, $translate, i18nService, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		
-		// Load the setting out
+		// Load the finance setting out
 		utils.loadFinanceSettingQ()
+			.then(function(response) {
+				// Do nothing here~~~
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+		utils.loadFinanceExchangeRateInfoQ()
 			.then(function(response) {
 				// Do nothing here~~~
 			}, function(reason) {

@@ -63,7 +63,7 @@
 		} else {
 			return '<span style="color:red;">Unknown</span>';
 		}	
-	}
+	};
 	hih.ModelUtility.FinanceExpenseFlagCell = function finExpenseFlag(val) {
 		if (val === '1' || val === 1) {
 			return '<span style="color:red; font-weight: bold;">开支</span>';
@@ -72,7 +72,11 @@
 		} else {
 			return '<span style="color:red;">Unknown</span>';
 		}
-	}
+	};
+	hih.ModelUtility.Round2Two = function (num) {
+		//return +(Math.round(num + "e+2")  + "e-2");
+		return Math.round(num * 100) / 100;
+	};
 	
 	// =========================================================
 	// Root model
@@ -339,7 +343,7 @@
 	// =========================================================
 	// Finance part
 	// =========================================================
-	// 0. Setting
+	// 0.1 Setting
 	hih.FinanceSetting = function() {
 		this.LocalCurrency = "";
 		this.LocalCurrencyComment = "";
@@ -355,6 +359,22 @@
 				}
 			});
 		}
+	};
+	// 0.2 Exchange rate
+	hih.FinanceExchangeRate = function() {
+		this.TranDate = new Date();
+		this.ForeignCurrency = "";
+		this.Rate = 0.0;
+		this.RefDocumentID = -1;
+		
+		this.RefDocumentObject = {};
+	};
+	hih.extend(hih.FinanceExchangeRate, hih.Model);
+	hih.FinanceExchangeRate.prototype.setContent = function(obj) {
+		this.TranDate = obj.trandate;
+		this.ForeignCurrency = obj.forgcurr;
+		this.Rate = parseFloat(obj.exgrate);
+		this.RefDocumentID = parseInt(obj.refdocid);
 	};
 	// 1. Currency
 	hih.Currency = function Currency() {
@@ -936,6 +956,7 @@
 	};
 	hih.FinanceDocument.prototype.Verify = function($translate, locCurr) {
 		var errMsgs = [];
+		
 		// Document type
 		if (isNaN(this.DocTypeID) || this.DocTypeID === -1) {
 			errMsgs.push($translate("Message.InvalidDocType"));
@@ -949,21 +970,31 @@
 		} else if (locCurr) {
 			// Check for Foreign currency
 			if( this.TranCurrency !== locCurr ) {
+				if (isNaN(this.ExchangeRate) || this.ExchangeRate === 0.0 || this.ExchangeRate === 1.0) {
+					errMsgs.push($translate("Message.InvalidExchangeRate"));
+				}
 			}
-		}
+		}		
 		// Amount
 		// It's a runtime information, Maybe not necessary for checking
 		// Desp.
 		if (this.Desp.trim().length <= 0) {
 			errMsgs.push($translate("Message.InvalidDescription"));
 		}
-		// Exg. rate
+		// Currency excahgne document.		
 		if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-			if (isNaN(this.ExchangeRate) || this.ExchangeRate === 0.0) {
-				errMsgs.push($translate("Message.InvalidExchangeRate"));
+			this.TranCurrency2 = this.TranCurrency2.trim();
+			if (this.TranCurrency2.length <= 0) {
+				errMsgs.push($translate("Message.InvalidCurrency"));
+			} else if (locCurr) {
+				// Check for Foreign currency
+				if( this.TranCurrency2 !== locCurr ) {
+					if (isNaN(this.ExchangeRate2) || this.ExchangeRate2 === 0.0 || this.ExchangeRate2 === 1.0) {
+						errMsgs.push($translate("Message.InvalidExchangeRate"));
+					}
+				}
 			}
 		} else {
-			
 		}
 		
 		// Items
@@ -976,9 +1007,33 @@
 			}
 			
 			if (this.Items[i].TranTypeObject.ExpenseFlag) {
-				this.TranAmount -= parseFloat(this.Items[i].TranAmount);
+				if (this.Items[i].UseCurrency2 ) {
+					if( this.TranCurrency2 !== locCurr ) {
+						this.TranAmount -= parseFloat(this.Items[i].TranAmount_Org) / this.ExchangeRate2;
+					} else {
+						this.TranAmount -= parseFloat(this.Items[i].TranAmount_Org);
+					}
+				} else {
+					if( this.TranCurrency !== locCurr ) {
+						this.TranAmount -= parseFloat(this.Items[i].TranAmount_Org) / this.ExchangeRate;
+					} else {
+						this.TranAmount -= parseFloat(this.Items[i].TranAmount_Org);
+					}					
+				}				
 			} else {
-				this.TranAmount += parseFloat(this.Items[i].TranAmount);
+				if (this.Items[i].UseCurrency2 ) {
+					if( this.TranCurrency2 !== locCurr ) {
+						this.TranAmount += parseFloat(this.Items[i].TranAmount_Org) / this.ExchangeRate2;
+					} else {
+						this.TranAmount += parseFloat(this.Items[i].TranAmount_Org);
+					}
+				} else {
+					if( this.TranCurrency !== locCurr ) {
+						this.TranAmount += parseFloat(this.Items[i].TranAmount_Org) / this.ExchangeRate;
+					} else {
+						this.TranAmount += parseFloat(this.Items[i].TranAmount_Org);	
+					}					
+				}
 			}
 
 			if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {				
@@ -987,11 +1042,13 @@
 				} else {
 					errMsgs.push($translate("Message.DuplicateAccountsInTransferDoc"));
 				}
-			} else if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-				
+			} else if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {				
 			}
 		}
-		if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {
+		if (this.DocTypeID === hih.Constants.FinDocType_Transfer 
+			|| this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				
+			this.TranAmount = hih.ModelUtility.Round2Two(this.TranAmount); 
 			if (this.TranAmount !== 0.0) {
 				// Transfer document shall be zero balance!
 				errMsgs.push($translate("Message.InvalidTransferAmount"));

@@ -243,6 +243,11 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
+		case "GETFINANCEEXGRATEINFO": {
+			HIHSrv_Function( 'finance_exgrate_listread' );
+		}
+		break;
+		
 		case "GETFINANCEACCOUNTLIST": {
 			HIHSrv_Function( 'finance_account_listread' );
 		}

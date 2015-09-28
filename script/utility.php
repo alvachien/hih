@@ -1562,6 +1562,50 @@ function finance_setting_listread() {
 	mysqli_close ( $link );
 	return array ( $sError, $rsttable );	
 }
+// 1.6.1 Finance Exchange rate
+function finance_exgrate_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DT_FinExchangeRate;
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		//   `TRANDATE`, `CURR`, `RATE`,  `REFDOCID`
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"trandate" => $row [0],
+				"forgcurr" => $row [1],
+				"exgrate" => $row [2],
+				"refdocid" => $row [3]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query" . $query;
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array ( $sError, $rsttable );	
+}
 // 1.6 Finance account
 function finance_account_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -2165,15 +2209,12 @@ function finance_document_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query;
 	}
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			$rsttable 
-	);
+	return array ( $sError, $rsttable );
 }
 function finance_document_curexg_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

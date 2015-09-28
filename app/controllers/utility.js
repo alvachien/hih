@@ -110,7 +110,34 @@
 							
 							return arCSS;
 						};
+		
+////////////////////////////////////////////////////////////////////						
+// Common part
+////////////////////////////////////////////////////////////////////
+						rtnObj.getExpectedExchangeRate = function(curdate, forgncurr) {
+							// Then, search for the latest rate
+							var allrates = [];
+							$.each($rootScope.arFinanceExchangeRate, function(idx, obj) {
+								if (obj.ForeignCurrency === forgncurr) {
+									allrates.push(obj);
+								}
+							});
+							
+							if (allrates.length > 0) {
+								allrates.sort(function(a, b) {
+									if (a.TranDate < b.TranDate) return 1;
+									else return -1;
+								});
+								
+								// Then, get the latest one
+								return allrates.shift().Rate;						
+							} 
+							return null;
+						};					
 						
+////////////////////////////////////////////////////////////////////						
+// User part
+////////////////////////////////////////////////////////////////////						
 						// User part
 						rtnObj.loadUserList = function () {
 							if (!$rootScope.isUserListLoad) {
@@ -371,8 +398,29 @@
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
-							return deferred.promise;							
+							return deferred.promise;
 						};
+// Finance part: Exg rate table
+						rtnObj.loadFinanceExchangeRateInfoQ = function() {
+							// Load finance accounts with $q supports
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype : 'GETFINANCEEXGRATEINFO' })
+								.then(function(response) {
+									// 	"trandate" => $row [0], "forgcurr" => $row [1], "exgrate" => $row [2], "refdocid" => $row [3]
+									$rootScope.arFinanceExchangeRate = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj){
+											var er = new hih.FinanceExchangeRate();
+											er.setContent(obj);
+											$rootScope.arFinanceExchangeRate.push(er);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};					
 // Finance part: Currencies
 						rtnObj.loadCurrencies = function() {
 						    if (!$rootScope.isCurrencyLoaded) {
@@ -678,38 +726,6 @@
 									deferred.reject(response.data.Message);
 								});
 							return deferred.promise;
-						};						
-						rtnObj.loadFinanceDocuments = function() {
-						    if (!$rootScope.isFinanceDocumentLoaded) {
-						        // Example JSON reponse
-						        // {"docid":"5","doctype":"1","doctypename":"aaa","trandate":"2015-03-13","trancurr":"CNY","trancurrname":"aaa","desp":"aaa","tranamount":"-155"}
-								$http.post('script/hihsrv.php',
-												{
-													objecttype : 'GETFINANCEDOCUMENTLIST'
-												})
-										.success(
-												function(data, status, headers, config) {
-													$rootScope.arFinanceDocument = [];
-													if ($.isArray(data) && data.length > 0) {
-														$.each(data, function(idx, obj){
-															var fd = new hih.FinanceDocument();
-															fd.setContent(obj);
-															$rootScope.arFinanceDocument.push(fd);
-														});
-													}
-													$rootScope.isFinanceDocumentLoaded = true;
-
-													$rootScope.$broadcast("FinanceDocumentLoaded");
-												})
-										 .error(
-												function(data, status, headers, config) {
-													// called asynchronously if an error occurs or server returns response with an error status.
-													$rootScope.$broadcast(
-															"ShowMessage",
-															"Error",
-															data.Message);
-												});
-							}
 						};
 						rtnObj.loadFinanceDocumentItemsQ = function(docid) {
 							var deferred = $q.defer();

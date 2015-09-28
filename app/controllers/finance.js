@@ -710,7 +710,10 @@
 						$scope.myData = [];
 						$.each($rootScope.arFinanceDocument, function(idx, obj) {
 							$scope.myData.push(angular.copy(obj));					
-						});	  
+						});
+						
+						// Force it refresh!
+						$scope.$apply();
 					};
 				}, function(reason2) {
 				    // Error occurred
@@ -738,11 +741,6 @@
 		$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
 		$scope.TranCurrencyIsLocal = true;
 		
-		$scope.AllAccounts = $rootScope.arFinanceAccount;
-		$scope.AllCurrencies = $rootScope.arCurrency;
-		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
-		$scope.AllOrders = $rootScope.arFinanceOrder;
-
 		// Currency select control
 		$scope.currConfig = {
 			create: false,
@@ -752,8 +750,13 @@
 					$scope.TranCurrencyIsLocal = true;
 				} else {
 					$scope.TranCurrencyIsLocal = false;
+					
+					var er = utils.getExpectedExchangeRate($scope.DocumentObject.TranDate, value);
+					if (er && !isNaN(er)) {
+						$scope.DocumentObject.ExchangeRate = parseFloat(er);
+					}
 				}
-				$scope.$apply();				  
+				$scope.$apply();
     		},
 			valueField: 'Currency',
 			labelField: 'Name',
@@ -920,6 +923,7 @@
 			item1.ControlCenterID = parseInt($scope.SourceCCID);
 			item1.OrderID = parseInt($scope.SourceOrderID);
 			item1.Desp = $scope.DocumentObject.Desp;
+			item1.buildRelationship($rootScope.arFinanceAccount, $rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder, $rootScope.arFinanceTransactionType);		
 			$scope.DocumentObject.Items.push(item1);
 			
 			item2.AccountID = parseInt($scope.TargetAccountID);
@@ -928,10 +932,11 @@
 			item2.ControlCenterID = parseInt($scope.TargetCCID);
 			item2.OrderID = parseInt($scope.TargetOrderID);
 			item2.Desp = $scope.DocumentObject.Desp;
+			item2.buildRelationship($rootScope.arFinanceAccount, $rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder, $rootScope.arFinanceTransactionType);		
 			$scope.DocumentObject.Items.push(item2);
 			
 			// Verify
-			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(
@@ -941,7 +946,7 @@
 					},
 					function(reason) {
 						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
-					}	
+					}
 				);
 				return;
 			}
@@ -977,6 +982,7 @@
 
 	.controller('FinanceDocumentCurrExgController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+			
 		// This class serviced for the creation of Currency Exchange document
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
@@ -1006,6 +1012,11 @@
 					$scope.SourceCurrencyIsLocal = true;
 				} else {
 					$scope.SourceCurrencyIsLocal = false;
+
+					var er = utils.getExpectedExchangeRate($scope.DocumentObject.TranDate, value);
+					if (er && !isNaN(er)) {
+						$scope.DocumentObject.ExchangeRate = parseFloat(er);
+					}
 				}
 				$scope.$apply();
     		},
@@ -1023,6 +1034,11 @@
 					$scope.TargetCurrencyIsLocal = true;
 				} else {
 					$scope.TargetCurrencyIsLocal = false;
+					
+					var er = utils.getExpectedExchangeRate($scope.DocumentObject.TranDate, value);
+					if (er && !isNaN(er)) {
+						$scope.DocumentObject.ExchangeRate2 = parseFloat(er);
+					}
 				}
 				$scope.$apply();
     		},
@@ -1190,6 +1206,7 @@
 			item1.ControlCenterID = parseInt($scope.SourceCCID);
 			item1.OrderID = parseInt($scope.SourceOrderID);
 			item1.Desp = $scope.DocumentObject.Desp;
+			item1.buildRelationship($rootScope.arFinanceAccount, $rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder, $rootScope.arFinanceTransactionType);		
 			$scope.DocumentObject.Items.push(item1);
 			
 			// Item 2
@@ -1202,10 +1219,11 @@
 			item2.ControlCenterID = parseInt($scope.TargetCCID);
 			item2.OrderID = parseInt($scope.TargetOrderID);
 			item2.Desp = $scope.DocumentObject.Desp;
+			item2.buildRelationship($rootScope.arFinanceAccount, $rootScope.arFinanceControlCenter, $rootScope.arFinanceOrder, $rootScope.arFinanceTransactionType);		
 			$scope.DocumentObject.Items.push(item2);
 			
 			// Verify
-			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(
@@ -1388,6 +1406,11 @@
 					$scope.TranCurrencyIsLocal = true;
 				} else {
 					$scope.TranCurrencyIsLocal = false;
+					
+					var er = utils.getExpectedExchangeRate($scope.DocumentObject.TranDate, value);
+					if (er && !isNaN(er)) {
+						$scope.DocumentObject.ExchangeRate = parseFloat(er);
+					}
 				}
 				$scope.$apply();				  
     		},
@@ -1609,7 +1632,7 @@
 				$rootScope.arFinanceOrder,
 				$rootScope.arFinanceTransactionType
 				);
-									
+
 			// Next item ID
 			if ($scope.SelectedDocumentItem.ItemID === -1) {
 				$scope.updateNextItemID();
@@ -1640,7 +1663,7 @@
 			// Document type - change string to integer
 			$scope.DocumentObject.DocTypeID = parseInt($scope.DocumentObject.DocTypeID);
 			// Currency - bind
-			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.LocalCurrency);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(
