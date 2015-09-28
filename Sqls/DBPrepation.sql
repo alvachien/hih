@@ -1094,5 +1094,6 @@ CREATE TABLE IF NOT EXISTS `t_fin_exrate` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Finance Exg. Rate';
 
 
+
 /* The End */ 
 

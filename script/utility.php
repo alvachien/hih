@@ -2186,7 +2186,7 @@ function finance_document_listread() {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " ORDER BY trandate DESC";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " ORDER BY trandate DESC, id desc";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -2232,7 +2232,7 @@ function finance_document_curexg_listread() {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " WHERE doctype = 3 ORDER BY trandate DESC";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " WHERE doctype = 3 ORDER BY trandate DESC, id DESC";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */

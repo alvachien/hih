@@ -870,9 +870,9 @@
 		};
 		
 		if (angular.isDefined($stateParams.docid)) {
-		    if ($state.current.name === "home.finance.document.maintain") {
+		    if ($state.current.name === "home.finance.document.maintain_tran") {
 		        $scope.Activity = "Common.Edit";
-		    } else if ($state.current.name === "home.finance.document.display") {
+		    } else if ($state.current.name === "home.finance.document.display_tran") {
 		        $scope.Activity = "Common.Display";
 		        $scope.isReadonly = true;
 		    }
@@ -965,6 +965,9 @@
 									$rootScope.arFinanceDocumentType,
 									$rootScope.arCurrency
 								);
+								$scope.DocumentObject.Items = [];
+								$rootScope.arFinanceDocument.push($scope.DocumentObject);
+								$scope.DocumentObject = new hih.FinanceDocument();
 								$state.go("home.finance.document.display_tran",  { docid : response });
 							}
 						}, function(reason) {
@@ -975,6 +978,7 @@
 				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
 			}
 		};
+		
 		$scope.close = function() {
 			$state.go("home.finance.document.list");
 		};
@@ -1549,10 +1553,6 @@
 		    $scope.Activity = "Common.Create";
 		}
 		
-		$scope.$on("FinanceDocumentItemLoaded", function () {
-		    $log.info("HIH FinanceDocument: Items Loaded event fired!");
-		});
-
 		$scope.displayItem = function(itemid) {
 			$scope.cleanReportMessages();
 			var nID = parseInt(itemid);
