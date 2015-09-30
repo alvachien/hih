@@ -1,5 +1,6 @@
 <?php
 include_once 'model.inc';
+require_once 'syscfg.php';
 require_once 'config.php';
 
 /*
@@ -3096,15 +3097,11 @@ function finance_report_balancesheet() {
 		
 	$sError = "";
 	$accountid = 0;
-	$accountname = "";
 	$categoryid = 0;
 	$categoryassetflag = 0;
-	$categoryname = "";
 	$debitbalance = 0;
 	$creditbalance = 0;
 	$balance = 0;
-	$trancurr = "";
-	$trancurrname = "";
 	
 	$sMsg = "";
 	$rstAr = array ();
@@ -3118,21 +3115,17 @@ function finance_report_balancesheet() {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $accountid, $accountname, $categoryid, $categoryassetflag, $categoryname, $debitbalance, $creditbalance, $balance, $trancurr, $trancurrname );
+			$stmt->bind_result ( $accountid, $categoryid, $categoryassetflag, $debitbalance, $creditbalance, $balance );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
 				$rstAr [] = array (
-						"accountid" => $accountid,
-						"accountname" => $accountname,
-						"categoryid" => $categoryid,
-						"categoryassetflag" => $categoryassetflag,
-						"categoryname" => $categoryname,
-						"debitbalance" => $debitbalance,
-						"creditbalance" => $creditbalance,
-						"balance" => $balance,
-						"trancurr" => $trancurr,
-						"trancurrname" => $trancurrname 
+					"accountid" => $accountid,
+					"categoryid" => $categoryid,
+					"categoryassetflag" => $categoryassetflag,
+					"debitbalance" => $debitbalance,
+					"creditbalance" => $creditbalance,
+					"balance" => $balance
 				);
 			}
 		} else {
@@ -3191,7 +3184,7 @@ function finance_report_internalorder() {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $ordid, $ordname, $valid_from, $valid_to, $ordcomment, $balance, $trancurr, $trancurrname );
+			$stmt->bind_result ( $ordid, $ordname, $valid_from, $valid_to, $ordcomment, $balance );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
@@ -3201,9 +3194,7 @@ function finance_report_internalorder() {
 						"valid_from" => $valid_from,
 						"valid_to" => $valid_to,
 						"ordcomment" => $ordcomment,
-						"balance" => $balance,
-						"trancurr" => $trancurr,
-						"trancurrname" => $trancurrname 
+						"balance" => $balance 
 				);
 			}
 		} else {
@@ -3261,7 +3252,7 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $ccid, $ccname, $ccparid, $tranamt, $trancurr, $trancurrname );
+			$stmt->bind_result ( $ccid, $ccname, $ccparid, $tranamt );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
@@ -3269,9 +3260,7 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 					"ccid" => $ccid,
 					"ccname" => $ccname,
 					"ccparid" => $ccparid,
-					"tranamt" => $tranamt,
-					"trancurr" => $trancurr,
-					"trancurrname" => $trancurrname 
+					"tranamt" => $tranamt 
 				);
 			}
 		} else {

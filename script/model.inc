@@ -50,7 +50,7 @@ class HIHConstants {
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs3';
 	const DV_FinDocumentItem = 'v_fin_document_item1';
-	const DV_FinReportOrder = 'v_fin_report_io2';
+	const DV_FinReportOrder = 'v_fin_report_io1';
 	// Procedures
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 	const DP_FinReportCC = 'REPORT_FIN_CC';

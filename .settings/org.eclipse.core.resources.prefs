@@ -1,9 +1,5 @@
 eclipse.preferences.version=1
 encoding//app/views/home.html=UTF-8
-encoding//app/views/learnawardlist.html=UTF-8
-encoding//app/views/learnhistorylist.html=UTF-8
-encoding//app/views/learnobject.html=UTF-8
-encoding//app/views/learnobjectlist.html=UTF-8
 encoding//app/views/login.html=UTF-8
 encoding//app/views/notready.html=UTF-8
 encoding//app/views/register.html=UTF-8

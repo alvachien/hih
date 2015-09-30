@@ -2,12 +2,13 @@
  * SQL file for preparing HIH running on MySql/MadriaDB
  * Version: 0.5
  * Created: 2015/05/16
- * (C) Copyright by Alva Chien, 2014 - 2015
+ * (C) Copyright by Alva Chien, 2014 - 2016
  *
  * == Version Histories
  *  1. 2015.9.8, adding table t_fin_setting ;
  *  2. 2015.9.11, changing the logic for foreign currency part;
  *  3. 2015.9.15, changing the tables and views for foreign currency support;
+ *  4. 2015.9.29, changing the views for finance report side: bs, cc, io;
  */
 
 /*======================================================
@@ -1093,6 +1094,176 @@ CREATE TABLE IF NOT EXISTS `t_fin_exrate` (
   PRIMARY KEY (`TRANDATE`, `CURR`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Finance Exg. Rate';
 
+/* ======================================================
+    Delta parts on 2015.9.29
+   ====================================================== */
+
+-- Drop view for bs report
+DROP VIEW v_fin_report_bs1;
+DROP VIEW v_fin_report_bs2;
+DROP VIEW v_fin_report_bs3;
+
+-- View: v_fin_report_bs1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs1` AS
+    select 
+        `docid` AS `docid`,
+        `itemid` AS `itemid`,
+        `accountid` AS `accountid`,
+        `trantype` AS `trantype`,
+		`usecurr2` AS `usecurr2`,
+        `trancurr` AS `trancurr`,
+        `tranamount_lc` AS `tranamount_lc`,
+		round(sum(`tranamount_lc`), 2) AS `balance_lc`,
+        `CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `ORDERID` AS `ORDERID`,
+        `desp` AS `desp`,
+        `accounttab`.`CTGYID` AS `categoryid`,
+        `ctgytab`.`ASSETFLAG` AS `categoryassetflag`
+    from
+        `v_fin_document_item1`
+        join `t_fin_account` `accounttab` ON ((`v_fin_document_item1`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+	group by `accountid`;
+
+-- View: v_fin_report_bs2, not exist any more
+
+-- View: v_fin_report_bs3
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs3` AS
+    select 
+        `v_fin_report_bs1`.`accountid` AS `accountid`,
+        `v_fin_report_bs1`.`categoryid` AS `categoryid`,
+        `v_fin_report_bs1`.`categoryassetflag` AS `categoryassetflag`,
+        (case
+            when (`v_fin_report_bs1`.`categoryassetflag` = 1) then `v_fin_report_bs1`.`balance_lc`
+            else 0
+        end) AS `debitbalance`,
+        (case
+            when (`v_fin_report_bs1`.`categoryassetflag` = 0) then (-(1) * `v_fin_report_bs1`.`balance_lc`)
+            else 0
+        end) AS `creditbalance`,
+        `v_fin_report_bs1`.`balance_lc` AS `balance`
+    from
+        `v_fin_report_bs1`;
+
+-- Drop views for CC report
+DROP VIEW v_fin_report_cc1;
+DROP VIEW v_fin_report_cc2;
+
+-- View: v_fin_report_cc1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_cc1` AS
+select 
+        `t_fin_controlcenter`.`ID` AS `ccid`,
+        `t_fin_controlcenter`.`NAME` AS `ccname`,
+        `t_fin_controlcenter`.`PARID` AS `ccparid`,
+		round(sum(`v_fin_document_item1`.`tranamount_lc`), 2) AS `tranamount_lc_sum`
+    from
+        `t_fin_controlcenter`
+        left outer join `v_fin_document_item1` ON `t_fin_controlcenter`.`ID` = `v_fin_document_item1`.`CONTROLCENTERID`
+		group by `ccid`;
+
+-- View: v_fin_report_cc2, not exist any more
+
+-- Drop views for Order report
+DROP VIEW v_fin_report_io1;
+DROP VIEW v_fin_report_io2;
+
+-- View: v_fin_report_io1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_io1` AS
+    select 
+        `ordertab`.`ID` AS `ordid`,
+        `ordertab`.`NAME` AS `ordname`,
+        `ordertab`.`VALID_FROM` AS `valid_from`,
+        `ordertab`.`VALID_TO` AS `valid_to`,
+        `ordertab`.`COMMENT` AS `ordcomment`,
+		round(sum(`v_fin_document_item1`.`tranamount_lc`), 2) AS `tranamount_lc_sum`
+    from
+        `t_fin_intorder` `ordertab`
+        left outer join `v_fin_document_item1` ON `ordertab`.`ID` = `v_fin_document_item1`.`ORDERID`
+		group by `ordid`;
+        
+-- View: v_fin_report_io2, not exist any more
+
+-- Report for CC
+DROP procedure IF EXISTS `REPORT_FIN_CC`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `REPORT_FIN_CC`(
+	IN p_fromdate date,
+	IN p_todate date
+	)
+BEGIN
+
+DROP temporary TABLE if exists tmp_report_cc;
+
+create temporary table tmp_report_cc 
+select 
+	t_fin_controlcenter.id as ccid,
+	t_fin_controlcenter.name as ccname,
+	t_fin_controlcenter.parid as ccparid,
+	itemtab.tranamount as tranamount
+from t_fin_controlcenter
+     left outer join
+		(select
+            tab_c.controlcenterid, 
+            round(tab_a.tranamount_lc * tab_c.precent / 100, 4) as tranamount
+            from v_fin_document_item1 tab_a
+            join t_fin_document 
+		      on tab_a.docid = t_fin_document.id
+              and t_fin_document.trandate between p_fromdate and p_todate 
+        	left outer join t_fin_intorder tab_b
+		      on tab_a.orderid = tab_b.id
+	        left outer join t_fin_intorder_settrule tab_c
+		      on tab_b.id = tab_c.intordid
+			where tab_a.orderid is not null and tab_a.orderid != 0) itemtab
+        on t_fin_controlcenter.id = itemtab.controlcenterid
+
+union all
+
+select  t_fin_controlcenter.id as ccid,
+        t_fin_controlcenter.name as ccname,
+        t_fin_controlcenter.parid as ccparid,
+        itemtab.tranamount as tranamount
+	from t_fin_controlcenter
+    left outer join (select
+        v_fin_document_item1.controlcenterid,
+        round(v_fin_document_item1.tranamount_lc, 4) as tranamount
+        from v_fin_document_item1
+        inner join t_fin_document 
+           on v_fin_document_item1.docid = t_fin_document.id 
+	       and t_fin_document.trandate between p_fromdate and p_todate
+		where controlcenterid is not null and controlcenterid != 0) itemtab
+		on itemtab.controlcenterid = t_fin_controlcenter.id;
+
+select 
+    `ccid`,
+    `ccname`,
+    `ccparid`,
+    round(sum(`tranamount`),2) AS `tranamount`
+from 
+    tmp_report_cc
+group by ccid;
+
+DROP temporary TABLE if exists tmp_report_cc;
+
+END$$
+
+DELIMITER ;
 
 
 /* The End */ 
