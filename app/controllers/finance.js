@@ -6,7 +6,7 @@
 
 	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select',
 	 	'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize'])
+	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'chart.js'])
 	    
 	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
       $stateProvider
@@ -2547,6 +2547,9 @@
 
 	.controller("FinanceReportBSController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+			
+		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+		
 		// The class sevice for Balance sheet
 		$scope.gridOptions = {};
 		$scope.gridOptions.data = 'dataReport';
@@ -2565,8 +2568,7 @@
 			{ name:'cdtbalance', field: 'CreditBalance', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
 		];
 
 		$scope.gridOptions.rowIdentity = function(row) {
@@ -2597,6 +2599,9 @@
 	
 	.controller("FinanceReportCCController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+			
+		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+
 		// The class sevice for Balance sheet
 		$scope.gridOptions = {};
 		$scope.gridOptions.data = 'dataReport';
@@ -2611,15 +2616,14 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
 			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
 		];
 
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.AccountID;
+		 	return row.ControlCenterID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.AccountID;
+		 	return row.ControlCenterID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
@@ -2641,17 +2645,13 @@
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
-		    if (!$scope.isReadonly) {
-		        $scope.isValidfromDateOpened = true;				
-			}
+	        $scope.isValidfromDateOpened = true;				
 		};
 		$scope.openValidtoDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
-		    if (!$scope.isReadonly) {
-		        $scope.isValidtoDateOpened = true;				
-			}
+	        $scope.isValidtoDateOpened = true;				
 		};
 		
 		var promise1 = utils.loadFinanceControlCentersQ();
@@ -2660,7 +2660,7 @@
 			then(function(response) {
 				utils.loadFinanceReportControlCenterQ('19900101', '99991231')
 					.then(function(response) {
-						$scope.dataReport = $rootScope.arFinanceReportCC;
+						$scope.displayCCReport();
 					}, function(reason) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason);
 					});
@@ -2669,17 +2669,42 @@
 			});
 		
 		$scope.submit = function() {
-			utils.loadFinanceReportControlCenterQ(hih.ModelUtility.DatabaseDateFormatter($scope.ValidFromDate), hih.ModelUtility.DatabaseDateFormatter($scope.ValidToDate))
+			var vfrmdate = hih.ModelUtility.DatabaseDateFormatter($scope.ValidFromDate);
+			var vtodate = hih.ModelUtility.DatabaseDateFormatter($scope.ValidToDate);
+			
+			utils.loadFinanceReportControlCenterQ(vfrmdate, vtodate)
 				.then(function(response) {
-					$scope.dataReport = $rootScope.arFinanceReportCC;
+					$scope.displayCCReport();
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
-		};	
+		};
+		
+		$scope.displayCCReport = function() {
+			$scope.dataReport = $rootScope.arFinanceReportCC;
+			$scope.labelsCC = [];
+			$scope.dataCC = [];
+			var arData = [];
+			if ($.isArray($scope.dataReport) && $scope.dataReport.length > 0) {
+				$.each($scope.dataReport, function(idx, obj) {
+					$scope.labelsCC.push(obj.ControlCenterObject.Name);
+					if (obj.TranAmount && !isNaN(obj.TranAmount)) {
+						arData.push(obj.TranAmount);						
+					} else {
+						arData.push(0.0);
+					}
+				});
+				
+				$scope.dataCC.push(arData);
+			}
+		};
 	}])
 	
 	.controller("FinanceReportOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+			
+		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+
 		// The class sevice for Balance sheet
 		$scope.gridOptions = {};
 		$scope.gridOptions.data = 'dataReport';
@@ -2696,8 +2721,7 @@
 	    	{ name:'ordvalfrm', field: 'OrderObject.ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width:100 },
 	    	{ name:'ordvalto', field: 'OrderObject.ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width:100 },
 			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'curr', field: 'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 180 }
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
 		];
 
 		$scope.gridOptions.rowIdentity = function(row) {

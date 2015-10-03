@@ -30,17 +30,25 @@
 	// =========================================================
 	hih.ModelUtility = {
 	};
-	hih.ModelUtility.DateFormatter = function(date) {
-		var y = date.getFullYear();
-		var m = date.getMonth() + 1;
-		var d = date.getDate();
-		return y + hih.Constants.DateSplitChar + (m < 10 ? ('0' + m) : m) + hih.Constants.DateSplitChar + (d < 10 ? ('0' + d) : d);		
+	hih.ModelUtility.DateFormatter = function(dateinf) {
+		if ("object" === typeof dateinf) {
+			var y = dateinf.getFullYear();
+			var m = dateinf.getMonth() + 1;
+			var d = dateinf.getDate();
+			return y.toString() + hih.Constants.DateSplitChar + (m < 10 ? ('0' + m) : m).toString() + hih.Constants.DateSplitChar + (d < 10 ? ('0' + d) : d).toString();		
+		}
+		
+		return dateinf;
 	};
-	hih.ModelUtility.DatabaseDateFormatter = function(date) {
-		var y = date.getFullYear();
-		var m = date.getMonth() + 1;
-		var d = date.getDate();
-		return y + (m < 10 ? ('0' + m) : m) + (d < 10 ? ('0' + d) : d);		
+	hih.ModelUtility.DatabaseDateFormatter = function(dateinf) {
+		if ("object" === typeof dateinf) {
+			var y = dateinf.getFullYear();
+			var m = dateinf.getMonth() + 1;
+			var d = dateinf.getDate();
+			return y.toString() + (m < 10 ? ('0' + m) : m).toString() + (d < 10 ? ('0' + d) : d).toString();		
+		}
+		
+		return dateinf;
 	};
 	hih.ModelUtility.DateParser = function(s) {
 		if (!s)
@@ -1110,10 +1118,8 @@
 		this.DebitBalance = 0.0;
 		this.CreditBalance = 0.0;
 		this.Balance = 0.0;
-		this.TranCurrency = "";
 		
 		this.AccountObject = {};
-		this.TranCurrencyObject = {};
 	};
 	hih.extend(hih.FinanceReportBalanceSheet, hih.Model);
 	hih.FinanceReportBalanceSheet.prototype.setContent = function(obj) {
@@ -1121,9 +1127,8 @@
 		this.DebitBalance = parseFloat(obj.debitbalance).toFixed(2);
 		this.CreditBalance = parseFloat(obj.creditbalance).toFixed(2);
 		this.Balance = parseFloat(obj.balance).toFixed(2);
-		this.TranCurrency = obj.trancurr;
 	};
-	hih.FinanceReportBalanceSheet.prototype.buildRelationship = function(arAccount, arCurrency) {
+	hih.FinanceReportBalanceSheet.prototype.buildRelationship = function(arAccount) {
 		var that = this;
 		if (arAccount && $.isArray(arAccount) && arAccount.length > 0) {
 			$.each(arAccount, function(idx, obj){
@@ -1133,32 +1138,21 @@
 				}
 			});
 		}
-		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
-			$.each(arCurrency, function(idx, obj){
-				if (obj.Currency === that.TranCurrency) {
-					that.TranCurrencyObject = obj;
-					return false;
-				}
-			});
-		}		
 	};
 	// 11. Report on CC
 	hih.FinanceReportControlCenter = function FinanceReportControlCenter() {
 		this.ControlCenterID = -1;
 		this.TranAmount = 0.0;
-		this.TranCurrency = "";
 		
 		// Runtime information
 		this.ControlCenterObject = {};
-		this.TranCurrencyObject = {};
 	};
 	hih.extend(hih.FinanceReportControlCenter, hih.Model);
 	hih.FinanceReportControlCenter.prototype.setContent = function(obj) {
 		this.ControlCenterID = parseInt(obj.ccid);
 		this.TranAmount = parseFloat(obj.tranamt);
-		this.TranCurrency = obj.trancurr;
 	};
-	hih.FinanceReportControlCenter.prototype.buildRelationship = function(arCC, arCurrency) {
+	hih.FinanceReportControlCenter.prototype.buildRelationship = function(arCC) {
 		var that = this;
 		if (arCC && $.isArray(arCC) && arCC.length > 0) {
 			$.each(arCC, function(idx, obj){
@@ -1168,31 +1162,20 @@
 				}
 			});
 		}
-		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
-			$.each(arCurrency, function(idx, obj){
-				if (obj.Currency === that.TranCurrency) {
-					that.TranCurrencyObject = obj;
-					return false;
-				}
-			});
-		}		
 	};
 	// 12. Report on Order
 	hih.FinanceReportOrder = function FinanceReportOrder() {
 		this.OrderID = -1;
 		this.Balance = 0.0;
-		this.TranCurrency = "";
 		
 		this.OrderObject = {};
-		this.TranCurrencyObject = {};
 	};
 	hih.extend(hih.FinanceReportOrder, hih.Model);
 	hih.FinanceReportOrder.prototype.setContent = function(obj) {
 		this.OrderID = parseInt(obj.ordid);
 		this.Balance = parseFloat(obj.balance).toFixed(2);
-		this.TranCurrency = obj.trancurr;
 	};
-	hih.FinanceReportOrder.prototype.buildRelationship = function(arOrder, arCurrency) {
+	hih.FinanceReportOrder.prototype.buildRelationship = function(arOrder) {
 		var that = this;
 		if (arOrder && $.isArray(arOrder) && arOrder.length > 0) {
 			$.each(arOrder, function(idx, obj){
@@ -1202,14 +1185,6 @@
 				}
 			});
 		}
-		if (arCurrency && $.isArray(arCurrency) && arCurrency.length > 0) {
-			$.each(arCurrency, function(idx, obj){
-				if (obj.Currency === that.TranCurrency) {
-					that.TranCurrencyObject = obj;
-					return false;
-				}
-			});
-		}		
 	};
 	// 13. 
 }());

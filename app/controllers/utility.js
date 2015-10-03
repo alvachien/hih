@@ -1086,75 +1086,67 @@
 							return deferred.promise;
 						};
 // Finance part: report - balance sheet
-						rtnObj.loadFinanceReportBSQ = function(bForceReload) {
+						rtnObj.loadFinanceReportBSQ = function() {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceReportBSLoaded && !bForceReload) {
-								deferred.resolve(true);
-							} else {
-								$http.post(
-									'script/hihsrv.php',
-									{ objecttype : 'GETFINANCEREPORTBS' })
-									.then(function(response) {
-										$rootScope.arFinanceReportBS = [];
-										if ($.isArray(response.data) && response.data.length > 0) {
-											$.each(response.data, function(idx, obj) {
-												var bs = new hih.FinanceReportBalanceSheet();
-												bs.setContent(obj);
-												bs.buildRelationship($rootScope.arFinanceAccount,
-													$rootScope.arCurrency);
-												$rootScope.arFinanceReportBS.push(bs);
-											});
-										}
-										$rootScope.isFinanceReportBSLoaded = true;
-										deferred.resolve(true);
-									}, function(response) {
-										deferred.reject(response.data.Message);
-									});
-							}
+							$rootScope.arFinanceReportBS = [];
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEREPORTBS' })
+								.then(function(response) {
+									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.FinanceReportBalanceSheet();
+											bs.setContent(obj);
+											bs.buildRelationship($rootScope.arFinanceAccount);
+											$rootScope.arFinanceReportBS.push(bs);
+										});
+									}
+									$rootScope.isFinanceReportBSLoaded = true;
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
 							return deferred.promise;
 						};
 // Finance part: report - order
-						rtnObj.loadFinanceReportOrderQ = function(bForceReload) {
+						rtnObj.loadFinanceReportOrderQ = function() {
 							var deferred = $q.defer();
-							if ($rootScope.isFinanceReportOrderLoaded && !bForceReload) {
-								deferred.resolve(true);
-							} else {
-								$http.post(
-									'script/hihsrv.php',
-									{ objecttype : 'GETFINANCEREPORTORDER' })
-									.then(function(response) {
-										$rootScope.arFinanceReportOrder = [];
-										if ($.isArray(response.data) && response.data.length > 0) {
-											$.each(response.data, function(idx, obj) {
-												var bs = new hih.FinanceReportOrder();
-												bs.setContent(obj);
-												bs.buildRelationship($rootScope.arFinanceOrder,
-													$rootScope.arCurrency);
-												$rootScope.arFinanceReportOrder.push(bs);
-											});
-										}
-										$rootScope.isFinanceReportOrderLoaded = true;
-										deferred.resolve(true);
-									}, function(response) {
-										deferred.reject(response.data.Message);
-									});
-							}
+							$rootScope.arFinanceReportOrder = [];
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEREPORTORDER' })
+								.then(function(response) {
+									$rootScope.arFinanceReportOrder = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.FinanceReportOrder();
+											bs.setContent(obj);
+											bs.buildRelationship($rootScope.arFinanceOrder);
+											$rootScope.arFinanceReportOrder.push(bs);
+										});
+									}
+									$rootScope.isFinanceReportOrderLoaded = true;
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
 							return deferred.promise;
 						};
 // Finance part: report - cc
 						rtnObj.loadFinanceReportControlCenterQ = function(startdt, enddt) {
 							var deferred = $q.defer();
+							$rootScope.arFinanceReportCC = [];
+							
 							$http.post(
 								'script/hihsrv.php',
 								{ objecttype : 'GETFINANCEREPORTCC', startdate: startdt, enddate: enddt })
-								.then(function(response) {
-									$rootScope.arFinanceReportCC = [];
+								.then(function(response) {									
 									if ($.isArray(response.data) && response.data.length > 0) {
 										$.each(response.data, function(idx, obj) {
 											var bs = new hih.FinanceReportControlCenter();
 											bs.setContent(obj);
-											bs.buildRelationship($rootScope.arFinanceControlCenter,
-												$rootScope.arCurrency);
+											bs.buildRelationship($rootScope.arFinanceControlCenter);
 											$rootScope.arFinanceReportCC.push(bs);
 										});
 									}
