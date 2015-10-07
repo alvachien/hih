@@ -1265,6 +1265,153 @@ END$$
 
 DELIMITER ;
 
+/* ======================================================
+    Delta parts on 2015.10.7
+   ====================================================== */
 
+-- Clean table content
+UPDATE t_fin_document_item SET orderid = NULL WHERE orderid = 0;
+UPDATE t_fin_document_item SET controlcenterid = null WHERE controlcenterid = 0;
+
+-- View v_fin_document_item2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item2` AS
+    select 
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+		`t_fin_document_item`.`USECURR2` AS `usecurr2`,
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') then (`t_fin_document`.`TRANCURR`)
+        else (`t_fin_document`.`TRANCURR2`)
+        end) AS `trancurr`,
+        `t_fin_document_item`.`TRANAMOUNT` as `tranamount_org`,
+        `t_fin_tran_type`.`EXPENSE` as `trantype_EXPENSE`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount`,
+        (case when (`t_fin_document_item`.`USECURR2` is null or `t_fin_document_item`.`USECURR2` = '') 
+			then (
+                case when (`t_fin_document`.`EXGRATE` IS NOT NULL) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`
+                else `t_fin_document_item`.`TRANAMOUNT`
+                end)
+        else ( case when (`t_fin_document`.`EXGRATE2` IS NOT NULL) then `t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`
+                else `t_fin_document_item`.`TRANAMOUNT`
+                end)
+        end) AS `tranamount_lc`,
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`
+    from
+        `t_fin_document_item`
+		join `t_fin_tran_type` on `t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`
+        left outer join `t_fin_document` on `t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`;
+
+-- View v_fin_document_item3, similar to v_fin_document_item1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item3` AS
+    select 
+        `docid`,
+        `itemid`,
+        `accountid`,
+        `trantype`,
+		`usecurr2`,
+        `trancurr`,
+        `tranamount_org`,
+        --`trantype_EXPENSE`,
+        (case
+            when (`trantype_EXPENSE` = 1) then (`tranamount` * -(1))
+            when (`trantype_EXPENSE` = 0) then `tranamount`
+        end) AS `tranamount`,
+        (case
+            when (`trantype_EXPENSE` = 1) then (`tranamount_lc` * -(1))
+            when (`trantype_EXPENSE` = 0) then `tranamount_lc`
+        end) AS `tranamount_lc`,
+        `CONTROLCENTERID`,
+        `ORDERID`,
+        `desp`
+    from
+        `v_fin_document_item2`;
+
+-- View: v_fin_report_bs2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs2` AS
+    select 
+        `accountid` AS `accountid`,
+        -- `tranamount_lc` AS `tranamount_lc`,
+        `trantype_EXPENSE`,
+		round(sum(`tranamount_lc`), 2) AS `balance_lc`,
+        -- `CONTROLCENTERID` AS `CONTROLCENTERID`,
+        -- `ORDERID` AS `ORDERID`,
+        -- `desp` AS `desp`,
+        `accounttab`.`CTGYID` AS `categoryid`,
+        `ctgytab`.`ASSETFLAG` AS `categoryassetflag`
+    from
+        `v_fin_document_item2`
+        join `t_fin_account` `accounttab` ON ((`v_fin_document_item2`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+	group by `accountid`, `trantype_EXPENSE`;
+
+-- View: v_fin_report_bs4_1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs4_1` AS
+    select 
+        `t_fin_account`.`ID` AS `accountid`,
+        `t_fin_account`.`CTGYID` AS `categoryid`,
+        (case
+            when (`v_fin_report_bs2`.`balance_lc` is not null) then `v_fin_report_bs2`.`balance_lc`
+            else 0.0
+        end) AS `balance_lc`
+    from
+        (`t_fin_account`
+        left join `v_fin_report_bs2` ON (((`t_fin_account`.`ID` = `v_fin_report_bs2`.`accountid`)
+            and (`v_fin_report_bs2`.`trantype_EXPENSE` = 0))));
+
+
+-- View: v_fin_report_bs4_2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs4_2` AS
+    select 
+        `t_fin_account`.`ID` AS `accountid`,
+        `t_fin_account`.`CTGYID` AS `categoryid`,
+        (case
+            when (`v_fin_report_bs2`.`balance_lc` is not null) then `v_fin_report_bs2`.`balance_lc`
+            else 0.0
+        end) AS `balance_lc`
+    from
+        (`t_fin_account`
+        left join `v_fin_report_bs2` ON (((`t_fin_account`.`ID` = `v_fin_report_bs2`.`accountid`)
+            and (`v_fin_report_bs2`.`trantype_EXPENSE` = 1))));
+ 
+-- View: v_fin_report_bs4 
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_bs4` AS
+    select 
+        `a`.`accountid` AS `accountid`,
+        `a`.`balance_lc` AS `debit_balance`,
+        `b`.`balance_lc` AS `credit_balance`,
+        (`a`.`balance_lc` - `b`.`balance_lc`) AS `balance`,
+        `a`.`categoryid` AS `categoryid`
+    from
+        (`v_fin_report_bs4_1` `a`
+        join `v_fin_report_bs4_2` `b` ON ((`a`.`accountid` = `b`.`accountid`)));
+                   
+        
 /* The End */ 
 

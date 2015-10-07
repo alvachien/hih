@@ -3098,7 +3098,6 @@ function finance_report_balancesheet() {
 	$sError = "";
 	$accountid = 0;
 	$categoryid = 0;
-	$categoryassetflag = 0;
 	$debitbalance = 0;
 	$creditbalance = 0;
 	$balance = 0;
@@ -3107,7 +3106,6 @@ function finance_report_balancesheet() {
 	$rstAr = array ();
 	
 	// Create account: return code, message and last insert id
-	/* Prepare an insert statement */
 	$query = "SELECT * FROM " . HIHConstants::DV_FinReportBS . ";";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
@@ -3115,14 +3113,13 @@ function finance_report_balancesheet() {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $accountid, $categoryid, $categoryassetflag, $debitbalance, $creditbalance, $balance );
+			$stmt->bind_result ( $accountid, $debitbalance, $creditbalance, $balance, $categoryid );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
 				$rstAr [] = array (
 					"accountid" => $accountid,
 					"categoryid" => $categoryid,
-					"categoryassetflag" => $categoryassetflag,
 					"debitbalance" => $debitbalance,
 					"creditbalance" => $creditbalance,
 					"balance" => $balance
@@ -3141,8 +3138,8 @@ function finance_report_balancesheet() {
 	}
 	
 	return array (
-			$sMsg,
-			$rstAr 
+		$sMsg,
+		$rstAr 
 	);
 }
 // 1.17 Finance Report: Internal Order
