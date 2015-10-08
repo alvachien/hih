@@ -2567,7 +2567,7 @@
 		$scope.gridOptions.showColumnFooter = true;
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'acntname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width:150 },
+	    	{ name:'acntname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width:250 },
 	    	{ name:'dbtbalance', field: 'DebitBalance', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'cdtbalance', field: 'CreditBalance', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
@@ -2619,9 +2619,9 @@
 		//$scope.gridOptions.showColumnFooter = true;
 		
 		$scope.gridOptions.columnDefs = [
-	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:150 },
-	    	{ name:'ttepx', field: 'ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width:50 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
+	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
+	    	{ name:'ttepx', field: 'ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width:120 },
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:280  }
 		];
 
 		$scope.gridOptions.rowIdentity = function(row) {
@@ -2826,7 +2826,6 @@
 			if ($.isArray($rootScope.arFinanceReportCC) && $rootScope.arFinanceReportCC.length > 0) {
 				$scope.dataReport = angular.copy($rootScope.arFinanceReportCC);
 			}
-			$scope.$apply();
 			
 			// For chart
 			$scope.labelsCC = [];
@@ -2867,15 +2866,19 @@
 	    	{ name:'ordername', field: 'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width:150 },
 	    	{ name:'ordvalfrm', field: 'OrderObject.ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width:100 },
 	    	{ name:'ordvalto', field: 'OrderObject.ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width:100 },
+			{ name:'debitamt', field: 'DebitAmount', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'creditamt', field: 'CreditAmount', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
 		];
 
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.AccountID;
+		 	return row.OrderID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.AccountID;
+		 	return row.OrderID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;

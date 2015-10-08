@@ -1173,6 +1173,8 @@
 	// 12. Report on Order
 	hih.FinanceReportOrder = function FinanceReportOrder() {
 		this.OrderID = -1;
+		this.DebitAmount = 0.0;
+		this.CreditAmount = 0.0;
 		this.Balance = 0.0;
 		
 		this.OrderObject = {};
@@ -1180,6 +1182,8 @@
 	hih.extend(hih.FinanceReportOrder, hih.Model);
 	hih.FinanceReportOrder.prototype.setContent = function(obj) {
 		this.OrderID = parseInt(obj.ordid);
+		this.DebitAmount = parseFloat(obj.debitamt).toFixed(2);
+		this.CreditAmount = parseFloat(obj.creditamt).toFixed(2);
 		this.Balance = parseFloat(obj.balance).toFixed(2);
 	};
 	hih.FinanceReportOrder.prototype.buildRelationship = function(arOrder) {

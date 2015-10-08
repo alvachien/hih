@@ -1521,7 +1521,7 @@ select t_fin_controlcenter.id as ccid,
 	t_fin_controlcenter.parid as ccparid,
 	(case when cc_data.debit_tranamount is not null then cc_data.debit_tranamount else 0.0 end) as debit_tranamount,
 	(case when cc_data.credit_tranamount is not null then cc_data.credit_tranamount else 0.0 end) as credit_tranamount,
-	round(cc_data.debit_tranamount - cc_data.credit_tranamount, 2) as balance_tranamount
+	(case when cc_data.debit_tranamount is not null then cc_data.debit_tranamount else 0.0 end) - (case when cc_data.credit_tranamount is not null then cc_data.credit_tranamount else 0.0 end) as balance_tranamount
 from t_fin_controlcenter
 left outer join (
 	select tab_a.ccid as ccid,
@@ -1568,6 +1568,59 @@ END$$
 
 DELIMITER ;
 
+-- View: v_fin_report_io2_1
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_io2_1` AS
+    select 
+        tab_a.`id`,
+        tab_a.`name`,
+        tab_a.`valid_from`,
+        tab_a.`valid_to`,
+        round(sum(tab_b.`tranamount`), 2) as tranamount
+    from `t_fin_intorder` tab_a
+    left outer join `v_fin_document_item2` tab_b
+        on tab_a.`id` = tab_b.`orderid`
+        and tab_b.`trantype_EXPENSE` = 0
+    group by tab_a.`id`;
 
+-- View: v_fin_report_io2_2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_io2_2` AS
+    select 
+        tab_a.`id`,
+        tab_a.`name`,
+        tab_a.`valid_from`,
+        tab_a.`valid_to`,
+        round(sum(tab_b.`tranamount`), 2) as tranamount
+    from `t_fin_intorder` tab_a
+    left outer join `v_fin_document_item2` tab_b
+        on tab_a.`id` = tab_b.`orderid`
+        and tab_b.`trantype_EXPENSE` = 1
+    group by tab_a.`id`;
+ 
+ -- View: v_fin_report_io2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_report_io2` AS
+    select 
+        tab_a.`id`,
+        tab_a.`name`,
+        tab_a.`valid_from`,
+        tab_a.`valid_to`,
+        (case when tab_a.`tranamount` is not null then tab_a.`tranamount` else 0.0 end) as debit_tranamount,
+        (case when tab_b.`tranamount` is not null then tab_b.`tranamount` else 0.0 end) as credit_tranamount,
+        (case when tab_a.`tranamount` is not null then tab_a.`tranamount` else 0.0 end) - (case when tab_b.`tranamount` is not null then tab_b.`tranamount` else 0.0 end) as tranamount
+    from `v_fin_report_io2_1` tab_a
+    join `v_fin_report_io2_2` tab_b
+        on tab_a.`id` = tab_b.`id`;
+          
 /* The End */ 
 

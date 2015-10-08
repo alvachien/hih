@@ -3070,8 +3070,8 @@ function finance_report_internalorder() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -3085,10 +3085,9 @@ function finance_report_internalorder() {
 	$ordname = "";
 	$valid_from = 0;
 	$valid_to = 0;
-	$ordcomment = "";
+	$debitamt = 0;
+	$creditamt = 0;
 	$balance = 0;
-	$trancurr = 0;
-	$trancurrname = "";
 	
 	$sMsg = "";
 	$rstAr = array ();
@@ -3102,7 +3101,7 @@ function finance_report_internalorder() {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $ordid, $ordname, $valid_from, $valid_to, $ordcomment, $balance );
+			$stmt->bind_result ( $ordid, $ordname, $valid_from, $valid_to, $debitamt, $creditamt, $balance );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
@@ -3111,7 +3110,8 @@ function finance_report_internalorder() {
 					"ordname" => $ordname,
 					"valid_from" => $valid_from,
 					"valid_to" => $valid_to,
-					"ordcomment" => $ordcomment,
+					"debitamt" => $debitamt,
+					"creditamt" => $creditamt,
 					"balance" => $balance 
 				);
 			}
