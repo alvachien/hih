@@ -210,6 +210,11 @@
 			templateUrl: 'app/views/finance/financereportbs.html',
 			controller: 'FinanceReportBSController'
 		})
+		.state("home.finance.report.trantype", {
+			url: '/tt',
+			templateUrl: 'app/views/finance/financereporttt.html',
+			controller: 'FinanceReportTTController'
+		})
 		.state("home.finance.report.orderbalance", {
 			url: '/order',
 			templateUrl: 'app/views/finance/financereportorder.html',
@@ -2597,6 +2602,137 @@
 			});
 	}])
 	
+	.controller("FinanceReportTTController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+			
+		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+
+		// The class sevice for Balance sheet
+		$scope.gridOptions = {};
+		$scope.gridOptions.data = 'dataReport';
+		$scope.gridOptions.enableSorting = true;
+		$scope.gridOptions.enableColumnResizing = true;
+		$scope.gridOptions.enableFiltering = true;
+		$scope.gridOptions.enableGridMenu = false;
+		$scope.gridOptions.enableColumnMenus = false;
+		//$scope.gridOptions.showGridFooter = true;
+		//$scope.gridOptions.showColumnFooter = true;
+		
+		$scope.gridOptions.columnDefs = [
+	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:150 },
+	    	{ name:'ttepx', field: 'ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width:50 },
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
+		];
+
+		$scope.gridOptions.rowIdentity = function(row) {
+		 	return row.TranTypeID;
+		};
+		$scope.gridOptions.getRowIdentity = function(row) {
+		 	return row.TranTypeID;
+		};			
+		$scope.gridOptions.onRegisterApi = function(gridApi) {
+  			$scope.gridApi = gridApi;
+		};
+		
+		$scope.dataReport = [];
+		$scope.ValidFromDate = new Date();
+		$scope.ValidToDate = new Date();
+
+        // For date control
+		$scope.isValidfromDateOpened = false;
+		$scope.isValidtoDateOpened = false;
+		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openValidfromDate = function ($event) {			
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+	        $scope.isValidfromDateOpened = true;				
+		};
+		$scope.openValidtoDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+	        $scope.isValidtoDateOpened = true;				
+		};
+		
+		var promise1 = utils.loadFinanceTransactionTypesQ();
+		var promise2 = utils.loadCurrenciesQ();
+		$q.all(promise1, promise2).
+			then(function(response) {
+				utils.loadFinanceReportTranTypeQ('19900101', '99991231')
+					.then(function(response) {
+						$scope.displayTTReport();
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+		
+		$scope.submit = function() {
+			var vfrmdate = hih.ModelUtility.DatabaseDateFormatter($scope.ValidFromDate);
+			var vtodate = hih.ModelUtility.DatabaseDateFormatter($scope.ValidToDate);
+			
+			utils.loadFinanceReportTranTypeQ(vfrmdate, vtodate)
+				.then(function(response) {
+					$scope.displayTTReport();
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+		};
+		
+		$scope.displayTTReport = function() {
+			$scope.dataReport = [];
+			
+			if ($.isArray($rootScope.arFinanceReportTT) && $rootScope.arFinanceReportTT.length > 0) {
+				$.each($rootScope.arFinanceReportTT, function(idx, obj) {
+					var dataentry = {};
+					if (obj.TranTypeObject) {
+						dataentry.Name = obj.TranTypeObject.FullDisplayName;
+						dataentry.ExpenseFlag = obj.TranTypeObject.ExpenseFlag;
+						if (dataentry.ExpenseFlag) {
+							dataentry.TranAmount = obj.TranAmount * -1;
+						} else {
+							dataentry.TranAmount = obj.TranAmount;
+						}						
+					}
+					$scope.dataReport.push(dataentry);
+				});
+				
+				$scope.dataReport.sort(function(a, b) {
+					if (a.ExpenseFlag !== b.ExpenseFlag) {
+						if (a.ExpenseFlag) return -1;
+						return 1;
+					}
+											
+					return a.Name.localeCompare(b.Name);
+				});
+			}
+			//$scope.dataReport = $rootScope.arFinanceReportTT;
+			
+			
+			// $scope.labelsCC = [];
+			// $scope.dataCC = [];
+			// var arData = [];
+			// if ($.isArray($scope.dataReport) && $scope.dataReport.length > 0) {
+			// 	$.each($scope.dataReport, function(idx, obj) {
+			// 		$scope.labelsCC.push(obj.ControlCenterObject.Name);
+			// 		if (obj.TranAmount && !isNaN(obj.TranAmount)) {
+			// 			arData.push(obj.TranAmount);						
+			// 		} else {
+			// 			arData.push(0.0);
+			// 		}
+			// 	});
+			// 	
+			// 	$scope.dataCC.push(arData);
+			// }
+		};
+	}])
+	
 	.controller("FinanceReportCCController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
 			
@@ -2615,6 +2751,10 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
+			{ name:'dbamt', field: 'TranDebitAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
+			{ name:'ctamt', field: 'TranCreditAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
 		];
@@ -2681,7 +2821,14 @@
 		};
 		
 		$scope.displayCCReport = function() {
-			$scope.dataReport = $rootScope.arFinanceReportCC;
+			
+			$scope.dataReport = [];
+			if ($.isArray($rootScope.arFinanceReportCC) && $rootScope.arFinanceReportCC.length > 0) {
+				$scope.dataReport = angular.copy($rootScope.arFinanceReportCC);
+			}
+			$scope.$apply();
+			
+			// For chart
 			$scope.labelsCC = [];
 			$scope.dataCC = [];
 			var arData = [];

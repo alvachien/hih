@@ -1412,6 +1412,162 @@ VIEW `v_fin_report_bs4` AS
         (`v_fin_report_bs4_1` `a`
         join `v_fin_report_bs4_2` `b` ON ((`a`.`accountid` = `b`.`accountid`)));
                    
-        
+/* ======================================================
+    Delta parts on 2015.10.8
+   ====================================================== */
+   
+-- Drop procedure   
+DROP PROCEDURE `REPORT_FIN_DAILYBALANCE`;
+
+-- View: v_fin_document_item2, add TRANDATE
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item2` AS
+    select 
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+        `t_fin_document_item`.`USECURR2` AS `usecurr2`,
+        (case
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                `t_fin_document`.`TRANCURR`
+            else `t_fin_document`.`TRANCURR2`
+        end) AS `trancurr`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount_org`,
+        `t_fin_tran_type`.`EXPENSE` AS `trantype_EXPENSE`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount`,
+        (case
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                (case
+                    when (`t_fin_document`.`EXGRATE` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`)
+                    else `t_fin_document_item`.`TRANAMOUNT`
+                end)
+            else (case
+                when (`t_fin_document`.`EXGRATE2` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`)
+                else `t_fin_document_item`.`TRANAMOUNT`
+            end)
+        end) AS `tranamount_lc`,
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`,
+        `t_fin_document`.`TRANDATE` AS `TRANDATE`
+    from
+        ((`t_fin_document_item`
+        join `t_fin_tran_type` ON ((`t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`)))
+        left join `t_fin_document` ON ((`t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`)));
+
+-- Stored Procedure: REPORT_FIN_CC
+DROP procedure IF EXISTS `REPORT_FIN_CC`;
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `REPORT_FIN_CC`(
+	IN p_fromdate date,
+	IN p_todate date
+	)
+BEGIN
+
+DROP temporary TABLE if exists tmp_fin_report_cc ;
+DROP temporary TABLE if exists tmp_fin_report_cc1;
+DROP temporary TABLE if exists tmp_fin_report_cc2;
+
+create temporary table tmp_fin_report_cc 
+select
+  tab_c.controlcenterid, 
+  tab_a.trantype_expense,
+  round(tab_a.tranamount_lc * tab_c.precent / 100, 4) as tranamount
+  from v_fin_document_item2 tab_a
+	left outer join t_fin_intorder_settrule tab_c
+		on tab_a.orderid = tab_c.intordid
+	where tab_a.orderid is not null and tab_a.orderid != 0 
+	and tab_a.trandate between p_fromdate and p_todate
+
+union all
+
+select
+  controlcenterid as controlcenterid, 
+  trantype_expense,
+  round(tranamount_lc, 4) as tranamount
+  from v_fin_document_item2 tab_a
+	where controlcenterid is not null and controlcenterid != 0
+	and trandate between p_fromdate and p_todate;
+
+create temporary table tmp_fin_report_cc1
+select 
+    controlcenterid as `ccid`,
+    round(sum(`tranamount`),2) AS `tranamount`
+	from tmp_fin_report_cc 
+	where trantype_expense = 0
+	group by controlcenterid;
+
+create temporary table tmp_fin_report_cc2
+select 
+    controlcenterid as `ccid`,
+    round(sum(`tranamount`),2) AS `tranamount`
+	from tmp_fin_report_cc 
+	where trantype_expense = 1
+	group by controlcenterid;
+
+select t_fin_controlcenter.id as ccid,
+	t_fin_controlcenter.name as ccname,
+	t_fin_controlcenter.parid as ccparid,
+	(case when cc_data.debit_tranamount is not null then cc_data.debit_tranamount else 0.0 end) as debit_tranamount,
+	(case when cc_data.credit_tranamount is not null then cc_data.credit_tranamount else 0.0 end) as credit_tranamount,
+	round(cc_data.debit_tranamount - cc_data.credit_tranamount, 2) as balance_tranamount
+from t_fin_controlcenter
+left outer join (
+	select tab_a.ccid as ccid,
+		tab_a.tranamount as debit_tranamount,
+		tab_b.tranamount as credit_tranamount
+	from tmp_fin_report_cc1 tab_a
+	join tmp_fin_report_cc2 tab_b
+	on tab_a.ccid = tab_b.ccid ) cc_data
+on t_fin_controlcenter.id = cc_data.ccid;
+
+DROP temporary TABLE if exists tmp_fin_report_cc1 ;
+DROP temporary TABLE if exists tmp_fin_report_cc2 ;
+DROP temporary TABLE if exists tmp_fin_report_cc ;
+
+END$$
+
+DELIMITER ;
+
+-- View: REPORT_FIN_TT
+DROP procedure IF EXISTS `REPORT_FIN_TT`;
+
+DELIMITER $$
+CREATE PROCEDURE `REPORT_FIN_TT` (IN p_fromdate date,
+	IN p_todate date)
+BEGIN
+
+select 
+	t_fin_tran_type.id,
+	t_fin_tran_type.name,
+	t_fin_tran_type.expense,
+	t_fin_tran_type.parid,
+	t_fin_tran_type.comment,
+	(case when tt_data.tranamount is not null then tt_data.tranamount else 0.0 end) as tranamount
+	from t_fin_tran_type
+	left outer join (select
+	trantype, round(sum(`tranamount_lc`), 2) AS `tranamount` 
+	from 
+	v_fin_document_item2
+	where trandate between p_fromdate AND p_todate
+	group by trantype ) tt_data
+	on t_fin_tran_type.id = tt_data.trantype;
+
+END$$
+
+DELIMITER ;
+
+
 /* The End */ 
 

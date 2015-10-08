@@ -1,10 +1,10 @@
-<div id="viewFinanceReportCC">
+<div id="viewFinanceReportTT">
 	<div class="page-header">
 		<h2>
-			<span translate="Finance.ControlCenterReport">CC Report</span><small translate="Common.ListView">List View</small>
+			Transaction Type Report <small translate="Common.ListView">List View</small>
 		</h2>
 	</div>
-
+	
 	<form class="form-horizontal" role="form" name="frmObj" style="margin: 30px, 10px;">
 		<div class="form-group">
 			<label class="control-label col-sm-2" translate="Common.ValidFrom">Valid from</label>
@@ -44,16 +44,6 @@
 	<div>Currency: <span class="label label-default">{{ReportCurrency}}</span></div>
 	<br>
 	
-	<div id="gridFinReportCC" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
+	<div id="gridFinReportTT" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
 		 style="width: 100%; height: 500px;"></div>
-		 
-	<!-- Chart -->
-	<br>
-	<br>
-	
-    <div>
-		<canvas id="barCC" class="chart chart-bar"
- 				chart-data="dataCC" chart-labels="labelsCC">
-		</canvas> 
-	</div>
 </div>

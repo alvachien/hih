@@ -1142,6 +1142,8 @@
 	// 11. Report on CC
 	hih.FinanceReportControlCenter = function FinanceReportControlCenter() {
 		this.ControlCenterID = -1;
+		this.TranDebitAmount = 0.0;
+		this.TranCreditAmount = 0.0;
 		this.TranAmount = 0.0;
 		
 		// Runtime information
@@ -1150,7 +1152,12 @@
 	hih.extend(hih.FinanceReportControlCenter, hih.Model);
 	hih.FinanceReportControlCenter.prototype.setContent = function(obj) {
 		this.ControlCenterID = parseInt(obj.ccid);
+		this.TranDebitAmount = parseFloat(obj.debitamt);
+		this.TranCreditAmount = parseFloat(obj.creditamt);
 		this.TranAmount = parseFloat(obj.tranamt);
+		if (isNaN(this.TranAmount)) {
+			this.TranAmount = 0.0;
+		}
 	};
 	hih.FinanceReportControlCenter.prototype.buildRelationship = function(arCC) {
 		var that = this;
@@ -1186,6 +1193,30 @@
 			});
 		}
 	};
-	// 13. 
+	// 13. Report on tran type.
+	hih.FinanceReportTranType = function FinanceReportTranType() {
+		this.TranTypeID = -1;
+		this.TranAmount = 0.0;
+		
+		// Runtime information
+		this.TranTypeObject = {};
+	};
+	hih.extend(hih.FinanceReportTranType, hih.Model);
+	hih.FinanceReportTranType.prototype.setContent = function(obj) {
+		this.TranTypeID = parseInt(obj.id);
+		this.TranAmount = parseFloat(obj.tranamt);
+	};
+	hih.FinanceReportTranType.prototype.buildRelationship = function(arTT) {
+		var that = this;
+		if (arTT && $.isArray(arTT) && arTT.length > 0) {
+			$.each(arTT, function(idx, obj){
+				if (obj.ID === that.TranTypeID) {
+					that.TranTypeObject = obj;
+					return false;
+				}
+			});
+		}
+	};	
+	// 14. What's the Next?
 }());
 

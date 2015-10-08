@@ -2997,86 +2997,7 @@ function finance_controlcenter_delete($ccid) {
 }
 // 1.15 Finance Report: Daily Balance Sheet
 function finance_report_dailybalance($fromdate, $todate) {
-	if (! isset ( $fromdate )) {
-		// $fromdate = new DateTime();
-		// $fromdate->setDate(1990, 1, 1);
-		$fromdate = "19900101";
-	}
-	if (! isset ( $todate )) {
-		// $todate = new DateTime();
-		// $todate->setDate(9999, 12, 31);
-		$todate = "99991231";
-	}
-	
-	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
-	
-	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
-		);
-	}
-	
-	// Set language
-	$mysqli->query("SET NAMES 'UTF8'");
-	$mysqli->query("SET CHARACTER SET UTF8");
-	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
-		
-	$sError = "";
-	$docid = 0;
-	$docitemid = 0;
-	$trantypeid = 0;
-	$tranamt = 0;
-	$trantypename = "";
-	$trantypeexpense = 0;
-	$totalamount = 0;
-	$precent = 0;
-	$sMsg = "";
-	$rstAr = array ();
-	
-	// Create account: return code, message and last insert id
-	/* Prepare an insert statement */
-	$query = "CALL " . MySqlFinDailyBalanceReportProc . " (?,?,?);";
-	
-	if ($stmt = $mysqli->prepare ( $query )) {
-		$cur = 'CNY';
-		$stmt->bind_param ( "sss", $fromdate, $todate, $cur );
-		
-		/* Execute the statement */
-		if ($stmt->execute ()) {
-			/* bind variables to prepared statement */
-			$stmt->bind_result ( $docid, $docitemid, $trantypeid, $tranamt, $trantypename, $trantypeexpense, $totalamount, $precent );
-			
-			/* fetch values */
-			while ( $stmt->fetch () ) {
-				$rstAr [] = array (
-						"docid" => $docid,
-						"docitemid" => $docitemid,
-						"trantypeid" => $trantypeid,
-						"trantamount" => $tranamt,
-						"trantypename" => $trantypename,
-						"trantypeexpense" => $trantypeexpense,
-						"totalamount" => $totalamount,
-						"precent" => $precent 
-				);
-			}
-		} else {
-			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
-		}
-		
-		/* close statement */
-		$stmt->close ();
-	} else {
-		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
-	}
-	
-	return array (
-			$sMsg,
-			$rstAr 
-	);
+	// Not necessary
 }
 // 1.16 Finance Report: Balance Sheet
 function finance_report_balancesheet() {
@@ -3186,12 +3107,12 @@ function finance_report_internalorder() {
 			/* fetch values */
 			while ( $stmt->fetch () ) {
 				$rstAr [] = array (
-						"ordid" => $ordid,
-						"ordname" => $ordname,
-						"valid_from" => $valid_from,
-						"valid_to" => $valid_to,
-						"ordcomment" => $ordcomment,
-						"balance" => $balance 
+					"ordid" => $ordid,
+					"ordname" => $ordname,
+					"valid_from" => $valid_from,
+					"valid_to" => $valid_to,
+					"ordcomment" => $ordcomment,
+					"balance" => $balance 
 				);
 			}
 		} else {
@@ -3232,9 +3153,9 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 	$ccid = 0;
 	$ccname = "";
 	$ccparid = 0;
+	$tranamt_d = 0;
+	$tranamt_c = 0;
 	$tranamt = 0;
-	$trancurr = "";
-	$trancurrname = "";
 	
 	$sMsg = "";
 	$rstAr = array ();
@@ -3249,7 +3170,7 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $ccid, $ccname, $ccparid, $tranamt );
+			$stmt->bind_result ( $ccid, $ccname, $ccparid, $tranamt_d, $tranamt_c, $tranamt );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
@@ -3257,6 +3178,69 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 					"ccid" => $ccid,
 					"ccname" => $ccname,
 					"ccparid" => $ccparid,
+					"debitamt" => $tranamt_d,
+					"creditamt" => $tranamt_c,
+					"tranamt" => $tranamt
+				);
+			}
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$nCode = 1;
+		$sMsg = "Failed to parpare statement: " . $query;
+	}
+	
+	return array ( $sMsg, $rstAr );
+}
+// 1.19 Finance report: transaction type
+function finance_report_trantype($fromdate = '19000101', $todate = '99991231') {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	$sError = "";
+	$ttid = 0;
+	$ttname = "";
+	$ttexpense = 0;
+	$ttparid = 0;
+	$ttcomment = "";
+	$tranamt = 0;
+	
+	$sMsg = "";
+	$rstAr = array ();
+	
+	// Create account: return code, message and last insert id
+	/* Prepare an insert statement */
+	$query = "CALL " . HIHConstants::DP_FinReportTT . " (?, ?);";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "ss", $fromdate, $todate );
+		
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			/* bind variables to prepared statement */
+			$stmt->bind_result ( $ttid, $ttname, $ttexpense, $ttparid, $ttcomment, $tranamt );
+			
+			/* fetch values */
+			while ( $stmt->fetch () ) {
+				$rstAr [] = array (
+					"id" => $ttid,
 					"tranamt" => $tranamt 
 				);
 			}

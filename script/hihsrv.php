@@ -425,6 +425,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function_2Param( 'finance_report_controlcenter', $startdate, $enddate );
 		}
 		break;
+		
+		case "GETFINANCEREPORTTT": {
+			$startdate = escape( $realParamArr['startdate'] );
+			$enddate = escape( $realParamArr['enddate'] );
+			HIHSrv_Function_2Param( 'finance_report_trantype', $startdate, $enddate );			
+		}
+		break;
 						
 		// ===========================================================================================
 		// Others

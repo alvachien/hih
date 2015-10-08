@@ -1156,6 +1156,29 @@
 								});
 							return deferred.promise;
 						};
+// Finance part: report - tt
+						rtnObj.loadFinanceReportTranTypeQ = function(startdt, enddt) {
+							var deferred = $q.defer();
+							$rootScope.arFinanceReportTT = [];
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEREPORTTT', startdate: startdt, enddate: enddt })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.FinanceReportTranType();
+											bs.setContent(obj);
+											bs.buildRelationship($rootScope.arFinanceTransactionType);
+											$rootScope.arFinanceReportTT.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
 
 ////////////////////////////////////////////////////////////////////
 // Others

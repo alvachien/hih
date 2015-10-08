@@ -54,6 +54,7 @@ class HIHConstants {
 	// Procedures
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 	const DP_FinReportCC = 'REPORT_FIN_CC';
+	const DP_FinReportTT = 'REPORT_FIN_TT';
 }
 
 class HIHUser {
