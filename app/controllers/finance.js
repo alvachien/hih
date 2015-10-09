@@ -2769,6 +2769,10 @@
   			$scope.gridApi = gridApi;
 		};
 		
+		// Chart option
+		$scope.optionsCC = {
+			scaleBeginAtZero : true
+		};
 		$scope.dataReport = [];
 		$scope.ValidFromDate = new Date();
 		$scope.ValidToDate = new Date();
