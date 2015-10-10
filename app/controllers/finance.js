@@ -2676,7 +2676,8 @@
 		$scope.gridOptionsIncoming.enableColumnMenus = false;
 		$scope.gridOptionsIncoming.columnDefs = [
 	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum  }
 		];
 
 		$scope.gridOptionsIncoming.rowIdentity = function(row) {
@@ -2700,7 +2701,8 @@
 		$scope.gridOptionsOutgoing.enableColumnMenus = false;
 		$scope.gridOptionsOutgoing.columnDefs = [
 	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum  }
 		];
 
 		$scope.gridOptionsOutgoing.rowIdentity = function(row) {
@@ -2835,9 +2837,9 @@
 		
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
-			{ name:'dbamt', field: 'TranDebitAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+			{ name:'dbamt', field: 'TranDebitAmount', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'ctamt', field: 'TranCreditAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
+			{ name:'ctamt', field: 'TranCreditAmount', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
 			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
 				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
