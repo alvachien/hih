@@ -1621,6 +1621,27 @@ VIEW `v_fin_report_io2` AS
     from `v_fin_report_io2_1` tab_a
     join `v_fin_report_io2_2` tab_b
         on tab_a.`id` = tab_b.`id`;
-          
+
+/* ======================================================
+    Delta parts on 2015.10.11+
+   ====================================================== */
+
+-- Account category INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (7,'重大资产',1,NULL);
+-- Document type
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (9,'资产购入', '重大资产购入类');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (10,'资产售出', '重大资产售出类');
+
+-- Table Creation: Asset value change
+CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `TRANDATE` date NOT NULL,
+  `NEWVALUE` double NOT NULL,
+  `REFDOCID` int(11) NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Asset Change';
+
+
 /* The End */ 
 

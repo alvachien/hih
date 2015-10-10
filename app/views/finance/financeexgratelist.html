@@ -1,0 +1,20 @@
+<div id="viewFinExgRate">
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th translate="Common.Date">Date</th>
+				<th translate="Finance.Currency">Currency</th>
+				<th >Rate</th>
+				<th >Ref. Doc ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in arFinanceExchangeRate">
+				<td>{{row.TranDate}}</td>
+				<td>{{row.ForeignCurrency}}</td>
+				<td>{{row.Rate}}</td>
+				<td><a >{{row.RefDocumentID}}</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

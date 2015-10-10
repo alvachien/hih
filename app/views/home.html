@@ -106,8 +106,6 @@
 	                        <ul class="dropdown-menu">
 	                            <li><a ui-sref="home.userdetail"><span translate="Nav.UserDetail">User Detail</span></a></li>
 								<li><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
-	                            <li role="separator" class="divider"></li>
-								<li><a ui-sref="home.userlist"><span translate="Finance.Setting">Finance Setting</span></a></li>
 								<li role="separator" class="divider"></li>
 	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
@@ -130,6 +128,7 @@
 	                    <li class="dropdown" dropdown>
 	                        <a role="button" class="dropdown-toggle" dropdown-toggle><span translate="Nav.FinanceTrace">Finance</span><b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
+								<li><a ui-sref="home.finance.setting"><span translate="Finance.Setting">Setting</span></a></li>
 								<li><a ui-sref="home.finance.currency.list"><span translate="Finance.Currency">Currency</span></a></li>
 	                            <li><a ui-sref="home.finance.accountcategory.list"><span translate="Finance.AccountCategory">Account Category</span></a></li>
 								<li><a ui-sref="home.finance.documenttype.list"><span translate="Finance.DocumentType">Document Type</span></a></li>
@@ -151,6 +150,7 @@
 								<li class="dropdown-header"><span translate="Finance.Documents">Finance Documents</span></li>
 	                            <li><a ui-sref="home.finance.document.list"><span translate="Common.ListView">List View</span></a></li>
 								<li><a ui-sref="home.finance.document.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li><a ui-sref="home.finance.exgratelist">Exchange Rate List</a></li>
 								<li role="separator" class="divider"></li>
 	                            <li><a ui-sref="home.finance.report.balancesheet"><span translate="Finance.BalanceReport">Balance Sheet</span></a></li>
 								<li><a ui-sref="home.finance.report.trantype">Transaction Type Report</a></li>

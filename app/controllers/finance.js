@@ -15,6 +15,16 @@
             abstract: true,
             template: '<div ui-view></div>'
         })
+        .state("home.finance.setting", {
+        	url: "/setting",
+        	templateUrl: 'app/views/finance/financesetting.html',
+        	controller: 'FinanceSettingController'
+        })
+        .state("home.finance.exgratelist", {
+        	url: "/exgratelist",
+        	templateUrl: 'app/views/finance/financeexgratelist.html',
+        	controller: 'FinanceExchangeRateListController'
+        })
         .state("home.finance.account", {
             url: "/account",
             abstract: true,
@@ -242,6 +252,31 @@
   		};
 	})
 	
+	.controller('FinanceSettingController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
+			$scope.displayedCollection = [];
+			
+			if ($rootScope.objFinanceSetting) {
+				// Local currency
+				$scope.displayedCollection.push({
+					"Name": "Local Currency",
+					"Value": $rootScope.objFinanceSetting.LocalCurrency
+				});
+			}
+		}])		
+		
+	.controller('FinanceExchangeRateListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
+		utils.loadFinanceExchangeRateInfoQ()
+			.then(function(response) {
+				if ($.isArray($rootScope.arFinanceExchangeRate) && $rootScope.arFinanceExchangeRate.length > 0) {
+					
+				}
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+		}])
+		
 	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 		// Grid options
@@ -2587,19 +2622,43 @@
 		};
 		
 		$scope.dataReport = [];
+		$scope.dataIncoming = [];
+		$scope.dataOutgoing = [];
+		$scope.labelsIncoming = [];
+		$scope.labelsOutgoing = [];
 		var promise1 = utils.loadFinanceAccountsQ();
 		var promise2 = utils.loadCurrenciesQ();
 		$q.all(promise1, promise2)
 			.then(function(response) {
 				utils.loadFinanceReportBSQ()
 					.then(function(response2) {
-						$scope.dataReport = $rootScope.arFinanceReportBS;
+						$scope.displayBSContent();
 					}, function(reason2) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason2);
 					});
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+			
+		$scope.displayBSContent = function() {
+			$scope.dataReport = [];
+			$scope.dataIncoming = [];
+			$scope.dataOutgoing = [];
+			$scope.labelsIncoming = [];
+			$scope.labelsOutgoing = [];
+			
+			if ($.isArray($rootScope.arFinanceReportBS) && $rootScope.arFinanceReportBS.length > 0) {
+				$.each($rootScope.arFinanceReportBS, function(idx, obj) {
+					$scope.dataReport.push(angular.copy(obj));
+					
+					$scope.dataIncoming.push(obj.DebitBalance);
+					$scope.dataOutgoing.push(obj.CreditBalance);
+					$scope.labelsIncoming.push(obj.AccountObject.Name);
+					$scope.labelsOutgoing.push(obj.AccountObject.Name);
+				});
+			}
+			//$scope.dataReport = $rootScope.arFinanceReportBS;			
+		};
 	}])
 	
 	.controller("FinanceReportTTController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
@@ -2607,34 +2666,60 @@
 			
 		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
 
-		// The class sevice for Balance sheet
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'dataReport';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		//$scope.gridOptions.showGridFooter = true;
-		//$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.columnDefs = [
+		// Incoming grid
+		$scope.gridOptionsIncoming = {};
+		$scope.gridOptionsIncoming.data = 'dataReportIncoming';
+		$scope.gridOptionsIncoming.enableSorting = true;
+		$scope.gridOptionsIncoming.enableColumnResizing = true;
+		$scope.gridOptionsIncoming.enableFiltering = true;
+		$scope.gridOptionsIncoming.enableGridMenu = false;
+		$scope.gridOptionsIncoming.enableColumnMenus = false;
+		$scope.gridOptionsIncoming.columnDefs = [
 	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
-	    	{ name:'ttepx', field: 'ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width:120 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:280  }
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
 		];
 
-		$scope.gridOptions.rowIdentity = function(row) {
+		$scope.gridOptionsIncoming.rowIdentity = function(row) {
 		 	return row.TranTypeID;
 		};
-		$scope.gridOptions.getRowIdentity = function(row) {
+		$scope.gridOptionsIncoming.getRowIdentity = function(row) {
 		 	return row.TranTypeID;
 		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
+		$scope.gridOptionsIncoming.onRegisterApi = function(gridApi) {
+  			$scope.gridApiIncoming = gridApi;
+		};		
+		$scope.dataReportIncoming = [];
 		
-		$scope.dataReport = [];
+		// Outgoing grid
+		$scope.gridOptionsOutgoing = {};
+		$scope.gridOptionsOutgoing.data = 'dataReportOutgoing';
+		$scope.gridOptionsOutgoing.enableSorting = true;
+		$scope.gridOptionsOutgoing.enableColumnResizing = true;
+		$scope.gridOptionsOutgoing.enableFiltering = true;
+		$scope.gridOptionsOutgoing.enableGridMenu = false;
+		$scope.gridOptionsOutgoing.enableColumnMenus = false;
+		$scope.gridOptionsOutgoing.columnDefs = [
+	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
+			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180  }
+		];
+
+		$scope.gridOptionsOutgoing.rowIdentity = function(row) {
+		 	return row.TranTypeID;
+		};
+		$scope.gridOptionsOutgoing.getRowIdentity = function(row) {
+		 	return row.TranTypeID;
+		};			
+		$scope.gridOptionsOutgoing.onRegisterApi = function(gridApi) {
+  			$scope.gridApiOutgoing = gridApi;
+		};		
+		$scope.dataReportOutgoing = [];
+		// Chart incoming
+		$scope.dataChartIncoming = [];
+		$scope.labelsChartIncoming = [];
+		// Chart outgoing
+		$scope.dataChartOutgoing = [];
+		$scope.labelsChartOutgoing = [];
+		// Filter
 		$scope.ValidFromDate = new Date();
 		$scope.ValidToDate = new Date();
 
@@ -2686,50 +2771,49 @@
 		};
 		
 		$scope.displayTTReport = function() {
-			$scope.dataReport = [];
+			$scope.dataReportIncoming = [];
+			$scope.dataReportOutgoing = [];
+			$scope.dataChartOutgoing = [];
+			$scope.labelsChartOutgoing = [];
+			$scope.dataChartOutgoing = [];
+			$scope.labelsChartOutgoing = [];
 			
 			if ($.isArray($rootScope.arFinanceReportTT) && $rootScope.arFinanceReportTT.length > 0) {
 				$.each($rootScope.arFinanceReportTT, function(idx, obj) {
-					var dataentry = {};
-					if (obj.TranTypeObject) {
-						dataentry.Name = obj.TranTypeObject.FullDisplayName;
-						dataentry.ExpenseFlag = obj.TranTypeObject.ExpenseFlag;
-						if (dataentry.ExpenseFlag) {
-							dataentry.TranAmount = obj.TranAmount * -1;
-						} else {
-							dataentry.TranAmount = obj.TranAmount;
+					
+					if (obj.TranAmount > 0.0) {
+						var dataentry = {};
+						if (obj.TranTypeObject) {
+							dataentry.Name = obj.TranTypeObject.FullDisplayName;
+							dataentry.ExpenseFlag = obj.TranTypeObject.ExpenseFlag;
+							if (dataentry.ExpenseFlag) {							
+								dataentry.TranAmount = obj.TranAmount;
+								
+								$scope.dataReportOutgoing.push(dataentry);
+								$scope.dataChartOutgoing.push(dataentry.TranAmount);
+								$scope.labelsChartOutgoing.push(dataentry.Name);
+							} else {
+								dataentry.TranAmount = obj.TranAmount;
+								
+								$scope.dataReportIncoming.push(dataentry);
+								$scope.dataChartIncoming.push(dataentry.TranAmount);
+								$scope.labelsChartIncoming.push(dataentry.Name);
+							}		
 						}						
 					}
-					$scope.dataReport.push(dataentry);
 				});
 				
-				$scope.dataReport.sort(function(a, b) {
-					if (a.ExpenseFlag !== b.ExpenseFlag) {
-						if (a.ExpenseFlag) return -1;
-						return 1;
-					}
-											
-					return a.Name.localeCompare(b.Name);
-				});
+				if ($.isArray($scope.dataReportIncoming) && $scope.dataReportIncoming.length > 0) {
+					$scope.dataReportIncoming.sort(function(a, b) {
+						return a.Name.localeCompare(b.Name);
+					});					
+				}
+				if ($.isArray($scope.dataReportOutgoing) && $scope.dataReportOutgoing.length > 0) {
+					$scope.dataReportOutgoing.sort(function(a, b) {
+						return a.Name.localeCompare(b.Name);
+					});
+				}
 			}
-			//$scope.dataReport = $rootScope.arFinanceReportTT;
-			
-			
-			// $scope.labelsCC = [];
-			// $scope.dataCC = [];
-			// var arData = [];
-			// if ($.isArray($scope.dataReport) && $scope.dataReport.length > 0) {
-			// 	$.each($scope.dataReport, function(idx, obj) {
-			// 		$scope.labelsCC.push(obj.ControlCenterObject.Name);
-			// 		if (obj.TranAmount && !isNaN(obj.TranAmount)) {
-			// 			arData.push(obj.TranAmount);						
-			// 		} else {
-			// 			arData.push(0.0);
-			// 		}
-			// 	});
-			// 	
-			// 	$scope.dataCC.push(arData);
-			// }
 		};
 	}])
 	
