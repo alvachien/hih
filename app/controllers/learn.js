@@ -525,23 +525,12 @@
 			 };
 		}])
 
-		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
 			 $scope.Activity = "";
 			 
 			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.UserIDs = $rootScope.arUserList;			 
-			 $scope.LearnObjects = $rootScope.arLearnObject;
-			 
-			 $scope.UserID = "";
-			 $scope.ObjectID = -1;
-			 $scope.ObjectName = "";
-			 $scope.ObjectContent = "";
-			 $scope.Comment = "";
-			 $scope.CategoryID = -1;
-			 $scope.CategoryName = "";
-			 $scope.LearnDate = new Date();
-			 $scope.SelectedLearnObject = {};
-			 $scope.selectsearchenable = false;
+			 $scope.UserIDs = $rootScope.arUserList;
+			 $scope.CurrentLearnHistory = null;			 
 
 			 $scope.isReadonly = false;
 			 $scope.isDateOpened = false;	
@@ -550,56 +539,52 @@
 				formatYear: 'yyyy',
 				startingDay: 1
 			};
-			 $scope.openDate = function($event) {
+			$scope.openDate = function($event) {
 				$event.preventDefault();
 				$event.stopPropagation();
 				
 				if (!$scope.isReadonly)
 					$scope.isDateOpened = true;
 			};
+			
+			// Source currency control
+			$scope.learnobjectConfig = {
+				create: false,
+				onChange: function(value){
+					$log.info('LearnHistoryController, Learn object control, event onChange, ', value);
+				},
+				valueField: 'ID',
+				labelField: 'Name',
+				maxItems: 1,
+				required: true
+			};
 			 
-			 if (angular.isDefined($stateParams.histid)) {
-				 if ($state.current.name === "home.learn.history.maintain") {
-					 $scope.Activity = "Common.Edit";					 
-				 } else if ($state.current.name === "home.learn.history.display") {
-					 $scope.Activity = "Common.Display";
-					 $scope.isReadonly = true;
-				 }
+			if (angular.isDefined($stateParams.histid)) {
+				if ($state.current.name === "home.learn.history.maintain") {
+					$scope.Activity = "Common.Edit";					 
+				} else if ($state.current.name === "home.learn.history.display") {
+					$scope.Activity = "Common.Display";
+					$scope.isReadonly = true;
+				}
  				 
-				 var arrID = $stateParams.histid.split('_');
-				 if (arrID.length >= 2) {
-					 $.each($rootScope.arLearnHistory, function(idx, obj) {
-						 if (obj.UserID === arrID[1] && parseInt(obj.ObjectID) === parseInt(arrID[0])) {
-							 $scope.UserID = obj.UserID;
-							 $scope.DisplayAs = obj.UserDisplayAs;
+				var arrID = $stateParams.histid.split('_');
+				if (arrID.length >= 2) {
+					$.each($rootScope.arLearnHistory, function(idx, obj) {
+						if (obj.UserID === arrID[1] && parseInt(obj.ObjectID) === parseInt(arrID[0])) {
+							$scope.CurrentLearnHistory = angular.copy(obj);
 							 
-							 $.each($scope.LearnObjects, function(idx2, obj2) {
-								 if (obj.ObjectID === obj2.ID) {
-									 $scope.SelectedLearnObject.selected = obj2;
-									 return false;
-								 }
-							 });
-							 
-							 $scope.ObjectID = obj.ObjectID;
-							 $scope.ObjectName = obj.ObjectName;						 
-							 $scope.CategoryID = obj.CategoryID;
-							 $scope.CategoryName = obj.CategoryName;
-							 $scope.LearnDate = utils.dateparser(obj.LearnDate);
-							 //$scope.LearnDate = utils.datefromdbtoui(obj.learndate);
-							 $scope.ObjectContent = obj.ObjectContent;
-							 $scope.Comment = obj.Comment;
-							 
-							 return false;
+							return false;
 						 }
 					 }); 
 				 }
 			 } else {
+				 $scope.CurrentLearnHistory = hih.LearnHistory.createNew();	
 				 $scope.Activity = "Common.Create";
 			 };
 			 
 			 $scope.submit = function() {
 				 // Now, submit to the server
-				 if ($scope.UserID) {					 
+				 if ($scope.CurrentLearnHistory.UserID) {					 
 				 } else {
 					 $rootScope.$broadcast("ShowMessage", "Error", "Select an user!", "error");
 					 return;					 
