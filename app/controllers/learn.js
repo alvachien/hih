@@ -111,10 +111,8 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
-			function($scope, $rootScope, $state, $http, $interval, $translate, uiGridConstants, uiGridGroupingConstants, utils) {
-			utils.loadLearnCategories();
-			utils.loadLearnObjects();
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, $translate, $log, uiGridConstants, uiGridGroupingConstants, utils) {
 
 			// Grid options
 			$scope.gridOptions = {};
@@ -154,22 +152,29 @@
 			
 			$scope.gridOptions.columnDefs = [
 		    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-		    	{ name:'categoryid', field: 'CategoryID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-				{ name:'categoryname', field: 'CategoryName', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
+				{ name:'categoryname', field: 'CategoryObject.FullDisplayText', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
 				{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
 				{ name:'content', field:'Content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
 		    ];
 		  
-		    if (angular.isArray($rootScope.arLearnObject ) && $rootScope.arLearnObject.length > 0) {
-			    $scope.myData = [];
-				$.each($rootScope.arLearnObject, function(idx, obj) {
-		  			$scope.myData.push(angular.copy(obj));					
-				});			  
-		    };
+			utils.loadLearnCategoriesQ()
+				.then(function(response) {
+					utils.loadLearnObjectsQ().
+						then(function(response2) {
+							$scope.myData = [];
+							$.each($rootScope.arLearnObject, function(idx, obj) {
+								$scope.myData.push(angular.copy(obj));					
+							});			  
+						}, function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						} );
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 		  
 		    $scope.selectedRows = [];
 		    $scope.$on("LearnObjectLoaded", function() {
-                console.log("HIH LearnObject List: Loaded event fired!");
+                $log.info("HIH LearnObject List: Loaded event fired!");
 		        $scope.myData = [];
 				
 				$.each($rootScope.arLearnObject, function(idx, obj) {
@@ -178,7 +183,7 @@
 		    });
 		    
 		    $scope.$on("LearnCategoryLoaded", function() {
-		  	    console.log("HIH LearnObject List: Category Loaded event fired!");
+		  	    $log.info("HIH LearnObject List: Category Loaded event fired!");
 		    });	
 
             // Remove to the real data holder
@@ -245,7 +250,15 @@
 			// Refresh list
 			$scope.refreshList = function() {
 				// Reload the whole list
-				utils.loadLearnObjects(true);
+				utils.loadLearnObjectsQ(true)
+					.then(function(response) {
+						$scope.myData = [];
+						$.each($rootScope.arLearnObject, function(idx, obj) {
+							$scope.myData.push(angular.copy(obj));					
+						});			  
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
 			};
 		}])
 		
@@ -413,16 +426,13 @@
 			 };
 			 
     		 $scope.$on("LearnObjectLoaded", function() {
-				console.log("HIH LearnObject: Object list loaded event fired!");
+				$log.info("HIH LearnObject: Object list loaded event fired!");
 				
 				$state.go("home.learn.object.display", { objid : $scope.gen_id });
 			});	
 		}])
 		
-		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', 'utils', function($scope, $rootScope, $state, $http, utils) {
-			utils.loadLearnHistories();
-			utils.loadLearnObjects();
-			utils.loadUserList();
+		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $q, $log, utils) {
 			
 			// Grid option
 			$scope.gridOptions = {};
@@ -462,29 +472,35 @@
 
 			$scope.gridOptions.columnDefs = [
 		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width:'5%' },
-		    	{ name:'displayas', field: 'UserDisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
+		    	{ name:'displayas', field: 'UserObject.DisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
 				{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
-				{ name:'objectname', field:'ObjectName', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
-				{ name:'categoryid', field:'CategoryID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
-				{ name:'categoryname', field:'CategoryName', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
+				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
+				{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
+				{ name:'categoryname', field:'LearnObject.CategoryObject.Name', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
 				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
 		    ];
-		  
-		    if (angular.isArray($rootScope.arLearnHistory ) && $rootScope.arLearnHistory.length > 0) {
-			    $scope.myData = [];
-				$.each($rootScope.arLearnHistory, function(idx, obj) {
-		  			$scope.myData.push(angular.copy(obj));					
-				});			  
-		    };
+			
+			var q1 = utils.loadUserListQ();
+			var q2 = utils.loadLearnObjectsQ();
+			$q.all([q1, q2])
+				.then(function(response) {
+					utils.loadLearnHistoriesQ()
+						.then(function(response2) {
+							$scope.myData = [];
+							$.each($rootScope.arLearnHistory, function(idx, obj) {
+								$scope.myData.push(angular.copy(obj));					
+							});
+						}, function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						});					
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+			
 		  
 		    $scope.selectedRows = [];		    
 		    $scope.$on("LearnHistoryLoaded", function() {
-		  		console.log("HIH LearnHistory List: Loaded event fired!");
-		    	
-				$scope.myData = [];
-				$.each($rootScope.arLearnHistory, function(idx, obj) {
-			  	    $scope.myData.push(angular.copy(obj));					
-				});	
+		  		$log.info("HIH LearnHistory List: Loaded event fired!");
 		    });
 		    
 			// Remove to the real data holder
@@ -521,7 +537,15 @@
 			 // Refresh list
 			 $scope.refreshList = function() {
 				// Reload the whole list
-				utils.loadLearnHistories(true);
+				utils.loadLearnHistoriesQ(true)
+					.then(function(response2) {
+						$scope.myData = [];
+						$.each($rootScope.arLearnHistory, function(idx, obj) {
+							$scope.myData.push(angular.copy(obj));					
+						});
+					}, function(reason2) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					});					
 			 };
 		}])
 
@@ -864,9 +888,7 @@
 			});	
 		}])
 		
-	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadLearnCategories();
-
+	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', function($scope, $rootScope, $state, $http, $log, $q, utils) {
 		// Grid options
 		$scope.gridOptions = {};
 		$scope.gridOptions.data = 'myData';
@@ -878,10 +900,10 @@
 		$scope.gridOptions.showGridFooter = true;
 		
 		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.id;
+		 	return row.ID;
 		};
 		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.id;
+		 	return row.ID;
 		};			
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
   			$scope.gridApi = gridApi;
@@ -895,19 +917,20 @@
 			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '100' }
 	  	];
 	  
-	  	if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {
-			$scope.myData = [];
-			$.each($rootScope.arLearnCategory, function(idx, obj) {
-	  			$scope.myData.push(angular.copy(obj));					
-			});			  
-	  	};
+		utils.loadLearnCategoriesQ()
+			.then(function(response) {
+				$scope.myData = [];
+				if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {					
+					$.each($rootScope.arLearnCategory, function(idx, obj) {
+						$scope.myData.push(angular.copy(obj));					
+					});			  
+				};				
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
 
 		$scope.$on("LearnCategoryLoaded", function() {
 			$log.info("HIH LearnCategory List: Category Loaded event fired!");
-			$scope.myData = [];
-			$.each($rootScope.arLearnCategory, function(idx, obj) {
-		  		$scope.myData.push(angular.copy(obj));					
-			});		
 		});		
 	}])
 	

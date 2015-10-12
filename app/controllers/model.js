@@ -127,16 +127,30 @@
 		// Attributes
 		this.ID = 0;
 		this.CategoryID = 0;
-		this.CategoryName = "";
+		//this.CategoryName = "";
 		this.Name = "";
 		this.Content = "";
+		
+		// Runtime information
+		this.CategoryObject = {};
 	};
-	hih.LearnObject.prototype.setContent = function(id, ctgyid, ctgyname, nam, cont) {
-		this.ID = parseInt(id);
-		this.CategoryID = parseInt(ctgyid);
-		this.CategoryName = ctgyname;
-		this.Name = nam;
-		this.Content = cont;
+	hih.LearnObject.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.CategoryID = parseInt(obj.categoryid);
+		//this.CategoryName = ctgyname;
+		this.Name = obj.name;
+		this.Content = obj.content;
+	};
+	hih.LearnObject.prototype.buildRelationship = function(arLearnCategory) {
+		var that = this;
+		if ($.isArray(arLearnCategory) && arLearnCategory.length > 0) {
+			$.each(arLearnCategory, function(idx, obj) {
+				if (obj.ID === that.CategoryID) {
+					that.CategoryObject = obj;
+					return false;
+				}
+			});
+		}
 	};
 	hih.LearnObject.prototype.Verify = function() {
 		var errMsgs = [];
@@ -194,28 +208,29 @@
 		// Attributes
 		this.ID = -1;
 		this.ParentID = -1;
-		this.Parent = {};
 		this.Text = "";
 		this.Comment = ""; 
 		
 		// Runtime information
+		this.ParentForJsTree = -1; 
+		this.Parent = {};
 		this.FullDisplayText = "";
 	};
 	hih.extend(hih.LearnCategory, hih.Model);
-	hih.LearnCategory.prototype.setContent = function(id, parent, txt, cmt) {
-		this.ID = parseInt(id);
-		this.ParentForJsTree = parent;
-		if (!parent) {
+	hih.LearnCategory.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.ParentForJsTree = obj.parent;
+		if (!obj.parent) {
 			this.ParentID = -1;
 		} else {
-			if (typeof parent === "string" && parent === "#") {
+			if (typeof obj.parent === "string" && obj.parent === "#") {
 				this.ParentID = -1; // Root node!
 			} else {
-				this.ParentID = parseInt(parent);
+				this.ParentID = parseInt(obj.parent);
 			}			
 		}
-		this.Text = txt;
-		this.Comment = cmt;
+		this.Text = obj.text;
+		this.Comment = obj.comment;
 	};
 	hih.LearnCategory.prototype.buildParentConnection = function(arCategories) {
 		if (this.ParentID === -1) {
@@ -285,19 +300,40 @@
 	/* Method 6: Minimalist approach from Gabor de Mooij */
 	/* Learn History */
 	hih.LearnHistory = {
+		_buildRelationship : function(arUser, arLearnObject) {
+			var that = this;
+			
+			if($.isArray(arUser) && arUser.length > 0) {
+				that.UserObject = {};
+				$.each(arUser, function(idx, obj) {
+					if (obj.UserID === that.UserID) {
+						that.UserObject = obj;
+						return false;
+					}
+				});
+			}
+			if($.isArray(arLearnObject) && arLearnObject.length > 0) {
+				that.LearnObject = {};
+				$.each(arLearnObject, function(idx, obj) {
+					if (obj.ID === that.ObjectID) {
+						that.LearnObject = obj;
+						return false;
+					}
+				});
+			}
+		},
 		_setContent: function(data) {
 			// userid, displayas, objectid, objectname, categoryid, categoryname, learndate, objectcontent, comment
 			this.UserID = data.userid;
-			this.UserDisplayAs = data.displayas;
+			//this.UserDisplayAs = data.displayas;
 			
 			this.ObjectID = parseInt(data.objectid);
-			this.ObjectName = data.objectname;
-			
-			this.CategoryID = parseInt(data.categoryid);
-			this.CategoryName = data.categoryname;
+			//this.ObjectName = data.objectname;		
+			//this.CategoryID = parseInt(data.categoryid);
+			//this.CategoryName = data.categoryname;
 			
 			this.LearnDate = data.learndate;
-			this.ObjectContent = data.objectcontent;
+			//this.ObjectContent = data.objectcontent;
 			this.Comment = data.comment;
 		},
 		createNew: function() {
@@ -306,20 +342,24 @@
 			
 			// Other fields
 			lrnhist.UserID = "";
-			lrnhist.UserDisplayAs = "";
-			lrnhist.UserObject = {};
+			//lrnhist.UserDisplayAs = "";
 			lrnhist.ObjectID = -1;
-			lrnhist.ObjectName = "";
-			lrnhist.LearnObject = {};
-			lrnhist.CategoryID = -1;
-			lrnhist.CategoryName = "";
-			lrnhist.LearnCategory = {};
+			//lrnhist.ObjectName = "";
+			//lrnhist.CategoryID = -1;
+			//lrnhist.CategoryName = "";
+			//lrnhist.LearnCategory = {};
 			lrnhist.LearnDate = new Date();
-			lrnhist.ObjectContent = "";
+			//lrnhist.ObjectContent = "";
 			lrnhist.Comment = "";
 			
+			// Runtime information
+			lrnhist.LearnObject = {};
+			lrnhist.UserObject = {};
+			
+			// OO Concept
 			lrnhist._super = hih.Model.prototype;
 			lrnhist.setContent = hih.LearnHistory._setContent;
+			lrnhist.buildRelationship = hih.LearnHistory._buildRelationship;
 			
 			return lrnhist;
 		}	

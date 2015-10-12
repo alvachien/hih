@@ -170,10 +170,38 @@
 											});
 							}							
 						};
+						rtnObj.loadUserListQ = function (bForceReload) {
+							// Load users  with $q supports
+							var deferred = $q.defer();							
+							if ($rootScope.isUserListLoad && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETUSERLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arUserList = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var objUsr = new hih.User();
+												objUsr.setContent(obj.id, obj.text);
+												$rootScope.arUserList.push(objUsr);
+											});
+										}
+										$rootScope.isUserListLoad = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
 						
 ////////////////////////////////////////////////////////////////////						
 // Learn part
-////////////////////////////////////////////////////////////////////						
+////////////////////////////////////////////////////////////////////
+						// Learn objects
 						rtnObj.loadLearnObjects = function (bForceReload) {
 							if (!$rootScope.isLearnObjectLoad || (angular.isDefined(bForceReload) && bForceReload)) {
 								// Example JSON response
@@ -189,7 +217,7 @@
 												if($.isArray(data) && data.length > 0) {
 													$.each(data, function(idx1, obj1) {
 														var lrnobj = new hih.LearnObject();
-														lrnobj.setContent(obj1.id, obj1.categoryid, obj1.categoryname, obj1.name, obj1.content);
+														lrnobj.setContent(obj1);
 														$rootScope.arLearnObject.push(lrnobj);
 													});													
 												}
@@ -203,6 +231,33 @@
 												$rootScope.$broadcast("ShowMessage", "Error", data.Message);
 											});
 							}
+						};
+						rtnObj.loadLearnObjectsQ = function (bForceReload) {
+							var deferred = $q.defer();							
+							if ($rootScope.isLearnObjectLoad && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLEARNOBJECTLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arLearnObject = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj1) {
+												var lrnobj = new hih.LearnObject();
+												lrnobj.setContent(obj1);
+												lrnobj.buildRelationship($rootScope.arLearnCategory);
+												$rootScope.arLearnObject.push(lrnobj);
+											});
+										}
+										$rootScope.isLearnObjectLoad = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
 						};
 						rtnObj.loadLearnObjectsHierarchy = function (bForceReload) {
 							if (!$rootScope.isLearnObjectHierarchyLoad || (angular.isDefined(bForceReload) && bForceReload)) {
@@ -284,6 +339,7 @@
 											});
 							}
 						};
+						// Learn histories
 						rtnObj.loadLearnHistories = function (bForceReload) {
 							if (!$rootScope.isLearnHistoryLoaded || (angular.isDefined(bForceReload) && bForceReload)) {
 								$http.post('script/hihsrv.php',
@@ -299,6 +355,7 @@
 													$.each(data, function(idx, obj){
 														var lrnhist = hih.LearnHistory.createNew();
 														lrnhist.setContent(obj);
+														lrnhist.buildRelationship($rootScope.arUser, $rootScope.arLearnObject);
 														$rootScope.arLearnHistory.push(lrnhist);
 													});
 												}
@@ -312,6 +369,35 @@
 											});
 							}
 						};
+						rtnObj.loadLearnHistoriesQ = function (bForceReload) {
+							// Load learn histories with $q supports
+							var deferred = $q.defer();							
+							if ($rootScope.isLearnHistoryLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLEARNHISTORYLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arLearnHistory = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var lrnhist = hih.LearnHistory.createNew();
+												lrnhist.setContent(obj);
+												lrnhist.buildRelationship($rootScope.arUser, $rootScope.arLearnObject);
+												$rootScope.arLearnHistory.push(lrnhist);
+											});
+										}
+										$rootScope.isLearnHistoryLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						// Learn awards
 						rtnObj.loadLearnAwards = function (bForceReload) {
 							if (!$rootScope.isLearnAwardLoaded || (angular.isDefined(bForceReload) && bForceReload)) {
 								
@@ -343,6 +429,33 @@
 											});
 							}
 						};
+						rtnObj.loadLearnAwardsQ = function (bForceReload) {
+							var deferred = $q.defer();							
+							if ($rootScope.isLearnAwardLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLEARNAWARDLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arLearnAward = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var lrnawd = new hih.LearnAward();
+												lrnawd.setContent(obj);
+												$rootScope.arLearnAward.push(lrnawd);
+											});
+										}
+										$rootScope.isLearnAwardLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
+						};
+						// Learn categories
 						rtnObj.loadLearnCategories = function () {
 							if (!$rootScope.isLearnCategoryLoaded) {
 								// Example JSON response:
@@ -357,7 +470,7 @@
 										if ($.isArray(data) && data.length > 0){
 											$.each(data, function(idx, obj){
 												var lrnctgy = new hih.LearnCategory();
-												lrnctgy.setContent(obj.id, obj.parent, obj.text, obj.comment);
+												lrnctgy.setContent(obj);
 												$rootScope.arLearnCategory.push(lrnctgy);
 											});
 											
@@ -376,6 +489,38 @@
 										$rootScope.$broadcast("ShowMessage", "Error", data.Message);
 									});
 							}
+						};
+						rtnObj.loadLearnCategoriesQ = function (bForceReload) {
+							var deferred = $q.defer();							
+							if ($rootScope.isLearnCategoryLoaded && !bForceReload) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLEARNCATEGORYLIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arLearnCategory = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var lrnctgy = new hih.LearnCategory();
+												lrnctgy.setContent(obj);
+												$rootScope.arLearnCategory.push(lrnctgy);
+											});
+											
+											// Then, build the runtime information
+											$.each($rootScope.arLearnCategory, function(idx, obj) {
+												obj.buildParentConnection($rootScope.arLearnCategory);
+												obj.buildFullText();
+											});
+										}
+										$rootScope.isLearnCategoryLoaded = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							return deferred.promise;
 						};
 
 ////////////////////////////////////////////////////////////////////
