@@ -112,9 +112,9 @@
 		this.UserID = "";
 		this.DisplayAs = "";
 	};
-	hih.User.prototype.setContent = function(user, dispas) {
-		this.UserID = user;
-		this.DisplayAs = dispas;
+	hih.User.prototype.setContent = function(obj) {
+		this.UserID = obj.id;
+		this.DisplayAs = obj.text;
 	};
 	
 	/* Method 2: changing the prototype */

@@ -257,23 +257,12 @@
 	}])
 
 	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
-		utils.loadUserList();
-		
-		$scope.arList = [];
-		if (angular.isArray($rootScope.arUserList ) && $rootScope.arUserList.length > 0) {		
-			$.each($rootScope.arUserList, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});			  
-		};
-
-	    $scope.$on("UserListLoaded", function() {
-	    	$log.info("HIH User List: Loaded event fired!");
-		    	
-			$scope.arList = [];
-			$.each($rootScope.arUserList, function(idx, obj) {
-				$scope.arList.push(angular.copy(obj));					
-			});			  
-		});		
+		utils.loadUserListQ()
+			.then(function(response) {
+				// Do nothing
+			}, function(reason) {
+				$rootScope.$broadcast('ShowMessage', 'Error', reason);
+			});
 	}])
 	
 	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {

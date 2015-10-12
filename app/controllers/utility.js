@@ -152,7 +152,7 @@
 												if ($.isArray(data) && data.length > 0) {
 													$.each(data, function(idx1, obj1) {
 														var objUsr = new hih.User();
-														objUsr.setContent(obj1.id, obj1.text);
+														objUsr.setContent(obj1);
 														$rootScope.arUserList.push(objUsr);
 													});													
 												}
@@ -185,7 +185,7 @@
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
 												var objUsr = new hih.User();
-												objUsr.setContent(obj.id, obj.text);
+												objUsr.setContent(obj);
 												$rootScope.arUserList.push(objUsr);
 											});
 										}

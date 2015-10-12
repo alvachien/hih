@@ -476,27 +476,32 @@
 				{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
 				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
 				{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
-				{ name:'categoryname', field:'LearnObject.CategoryObject.Name', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
+				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
 				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
 		    ];
 			
 			var q1 = utils.loadUserListQ();
-			var q2 = utils.loadLearnObjectsQ();
+			var q2 = utils.loadLearnCategoriesQ();
 			$q.all([q1, q2])
 				.then(function(response) {
-					utils.loadLearnHistoriesQ()
+					utils.loadLearnObjectsQ()
 						.then(function(response2) {
-							$scope.myData = [];
-							$.each($rootScope.arLearnHistory, function(idx, obj) {
-								$scope.myData.push(angular.copy(obj));					
-							});
+							utils.loadLearnHistoriesQ()
+								.then(function(response3) {
+									$scope.myData = [];
+									$.each($rootScope.arLearnHistory, function(idx, obj) {
+										$scope.myData.push(angular.copy(obj));					
+									});
+								}, function(reason3) {
+									$rootScope.$broadcast("ShowMessage", "Error", reason3);
+								});							
 						}, function(reason2) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason2);
-						});					
+						});
+					
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});
-			
+				});			
 		  
 		    $scope.selectedRows = [];		    
 		    $scope.$on("LearnHistoryLoaded", function() {
@@ -647,7 +652,6 @@
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'uiGridConstants', 'utils', 
 		    function($scope, $rootScope, $state, $http, $translate, uiGridConstants, utils) {
 			utils.loadLearnAwards();
-			utils.loadUserList(); // Ensure the Award page can show user combo.
 			
 			// Grid options
 			$scope.gridOptions = {};
