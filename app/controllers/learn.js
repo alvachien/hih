@@ -175,11 +175,6 @@
 		    $scope.selectedRows = [];
 		    $scope.$on("LearnObjectLoaded", function() {
                 $log.info("HIH LearnObject List: Loaded event fired!");
-		        $scope.myData = [];
-				
-				$.each($rootScope.arLearnObject, function(idx, obj) {
-		  			$scope.myData.push(angular.copy(obj));					
-				});
 		    });
 		    
 		    $scope.$on("LearnCategoryLoaded", function() {
@@ -351,11 +346,11 @@
 			if (angular.isDefined($stateParams.objid)) {
 				if ($state.current.name === "home.learn.object.maintain") {
 				    $scope.Activity = "Common.Edit";
-				    $scope.ActivityID = 2;
+				    $scope.ActivityID = hih.Constants.UIMode_Change;
 				} else if ($state.current.name === "home.learn.object.display") {
 				    $scope.Activity = "Common.Display";
 				    $scope.isReadonly = true;
-				    $scope.ActivityID = 3;
+				    $scope.ActivityID = hih.Constants.UIMode_Display;
 				}
  				
 				var nObjID = parseInt($stateParams.objid);
@@ -367,7 +362,7 @@
 				});
 			} else {
 			    $scope.Activity = "Common.Create";
-			    $scope.ActivityID = 1;
+			    $scope.ActivityID = hih.Constants.UIMode_Create;
 			};
 			 
 			$scope.tinymceOptions = {
@@ -406,19 +401,23 @@
 				 }
 				 
 				 // Now, submit to the server
-				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', category:$scope.objLearnObject.CategoryID, 
-					 	name: $scope.objLearnObject.Name, content: $scope.objLearnObject.Content } )
-				 	.success(function(data, status, headers, config) {
-					   // Then, go to display page
-					   $scope.gen_id = data[0].id;
-					  
-					   // Add the buffer
-					   utils.loadLearnObjects(true);
-					   utils.loadLearnObjectsHierarchy(true);					  
-				    })
-				    .error(function(data, status, headers, config) {
-					    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
-				    });
+				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+					 
+				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+					$http.post('script/hihsrv.php', { objecttype: 'UPDATELEARNOBJECT', category:$scope.objLearnObject.CategoryID, 
+							name: $scope.objLearnObject.Name, content: $scope.objLearnObject.Content } )
+						.success(function(data, status, headers, config) {
+						// Then, go to display page
+						$scope.gen_id = data[0].id;
+						
+						// Add the buffer
+						utils.loadLearnObjects(true);
+						utils.loadLearnObjectsHierarchy(true);					  
+						})
+						.error(function(data, status, headers, config) {
+							$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+						});
+				 }
 			 };
 			 
 			 $scope.close = function() {
@@ -471,13 +470,13 @@
     		};
 
 			$scope.gridOptions.columnDefs = [
-		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width:'5%' },
-		    	{ name:'displayas', field: 'UserObject.DisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'15%' },
-				{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
-				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '15%' },
-				{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
-				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '15%' },
-				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '10%' },
+		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width:'100' },
+		    	{ name:'displayas', field: 'UserObject.DisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'150' },
+				//{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
+				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '150' },
+				//{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
+				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '200' },
+				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '100' },
 		    ];
 			
 			var q1 = utils.loadUserListQ();
@@ -557,8 +556,6 @@
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
 			 $scope.Activity = "";
 			 
-			 $scope.CategoryIDs = $rootScope.arLearnCategory;
-			 $scope.UserIDs = $rootScope.arUserList;
 			 $scope.CurrentLearnHistory = null;			 
 
 			 $scope.isReadonly = false;
@@ -720,7 +717,7 @@
 				$translate(['Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem']).then(function (translations) {
     				$rootScope.DeletionDialogTitle = translations['Common.DeleteConfirmation'];
     				$rootScope.DeletionDialogMsg = translations['Common.ConfirmToDeleteSelectedItem'];
-  				});				
+  				});
 			}
 			
 			// Remove to the real data holder

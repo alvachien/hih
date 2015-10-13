@@ -9,8 +9,8 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptUser" translate="Login.User">User:</label>
 			<div class="col-sm-10">
-				<select id="iptUser" ng-model="UserID" ng-disabled="isReadonly"
-					ng-options="usr.id as usr.text for usr in UserIDs">
+				<select id="iptUser" ng-model="CurrentLearnHistory.UserID" ng-disabled="isReadonly"
+					ng-options="usr.UserID as usr.DisplayAs for usr in arUserList">
 					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
       					  Example 2: usertype.value as usertype.text for usertype in userTypes 
       				-->
@@ -22,15 +22,15 @@
 			<label class="control-label col-sm-2" for="iptObject" translate="Learn.LearningObject">Learn Objects</label>
 			<div class="col-sm-10">
                 <selectize placeholder='Select a learn object...' options='arLearnObject' 
-					config="learnobjectConfig" ng-model="SelectedDocumentItem.AccountID"
-                    ng-disabled="isReadonly" required="required"></selectize>
+						config="learnobjectConfig" ng-model="CurrentLearnHistory.ObjectID"
+                    	ng-disabled="isReadonly" required="required"></selectize>
  			</div>
 		</div>
 		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptDate" translate="Common.Date">Date</label>
 			<div class="input-group col-sm-10">
-            	<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="LearnDate" is-open="isDateOpened"            		
+            	<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="CurrentLearnHistory.LearnDate" is-open="isDateOpened"            		
             		datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate}}" />
               	<span class="input-group-btn">
                 	<button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -41,7 +41,7 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptComment" translate="Common.Comment">Comment</label>
 			<div class="col-sm-10">
-				<input type="text" ng-readonly="isReadonly" ng-model="Comment">
+				<input type="text" ng-readonly="isReadonly" ng-model="CurrentLearnHistory.Comment">
 			</div>
 		</div>
 

@@ -332,12 +332,32 @@
 										.error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast(
-														"ShowMessage",
-														"Error",
-														data.Message);
+												$rootScope.$broadcast( "ShowMessage", "Error", data.Message);
 											});
 							}
+						};
+						rtnObj.createLearnObject = function(objLearnObj) {
+							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT', 
+									category: objLearnObj.CategoryID, 
+									name: objLearnObj.Name, 
+									content: objLearnObj.Content } )
+								.success(function(data, status, headers, config) {
+								// Then, go to display page
+								//$scope.gen_id = data[0].id;
+								
+								// Add the buffer
+								//rtnObj.loadLearnObjects(true);
+								//rtnObj.loadLearnObjectsHierarchy(true);					  
+								})
+								.error(function(data, status, headers, config) {
+									$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+								});							
+						};
+						rtnObj.changeLearnObject = function(objLearnObj) {
+							
+						};
+						rtnObj.deleteLearnObject = function(objLearnObj) {
+							
 						};
 						// Learn histories
 						rtnObj.loadLearnHistories = function (bForceReload) {
@@ -385,7 +405,7 @@
 											$.each(response.data, function(idx, obj) {
 												var lrnhist = hih.LearnHistory.createNew();
 												lrnhist.setContent(obj);
-												lrnhist.buildRelationship($rootScope.arUser, $rootScope.arLearnObject);
+												lrnhist.buildRelationship($rootScope.arUserList, $rootScope.arLearnObject);
 												$rootScope.arLearnHistory.push(lrnhist);
 											});
 										}

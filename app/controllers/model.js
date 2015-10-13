@@ -17,6 +17,11 @@
 		
 		FinSetting_LocalCurrency: "LocalCurrency",
 		
+		// UI modes
+		UIMode_Create: 1,
+		UIMode_Change: 2,
+		UIMode_Display: 3,
+		
 		FinDocType_Normal: 1,
 		FinDocType_Transfer: 2,
 		FinDocType_CurrExchange: 3,
