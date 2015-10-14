@@ -6,6 +6,7 @@ class HIHConstants {
 	//  2. DT: Database table
 	//  3. DV: Database view
 	//  4. DP: Database procedure
+	//	5. GC: Global constants
 	// ...
 	
 	const EC_Unknown = 0; // Access it like: HIHConstants::EC_Unknown
@@ -15,7 +16,14 @@ class HIHConstants {
 	const EC_InvalidDesp = 2;
 	const EC_InvalidValidFrom = 3;
 	const EC_InvalidValidTo = 4;
-	const EC_ValidToLessValidFrom = 5;	
+	const EC_ValidToLessValidFrom = 5;
+	const EC_InvalidContent = 6;	
+
+	// EC Number range of DB part: 201 - 250
+	const EC_ConnectionFail = 201;
+	const EC_QueryExecuteFail = 202;
+	const EC_ProcedureExecuteFail = 203;
+	const EC_StatementPrepareFail = 204;
 	
 	// EC Number range for Finance part: 101 - 200
 	const EC_InvalidAccount = 101;
@@ -31,30 +39,44 @@ class HIHConstants {
 	const EC_InvalidTotalPrecentage = 111;
 	const EC_InvalidConctrolCenter = 112;
 	const EC_InvalidOrder = 113;
+	const EC_Delete_AccountInUse = 114;
 	
-	// EC Number range of DB part: 201 - 250
-	const EC_ConnectionFail = 201;
-	const EC_QueryExecuteFail = 202;
+	// EC Number range for Learn part: 250 - 350
+	const EC_Delete_ObjectInUse = 251;
+	const EC_Delete_CategoryInUse = 252;
+	
+	// Others?
 	
 	public static function getECUnknown() { return self::EC_Unknown; }
 	
 	// Database part
 	// Tables
+	const DT_LearnObject = 't_learn_obj';
+	const DT_LearnCategory = 't_learn_ctg';
+	const DT_LearnHistory = 't_learn_hist';
 	const DT_FinSetting = 't_fin_setting';
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
 	const DT_FinAccount = 't_fin_account';
 	const DT_FinExchangeRate = 't_fin_exrate';
 	// Views
+	const DV_LearnObjectList = 'v_learn_obj';
+	const DV_LearnObjectHierarchy = 'v_learn_obj2';
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs4'; // changed from v_fin_report_bs3 on 2015.10.07 
 	const DV_FinDocumentItem = 'v_fin_document_item1';
 	const DV_FinReportOrder = 'v_fin_report_io2'; // changed from v_fin_report_io1 on 2015.10.8
 	// Procedures
+	const DP_CreateLearnObject = 'CREATE_LEARNOBJECT';
+	const DP_CreateLearnCategory = 'CREATE_LEARNCATEGORY';
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 	const DP_FinReportCC = 'REPORT_FIN_CC';
 	const DP_FinReportTT = 'REPORT_FIN_TT';
+	
+	// Global variables
+	const GC_InternalSplitChar = '_';
+	const GC_ExternalSplitChar = ';';
 }
 
 class HIHUser {
@@ -72,8 +94,47 @@ class HIHLearnCategory {
 class HIHLearnObject {
 	public $ID;
 	public $CategoryID;
-	public $CategoryName;
+	public $Name;
 	public $Content;
+	
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidAccount;
+			}
+			
+			if (! isset ( $this->CategoryID )) {
+				$errCodes[] = HIHConstants::EC_InvalidCategory;
+			}
+			
+			$strTemp = trim($this->Name);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidName;
+			}
+			$strTemp = trim($this->Content);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidContent;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 class HIHAccount {
 	// Properties

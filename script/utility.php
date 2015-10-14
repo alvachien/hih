@@ -189,8 +189,8 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -273,8 +273,8 @@ function user_combo() {
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$usertable 
+		$sError,
+		$usertable 
 	);
 }
 
@@ -297,7 +297,7 @@ function learn_category_read() {
 	
 	// Read catregory
 	$ctgytable = array ();
-	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . MySqlLearnCatgTable;
+	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . HIHConstants::DT_LearnCategory;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -309,10 +309,10 @@ function learn_category_read() {
 				$sParent = $row [1];
 			
 			$ctgytable [] = array (
-					"id" => $row [0],
-					"parent" => $sParent,
-					"text" => $row [2],
-					"comment" => $row [3] 
+				"id" => $row [0],
+				"parent" => $sParent,
+				"text" => $row [2],
+				"comment" => $row [3] 
 			);
 		}
 		
@@ -347,7 +347,7 @@ function learn_category_readex() {
 	
 	// Read category
 	$ctgytable = array ();
-	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . MySqlLearnCatgTable;
+	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . HIHConstants::DT_LearnCategory;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -398,7 +398,7 @@ function learn_category_create($parctgy, $name, $comment) {
 	
 	// Create award: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlLearnCategoryCreateProc . "(?, ?, ?);";
+	$query = "CALL " . HIHConstants::DP_CreateLearnCategory . "(?, ?, ?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "iss", $parctgy, $name, $content );
@@ -429,7 +429,7 @@ function learn_category_create($parctgy, $name, $comment) {
 	if ($nCode > 0) {
 		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
-		$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . MySqlLearnCatgTable . " WHERE ID = " . $nNewid;
+		$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . HIHConstants::DT_LearnCategory . " WHERE ID = " . $nNewid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
@@ -452,10 +452,7 @@ function learn_category_create($parctgy, $name, $comment) {
 	
 	/* close connection */
 	$mysqli->close ();
-	return array (
-			$sError,
-			$rsttable 
-	);
+	return array ( $sError, $rsttable );
 }
 function learn_category_delete($ctgyid) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -476,7 +473,7 @@ function learn_category_delete($ctgyid) {
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Check existence of the User ID
-	$query = "DELETE FROM " . MySqlLearnCatgTable . " WHERE ID = '$id';";
+	$query = "DELETE FROM " . HIHConstants::DT_LearnCategory . " WHERE ID = '$id';";
 	
 	if (false === mysqli_query ( $link, $query )) {
 		$sError = "Execution failed, no results!";
@@ -511,17 +508,17 @@ function learn_object_listread() {
 	
 	// Check existence of the User ID
 	$objtable = array ();
-	$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . MySqlLearnObjListView;
+	$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . HIHConstants::DV_LearnObjectList;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$objtable [] = array (
-					"id" => $row [0],
-					"categoryid" => $row [1],
-					"categoryname" => $row [2],
-					"name" => $row [3],
-					"content" => $row [4] 
+				"id" => $row [0],
+				"categoryid" => $row [1],
+				"categoryname" => $row [2],
+				"name" => $row [3],
+				"content" => $row [4] 
 			);
 		}
 		
@@ -533,10 +530,7 @@ function learn_object_listread() {
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			$objtable 
-	);
+	return array (	$sError, $objtable	);
 }
 function learn_object_create($ctgyid, $name, $content) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -544,8 +538,8 @@ function learn_object_create($ctgyid, $name, $content) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -561,7 +555,7 @@ function learn_object_create($ctgyid, $name, $content) {
 	
 	// Create award: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlLearnObjectCreateProc . "(?, ?, ?);";
+	$query = "CALL " . HIHConstants::DP_CreateLearnObject  . "(?, ?, ?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "iss", $ctgyid, $name, $content );
@@ -592,17 +586,17 @@ function learn_object_create($ctgyid, $name, $content) {
 	if ($nCode > 0) {
 		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
-		$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . MySqlLearnObjListView . " WHERE ID = " . $nNewid;
+		$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . HIHConstants::DV_LearnObjectList  . " WHERE ID = " . $nNewid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
 			while ( $row = $result->fetch_row () ) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"categoryid" => $row [1],
-						"categoryname" => $row [2],
-						"name" => $row [3],
-						"content" => $row [4] 
+					"id" => $row [0],
+					"categoryid" => $row [1],
+					"categoryname" => $row [2],
+					"name" => $row [3],
+					"content" => $row [4] 
 				);
 			}
 			/* free result set */
@@ -614,10 +608,10 @@ function learn_object_create($ctgyid, $name, $content) {
 	
 	/* close connection */
 	$mysqli->close ();
-	return array (
-			$sError,
-			$rsttable 
-	);
+	return array ( $sError, $rsttable );
+}
+function learn_object_create2($loObj) {
+	return learn_object_create($loObj->CategoryID, $loObj->Name, $loObj->Content);
 }
 function learn_object_change($id, $ctgyid, $name, $content) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -637,7 +631,7 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 	// Check existence of the User ID
 	$name = mysqli_real_escape_string ( $link, $name );
 	$content = mysqli_real_escape_string ( $link, $content );
-	$query = "UPDATE " . MySqlLearnObjTable . " SET CATEGORY = '$ctgyid', NAME = '$name', CONTENT = '$content' WHERE ID = '$id';";
+	$query = "UPDATE " . HIHConstants::DT_LearnObject . " SET CATEGORY = '$ctgyid', NAME = '$name', CONTENT = '$content' WHERE ID = '$id';";
 	
 	if (false === mysqli_query ( $link, $query )) {
 		$sError = "Execution failed, no results!";
@@ -647,45 +641,13 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			$sSuccess 
-	);
+	return array ( $sError, $sSuccess );
+}
+function learn_object_change2( $loObj ) {
+	return learn_object_change($loObj->ID, $loObj->CategoryID, $loObj->Name, $loObj->Content);
 }
 function learn_object_delete($id) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
-	
-	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
-		);
-	}
-	
-	// Set language
-	mysqli_query($link, "SET NAMES 'UTF8'");
-	mysqli_query($link, "SET CHARACTER SET UTF8");
-	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
-	
-	$sError = "";
-	$sSuccess = "";
-	
-	// Check existence of the User ID
-	$query = "DELETE FROM " . MySqlLearnObjTable . " WHERE ID = '$id';";
-	
-	if (false === mysqli_query ( $link, $query )) {
-		$sError = "Execution failed, no results!";
-	} else {
-		$sSuccess = sprintf ( "%d Row deleted.\n", mysqli_affected_rows ( $link ) );
-	}
-	
-	/* close connection */
-	mysqli_close ( $link );
-	return array (
-			$sError,
-			$sSuccess 
-	);
+	return learn_object_multidelete($id);
 }
 function learn_object_multidelete($ids) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -693,8 +655,8 @@ function learn_object_multidelete($ids) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			HIHConstants::EC_ConnectionFail . HIHConstants::GC_InternalSplitChar . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -703,27 +665,51 @@ function learn_object_multidelete($ids) {
 	$mysqli->query("SET CHARACTER SET UTF8");
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 
-	$sError = "";
+	$errCodes = array();
+	$nObjInUse = 0;
 	
 	//$in = join(',', array_fill(0, count($ids), '?'));
 	//$array = array_map('intval', explode(',', $ids));
-	$array = implode("','",$ids);	
-	$query = "DELETE FROM " . MySqlLearnObjTable . " WHERE ID IN ('" . $array ."')";
-	if ($stmt = $mysqli->prepare ( $query )) {
-		//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
+	$idarray = implode("','",$ids);	
+	$prequery = "SELECT COUNT(*) FROM " . HIHConstants::DT_LearnHistory . " WHERE OBJECTID IN ('" . $idarray ."')";
+	if ($prestmt = $mysqli->prepare ( $prequery )) {
 		/* Execute the statement */
-		if ($stmt->execute ()) {
+		if ($prestmt->execute ()) {
+			/* bind variables to prepared statement */
+			$prestmt->bind_result ( $nObjInUse );
+			while ( $prestmt->fetch () ) {
+				if (nObjInUse > 0) {
+					$errCodes[] = HIHConstants::EC_Delete_ObjectInUse;
+				}
+			}
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$errCodes[] = HIHConstants::EC_QueryExecuteFail . HIHConstants::GC_InternalSplitChar . $prequery;
 		}
 		
 		/* close statement */
-		$stmt->close ();
+		$prestmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$errCodes[] = HIHConstants::EC_StatementPrepareFail . HIHConstants::GC_InternalSplitChar . $prestmt;
+	}
+
+	if (count($errCodes) > 1) {
+		$query = "DELETE FROM " . HIHConstants::DT_LearnObject . " WHERE ID IN ('" . $idarray ."')";
+		if ($stmt = $mysqli->prepare ( $query )) {
+			//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+			} else {
+				$errCodes[] = HIHConstants::EC_QueryExecuteFail . HIHConstants::GC_InternalSplitChar . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$errCodes[] = HIHConstants::EC_StatementPrepareFail . HIHConstants::GC_InternalSplitChar . $stmt;
+		}
 	}
 	
-	if (empty ( $sError )) {
+	if (count($errCodes) > 1) {
 		if (! $mysqli->errno) {
 			$mysqli->commit ();
 		} else {
@@ -734,10 +720,7 @@ function learn_object_multidelete($ids) {
 	
 	/* close connection */
 	$mysqli->close ();
-	return array (
-			$sError,
-			$ids 
-	);
+	return array ($errCodes, $ids);
 }
 function learn_object_combo() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -755,7 +738,7 @@ function learn_object_combo() {
 
 	// Check existence of the User ID
 	$objtable = array ();
-	$query = "SELECT ID, CATEGORY_NAME, NAME FROM " . MySqlLearnObjListView;
+	$query = "SELECT ID, CATEGORY_NAME, NAME FROM " . HIHConstants::DV_LearnObjectList;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -797,7 +780,7 @@ function learn_object_hierread() {
 	// Check existence of the User ID
 	$objtable = array ();
 	$parhavechld = array ();
-	$query = "SELECT CATEGORY_ID, CATEGORY_NAME, CATEGORY_PAR_ID, OBJECT_ID, OBJECT_NAME, OBJECT_CONTENT FROM " . MySqlLearnObjHierView . " ORDER BY CATEGORY_ID";
+	$query = "SELECT CATEGORY_ID, CATEGORY_NAME, CATEGORY_PAR_ID, OBJECT_ID, OBJECT_NAME, OBJECT_CONTENT FROM " . HIHConstants::DV_LearnObjectHierarchy . " ORDER BY CATEGORY_ID";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -817,12 +800,12 @@ function learn_object_hierread() {
 				$sParent = $row [2];
 			
 			$objtable [] = array (
-					"categoryid" => $row [0],
-					"categoryname" => $row [1],
-					"categoryparid" => $sParent,
-					"objectid" => $row [3],
-					"objectname" => $row [4],
-					"objectcontent" => $row [5] 
+				"categoryid" => $row [0],
+				"categoryname" => $row [1],
+				"categoryparid" => $sParent,
+				"objectid" => $row [3],
+				"objectname" => $row [4],
+				"objectcontent" => $row [5] 
 			);
 		}
 		
@@ -835,9 +818,9 @@ function learn_object_hierread() {
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$objtable,
-			$parhavechld 
+		$sError,
+		$objtable,
+		$parhavechld 
 	);
 }
 // 1.4 Learn history

@@ -392,43 +392,28 @@
   					});	
 				 	return;
 				 }
-				 // Check the content
-				 var realcontent = $scope.ObjectContent.replace("<p><br data-mce-bogus=\"1\"></p>", "");
-				 realcontent = realcontent.replace("<p><br /></p>", "");
-				 if (realcontent.length <= 0) {
-					 $rootScope.$broadcast('ShowMessage', "Error", "Content is must!");
-					 return;
-				 }
 				 
 				 // Now, submit to the server
 				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
-					 
+					 utils.createLearnObjectQ($scope.objLearnObject)
+					 	.then(function(response) {
+							 $state.go("home.learn.object.display", { objid : response });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-					$http.post('script/hihsrv.php', { objecttype: 'UPDATELEARNOBJECT', category:$scope.objLearnObject.CategoryID, 
-							name: $scope.objLearnObject.Name, content: $scope.objLearnObject.Content } )
-						.success(function(data, status, headers, config) {
-						// Then, go to display page
-						$scope.gen_id = data[0].id;
-						
-						// Add the buffer
-						utils.loadLearnObjects(true);
-						utils.loadLearnObjectsHierarchy(true);					  
-						})
-						.error(function(data, status, headers, config) {
-							$rootScope.$broadcast("ShowMessage", "Error", data.Message);
-						});
+					 utils.changeLearnObjectQ($scope.objLearnObject)
+					 	.then(function(response) {
+							 $state.go("home.learn.object.display", { objid : response });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
 				 }
 			 };
 			 
 			 $scope.close = function() {
 				 $state.go("home.learn.object.list");
-			 };
-			 
-    		 $scope.$on("LearnObjectLoaded", function() {
-				$log.info("HIH LearnObject: Object list loaded event fired!");
-				
-				$state.go("home.learn.object.display", { objid : $scope.gen_id });
-			});	
+			 };			 
 		}])
 		
 		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $q, $log, utils) {

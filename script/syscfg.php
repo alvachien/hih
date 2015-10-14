@@ -34,18 +34,12 @@ define('HIH_I18N_DOMAIN_PATH', 'locale/', false);
 
 // 1.2 Tables, views, procedures
 define('MySqlUserTabel', 't_user', false);
-define('MySqlLearnCatgTable', 't_learn_ctg', false);
-define('MySqlLearnObjTable', 't_learn_obj', false);
-define('MySqlLearnObjListView', 'v_learn_obj', false);
-define('MySqlLearnObjHierView', 'v_learn_obj2', false);
 define('MySqlLearnHistTable', 't_learn_hist', false);
 define('MySqlLearnHistListView', 'v_learn_histlist', false);
 define('MySqlLearnHistHierView', 'v_learn_histhier', false);
 define('MySqlLearnAwardTable', 't_learn_award', false);
 define('MySqlLearnAwardView', 'v_learn_award', false);
 define('MySqlLearnAwardTable', 't_learn_awd', false);
-define('MySqlLearnCategoryCreateProc', 'CREATE_LEARNCATEGORY', false);
-define('MySqlLearnObjectCreateProc', 'CREATE_LEARNOBJECT', false);
 define('MySqlLearnHistoryCreateProc', 'CREATE_LEARNHISTORY', false);
 define('MySqlLearnAwardCreateProc', 'CREATE_LEARNAWARD', false);
 define('MySqlFinAccountTable', 't_fin_account', false);

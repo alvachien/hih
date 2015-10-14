@@ -150,6 +150,34 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 
+		case "CREATELEARNOBJECT2" :
+			{
+				// For JSON-based parameter, can NOT escape it directly!
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loObj = new HIHLearnObject($jsondata);
+				$errCodes = $loObj->CheckValid();
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_object_create2', $loObj);
+				}
+			}
+			break;
+			
+		case "CHANGELEARNOBJECT":
+			{
+				// For JSON-based parameter, can NOT escape it directly!
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loObj = new HIHLearnObject($jsondata);
+				$errCodes = $loObj->CheckValid();
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_object_change2', $loObj);
+				}			
+			}
+			break;
+			
 		case "DELETELEARNOBJECT": 
 			{
 				$objid = escape ( $realParamArr ['id'] );

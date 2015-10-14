@@ -187,6 +187,23 @@
 		 
 		return errMsgs;
 	};
+	hih.LearnObject.prototype.toJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "CategoryObject" ) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};
+	hih.LearnObject.prototype.toJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};	
 	
 	/* Method 3: using the prototype of superclass directly in children class */
 	/* 	Risk: any changes on the children class's prototype will impact the super class!!! */
