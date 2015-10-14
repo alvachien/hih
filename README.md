@@ -25,7 +25,8 @@ As described above,  HIH, Home Info. Hub, is a warehouse storing the necessary i
 ## Who needs HIH
 If you have more than two computers, no doubtly you will feel it's hard to synchronze the data between them. 
 It's ture that the cloud solution, like Apple iCloud, Microsoft OneDrive gets popular recent days for the storage, but it still cannot solve the issues for the business data (not the documents or files).
- 
+
+In that case, HIH provides the opportunity to share the information among the intranet.  And, for the family usage, the finance part the learning part coming as the first part.
 
 ## Development History
 Current Version: Web 0.5.*;

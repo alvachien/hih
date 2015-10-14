@@ -197,27 +197,25 @@
 					strIDs = strIDs.concat(obj.ID.toString());
 				});
 				
-		    	// Popup dialog for confirm
-				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-					$http.post(
-							'script/hihsrv.php',
-							{
-								objecttype : 'DELETELEARNOBJECTS',
-								ids: strIDs
-							})
-						.success(
-							function(data, status, headers, config) {
-								$scope.refreshList();
-							})
-						.error(
-							function(data, status, headers, config) {
-								// called asynchronously if an error occurs or server returns response with an error status.
-								$rootScope.$broadcast(
-										"ShowMessage",
-										"Error",
-										data.Message);
-							});
-				});
+				utils.checkLearnObjectUsageQ(strIDs)
+					.then(function(response) {
+							if (response > 0) {
+								// Message.LearnObjectStillInUse
+								$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Message.LearnObjectStillInUse', 'error');
+							} else {
+								// Popup dialog for confirm
+								$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+									utils.deleteLearnObjectsQ(strIDs)
+										.then(function(response2) {
+											$scope.refreshList();
+										}, function(reason2) {
+											$rootScope.$broadcast("ShowMessage", "Error", reason2);
+										});							
+								});
+							}
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);						
+					});
 			};
 			
 			// Display
@@ -367,7 +365,7 @@
 			 
 			$scope.tinymceOptions = {
 			    onChange: function(e) {
-			        if ($scope.ActivityID !== 3) {
+			        if ($scope.ActivityID !== hih.Constants.UIMode_Display) {
 			            $scope.ContentModified = true;
 			        }
 			    },
@@ -416,7 +414,7 @@
 			 };			 
 		}])
 		
-		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', 'utils', function($scope, $rootScope, $state, $http, $q, $log, utils) {
+		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
 			
 			// Grid option
 			$scope.gridOptions = {};
@@ -487,10 +485,7 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});			
 		  
-		    $scope.selectedRows = [];		    
-		    $scope.$on("LearnHistoryLoaded", function() {
-		  		$log.info("HIH LearnHistory List: Loaded event fired!");
-		    });
+		    $scope.selectedRows = [];
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
@@ -539,14 +534,15 @@
 		}])
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
-			 $scope.Activity = "";
+			$scope.Activity = "";
+		    $scope.ActivityID = 3;
 			 
-			 $scope.CurrentLearnHistory = null;			 
+			$scope.CurrentLearnHistory = null;			 
 
-			 $scope.isReadonly = false;
-			 $scope.isDateOpened = false;	
-			 $scope.DateFormat = "yyyy-MM-dd";
-			 $scope.dateOptions = {
+			$scope.isReadonly = false;
+			$scope.isDateOpened = false;	
+			$scope.DateFormat = "yyyy-MM-dd";
+			$scope.dateOptions = {
 				formatYear: 'yyyy',
 				startingDay: 1
 			};

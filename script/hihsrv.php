@@ -177,7 +177,15 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				}			
 			}
 			break;
-			
+		
+		case "CHECKLEARNOBJECTSUSAGE": 
+			{
+				$objids =  explode(',', escape( $realParamArr ['ids'] ));
+				
+				HIHSrv_Function_1Param( 'learn_object_checkusage', $objids );			
+			}	
+			break;
+		
 		case "DELETELEARNOBJECT": 
 			{
 				$objid = escape ( $realParamArr ['id'] );

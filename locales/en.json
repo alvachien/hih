@@ -194,6 +194,7 @@
 		"InvalidAmount": "Invalid amount",
 		"DuplicateAccountsInTransferDoc": "Cannot transfer amount in same account",
 		"InvalidRefCurrExgDoc": "Invalid reference currency exchange document",
-		"InvalidExchangeRate": "Invalid exchange rate"
+		"InvalidExchangeRate": "Invalid exchange rate",
+		"LearnObjectStillInUse": "Learn objects still in use"
 	}
  }

@@ -193,6 +193,7 @@
 		"InvalidAmount": "不合法的金额",
 		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账",
 		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证",
-		"InvalidExchangeRate": "不合法的汇率"
+		"InvalidExchangeRate": "不合法的汇率",
+		"LearnObjectStillInUse": "学习对象尚在使用"
 	}
 }

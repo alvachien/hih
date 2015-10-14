@@ -136,6 +136,16 @@ class HIHLearnObject {
 		return $errCodes;
 	}
 }
+class HIHLearnHistory {
+	public $ObjectID;
+	public $UserID;
+}
+class HIHLearnAward {
+	
+}
+class HIHLearnPlan {
+	
+}
 class HIHAccount {
 	// Properties
 	public $ID;

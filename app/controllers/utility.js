@@ -380,8 +380,24 @@
 									});
 							return deferred.promise;
 						};
-						rtnObj.deleteLearnObjectQ = function(objLearnObj) {
+						rtnObj.checkLearnObjectUsageQ = function(strIDs) {
 							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype: 'CHECKLEARNOBJECTSUSAGE', ids: strIDs } )
+									.then(function(response) {
+										deferred.resolve(parseInt(response.data));											
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;							
+						};
+						rtnObj.deleteLearnObjectsQ = function(strIDs) {
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype: 'DELETELEARNOBJECTS', ids: strIDs } )
+									.then(function(response) {
+										deferred.resolve(response.data);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
 							return deferred.promise;
 						};
 						// Learn histories

@@ -649,15 +649,12 @@ function learn_object_change2( $loObj ) {
 function learn_object_delete($id) {
 	return learn_object_multidelete($id);
 }
-function learn_object_multidelete($ids) {
+function learn_object_checkusage($ids) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
-		return array (
-			HIHConstants::EC_ConnectionFail . HIHConstants::GC_InternalSplitChar . mysqli_connect_error (),
-			null 
-		);
+		return array ("Connect failed: %s\n" . mysqli_connect_error (), null );
 	}
 	
 	// Set language
@@ -665,7 +662,7 @@ function learn_object_multidelete($ids) {
 	$mysqli->query("SET CHARACTER SET UTF8");
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 
-	$errCodes = array();
+	$sError = "";
 	$nObjInUse = 0;
 	
 	//$in = join(',', array_fill(0, count($ids), '?'));
@@ -678,38 +675,82 @@ function learn_object_multidelete($ids) {
 			/* bind variables to prepared statement */
 			$prestmt->bind_result ( $nObjInUse );
 			while ( $prestmt->fetch () ) {
-				if (nObjInUse > 0) {
-					$errCodes[] = HIHConstants::EC_Delete_ObjectInUse;
-				}
+				//if (nObjInUse > 0) {
+				//}
 			}
 		} else {
-			$errCodes[] = HIHConstants::EC_QueryExecuteFail . HIHConstants::GC_InternalSplitChar . $prequery;
+			$sError = "Failed to execute query: " . $prequery;
 		}
 		
 		/* close statement */
 		$prestmt->close ();
 	} else {
-		$errCodes[] = HIHConstants::EC_StatementPrepareFail . HIHConstants::GC_InternalSplitChar . $prestmt;
+		$sError = "Failed to prepare statement: " . $prestmt;
 	}
 
-	if (count($errCodes) > 1) {
+	/* close connection */
+	$mysqli->close ();
+	return array ($sError, $nObjInUse);
+}
+function learn_object_multidelete($ids) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array ("Connect failed: %s\n" . mysqli_connect_error (), null );
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	$nUsageAmt = 0;
+	
+	//$in = join(',', array_fill(0, count($ids), '?'));
+	//$array = array_map('intval', explode(',', $ids));
+	$idarray = implode("','",$ids);	
+	
+	$prequery = "SELECT COUNT(*) FROM " . HIHConstants::DT_LearnHistory . " WHERE OBJECTID IN ('" . $idarray ."')";
+	if ($prestmt = $mysqli->prepare ( $prequery )) {
+		/* Execute the statement */
+		if ($prestmt->execute ()) {
+			/* bind variables to prepared statement */
+			$prestmt->bind_result ( $nUsageAmt );
+			while ( $prestmt->fetch () ) {
+				if ($nUsageAmt > 0) {
+					$sError = "Object still in use! ";
+				}
+			}
+		} else {
+			$sError = "Failed to execute query: " . $prequery;
+		}
+		
+		/* close statement */
+		$prestmt->close ();
+	} else {
+		$sError = "Failed to prepare statement: " . $prestmt;
+	}
+
+	if (empty ( $sError )) {
 		$query = "DELETE FROM " . HIHConstants::DT_LearnObject . " WHERE ID IN ('" . $idarray ."')";
 		if ($stmt = $mysqli->prepare ( $query )) {
 			//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$errCodes[] = HIHConstants::EC_QueryExecuteFail . HIHConstants::GC_InternalSplitChar . $query;
+				$sError = "Failed to execute query: " . $query;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$errCodes[] = HIHConstants::EC_StatementPrepareFail . HIHConstants::GC_InternalSplitChar . $stmt;
+			$sError = "Failed to prepare statement: " . $stmt;
 		}
 	}
 	
-	if (count($errCodes) > 1) {
+	if (empty ( $sError )) {
 		if (! $mysqli->errno) {
 			$mysqli->commit ();
 		} else {
@@ -720,7 +761,7 @@ function learn_object_multidelete($ids) {
 	
 	/* close connection */
 	$mysqli->close ();
-	return array ($errCodes, $ids);
+	return array ($sError, $ids);
 }
 function learn_object_combo() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
