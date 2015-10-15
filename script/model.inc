@@ -47,6 +47,7 @@ class HIHConstants {
 	
 	// Others?
 	
+	// Sample way to figure the EC_Unknown out.
 	public static function getECUnknown() { return self::EC_Unknown; }
 	
 	// Database part

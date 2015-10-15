@@ -22,6 +22,17 @@
 		UIMode_Change: 2,
 		UIMode_Display: 3,
 		
+		// Learn plan recurr. type
+		LearnPlanRecurType_OneTime: 1,
+		LearnPlanRecurType_HEbbinghaus: 2, // [0, 1, 2, 4, 7, 15]
+		
+		// Learn plan reg. status
+		LearnPlanRegStatus_InPlan:  1,
+		LearnPlanRegStatus_InProcess: 2,
+		LearnPlanRegStatus_Completed: 3,
+		LearnPlanRegStatus_Aborted: 4,
+		
+		// Fin document type
 		FinDocType_Normal: 1,
 		FinDocType_Transfer: 2,
 		FinDocType_CurrExchange: 3,
@@ -345,33 +356,19 @@
 			}
 		},
 		_setContent: function(data) {
-			// userid, displayas, objectid, objectname, categoryid, categoryname, learndate, objectcontent, comment
 			this.UserID = data.userid;
-			//this.UserDisplayAs = data.displayas;
-			
 			this.ObjectID = parseInt(data.objectid);
-			//this.ObjectName = data.objectname;		
-			//this.CategoryID = parseInt(data.categoryid);
-			//this.CategoryName = data.categoryname;
-			
 			this.LearnDate = data.learndate;
-			//this.ObjectContent = data.objectcontent;
 			this.Comment = data.comment;
 		},
 		createNew: function() {
 			// Inherit from Model first
 			var lrnhist = new hih.Model();
 			
-			// Other fields
+			// Attributes
 			lrnhist.UserID = "";
-			//lrnhist.UserDisplayAs = "";
 			lrnhist.ObjectID = -1;
-			//lrnhist.ObjectName = "";
-			//lrnhist.CategoryID = -1;
-			//lrnhist.CategoryName = "";
-			//lrnhist.LearnCategory = {};
 			lrnhist.LearnDate = new Date();
-			//lrnhist.ObjectContent = "";
 			lrnhist.Comment = "";
 			
 			// Runtime information
@@ -384,7 +381,7 @@
 			lrnhist.buildRelationship = hih.LearnHistory._buildRelationship;
 			
 			return lrnhist;
-		}	
+		}
 	};
 	
 	/* Learn Award */
@@ -409,6 +406,21 @@
 		this.Score = obj.score;
 		this.Reason = obj.reason;
 	};
+	
+	/* Learn Plan Detail */
+	hih.LearnPlanDetail = function() {
+		// Attributes
+	};
+	
+	/* Learn Plan Registration */
+	hih.LearnPlanRegistration = function() {
+		// Attributes
+	};
+	/* Learn Plan Header */
+	hih.LearnPlan = function() {
+		// Attributes
+	};	
+	
 	
 	// =========================================================
 	// Finance part

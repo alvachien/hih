@@ -1,5 +1,5 @@
 /* 
- * SQL file for preparing HIH running on MySql/MadriaDB
+ * SQL file for preparing HIH running on MySql/MadriaDB (Delta) 
  * Version: 0.5
  * Created: 2015/05/16
  * (C) Copyright by Alva Chien, 2014 - 2016
@@ -1623,7 +1623,50 @@ VIEW `v_fin_report_io2` AS
         on tab_a.`id` = tab_b.`id`;
 
 /* ======================================================
-    Delta parts on 2015.10.11+
+    Delta parts on 2015.10.15
+   ====================================================== */
+-- Table Update t_learn_hist, to allow multiple learn objects and user set 
+ALTER TABLE `t_learn_hist` 
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`USERID`, `OBJECTID`, `LEARNDATE`);
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS t_learn_hist_BINS$$
+CREATE TRIGGER `t_learn_hist_BINS` BEFORE INSERT ON `t_learn_hist` FOR EACH ROW
+if ( isnull(new.LEARNDATE) ) then
+ set new.LEARNDATE=curdate();
+end if;
+$$
+DELIMITER ;
+ 
+-- Table Create: t_learn_plan, header of plan
+CREATE TABLE IF NOT EXISTS `t_learn_plan` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(45) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan header';
+
+CREATE TABLE IF NOT EXISTS `t_learn_plandtl` (
+  `ID` int(11) NOT NULL,
+  `OBJECTID` int(11) NOT NULL,
+  `DEFERREDDAY` int(11) NOT NULL DEFAULT 0,
+  `RECURTYPE` tinyint(4) NOT NULL DEFAULT 0,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`, `OBJECTID`, `LEARNDATE`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan detail';
+  
+CREATE TABLE IF NOT EXISTS `t_learn_plan_reg` (
+  `ID` int(11) NOT NULL,
+  `USERID` int(25) NOT NULL,
+  `STARTDATE` date NOT NULL,
+  `STATUS` tinyint(4) DEFAULT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan registration';
+
+/* ======================================================
+    Delta parts on 2015.11.01+
    ====================================================== */
 
 -- Account category INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
