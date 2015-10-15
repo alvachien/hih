@@ -194,6 +194,8 @@
 		"DuplicateAccountsInTransferDoc": "不能在同一账户中转账",
 		"InvalidRefCurrExgDoc": "不合法的引用货币兑换凭证",
 		"InvalidExchangeRate": "不合法的汇率",
-		"LearnObjectStillInUse": "学习对象尚在使用"
+		"LearnObjectStillInUse": "学习对象尚在使用",
+		"InvalidLearnOBject": "不合法的学习对象",
+		"InvalidUser": "不合法的用户"
 	}
 }

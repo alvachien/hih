@@ -1625,6 +1625,7 @@ VIEW `v_fin_report_io2` AS
 /* ======================================================
     Delta parts on 2015.10.15
    ====================================================== */
+   
 -- Table Update t_learn_hist, to allow multiple learn objects and user set 
 ALTER TABLE `t_learn_hist` 
 DROP PRIMARY KEY,
@@ -1638,7 +1639,19 @@ if ( isnull(new.LEARNDATE) ) then
 end if;
 $$
 DELIMITER ;
- 
+
+-- Account category INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (7,'重大资产',1,NULL);
+-- Document type
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (9,'资产购入', '重大资产购入类');
+INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (10,'资产售出', '重大资产售出类');
+
+
+/* ======================================================
+    Delta parts on 2015.11.01+
+   ====================================================== */
+
+
 -- Table Create: t_learn_plan, header of plan
 CREATE TABLE IF NOT EXISTS `t_learn_plan` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1664,16 +1677,6 @@ CREATE TABLE IF NOT EXISTS `t_learn_plan_reg` (
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan registration';
-
-/* ======================================================
-    Delta parts on 2015.11.01+
-   ====================================================== */
-
--- Account category INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
-INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (7,'重大资产',1,NULL);
--- Document type
-INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (9,'资产购入', '重大资产购入类');
-INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (10,'资产售出', '重大资产售出类');
 
 -- Table Creation: Asset value change
 CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (

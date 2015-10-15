@@ -1,5 +1,6 @@
 /* global $ */
 /* global angular */
+/* global hih */
 (function() {
 	'use strict';
 	
@@ -430,10 +431,10 @@
 			$scope.gridOptions.selectionRowHeaderWidth = 35;
 			
 			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.ObjectID.toString().concat('_', row.UserID.toString()) ;
+			 	return row.getLogicKey();
 			};
 			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.ObjectID.toString().concat('_', row.UserID.toString()) ;
+			 	return row.getLogicKey();
 			};			
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
       			$scope.gridApi = gridApi;
@@ -443,7 +444,7 @@
      					$scope.selectedRows.push(row.entity);     					
      				 } else {
      					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.UserID === row.entity.UserID && obj.ObjectID === row.entity.ObjectID) {
+							if (obj.getLogicKey() === row.entity.getLogicKey()) {
 								$scope.selectedRows.splice(idx, 1);
 								return false;
 							}
@@ -459,7 +460,7 @@
 				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '150' },
 				//{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
 				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '200' },
-				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '100' },
+				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '100' }
 		    ];
 			
 			var q1 = utils.loadUserListQ();
@@ -500,7 +501,7 @@
 					return;
 				
 				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.display",   { histid : row.ObjectID.toString().concat('_', row.UserID.toString()) });
+				$state.go("home.learn.history.display",   { histid : row.getLogicKey() });
 			 };
 			
 			 // Edit
@@ -509,7 +510,7 @@
 					return;
 
 				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.maintain",  { histid : row.ObjectID.toString().concat('_', row.UserID.toString()) });
+				$state.go("home.learn.history.maintain",  { histid : row.getLogicKey() });
 			 };
 			
 			 // Create
@@ -535,7 +536,7 @@
 
 		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
 			$scope.Activity = "";
-		    $scope.ActivityID = 3;
+		    $scope.ActivityID = hih.Constants.UIMode_Display;
 			 
 			$scope.CurrentLearnHistory = null;			 
 
@@ -574,16 +575,13 @@
 					$scope.isReadonly = true;
 				}
  				 
-				var arrID = $stateParams.histid.split('_');
-				if (arrID.length >= 2) {
-					$.each($rootScope.arLearnHistory, function(idx, obj) {
-						if (obj.UserID === arrID[1] && parseInt(obj.ObjectID) === parseInt(arrID[0])) {
-							$scope.CurrentLearnHistory = angular.copy(obj);
-							 
-							return false;
-						 }
-					 }); 
-				 }
+				$.each($rootScope.arLearnHistory, function(idx, obj) {
+					if (obj.getLogicKey() === $stateParams.histid) {
+						$scope.CurrentLearnHistory = angular.copy(obj);
+							
+						return false;
+					}
+				}); 
 			 } else {
 				 $scope.CurrentLearnHistory = hih.LearnHistory.createNew();	
 				 $scope.Activity = "Common.Create";

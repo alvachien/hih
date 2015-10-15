@@ -17,7 +17,7 @@ class HIHConstants {
 	const EC_InvalidValidFrom = 3;
 	const EC_InvalidValidTo = 4;
 	const EC_ValidToLessValidFrom = 5;
-	const EC_InvalidContent = 6;	
+	const EC_InvalidContent = 6;
 
 	// EC Number range of DB part: 201 - 250
 	const EC_ConnectionFail = 201;
@@ -44,6 +44,8 @@ class HIHConstants {
 	// EC Number range for Learn part: 250 - 350
 	const EC_Delete_ObjectInUse = 251;
 	const EC_Delete_CategoryInUse = 252;
+	const EC_InvalidLearnObject = 253;
+	const EC_InvalidUser = 254;
 	
 	// Others?
 	
@@ -140,6 +142,47 @@ class HIHLearnObject {
 class HIHLearnHistory {
 	public $ObjectID;
 	public $UserID;
+	public $LearnDate;
+	public $Comment;
+	
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ObjectID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidAccount;
+			}
+			
+			if (! isset ( $this->CategoryID )) {
+				$errCodes[] = HIHConstants::EC_InvalidCategory;
+			}
+			
+			$strTemp = trim($this->Name);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidName;
+			}
+			$strTemp = trim($this->Content);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidContent;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 class HIHLearnAward {
 	

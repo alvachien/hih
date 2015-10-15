@@ -361,6 +361,43 @@
 			this.LearnDate = data.learndate;
 			this.Comment = data.comment;
 		},
+		_getLogicKey: function() {
+			return [this.ObjectID, this.UserID, this.LearnDate].reduce(function(previousValue, currentValue, index, arra) {
+				var pv = previousValue.toString();
+				var cv = currentValue.toString();
+				return pv.concat('_', cv);
+			});
+		},
+		_toJSONObject: function() {
+			var forJSON = {};
+			for(var i in this) {
+				if (!this.hasOwnProperty(i) || i === "_super" || i === "CategoryObject" ) 
+					continue;
+			
+				forJSON[i] = this[i];	
+			}
+			return forJSON;
+		},
+		_toJSON: function() {
+			var forJSON = this.toJSONObject();
+			if (forJSON) {
+				return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			}
+			return JSON && JSON.stringify(this) || $.toJSON(this);
+		},
+		_Verify: function() {
+			var errMsgs = [];
+			
+			if (isNaN(this.ObjectID)) {
+				errMsgs.push("Message.InvalidLearnObject");
+			}
+			if (this.UserID && typeof this.UserID === "string" && this.UserID.length > 0) {
+			} else {
+				errMsgs.push("Message.InvalidUser");
+			}
+			
+			return errMsgs;
+		},
 		createNew: function() {
 			// Inherit from Model first
 			var lrnhist = new hih.Model();
@@ -379,6 +416,9 @@
 			lrnhist._super = hih.Model.prototype;
 			lrnhist.setContent = hih.LearnHistory._setContent;
 			lrnhist.buildRelationship = hih.LearnHistory._buildRelationship;
+			lrnhist.getLogicKey = hih.LearnHistory._getLogicKey;
+			lrnhist.toJSONObject = hih.LearnHistory._toJSONObject;
+			lrnhist.toJSON = hih.LearnHistory._toJSON;
 			
 			return lrnhist;
 		}
@@ -416,6 +456,7 @@
 	hih.LearnPlanRegistration = function() {
 		// Attributes
 	};
+	
 	/* Learn Plan Header */
 	hih.LearnPlan = function() {
 		// Attributes
