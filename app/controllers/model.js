@@ -371,11 +371,13 @@
 		_toJSONObject: function() {
 			var forJSON = {};
 			for(var i in this) {
-				if (!this.hasOwnProperty(i) || i === "_super" || i === "CategoryObject" ) 
+				if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObject" || i === "toJSON" || i === "toJSONObject"
+					|| i === "LearnDate") 
 					continue;
-			
+				
 				forJSON[i] = this[i];	
 			}
+			forJSON.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);
 			return forJSON;
 		},
 		_toJSON: function() {

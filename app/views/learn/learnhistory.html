@@ -31,7 +31,7 @@
 			<label class="control-label col-sm-2" for="iptDate" translate="Common.Date">Date</label>
 			<div class="input-group col-sm-10">
             	<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="CurrentLearnHistory.LearnDate" is-open="isDateOpened"            		
-            		datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate}}" />
+            			datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate}}" />
               	<span class="input-group-btn">
                 	<button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               	</span>

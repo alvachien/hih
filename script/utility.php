@@ -614,34 +614,82 @@ function learn_object_create2($loObj) {
 	return learn_object_create($loObj->CategoryID, $loObj->Name, $loObj->Content);
 }
 function learn_object_change($id, $ctgyid, $name, $content) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
-		return "Connect failed: %s\n" . mysqli_connect_error ();
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
 	}
-	$sError = "";
-	$sSuccess = "";
 	
 	// Set language
-	mysqli_query($link, "SET NAMES 'UTF8'");
-	mysqli_query($link, "SET CHARACTER SET UTF8");
-	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nCode = 0;
+	$sMsg = "";
 	
 	// Check existence of the User ID
 	$name = mysqli_real_escape_string ( $link, $name );
 	$content = mysqli_real_escape_string ( $link, $content );
-	$query = "UPDATE " . HIHConstants::DT_LearnObject . " SET CATEGORY = '$ctgyid', NAME = '$name', CONTENT = '$content' WHERE ID = '$id';";
+	$query = "CALL " . HIHConstants::DP_UpdateLearnObject  . "(?, ?, ?, ?);";
 	
-	if (false === mysqli_query ( $link, $query )) {
-		$sError = "Execution failed, no results!";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "iiss", $id, $ctgyid, $name, $content );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			/* bind variables to prepared statement */
+			$stmt->bind_result ( $code, $msg, $lastid );
+			
+			/* fetch values */
+			while ( $stmt->fetch () ) {
+				$nCode = ( int ) $code;
+				$sMsg = $msg;
+				break;
+			}
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
 	} else {
-		$sSuccess = sprintf ( "%d Row changed.\n", mysqli_affected_rows ( $link ) );
+		$nCode = 1;
+		$sMsg = "Failed to parpare statement: " . $query;
+	}
+	
+	$rsttable = array ();
+	if ($nCode > 0) {
+		$sError = $sMsg;
+	} else if ($nCode === 0 && $nNewid > 0) {
+		$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . HIHConstants::DV_LearnObjectList  . " WHERE ID = " . $id;
+		
+		if ($result = $mysqli->query ( $query )) {
+			/* fetch associative array */
+			while ( $row = $result->fetch_row () ) {
+				$rsttable [] = array (
+					"id" => $row [0],
+					"categoryid" => $row [1],
+					"categoryname" => $row [2],
+					"name" => $row [3],
+					"content" => $row [4] 
+				);
+			}
+			/* free result set */
+			$result->close ();
+		} else {
+			$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+		}
 	}
 	
 	/* close connection */
-	mysqli_close ( $link );
-	return array ( $sError, $sSuccess );
+	$mysqli->close ();
+	return array ( $sError, $rsttable );
 }
 function learn_object_change2( $loObj ) {
 	return learn_object_change($loObj->ID, $loObj->CategoryID, $loObj->Name, $loObj->Content);
@@ -890,15 +938,15 @@ function learn_hist_listread() {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$objtable [] = array (
-					"userid" => $row [0],
-					"displayas" => $row [1],
-					"objectid" => $row [2],
-					"objectname" => $row [3],
-					"categoryid" => $row [4],
-					"categoryname" => $row [5],
-					"learndate" => $row [6],
-					"objectcontent" => $row [7],
-					"comment" => $row [8] 
+				"userid" => $row [0],
+				"displayas" => $row [1],
+				"objectid" => $row [2],
+				"objectname" => $row [3],
+				"categoryid" => $row [4],
+				"categoryname" => $row [5],
+				"learndate" => $row [6],
+				"objectcontent" => $row [7],
+				"comment" => $row [8] 
 			);
 		}
 		
@@ -1052,15 +1100,15 @@ function learn_hist_hierread() {
 				$sParent = $row [1];
 			
 			$objtable [] = array (
-					"categoryid" => $row [0],
-					"categoryparid" => $row [1],
-					"categoryname" => $row [2],
-					"userid" => $row [3],
-					"displayas" => $row [4],
-					"learndate" => $row [5],
-					"objectid" => $row [6],
-					"objectname" => $row [7],
-					"objectcontent" => $row [8] 
+				"categoryid" => $row [0],
+				"categoryparid" => $row [1],
+				"categoryname" => $row [2],
+				"userid" => $row [3],
+				"displayas" => $row [4],
+				"learndate" => $row [5],
+				"objectid" => $row [6],
+				"objectname" => $row [7],
+				"objectcontent" => $row [8] 
 			);
 		}
 		
@@ -1078,14 +1126,14 @@ function learn_hist_hierread() {
 			$parhavechld 
 	);
 }
-function learn_hist_exist($username, $objid) {
+function learn_hist_exist($username, $objid, $lrndate) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1098,7 +1146,7 @@ function learn_hist_exist($username, $objid) {
 	
 	// Check existence of the User ID
 	// $rsttable = array();
-	$query = "SELECT COUNT(*) FROM " . MySqlLearnHistTable . " WHERE USERID = '" . $username . "' AND OBJECTID = '" . $objid . "';";
+	$query = "SELECT COUNT(*) FROM " . HIHConstants::DT_LearnHistory . " WHERE USERID = '" . $username . "' AND OBJECTID = '" . $objid . "' AND LEARNDATE = '" . $lrndate . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -1117,32 +1165,17 @@ function learn_hist_exist($username, $objid) {
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			$bExist 
-	);
+	return array ( $sError, $bExist	);
 }
 function learn_hist_create($username, $objid, $learndate, $comment) {
-	// Check the existence first => why do let the stored procedure to do the check?
-	$rtnarray = learn_hist_exist ( $username, $objid );
-	if (! empty ( $rtnarray [0] )) {
-		return $rtnarray;
-	} else {
-		if ($rtnarray [1] === true) {
-			return array (
-					"Record exist already!",
-					null 
-			);
-		}
-	}
 	
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1176,24 +1209,20 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			null 
-	);
+	return array ($sError, null	);
 }
-function learn_hist_change($categoryid, $username, $learndate, $content) {
-	// ToDo!
+function learn_hist_create2($lohist) {
+	return learn_hist_create($lohist->UserID, $lohist->ObjectID, $lohist->LearnDate, $lohist->Comment);
 }
-function learn_hist_delete($userid, $objid) {
-	// Check the existence first
-	$rtnarray = learn_hist_exist ( $userid, $objid );
+function learn_hist_change($lohist) {
+	$rtnarray = learn_hist_exist ( $username, $objid );
 	if (! empty ( $rtnarray [0] )) {
 		return $rtnarray;
 	} else {
-		if ($rtnarray [1] === false) {
+		if ($rtnarray [1] === true) {
 			return array (
-					"Record doesn't exist yet!",
-					null 
+				"Record exist already!",
+				null 
 			);
 		}
 	}
@@ -1203,8 +1232,8 @@ function learn_hist_delete($userid, $objid) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1214,20 +1243,64 @@ function learn_hist_delete($userid, $objid) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "DELETE FROM " . MySqlLearnHistTable . " WHERE USERID = '" . $userid . "' AND OBJECTID = '" . $objid . "';";
-	
-	if (false === mysqli_query ( $link, $query )) {
-		$sError = "Execution failed, no results!" . $query;
+	$query = "CALL " . HIHConstants::DP_UpdateLearnHistory . "('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$pro_code = ( int ) $row [0];
+			if ($pro_code != 0) {
+				$sError = $row [1];
+			}
+			break;
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
 	} else {
-		$sSuccess = sprintf ( "%d Row deleted.\n", mysqli_affected_rows ( $link ) );
+		$sError = "Failed to execute query: " . HIHConstants::DP_UpdateLearnHistory;
 	}
 	
 	/* close connection */
 	mysqli_close ( $link );
-	return array (
-			$sError,
-			$sSuccess 
-	);
+	return array ( $sError, null );
+}
+function learn_hist_delete($userid, $objid, $learndate) {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	$query = "CALL " . HIHConstants::DP_DeleteLearnHistory . "('" . $username . "', '" . $objid . "', '" . $learndate . "');";
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$pro_code = ( int ) $row [0];
+			if ($pro_code != 0) {
+				$sError = $row [1];
+			}
+			break;
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " . HIHConstants::DP_DeleteLearnHistory;
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array ( $sError, null );
 }
 // 1.5 Learn award
 function learn_award_listread() {
@@ -3591,7 +3664,7 @@ function HIHSrv_Function_4Param( $func_name, $func_para1, $func_para2, $func_par
 		} else {
 			$sErrors = "Function does not available: ". $func_name;
 			export_error ( sErrors );				
-		}		
+		}
 	} else {
 		$sErrors = "User not login yet";
 		export_error ( sErrors );

@@ -614,7 +614,6 @@ proc_main:BEGIN
         code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
     END;
 
-
 -- Check the existence of the user	
 	IF EXISTS(SELECT 1 FROM t_user WHERE USERID = userid) AND EXISTS(SELECT 1 FROM t_learn_obj WHERE ID = objid) THEN
 		IF EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid) THEN 
@@ -1645,6 +1644,309 @@ INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (7,'
 -- Document type
 INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (9,'资产购入', '重大资产购入类');
 INSERT INTO `t_fin_doc_type` (`ID`,`NAME`,`COMMENT`) VALUES (10,'资产售出', '重大资产售出类');
+
+/* ======================================================
+    Delta parts on 2015.10.19
+   ====================================================== */
+
+-- Stored Procedure: CREATE_LEARNCATEGORY
+DROP procedure IF EXISTS `CREATE_LEARNHISTORY`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CREATE_LEARNHISTORY`(
+	IN userid varchar(25),
+	IN objid int(11),
+	IN learndate date,
+	IN comt varchar(45))
+proc_main:BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	IF EXISTS(SELECT 1 FROM t_user WHERE USERID = userid) AND EXISTS(SELECT 1 FROM t_learn_obj WHERE ID = objid) THEN
+		IF EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate) THEN 
+			SET errmsg = 'Same record exists!';
+			SET errcode = '00003';
+			SELECT errcode, errmsg;
+			LEAVE proc_main;
+		END IF;
+	ELSE
+		SET errmsg = 'Invalid User OR Invalid Object';
+		SET errcode = '00004';
+		SELECT errcode, errmsg;
+		LEAVE proc_main;
+	END IF;
+
+	INSERT INTO `t_learn_hist` (`USERID`, `OBJECTID`, `LEARNDATE`, `COMMENT`) 
+			VALUES (userid, objid, learndate, comt);
+
+    SELECT errcode, errmsg;    
+END$$
+
+DELIMITER ;
+
+
+-- Stored Procedure: `UPDATE_LEARNHISTORY`
+DROP procedure IF EXISTS `UPDATE_LEARNHISTORY`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UPDATE_LEARNHISTORY`(
+	IN userid varchar(25),
+	IN objid int(11),
+	IN learndate date,
+	IN comt varchar(45))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF EXISTS(SELECT 1 FROM t_user WHERE USERID = userid) AND EXISTS(SELECT 1 FROM t_learn_obj WHERE ID = objid) THEN		
+		IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		ELSE
+			UPDATE `t_learn_hist` SET `COMMENT` = comt
+				WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;			
+		END IF;
+	ELSE
+		SET errmsg = 'Invalid User OR Invalid Object';
+		SET errcode = '00004';
+	END IF;
+
+	SELECT errcode, errmsg;
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: DELETE_LEARNHISTORY
+DROP procedure IF EXISTS `DELETE_LEARNHISTORY`;
+
+DELIMITER $$
+CREATE PROCEDURE `DELETE_LEARNHISTORY` (
+	IN userid varchar(25),
+	IN objid int(11),
+	IN learndate date)
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
+		SET errmsg = 'Record not exists!';
+		SET errcode = '00003';
+	ELSE
+		DELETE FROM `t_learn_hist`
+			WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;			
+	END IF;
+
+	SELECT errcode, errmsg;
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: CREATE_LEARNOBJECT
+DROP procedure IF EXISTS `CREATE_LEARNOBJECT`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CREATE_LEARNOBJECT`(IN CTGYID int(11), IN OBJNAME nvarchar(45), IN OBJCONTENT text)
+proc_main:BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+	DECLARE errid INT(11) DEFAULT -1;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg, errid;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg, errid;
+	END;
+
+	IF EXISTS (SELECT 1 FROM t_learn_ctg  WHERE ID = CTGYID) AND OBJNAME IS NOT NULL AND LENGTH(OBJNAME) > 0 AND OBJCONTENT IS NOT NULL AND LENGTH(OBJCONTENT) > 0 then
+		INSERT INTO `t_learn_obj` (`CATEGORY`, `NAME`, `CONTENT`)
+			VALUES (CTGYID,  OBJNAME, OBJCONTENT);
+	ELSE 
+		SET errmsg = 'Invalid Category, Invalid Object Name or Invalid Object Content';
+		SET errcode = '00003';
+		SELECT errcode, errmsg, errid;
+		LEAVE proc_main;
+	END IF;
+	
+	SELECT errcode, errmsg, LAST_INSERT_ID();
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: UPDATE_LEARNOBJECT
+DROP procedure IF EXISTS `UPDATE_LEARNOBJECT`;
+
+DELIMITER $$
+CREATE PROCEDURE `UPDATE_LEARNOBJECT` (IN OBJID int(11), IN CTGYID int(11), IN OBJNAME nvarchar(45), IN OBJCONTENT text)
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+-- Check the existence of the user	
+	IF EXISTS (SELECT 1 FROM `t_learn_ctg` WHERE ID = CTGYID) AND OBJNAME IS NOT NULL AND LENGTH(OBJNAME) > 0 AND OBJCONTENT IS NOT NULL AND LENGTH(OBJCONTENT) > 0 then
+		IF EXISTS(SELECT 1 FROM `t_learn_obj` WHERE ID = OBJID FOR UPDATE) THEN 
+			UPDATE `t_learn_obj` SET `CATEGORY` = CTGYID, `NAME` = OBJNAME, `CONTENT` = OBJCONTENT
+				WHERE `ID` = OBJID;
+		ELSE
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		END IF;
+	ELSE
+		SET errmsg = 'Invalid User OR Invalid Object';
+		SET errcode = '00004';
+	END IF;
+
+	SELECT errcode, errmsg;
+
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: DELETE_LEARNOBJECT
+DROP procedure IF EXISTS `DELETE_LEARNOBJECT`;
+
+DELIMITER $$
+CREATE PROCEDURE `DELETE_LEARNOBJECT` (IN OBJID INT(11))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF EXISTS(SELECT 1 FROM t_learn_hist WHERE OBJECTID = OBJID) THEN
+		SET errmsg = 'Record still in use!';
+		SET errcode = '00004';
+	ELSE
+		IF EXISTS(SELECT 1 FROM `t_learn_obj` WHERE ID = OBJID FOR UPDATE) THEN 
+			DELETE FROM `t_learn_obj` WHERE `ID` = OBJID;
+		ELSE
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		END IF;
+	END IF;
+
+	SELECT errcode, errmsg;
+END$$
+
+DELIMITER ;
+
 
 
 /* ======================================================

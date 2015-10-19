@@ -152,28 +152,38 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 
 		case "CREATELEARNOBJECT2" :
 			{
-				// For JSON-based parameter, can NOT escape it directly!
-				$jsondata = json_decode( $realParamArr ['jsonData'] );
-				$loObj = new HIHLearnObject($jsondata);
-				$errCodes = $loObj->CheckValid();
-				if (!empty($errCodes)) {
-					export_error ( implode( ';', $errCodes) );
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					// For JSON-based parameter, can NOT escape it directly!
+					$jsondata = json_decode( $realParamArr ['jsonData'] );
+					$loObj = new HIHLearnObject($jsondata);
+					$errCodes = $loObj->CheckValid();
+					if (!empty($errCodes)) {
+						export_error ( implode( ';', $errCodes) );
+					} else {
+						HIHSrv_Function_1Param( 'learn_object_create2', $loObj);
+					}
 				} else {
-					HIHSrv_Function_1Param( 'learn_object_create2', $loObj);
-				}
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}			
 			}
 			break;
 			
 		case "CHANGELEARNOBJECT":
 			{
-				// For JSON-based parameter, can NOT escape it directly!
-				$jsondata = json_decode( $realParamArr ['jsonData'] );
-				$loObj = new HIHLearnObject($jsondata);
-				$errCodes = $loObj->CheckValid();
-				if (!empty($errCodes)) {
-					export_error ( implode( ';', $errCodes) );
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					// For JSON-based parameter, can NOT escape it directly!
+					$jsondata = json_decode( $realParamArr ['jsonData'] );
+					$loObj = new HIHLearnObject($jsondata);
+					$errCodes = $loObj->CheckValid(true);
+					if (!empty($errCodes)) {
+						export_error ( implode( ';', $errCodes) );
+					} else {
+						HIHSrv_Function_1Param( 'learn_object_change2', $loObj);
+					}
 				} else {
-					HIHSrv_Function_1Param( 'learn_object_change2', $loObj);
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
 				}			
 			}
 			break;
@@ -204,24 +214,56 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "CREATELEARNHISTORY" :
 			{
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
-					$username = escape ( $realParamArr['user'] );
-					$objid = escape ( $realParamArr['learnobject'] );
-					$learndate = escape ( $realParamArr['learndate'] );
-					$comment = escape ( $realParamArr['comment'] );
+					$jsondata = json_decode( $realParamArr ['jsonData'] );
+					$loHist = new HIHLearnHistory($jsondata);
+					$errCodes = $loHist->CheckValid();
 
-					// To-Do: Validate!
-					
-					$arRst = learn_hist_create ( $username, $objid, $learndate, $comment );
-					
-					if (! IsNullOrEmptyString ( $arRst [0] )) {
-						export_error ( $arRst [0] );
+					if (!empty($errCodes)) {
+						export_error ( implode( ';', $errCodes) );
 					} else {
-						echo json_encode ( $arRst [1] );
-					}						
+						$chkexistarray = learn_hist_exist ( $username, $objid );
+						if (! empty ( $chkexistarray [0] )) {
+							export_error($chkexistarray [0]);
+						} else {
+							if ($chkexistarray [1] === true) {
+								export_error(HIHConstants::EC_LearnHistoryExists);
+							} else {
+								HIHSrv_Function_1Param( 'learn_hist_create2', $loHist);
+							}
+						}
+					}
 				} else {
 					$sErrors = "User not login yet";
 					export_error ( sErrors );
-				}			
+				}
+			}
+			break;
+
+		case "CHANGELEARNHISTORY" :
+			{
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$jsondata = json_decode( $realParamArr ['jsonData'] );
+					$loHist = new HIHLearnHistory($jsondata);
+					$errCodes = $loHist->CheckValid(true);
+
+					if (!empty($errCodes)) {
+						export_error ( implode( ';', $errCodes) );
+					} else {
+						$chkexistarray = learn_hist_exist ( $username, $objid );
+						if (!empty ( $chkexistarray [0] )) {
+							export_error($chkexistarray [0]);
+						} else {
+							if ($chkexistarray [1] === true) {
+								HIHSrv_Function_1Param( 'learn_hist_change', $loHist);
+							} else {								
+								export_error(HIHConstants::EC_LearnHistoryNotExist);
+							}
+						}						
+					}
+				} else {
+					$sErrors = "User not login yet";
+					export_error ( sErrors );
+				}
 			}
 			break;
 			

@@ -458,6 +458,40 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.createLearnHistoryQ = function(objLearnHistory) {
+							var deferred = $q.defer();
+							var jsonData = objLearnHistory.toJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', jsonData: jsonData } )
+								.then(function(response) {
+									if ($.isArray(response.data) && response.data.length >= 1) {
+										deferred.resolve(objLearnHistory);											
+									}
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;							
+						};
+						rtnObj.changeLearnHistoryQ = function(objLearnHistory) {
+							var deferred = $q.defer();
+							var jsonData = objLearnHistory.toJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNHISTORY', jsonData: jsonData } )
+									.then(function(response) {
+										if ($.isArray(response.data) && response.data.length >= 1) {
+											deferred.resolve(objLearnHistory);											
+										}
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;							
+						};
+						rtnObj.deleteLearnHistoryQ = function(objLearnHistory) {
+							var deferred = $q.defer();
+							return deferred.promise;
+						};
+						rtnObj.deleteLearnHistoriesQ = function(arHistories) {
+							var deferred = $q.defer();
+							return deferred.promise;							
+						};
 						// Learn awards
 						rtnObj.loadLearnAwards = function (bForceReload) {
 							if (!$rootScope.isLearnAwardLoaded || (angular.isDefined(bForceReload) && bForceReload)) {

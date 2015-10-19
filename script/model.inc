@@ -18,6 +18,8 @@ class HIHConstants {
 	const EC_InvalidValidTo = 4;
 	const EC_ValidToLessValidFrom = 5;
 	const EC_InvalidContent = 6;
+	const EC_InvalidDate = 7;
+	const EC_InvalidID = 8;
 
 	// EC Number range of DB part: 201 - 250
 	const EC_ConnectionFail = 201;
@@ -46,6 +48,8 @@ class HIHConstants {
 	const EC_Delete_CategoryInUse = 252;
 	const EC_InvalidLearnObject = 253;
 	const EC_InvalidUser = 254;
+	const EC_LearnHistoryExist = 255;
+	const EC_LearnHistoryNotExist = 256;
 	
 	// Others?
 	
@@ -72,6 +76,11 @@ class HIHConstants {
 	const DV_FinReportOrder = 'v_fin_report_io2'; // changed from v_fin_report_io1 on 2015.10.8
 	// Procedures
 	const DP_CreateLearnObject = 'CREATE_LEARNOBJECT';
+	const DP_UpdateLearnObject = 'UPDATE_LEARNOBJECT';
+	const DP_DeleteLearnObject = 'DELETE_LEARNOBJECT';
+	const DP_CreateLearnHistory = 'CREATE_LEARNHISTORY';
+	const DP_UpdateLearnHistory = 'UPDATE_LEARNHISTORY';
+	const DP_DeleteLearnHistory = 'DELETE_LEARNHISTORY';
 	const DP_CreateLearnCategory = 'CREATE_LEARNCATEGORY';
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 	const DP_FinReportCC = 'REPORT_FIN_CC';
@@ -82,18 +91,28 @@ class HIHConstants {
 	const GC_ExternalSplitChar = ';';
 }
 
+///
+/// User
+///
 class HIHUser {
 	public $ID;
 	public $DisplayAs;
 	public $CreatedOn;
 	public $Gender;
 }
+
+///
+/// Learning part
+///
+
+// Learn Category
 class HIHLearnCategory {
 	public $ID;
 	public $ParentID;
 	public $Name;
 	public $Comment;
 }
+// Learn Object
 class HIHLearnObject {
 	public $ID;
 	public $CategoryID;
@@ -139,6 +158,7 @@ class HIHLearnObject {
 		return $errCodes;
 	}
 }
+// Learn History
 class HIHLearnHistory {
 	public $ObjectID;
 	public $UserID;
@@ -160,22 +180,14 @@ class HIHLearnHistory {
 	public function CheckValid($bNonCreateCase = false) {
 		$errCodes = array();
 		if (isset ( $this )) {
-			// The ID shall be check only in update/delete case
-			if ( $bNonCreateCase && !isset ( $this->ObjectID ) ) {
+			if ( !isset ( $this->ObjectID ) ) {
 				$errCodes[] = HIHConstants::EC_InvalidAccount;
 			}
-			
-			if (! isset ( $this->CategoryID )) {
-				$errCodes[] = HIHConstants::EC_InvalidCategory;
+			if (! isset ( $this->UserID )) {
+				$errCodes[] = HIHConstants::EC_InvalidUser;
 			}
-			
-			$strTemp = trim($this->Name);
-			if ($strTemp === '') {				
-				$errCodes[] = HIHConstants::EC_InvalidName;
-			}
-			$strTemp = trim($this->Content);
-			if ($strTemp === '') {				
-				$errCodes[] = HIHConstants::EC_InvalidContent;
+			if (! isset ( $this->LearnDate )) {
+				$errCodes[] = HIHConstants::EC_InvalidDate;
 			}
 		} else {
 			$errCodes[] = HIHConstants::EC_Unknown;
@@ -184,12 +196,53 @@ class HIHLearnHistory {
 		return $errCodes;
 	}
 }
+// Learn Award
 class HIHLearnAward {
+	public $ID;
+	
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidID;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
+}
+// Learn Plan Detail
+class HIHLearnPlanDetail {
 	
 }
+// Learn Plan Registration
+class HIHLearnPlanRegistration {
+	
+}
+// Learn Plan
 class HIHLearnPlan {
 	
 }
+
+///
+/// Finance part
+///
+
+// Finance Account
 class HIHAccount {
 	// Properties
 	public $ID;

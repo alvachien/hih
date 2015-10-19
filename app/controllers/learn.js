@@ -335,7 +335,7 @@
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$log', 'utils', 
 		    function($scope, $rootScope, $state, $stateParams, $http, $translate, $log, utils) {
 		    $scope.Activity = "";
-		    $scope.ActivityID = 3;
+		    $scope.ActivityID = hih.Constants.UIMode_Display;
 			$scope.CategoryIDs = $rootScope.arLearnCategory;
 			
 			$scope.objLearnObject = new hih.LearnObject();
@@ -380,7 +380,7 @@
 			  };
 			 
 			 $scope.submit = function() {
-				 // Verify it!
+				 // Verify it!				 
 				 var msgTab = $scope.objLearnObject.Verify();
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
@@ -534,7 +534,8 @@
 			 };
 		}])
 
-		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
+		.controller('LearnHistoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', 'utils', 
+			function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, utils) {
 			$scope.Activity = "";
 		    $scope.ActivityID = hih.Constants.UIMode_Display;
 			 
@@ -570,59 +571,61 @@
 			if (angular.isDefined($stateParams.histid)) {
 				if ($state.current.name === "home.learn.history.maintain") {
 					$scope.Activity = "Common.Edit";					 
+		    		$scope.ActivityID = hih.Constants.UIMode_Change;
 				} else if ($state.current.name === "home.learn.history.display") {
 					$scope.Activity = "Common.Display";
+				    $scope.ActivityID = hih.Constants.UIMode_Display;
+
 					$scope.isReadonly = true;
 				}
  				 
 				$.each($rootScope.arLearnHistory, function(idx, obj) {
 					if (obj.getLogicKey() === $stateParams.histid) {
 						$scope.CurrentLearnHistory = angular.copy(obj);
-							
+
 						return false;
 					}
 				}); 
 			 } else {
 				 $scope.CurrentLearnHistory = hih.LearnHistory.createNew();	
 				 $scope.Activity = "Common.Create";
+				 $scope.ActivityID = hih.Constants.UIMode_Create;
 			 };
 			 
 			 $scope.submit = function() {
-				 // Now, submit to the server
-				 if ($scope.CurrentLearnHistory.UserID) {					 
-				 } else {
-					 $rootScope.$broadcast("ShowMessage", "Error", "Select an user!", "error");
-					 return;					 
-				 }
-				 if ($scope.SelectedLearnObject && $scope.SelectedLearnObject.selected) {					 
-				 } else {
-					 $rootScope.$broadcast("ShowMessage", "Error", "Select a learning object!", "error");
-					 return;
+				 // Verify it!				 
+				 var msgTab = $scope.CurrentLearnHistory.Verify();
+				 if (msgTab && msgTab.length > 0) {
+					$translate(msgTab).then(function (translations) {
+						// Show errors
+						$.foreach(translations, function(idx, obj) {
+							$rootScope.$broadcast("ShowMessage", "Error", obj);
+						});
+  					});	
+				 	return;
 				 }
 				 
-				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', user:$scope.UserID, 
-					 learnobject: $scope.ObjectID, learndate: $scope.LearnDate, comment: $scope.Comment  } ).
-				 	success(function(data, status, headers, config) {
-					  // Then, go to display page
-					  $scope.gen_id = data[0].ObjectID.toString().concat('_', data[0].UserID.toString());
-					  
-					  utils.loadLearnHistories(true);
-				  }).
-				  error(function(data, status, headers, config) {
-					  // called asynchronously if an error occurs or server returns response with an error status.
-					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
-				  });
+				 // Now, submit to the server
+				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+					 utils.createLearnHistoryQ($scope.CurrentLearnHistory)
+					 	.then(function(response) {
+							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+					 utils.changeLearnHistoryQ($scope.CurrentLearnHistory)
+					 	.then(function(response) {
+							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 }
 			 };
 			 
 			 $scope.close = function() {
 				 $state.go("home.learn.history.list");
 			 };
-			 
-		    $scope.$on("LearnHistoryLoaded", function() {
-		    	console.log("HIH LearnHistory: List Loaded event fired!");
-		    	
-				$state.go("home.learn.history.display",   { histid : $scope.gen_id });
-		    });			 
 		}])
 
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'uiGridConstants', 'utils', 
