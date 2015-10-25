@@ -679,7 +679,6 @@
 							var deferred = $q.defer();
 							$http.post('script/hihsrv.php', { objecttype : 'GETFINANCESETTING' })
 								.then(function(response) {
-									$rootScope.arCurrency = [];
 									if ($.isArray(response.data) && response.data.length > 0) {
 										var fs = new hih.FinanceSetting();
 										fs.setContent(response.data);

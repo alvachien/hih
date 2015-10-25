@@ -40,6 +40,8 @@
 		"ValidFrom": "有效期始",
 		"ValidTo": "有效期至",
 		"Description": "描述",
+		"Header": "头信息",
+		"Detail": "详细信息",		
 		
 		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
@@ -99,6 +101,7 @@
  		"LearningObjectList": "学习对象列表",
  		"Score": "分数",
  		"Reason": "获取原因",
+		"Participants": "参与者",
  		"CreateLearningHistoryTitle": "创建学习记录",
  		"EditLearningHistoryTitle": "修改学习记录",
  		"CreateLearningAwardTitle": "创建学习成绩",

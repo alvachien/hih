@@ -816,7 +816,21 @@
 		    $scope.ActivityID = hih.Constants.UIMode_Display;
 			 
 			$scope.CurrentLearnPlan = null;	
-			$scope.showPart = 'hdr'; // Default show Header		 
+			$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+			$scope.DetailActivity = "Create Detail";
+			$scope.ParticipantActivity = "Create Participant";
+			$scope.showPart = 'hdr'; // Default show Header
+			
+			$scope.learnobjectConfig = {
+				create: false,
+				onChange: function(value){
+					$log.info('LearnHistoryController, Learn object control, event onChange, ', value);
+				},
+				valueField: 'ID',
+				labelField: 'Name',
+				maxItems: 1,
+				required: true
+			};
 
 			if (angular.isDefined($stateParams.id)) {
 				if ($state.current.name === "home.learn.history.maintain") {

@@ -259,8 +259,12 @@
 			if ($rootScope.objFinanceSetting) {
 				// Local currency
 				$scope.displayedCollection.push({
-					"Name": "Local Currency",
+					"Name": $rootScope.objFinanceSetting.LocalCurrencyComment,
 					"Value": $rootScope.objFinanceSetting.LocalCurrency
+				});
+				$scope.displayedCollection.push({
+					"Name": $rootScope.objFinanceSetting.CurrencyExchangeToilenceComment,
+					"Value": $rootScope.objFinanceSetting.CurrencyExchangeToilence
 				});
 			}
 		}])		
@@ -976,7 +980,8 @@
 			$scope.DocumentObject.Items.push(item2);
 			
 			// Verify
-			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency);
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency,
+				$rootScope.objFinanceSetting.CurrencyExchangeToilence);
 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
 				// Show all the errors?
 				$q.all(rptMsgs).then(

@@ -40,6 +40,8 @@
 		"ValidFrom": "Valid From",
 		"ValidTo": "Valid To",
 		"Description": "Description",
+		"Header": "Header",
+		"Detail": "Detail",		
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
@@ -99,6 +101,7 @@
  		"LearningObjectList": "Learning Objects List",
  		"Score": "Score",
  		"Reason": "Reason",
+		"Participants": "Participants",
  		"CreateLearningHistoryTitle": "Create Learning History",
  		"EditLearningHistoryTitle": "Edit Learning History",
  		"CreateLearningAwardTitle": "Create Learning Award",

@@ -1705,103 +1705,9 @@ END$$
 
 DELIMITER ;
 
--- Stored Procedure: `UPDATE_LEARNHISTORY`
-DROP procedure IF EXISTS `UPDATE_LEARNHISTORY`;
+-- Stored Procedure: `UPDATE_LEARNHISTORY`, Updated in 2015.10.21
 
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `UPDATE_LEARNHISTORY`(
-	IN userid varchar(25),
-	IN objid int(11),
-	IN learndate date,
-	IN comt varchar(45))
-BEGIN
--- Declare exception handler for failed insert
-	DECLARE errcode CHAR(5) DEFAULT '00000';
-	DECLARE errmsg TEXT DEFAULT NULL;
-
-	DECLARE EXIT HANDLER FOR SQLEXCEPTION
-	BEGIN
-		-- ERROR!
-		ROLLBACK;
-		SET errcode = '0001';
-		SET errmsg = 'SQL Exception occurred!';
-		SELECT errcode, errmsg;
-	END;
-
-	DECLARE EXIT HANDLER FOR SQLWARNING 
-	BEGIN
-		-- WARNING!
-		ROLLBACK;
-		SET errcode = '0002';
-		SET errmsg = 'SQL Warning occurred!';
-		SELECT errcode, errmsg;
-	END;
-
-	START TRANSACTION;
-
-	IF EXISTS(SELECT 1 FROM t_user WHERE USERID = userid) AND EXISTS(SELECT 1 FROM t_learn_obj WHERE ID = objid) THEN		
-		IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
-			SET errmsg = 'Record not exists!';
-			SET errcode = '00003';
-		ELSE
-			UPDATE `t_learn_hist` SET `COMMENT` = comt
-				WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;			
-		END IF;
-	ELSE
-		SET errmsg = 'Invalid User OR Invalid Object';
-		SET errcode = '00004';
-	END IF;
-
-	SELECT errcode, errmsg;
-END$$
-
-DELIMITER ;
-
--- Stored Procedure: DELETE_LEARNHISTORY
-DROP procedure IF EXISTS `DELETE_LEARNHISTORY`;
-
-DELIMITER $$
-CREATE PROCEDURE `DELETE_LEARNHISTORY` (
-	IN userid varchar(25),
-	IN objid int(11),
-	IN learndate date)
-BEGIN
--- Declare exception handler for failed insert
-	DECLARE errcode CHAR(5) DEFAULT '00000';
-	DECLARE errmsg TEXT DEFAULT NULL;
-
-	DECLARE EXIT HANDLER FOR SQLEXCEPTION
-	BEGIN
-		-- ERROR!
-		ROLLBACK;
-		SET errcode = '0001';
-		SET errmsg = 'SQL Exception occurred!';
-		SELECT errcode, errmsg;
-	END;
-
-	DECLARE EXIT HANDLER FOR SQLWARNING 
-	BEGIN
-		-- WARNING!
-		ROLLBACK;
-		SET errcode = '0002';
-		SET errmsg = 'SQL Warning occurred!';
-		SELECT errcode, errmsg;
-	END;
-
-	START TRANSACTION;
-
-	IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
-		SET errmsg = 'Record not exists!';
-		SET errcode = '00003';
-	ELSE
-		DELETE FROM `t_learn_hist`
-			WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;			
-	END IF;
-
-	SELECT errcode, errmsg;
-END$$
-
-DELIMITER ;
+-- Stored Procedure: DELETE_LEARNHISTORY - Updated 2015.10.21
 
 -- Stored Procedure: CREATE_LEARNOBJECT
 DROP procedure IF EXISTS `CREATE_LEARNOBJECT`;
@@ -2266,6 +2172,14 @@ END$$
 
 DELIMITER ;
 
+/* ======================================================
+    Delta parts on 2015.10.25
+   ====================================================== */
+   
+-- Foregin currency: KRW
+INSERT INTO `t_fin_currency` (`CURR`,`NAME`,`Symbo`) VALUES ('KRW','韩元',NULL);
+-- Tolerance for currency exchange
+INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('CurrencyExchangeToilence','2','货币兑换容错');
 
 
 /* ======================================================

@@ -16,6 +16,7 @@
 		FinanceTranTypeSplitChar: " > ",
 		
 		FinSetting_LocalCurrency: "LocalCurrency",
+		FinSetting_CurrencyExchangeToilence: "CurrencyExchangeToil",
 		
 		// UI modes
 		UIMode_Create: 1,
@@ -609,6 +610,8 @@
 	hih.FinanceSetting = function() {
 		this.LocalCurrency = "";
 		this.LocalCurrencyComment = "";
+		this.CurrencyExchangeToilence = 0;
+		this.CurrencyExchangeToilenceComment = "";
 	};
 	hih.extend(hih.FinanceSetting, hih.Model);
 	hih.FinanceSetting.prototype.setContent = function(arData) {
@@ -618,6 +621,9 @@
 				if (obj.setid === hih.Constants.FinSetting_LocalCurrency) {												
 					that.LocalCurrency = obj.setvalue;
 					that.LocalCurrencyComment = obj.comment;
+				} else if (obj.setid === hih.Constants.FinSetting_CurrencyExchangeToilence) {
+					that.CurrencyExchangeToilence = parseFloat(obj.setvalue);
+					that.CurrencyExchangeToilenceComment = obj.comment;
 				}
 			});
 		}
@@ -1216,7 +1222,7 @@
 			});
 		}
 	};
-	hih.FinanceDocument.prototype.Verify = function($translate, locCurr) {
+	hih.FinanceDocument.prototype.Verify = function($translate, locCurr, exgtoil) {
 		var errMsgs = [];
 		
 		// Document type
@@ -1307,11 +1313,15 @@
 			} else if (this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {				
 			}
 		}
-		if (this.DocTypeID === hih.Constants.FinDocType_Transfer 
-			|| this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-				
+		if (this.DocTypeID === hih.Constants.FinDocType_Transfer) {
 			this.TranAmount = hih.ModelUtility.Round2Two(this.TranAmount); 
 			if (this.TranAmount !== 0.0) {
+				// Transfer document shall be zero balance!
+				errMsgs.push($translate("Message.InvalidTransferAmount"));
+			}
+		} else if(this.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+			this.TranAmount = hih.ModelUtility.Round2Two(this.TranAmount); 
+			if (this.TranAmount > exgtoil) {
 				// Transfer document shall be zero balance!
 				errMsgs.push($translate("Message.InvalidTransferAmount"));
 			}

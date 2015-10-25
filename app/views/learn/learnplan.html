@@ -13,9 +13,9 @@
     </div>
 
     <ul class="nav nav-tabs">
-        <li role="presentation" ng-class="showPart === 'hdr' ? 'active' : ''"><a role="button" ng-click="showPart = 'hdr'">Header</a></li>
-        <li role="presentation" ng-class="showPart === 'det' ? 'active' : ''"><a role="button" ng-click="showPart = 'det'">Detail</a></li>
-        <li role="presentation" ng-class="showPart === 'reg' ? 'active' : ''"><a role="button" ng-click="showPart = 'reg'">Registration</a></li>
+        <li role="presentation" ng-class="showPart === 'hdr' ? 'active' : ''"><a role="button" ng-click="showPart = 'hdr'"><span translate="Common.Header">Header</span></a></li>
+        <li role="presentation" ng-class="showPart === 'det' ? 'active' : ''"><a role="button" ng-click="showPart = 'det'"><span translate="Common.Detail">Detail</span></a></li>
+        <li role="presentation" ng-class="showPart === 'reg' ? 'active' : ''"><a role="button" ng-click="showPart = 'reg'"><span translate="Learning.Participants">Participants</span></a></li>
     </ul>
 
     <!-- Header -->
@@ -40,7 +40,93 @@
 
     <!-- Details -->
     <div class="container" ng-show="showPart === 'det'">
-		<label>Detail pages</label>
+		<!-- Tables -->
+		<table st-table="detailColl" class="table">
+			<thead>
+				<tr>
+					<th st-sort="objID">Object ID</th>
+					<th st-sort="objName">Object Name</th>
+					<th st-sort="defDay">Deffered Days</th>
+					<th st-sort="recType">Recur. Type</th>
+					<th>Operations</th>
+				</tr>
+				<tr>
+					<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in rowCollection">
+					<td>{{row.ObjectID}}</td>
+					<td>{{row.LearnObjectObject.Name}}</td>
+					<td>{{row.DeferredDay}}</td>
+					<td>{{row.RecurType}}</td>
+					<td>
+                        <button type="button" class="btn btn-sm">
+                            <i class="glyphicon glyphicon-share">
+                            </i>
+                        </button>
+                        
+                        <button type="button" class="btn btn-sm">
+                            <i class="glyphicon glyphicon-edit">
+                            </i>
+                        </button>
+						<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+							<i class="glyphicon glyphicon-remove-circle">
+							</i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- Then, default one -->
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{DetailActivity | translate}}</div>
+            
+            <div class="panel-body">
+            <form class="form-horizontal" role="form" name="frmItem">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Learning.Object">Learning Object:</label>
+                    <div class="col-sm-10">
+                        <selectize placeholder='Select a learn object...' options='arLearnObject' 
+                                config="learnobjectConfig" ng-model="SelectPlanDetail.ObjectID"
+                                ng-disabled="isReadonly" required="required"></selectize>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" >Recur Type:</label>
+                    <div class="col-sm-10">
+                        <select ng-model="SelectedPlanDetail.RecurType">
+                            <option value="1">One Time</option>
+                            <option value="2">H. Ebbinghaus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemAmt">Defer Days:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.TranAmount_Org" required="required"></input>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemDesp" translate="Common.Comment">Comment: </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="iptItemDesp" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.Desp" required="required"></input>
+			        </div>
+		        </div>
+
+                <!-- Button group -->
+                <div class="form-group">
+                	<div class="col-sm-10">
+                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly">Save Detail</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Detail Editing</button>
+                    </div>
+                </div>
+            </form>
+         </div>
     </div>
 	
 	<!-- Registration -->
@@ -57,6 +143,5 @@
             		>Submit</button>
             <button class="btn btn-danger" ng-click="close()">Cancel</button>
         </div>
-    </div>
-	
+    </div>	
 </div>
