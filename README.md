@@ -32,7 +32,7 @@ In that case, HIH provides the opportunity to share the information among the in
 Current Version: Web 0.5.*;
 Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 
-### Key Directions/Decisions in Design/Development phrase
+### Key Directions/Decisions in Scope/Design/Development phrase
 - 2015.7.1, Switch from native BootStrp to UI Bootstrap;
 - 2015.7.2, Switch from Baidu CDN to Bootcss CDN, because the number of the components;
 - 2015.7.15, Switch from Modal dialog to Sweet Alert. The dialog in HIH only for Message/Warn/Error; 
@@ -46,6 +46,9 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 	- Formula for Rate: 1 Foreign Currency in use = 1 Local Currency * Rate;
 	- Formula for calculating local currency: Local Currency = Foreign Currency / Rate;
 - 2015.9.17, It's DECIDED that using auglar-selectize instead of ui-select, because its requires .selected on the attribute which causes it is not easy to use ng-model directly on other controls;
+- 2015.10.20, It's DECIDED that the stored procedure in DB layer only conver simple CREATE/UPDATE/DELETE operation no others. The reason we need stored procedure is  that
+	- We need LAST_INSERT_ID() in Creation case;
+	- We need transaction in any case;
 - To be updated.
 
 ### HIH, version web 0.1 to web 0.3

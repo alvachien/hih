@@ -400,6 +400,10 @@
 			
 			return errMsgs;
 		},
+		_Transfer: function() {
+			// Change the date
+			this.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);			
+		},
 		createNew: function() {
 			// Inherit from Model first
 			var lrnhist = new hih.Model();
@@ -421,6 +425,7 @@
 			lrnhist.getLogicKey = hih.LearnHistory._getLogicKey;
 			lrnhist.toJSONObject = hih.LearnHistory._toJSONObject;
 			lrnhist.toJSON = hih.LearnHistory._toJSON;
+			lrnhist.Transfer = hih.LearnHistory._Transfer;
 			
 			return lrnhist;
 		}
@@ -448,22 +453,154 @@
 		this.Score = obj.score;
 		this.Reason = obj.reason;
 	};
+	hih.LearnAward.prototype.buildRelationship = function() {
+		var that = this;
+	};
+	hih.LearnAward.prototype.Verify = function() {
+		var errMsgs = [];
+	};	
+	hih.LearnAward.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};	
+	hih.LearnAward.prototype.ToJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
 	
 	/* Learn Plan Detail */
 	hih.LearnPlanDetail = function() {
 		// Attributes
+		this.ID = -1;
+		this.ObjectID = -1;
+		this.DeferredDay = 0;
+		this.RecurType = hih.Constants.LearnPlanRecurType_OneTime;
+		this.Comment = "";
+		
+		// Runtime information
+		this.LearnObjectObject = {};
 	};
-	
+	hih.extend(hih.LearnPlanDetail, hih.Model);
+	hih.LearnPlanDetail.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.ObjectID = parseInt(obj.objectid);
+		this.DeferredDay = parseInt(obj.deferredday);
+		this.RecurType = parseInt(obj.recurtype);
+		this.Comment = obj.comment;
+	};
+	hih.LearnPlanDetail.prototype.buildRelationship = function(arLearnObject) {
+		var that = this;
+		if ($.isArray(arLearnObject) && arLearnObject.length > 0) {
+			$.each(arLearnObject, function(idx, obj) {
+				if (that.ObjectID === obj.ID) {
+					that.LearnObjectObject = obj;
+					return false;
+				}
+			});
+		}
+	};
+	hih.LearnPlanDetail.prototype.Verify = function() {
+		var errMsgs = [];
+		if (this.ObjectID === -1) {
+			// Error!
+		}
+		
+		return errMsgs;
+	};	
+	hih.LearnPlanDetail.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};	
+	hih.LearnPlanDetail.prototype.ToJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
 	/* Learn Plan Registration */
 	hih.LearnPlanRegistration = function() {
 		// Attributes
+	};
+	hih.extend(hih.LearnPlanRegistration, hih.Model);
+	hih.LearnPlanRegistration.prototype.setContent = function(obj) {
+		
+	};
+	hih.LearnPlanRegistration.prototype.buildRelationship = function() {
+		var that = this;
+	};
+	hih.LearnPlanRegistration.prototype.Verify = function() {
+		var errMsgs = [];
+	};	
+	hih.LearnPlanRegistration.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		return forJSON;
+	};	
+	hih.LearnPlanRegistration.prototype.ToJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
 	
 	/* Learn Plan Header */
 	hih.LearnPlan = function() {
 		// Attributes
+		this.ID = -1;
+		this.Name = "";
+		this.Comment = "";
+		
+		this.DetailArray = [];
 	};	
-	
+	hih.extend(hih.LearnPlan, hih.Model);
+	hih.LearnPlan.prototype.setContent = function(obj) {
+		
+	};
+	hih.LearnPlan.prototype.buildRelationship = function() {
+		var that = this;
+	};
+	hih.LearnPlan.prototype.Verify = function() {
+		var errMsgs = [];
+	};	
+	hih.LearnPlan.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "DetailArray" ) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};	
+	hih.LearnPlan.prototype.ToJSON = function() {
+		var forJSON = this.toJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};	
 	
 	// =========================================================
 	// Finance part

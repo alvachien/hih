@@ -6,7 +6,7 @@
 	
 	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  
 		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize'])
+		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'smart-table'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -43,6 +43,31 @@
 	        	url: '/maintain/:objid',
 	        	templateUrl: 'app/views/learn/learnobject.html',
 	        	controller: 'LearnObjectController'
+	        })
+	        .state("home.learn.plan", {
+	            url: "/plan",
+	            abstract: true,
+	            template: '<div ui-view></div>'
+	        })
+	        .state("home.learn.plan.list", {
+	            url: "/list",
+	        	templateUrl: 'app/views/learn/learnplanlist.html',
+	        	controller: 'LearnPlanListController'
+	        })
+	        .state("home.learn.plan.create", {
+	            url: "/create",
+	        	templateUrl: 'app/views/learn/learnplan.html',
+	        	controller: 'LearnPlanController'
+	        })
+	        .state("home.learn.plan.maintain", {
+	            url: "/maintain/:id",
+	        	templateUrl: 'app/views/learn/learnplan.html',
+	        	controller: 'LearnPlanController'
+	        })
+	        .state("home.learn.plan.display", {
+	            url: "/list",
+	        	templateUrl: 'app/views/learn/learnplan.html',
+	        	controller: 'LearnPlanController'
 	        })
 	        .state("home.learn.history", {
 	            url: "/history",
@@ -490,9 +515,31 @@
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				// To-Do: delete multiple rows
-				if ($scope.selectedRows.length <= 0)
-					return;
+				if ($scope.selectedRows.length !== 1) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
+				
+				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+					utils.deleteLearnHistoryQ($scope.selectedRows[0])
+						.then(function(response) {
+							// Empty selection table
+							$scope.selectedRows = [];
+							
+							// Just refresh it!
+							$scope.refreshList();
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
+				});
 			 };
 			
 			 // Display
@@ -627,7 +674,213 @@
 				 $state.go("home.learn.history.list");
 			 };
 		}])
+		
+		.controller('LearnPlanListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', 
+			function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
+			
+			// Grid option
+			$scope.gridOptions = {};
+			$scope.gridOptions.data = 'myData';
+			$scope.gridOptions.enableSorting = true;
+			$scope.gridOptions.enableColumnResizing = true;
+			$scope.gridOptions.enableFiltering = true;
+			$scope.gridOptions.enableGridMenu = false;
+			$scope.gridOptions.enableColumnMenus = false;
+			$scope.gridOptions.showGridFooter = true;
+			$scope.gridOptions.enableRowSelection = true;
+			$scope.gridOptions.enableFullRowSelection = true;
+			$scope.gridOptions.selectionRowHeaderWidth = 35;
+			
+			$scope.gridOptions.rowIdentity = function(row) {
+			 	return row.ID;
+			};
+			$scope.gridOptions.getRowIdentity = function(row) {
+			 	return row.ID;
+			};			
+			$scope.gridOptions.onRegisterApi = function(gridApi) {
+      			$scope.gridApi = gridApi;
+				
+     			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
+     				if (row.isSelected) {
+     					$scope.selectedRows.push(row.entity);     					
+     				} else {
+     					$.each($scope.selectedRows, function(idx, obj) {
+							if (obj.ID === row.entity.ID) {
+								$scope.selectedRows.splice(idx, 1);
+								return false;
+							}
+						});
+     				}
+      		    });
+    		};
 
+			$scope.gridOptions.columnDefs = [
+		    	{ name:'planid', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'100' },
+		    	{ name:'planname', field: 'Name', displayName: 'Common.Name', headerCellFilter: "translate", width:'150' },
+				{ name:'plancmt', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '150' }
+		    ];
+			
+			utils.loadLearnCategoriesQ()
+				.then(function(response) {
+					utils.loadLearnObjectsQ()
+						.then(function(response2) {
+							utils.loadLearnPlansQ()
+								.then(function(response3) {
+									$scope.myData = [];
+									$.each($rootScope.arLearnPlan, function(idx, obj) {
+										$scope.myData.push(angular.copy(obj));					
+									});
+								}, function(reason3) {
+									$rootScope.$broadcast("ShowMessage", "Error", reason3);
+								});
+						}, function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						});					
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});			
+		  
+		    $scope.selectedRows = [];
+		    
+			// Remove to the real data holder
+			$scope.removeItem = function removeItem(row) {
+				if ($scope.selectedRows.length !== 1) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
+				
+				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+					// utils.deleteLearnHistoryQ($scope.selectedRows[0])
+					// 	.then(function(response) {
+					// 		// Empty selection table
+					// 		$scope.selectedRows = [];
+					// 		
+					// 		// Just refresh it!
+					// 		$scope.refreshList();
+					// 	}, function(reason) {
+					// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
+					// 	});
+				});
+			 };
+			
+			 // Display
+			 $scope.displayItem = function () {
+				if ($scope.selectedRows.length <= 0)
+					return;
+				
+				var row = $scope.selectedRows[0];
+				$state.go("home.learn.plan.display",   { id : row.ID });
+			 };
+			
+			 // Edit
+			 $scope.editItem = function () {
+				if ($scope.selectedRows.length <= 0)
+					return;
+
+				var row = $scope.selectedRows[0];
+				$state.go("home.learn.plan.maintain",  { id : row.ID });
+			 };
+			
+			 // Create
+			 $scope.newItem = function() {
+				//$location.path('/learnobject');
+				$state.go('home.learn.plan.create');
+			 };
+			
+			 // Refresh list
+			 $scope.refreshList = function() {
+				// Reload the whole list
+				utils.loadLearnPlansQ(true)
+					.then(function(response2) {
+						$scope.myData = [];
+						$.each($rootScope.arLearnPlan, function(idx, obj) {
+							$scope.myData.push(angular.copy(obj));					
+						});
+					}, function(reason2) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					});					
+			 };
+		}])
+
+		.controller('LearnPlanController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', 'utils', 
+			function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, utils) {
+			$scope.Activity = "";
+		    $scope.ActivityID = hih.Constants.UIMode_Display;
+			 
+			$scope.CurrentLearnPlan = null;	
+			$scope.showPart = 'hdr'; // Default show Header		 
+
+			if (angular.isDefined($stateParams.id)) {
+				if ($state.current.name === "home.learn.history.maintain") {
+					$scope.Activity = "Common.Edit";					 
+		    		$scope.ActivityID = hih.Constants.UIMode_Change;
+				} else if ($state.current.name === "home.learn.history.display") {
+					$scope.Activity = "Common.Display";
+				    $scope.ActivityID = hih.Constants.UIMode_Display;
+
+					$scope.isReadonly = true;
+				}
+ 				 
+				$.each($rootScope.arLearnPlan, function(idx, obj) {
+					if (obj.ID === parseInt($stateParams.id)) {
+						$scope.CurrentLearnPlan = angular.copy(obj);
+
+						return false;
+					}
+				}); 
+			 } else {
+				 $scope.CurrentLearnPlan = new hih.LearnPlan();
+				 $scope.Activity = "Common.Create";
+				 $scope.ActivityID = hih.Constants.UIMode_Create;
+			 };
+			 
+			 $scope.submit = function() {
+				 //$scope.CurrentLearnHistory.Transfer();
+				 
+				 // Verify it!				 
+				 var msgTab = $scope.CurrentLearnHistory.Verify();
+				 if (msgTab && msgTab.length > 0) {
+					$translate(msgTab).then(function (translations) {
+						// ToDo: change the multiple error string handling behavior. Combining the error into a longer one
+						// Show errors
+						$.foreach(translations, function(idx, obj) {
+							$rootScope.$broadcast("ShowMessage", "Error", obj);
+						});
+  					});	
+				 	return;
+				 }
+				 
+				 // Now, submit to the server
+				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+					 utils.createLearnHistoryQ($scope.CurrentLearnHistory)
+					 	.then(function(response) {
+							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+					 utils.changeLearnHistoryQ($scope.CurrentLearnHistory)
+					 	.then(function(response) {
+							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 }
+			 };
+			 
+			 $scope.close = function() {
+				 $state.go("home.learn.plan.list");
+			 };
+		}])
+		
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'uiGridConstants', 'utils', 
 		    function($scope, $rootScope, $state, $http, $translate, uiGridConstants, utils) {
 			utils.loadLearnAwards();

@@ -85,6 +85,7 @@
  		"LearningObject": "Learning Object",
  		"LearningHistory": "Learning History",
  		"LearningAward": "Learning Award",
+		"LearningPlan": "Learning Plan",
  		
  		"LearningObjectListTitle": "Learning Object in List View",
  		"LearningObjectListDesp" : "Learn objects in List view show all the objects in the list view.",

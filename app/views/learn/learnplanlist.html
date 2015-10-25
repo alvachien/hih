@@ -1,0 +1,32 @@
+<div id="viewLearnPlan">
+	<div class="page-header">
+		<h2>
+			<span translate="Learn.LearningPlan">Learn Plans</span> <small translate="Common.ListView"> List View </small>
+		</h2>
+		
+		<div class="btn-toolbar" role="toolbar" aria-label="...">
+		  <div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn-group btn-primary" ng-click="newItem()" translate="Common.New">New</button>
+			<button type="button" class="btn-group btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+		  </div>
+		  
+		  <div class="btn-group" role="group" aria-label="...">
+  			<button type="button" ng-click="displayItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
+					translate="Common.Display">					
+			</button>
+			<button type="button" ng-click="editItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
+					translate="Common.Edit">
+			</button>
+			<button type="button" ng-click="removeItem()" ng-disabled="selectedRows.length <= 0"
+					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
+					translate="Common.Delete">
+			</button>
+		  </div>
+		</div>
+	</div>
+
+	<div id="gridLearnPlan" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
+		 style="width: 100%; height: 500px;"></div>
+</div>

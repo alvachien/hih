@@ -1705,7 +1705,6 @@ END$$
 
 DELIMITER ;
 
-
 -- Stored Procedure: `UPDATE_LEARNHISTORY`
 DROP procedure IF EXISTS `UPDATE_LEARNHISTORY`;
 
@@ -1850,6 +1849,11 @@ END$$
 
 DELIMITER ;
 
+
+/* ======================================================
+    Delta parts on 2015.10.20
+   ====================================================== */
+
 -- Stored Procedure: UPDATE_LEARNOBJECT
 DROP procedure IF EXISTS `UPDATE_LEARNOBJECT`;
 
@@ -1885,12 +1889,13 @@ BEGIN
 		IF EXISTS(SELECT 1 FROM `t_learn_obj` WHERE ID = OBJID FOR UPDATE) THEN 
 			UPDATE `t_learn_obj` SET `CATEGORY` = CTGYID, `NAME` = OBJNAME, `CONTENT` = OBJCONTENT
 				WHERE `ID` = OBJID;
+            COMMIT;
 		ELSE
 			SET errmsg = 'Record not exists!';
 			SET errcode = '00003';
 		END IF;
 	ELSE
-		SET errmsg = 'Invalid User OR Invalid Object';
+		SET errmsg = 'Invalid inputting parameters';
 		SET errcode = '00004';
 	END IF;
 
@@ -1936,6 +1941,7 @@ BEGIN
 	ELSE
 		IF EXISTS(SELECT 1 FROM `t_learn_obj` WHERE ID = OBJID FOR UPDATE) THEN 
 			DELETE FROM `t_learn_obj` WHERE `ID` = OBJID;
+            COMMIT;
 		ELSE
 			SET errmsg = 'Record not exists!';
 			SET errcode = '00003';
@@ -1947,12 +1953,109 @@ END$$
 
 DELIMITER ;
 
+-- Stored Procedure: `UPDATE_LEARNHISTORY`
+DROP procedure IF EXISTS `UPDATE_LEARNHISTORY`;
 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UPDATE_LEARNHISTORY`(
+	IN userid varchar(25),
+	IN objid int(11),
+	IN learndate date,
+	IN comt varchar(45))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF EXISTS(SELECT 1 FROM t_user WHERE USERID = userid) AND EXISTS(SELECT 1 FROM t_learn_obj WHERE ID = objid) THEN		
+		IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		ELSE
+			UPDATE `t_learn_hist` SET `COMMENT` = comt
+				WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;
+            COMMIT;
+		END IF;
+	ELSE
+		SET errmsg = 'Invalid User OR Invalid Object';
+		SET errcode = '00004';
+	END IF;
+
+	SELECT errcode, errmsg;
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: DELETE_LEARNHISTORY
+DROP procedure IF EXISTS `DELETE_LEARNHISTORY`;
+
+DELIMITER $$
+CREATE PROCEDURE `DELETE_LEARNHISTORY` (
+	IN userid varchar(25),
+	IN objid int(11),
+	IN learndate date)
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF NOT EXISTS(SELECT 1 FROM t_learn_hist WHERE userid = userid and objectid = objid and learndate = learndate FOR UPDATE) THEN 
+		SET errmsg = 'Record not exists!';
+		SET errcode = '00003';
+	ELSE
+		DELETE FROM `t_learn_hist`
+			WHERE `USERID` = userid AND `OBJECTID` = objid AND `LEARNDATE` = learndate;	
+        COMMIT;		
+	END IF;
+
+	SELECT errcode, errmsg;
+END$$
+
+DELIMITER ;
 
 /* ======================================================
-    Delta parts on 2015.11.01+
+    Delta parts on 2015.10.21
    ====================================================== */
-
 
 -- Table Create: t_learn_plan, header of plan
 CREATE TABLE IF NOT EXISTS `t_learn_plan` (
@@ -1962,15 +2065,214 @@ CREATE TABLE IF NOT EXISTS `t_learn_plan` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan header';
 
+-- Table Create, t_learn_plandtl, detail of plan
 CREATE TABLE IF NOT EXISTS `t_learn_plandtl` (
   `ID` int(11) NOT NULL,
   `OBJECTID` int(11) NOT NULL,
   `DEFERREDDAY` int(11) NOT NULL DEFAULT 0,
   `RECURTYPE` tinyint(4) NOT NULL DEFAULT 0,
   `COMMENT` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`, `OBJECTID`, `LEARNDATE`)
+  PRIMARY KEY (`ID`, `OBJECTID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan detail';
   
+-- Stored procedure: CREATE_LEARNPLAN
+DROP procedure IF EXISTS `CREATE_LEARNPLAN`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CREATE_LEARNPLAN`(IN PLANNAME nvarchar(45), IN PLANCOMMENT nvarchar(45))
+proc_main:BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+	DECLARE errid INT(11) DEFAULT -1;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg, errid;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg, errid;
+	END;
+
+	IF PLANNAME IS NOT NULL AND LENGTH(PLANNAME) > 0 then
+		INSERT INTO `t_learn_plan` (`NAME`, `CONTENT`)
+			VALUES (PLANNAME, PLANCONTENT);
+	ELSE 
+		SET errmsg = 'Invalid inputting parameter';
+		SET errcode = '00003';
+		SELECT errcode, errmsg, errid;
+		LEAVE proc_main;
+	END IF;
+	
+	SELECT errcode, errmsg, LAST_INSERT_ID();
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: UPDATE_LEARNPLAN
+DROP procedure IF EXISTS `UPDATE_LEARNPLAN`;
+
+DELIMITER $$
+CREATE PROCEDURE `UPDATE_LEARNPLAN` (IN PLANID int(11), 
+	IN PLANNAME nvarchar(45), 
+	IN PLANCOMMENT nvarchar(45))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	IF PLANID IS NOT NULL AND PLANNAME IS NOT NULL AND LENGTH(PLANNAME) > 0 then
+		IF EXISTS(SELECT 1 FROM `t_learn_plan` WHERE ID = PLANID FOR UPDATE) THEN 
+			UPDATE `t_learn_plan` SET `NAME` = PLANNAME, `COMMENT` = PLANCOMMENT
+				WHERE `ID` = PLANID;
+		ELSE
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		END IF;
+	ELSE
+		SET errmsg = 'Invalid inputting parameters';
+		SET errcode = '00004';
+	END IF;
+
+	SELECT errcode, errmsg;
+
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure: DELETE_LEARNPLAN
+DROP procedure IF EXISTS `DELETE_LEARNPLAN`;
+
+DELIMITER $$
+CREATE PROCEDURE `DELETE_LEARNPLAN` (IN PLANID int(11))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+	IF EXISTS(SELECT 1 FROM `t_learn_plan` WHERE ID = PLANID FOR UPDATE) THEN 
+		DELETE FROM `t_learn_plan` WHERE `ID` = PLANID;
+		DELETE FROM `t_learn_plandtl` WHERE `ID` = PLANID;
+
+		COMMIT;
+	ELSE
+		SET errmsg = 'Record not exists!';
+		SET errcode = '00003';
+	END IF;
+
+	SELECT errcode, errmsg;
+
+END$$
+
+DELIMITER ;
+
+-- Stored procedure: DELETE_LEARNOBJECT
+DROP procedure IF EXISTS `DELETE_LEARNOBJECT`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DELETE_LEARNOBJECT`(IN OBJID INT(11))
+BEGIN
+-- Declare exception handler for failed insert
+	DECLARE errcode CHAR(5) DEFAULT '00000';
+	DECLARE errmsg TEXT DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		-- ERROR!
+		ROLLBACK;
+		SET errcode = '0001';
+		SET errmsg = 'SQL Exception occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	DECLARE EXIT HANDLER FOR SQLWARNING 
+	BEGIN
+		-- WARNING!
+		ROLLBACK;
+		SET errcode = '0002';
+		SET errmsg = 'SQL Warning occurred!';
+		SELECT errcode, errmsg;
+	END;
+
+	START TRANSACTION;
+
+-- Check the existence of the user	
+	IF EXISTS(SELECT 1 FROM `t_learn_hist` WHERE OBJECTID = OBJID) OR EXISTS(select 1 FROM `t_learn_plandtl` WHERE OBJECTID = OBJID) THEN
+		SET errmsg = 'Record still in use!';
+		SET errcode = '00004';
+	ELSE
+		IF EXISTS(SELECT 1 FROM `t_learn_obj` WHERE ID = OBJID FOR UPDATE) THEN 
+			DELETE FROM `t_learn_obj` WHERE `ID` = OBJID;
+			COMMIT;
+		ELSE
+			SET errmsg = 'Record not exists!';
+			SET errcode = '00003';
+		END IF;
+	END IF;
+
+	SELECT errcode, errmsg;
+
+END$$
+
+DELIMITER ;
+
+
+
+/* ======================================================
+    Delta parts on 2015.11.01+
+   ====================================================== */
+
+-- Table Create, t_learn_plan_reg, registration of the learning plan
 CREATE TABLE IF NOT EXISTS `t_learn_plan_reg` (
   `ID` int(11) NOT NULL,
   `USERID` int(25) NOT NULL,
@@ -1979,6 +2281,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_plan_reg` (
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan registration';
+
 
 -- Table Creation: Asset value change
 CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (

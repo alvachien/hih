@@ -40,7 +40,6 @@ define('MySqlLearnHistHierView', 'v_learn_histhier', false);
 define('MySqlLearnAwardTable', 't_learn_award', false);
 define('MySqlLearnAwardView', 'v_learn_award', false);
 define('MySqlLearnAwardTable', 't_learn_awd', false);
-define('MySqlLearnHistoryCreateProc', 'CREATE_LEARNHISTORY', false);
 define('MySqlLearnAwardCreateProc', 'CREATE_LEARNAWARD', false);
 define('MySqlFinAccountTable', 't_fin_account', false);
 define('MySqlFinAccountView', 'v_fin_account', false);

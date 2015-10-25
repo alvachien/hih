@@ -221,7 +221,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					if (!empty($errCodes)) {
 						export_error ( implode( ';', $errCodes) );
 					} else {
-						$chkexistarray = learn_hist_exist ( $username, $objid );
+						$chkexistarray = learn_hist_exist ( $loHist->UserID,  $loHist->ObjectID, $loHist->LearnDate );
 						if (! empty ( $chkexistarray [0] )) {
 							export_error($chkexistarray [0]);
 						} else {
@@ -249,7 +249,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					if (!empty($errCodes)) {
 						export_error ( implode( ';', $errCodes) );
 					} else {
-						$chkexistarray = learn_hist_exist ( $username, $objid );
+						$chkexistarray = learn_hist_exist ( $loHist->UserID,  $loHist->ObjectID, $loHist->LearnDate );
 						if (!empty ( $chkexistarray [0] )) {
 							export_error($chkexistarray [0]);
 						} else {
@@ -269,9 +269,9 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			
 		case "DELETELEARNHISTORY": 
 			{
-				$userid = escape ( $realParamArr ['userid'] );
-				$objid = escape ( $realParamArr ['objectid'] );
-				HIHSrv_Function_2Param( 'learn_hist_delete', $userid, $objid );
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loHist = new HIHLearnHistory($jsondata);
+				HIHSrv_Function_3Param( 'learn_hist_delete', $loHist->UserID,  $loHist->ObjectID, $loHist->LearnDate );
 			}
 			break;
 		
@@ -310,6 +310,30 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			{
 				$objids =  explode(',', escape( $realParamArr ['ids'] ));
 				HIHSrv_Function_1Param( 'learn_award_multidelete', $objids );
+			}
+			break;
+			
+		case "GETLEARNPLANLIST" :
+			{
+				HIHSrv_Function( 'learn_plan_listread' );
+			}
+			break;
+			
+		case "CREATELEARNPLAN":
+			{
+				
+			}
+			break;
+			
+		case "CHANGELEARNPLAN":
+			{
+				
+			}
+			break;
+			
+		case "DELETELEARNPLAN":
+			{
+				
 			}
 			break;
 			

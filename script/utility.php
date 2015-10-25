@@ -631,11 +631,12 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 		
 	$sError = "";
 	$nCode = 0;
-	$sMsg = "";
+	$sqlcode = 0;
+	$sqlmsg = "";
 	
 	// Check existence of the User ID
-	$name = mysqli_real_escape_string ( $link, $name );
-	$content = mysqli_real_escape_string ( $link, $content );
+	//$name = $mysqli->real_escape_string( $name );
+	//$content = $mysqli->real_escape_string( $content );
 	$query = "CALL " . HIHConstants::DP_UpdateLearnObject  . "(?, ?, ?, ?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
@@ -643,29 +644,28 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
-			$stmt->bind_result ( $code, $msg, $lastid );
+			$stmt->bind_result ( $sqlcode, $sqlmsg  );
 			
 			/* fetch values */
 			while ( $stmt->fetch () ) {
-				$nCode = ( int ) $code;
-				$sMsg = $msg;
+				$nCode = ( int ) $sqlcode;
+				$sError = $sqlmsg;
 				break;
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query;
 	}
 	
 	$rsttable = array ();
 	if ($nCode > 0) {
-		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
 		$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . HIHConstants::DV_LearnObjectList  . " WHERE ID = " . $id;
 		
@@ -930,9 +930,8 @@ function learn_hist_listread() {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	// Check existence of the User ID
 	$objtable = array ();
-	$query = "SELECT USERID, DISPLAYAS, OBJECTID, OBJECTNAME, CATEGORYID, CATEGORYNAME, LEARNDATE, OBJECTCONTENT, COMMENT FROM " . MySqlLearnHistListView;
+	$query = "SELECT USERID, DISPLAYAS, OBJECTID, OBJECTNAME, CATEGORYID, CATEGORYNAME, LEARNDATE, OBJECTCONTENT, COMMENT FROM " . HIHConstants::DV_LearnHistoryList;
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -953,107 +952,7 @@ function learn_hist_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
-	}
-	
-	/* close connection */
-	mysqli_close ( $link );
-	return array (
-			$sError,
-			$objtable 
-	);
-}
-function learn_hist_listread_byuser($username) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
-	
-	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
-		);
-	}
-	$sError = "";
-	
-	// Set language
-	mysqli_query($link, "SET NAMES 'UTF8'");
-	mysqli_query($link, "SET CHARACTER SET UTF8");
-	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
-	
-	// Check existence of the User ID
-	$objtable = array ();
-	$query = "SELECT USERID, DISPLAYAS, OBJECTID, OBJECTNAME, CATEGORYID, CATEGORYNAME, LEARNDATE, OBJECTCONTENT, COMMENT FROM " . MySqlLearnHistListView . " WHERE USERID = '" . $username . "';";
-	
-	if ($result = mysqli_query ( $link, $query )) {
-		/* fetch associative array */
-		while ( $row = mysqli_fetch_row ( $result ) ) {
-			$objtable [] = array (
-					"userid" => $row [0],
-					"displayas" => $row [1],
-					"objectid" => $row [2],
-					"objectname" => $row [3],
-					"categoryid" => $row [4],
-					"categoryname" => $row [5],
-					"learndate" => $row [6],
-					"objectcontent" => $row [7],
-					"comment" => $row [8] 
-			);
-		}
-		
-		/* free result set */
-		mysqli_free_result ( $result );
-	} else {
-		$sError = "Failed to execute query.";
-	}
-	
-	/* close connection */
-	mysqli_close ( $link );
-	return array (
-			$sError,
-			$objtable 
-	);
-}
-function learn_hist_listreadbyid($username, $objid) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
-	
-	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
-		);
-	}
-	
-	$sError = "";
-	// Set language
-	mysqli_query($link, "SET NAMES 'UTF8'");
-	mysqli_query($link, "SET CHARACTER SET UTF8");
-	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
-	
-	// Check existence of the User ID
-	$objtable = array ();
-	$query = "SELECT USERID, DISPLAYAS, OBJECTID, OBJECTNAME, CATEGORYID, CATEGORYNAME, LEARNDATE, OBJECTCONTENT, COMMENT FROM " . MySqlLearnHistListView . " WHERE USERID = '" . $username . "' AND OBJECTID = '" . $objid . "';";
-	
-	if ($result = mysqli_query ( $link, $query )) {
-		/* fetch associative array */
-		while ( $row = mysqli_fetch_row ( $result ) ) {
-			$objtable [] = array (
-					"userid" => $row [0],
-					"displayas" => $row [1],
-					"objectid" => $row [2],
-					"objectname" => $row [3],
-					"categoryid" => $row [4],
-					"categoryname" => $row [5],
-					"learndate" => $row [6],
-					"objectcontent" => $row [7],
-					"comment" => $row [8] 
-			);
-		}
-		
-		/* free result set */
-		mysqli_free_result ( $result );
-	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query" . $query;
 	}
 	
 	/* close connection */
@@ -1077,10 +976,9 @@ function learn_hist_hierread() {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	// Check existence of the User ID
 	$objtable = array ();
 	$parhavechld = array ();
-	$query = "SELECT CATEGORYID, CATEGORYPARID, CATEGORYNAME, USERID, DISPLAYAS, LEARNDATE, OBJECTID, OBJECTNAME, OBJECTCONTENT FROM " . MySqlLearnHistHierView . " ORDER BY CATEGORYID";
+	$query = "SELECT CATEGORYID, CATEGORYPARID, CATEGORYNAME, USERID, DISPLAYAS, LEARNDATE, OBJECTID, OBJECTNAME, OBJECTCONTENT FROM " . HIHConstants::DV_LearnHistoryHierarchy . " ORDER BY CATEGORYID";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -1115,7 +1013,7 @@ function learn_hist_hierread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query ". $query;
 	}
 	
 	/* close connection */
@@ -1189,7 +1087,7 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 	// $learndate = date( 'Y-m-d', $learndate );
 	// $learndate = mysqli_real_escape_string($link, $learndate);
 	// $learndate = date('Y-m-d', strtotime(str_replace('-', '/', $learndate)));
-	$query = "CALL " . MySqlLearnHistoryCreateProc . "('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
+	$query = "CALL " . HIHConstants::DP_CreateLearnHistory . "('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -1207,6 +1105,8 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 		$sError = "Failed to execute query: CALL LEARNHISTCALLPROC.";
 	}
 	
+	// Don't need re-read because no LAST_INSERT_ID is this case.
+		
 	/* close connection */
 	mysqli_close ( $link );
 	return array ($sError, null	);
@@ -1215,18 +1115,6 @@ function learn_hist_create2($lohist) {
 	return learn_hist_create($lohist->UserID, $lohist->ObjectID, $lohist->LearnDate, $lohist->Comment);
 }
 function learn_hist_change($lohist) {
-	$rtnarray = learn_hist_exist ( $username, $objid );
-	if (! empty ( $rtnarray [0] )) {
-		return $rtnarray;
-	} else {
-		if ($rtnarray [1] === true) {
-			return array (
-				"Record exist already!",
-				null 
-			);
-		}
-	}
-	
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -1243,7 +1131,7 @@ function learn_hist_change($lohist) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "CALL " . HIHConstants::DP_UpdateLearnHistory . "('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
+	$query = "CALL " . HIHConstants::DP_UpdateLearnHistory . "('" . $lohist->UserID . "', '" . $lohist->ObjectID . "', '" . $lohist->LearnDate . "', '" . $lohist->Comment . "');";
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
@@ -1259,6 +1147,8 @@ function learn_hist_change($lohist) {
 	} else {
 		$sError = "Failed to execute query: " . HIHConstants::DP_UpdateLearnHistory;
 	}
+	
+	// Don't need re-read because no LAST_INSERT_ID is this case.
 	
 	/* close connection */
 	mysqli_close ( $link );
@@ -1302,6 +1192,86 @@ function learn_hist_delete($userid, $objid, $learndate) {
 	mysqli_close ( $link );
 	return array ( $sError, null );
 }
+// 1.4a Learn plan
+function learn_plan_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DT_LearnPlan;
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"id" => $row [0],
+				"name" => $row [1],
+				"comment" => $row [2],
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query" . $query;
+	}
+	
+	$rsttable2 = array ();
+	if (empty ( $sError ) && count ( $rsttable ) > 0) {
+		$query = "SELECT * FROM " . HIHConstants::DT_LearnPlanDetail;
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$rsttable2 [] = array (
+					"id" => $row [0],
+					"objectid" => $row [1],
+					"deferredday" => $row[2],
+					"recurtype" => $row [3],
+					"comment" => $row[4]
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query.";
+		}
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	$rtntable = array();
+	if (count ( $rsttable2 ) > 0) {
+		$rtntable[] = $rsttable;
+		$rtntable[] = $rsttable2;
+	} else {
+		if (count ( $rsttable ) > 0) {
+			$rtntable[] = $rsttable;
+		} else {
+			// Do nothing
+		}
+	}
+	return array (
+		$sError,
+		$rtntable 
+	);
+}
+
 // 1.5 Learn award
 function learn_award_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

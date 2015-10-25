@@ -85,6 +85,7 @@
  		"LearningObject": "学习对象",
  		"LearningHistory": "学习记录",
  		"LearningAward": "学习成绩",
+		"LearningPlan": "学习计划",
  		
  		"LearningObjectListTitle": "学习对象 - 列表视图",
  		"LearningObjectListDesp": "学习对象的列表视图，通过列表的方式将所有学习对象呈现出来。",

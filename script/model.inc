@@ -61,6 +61,8 @@ class HIHConstants {
 	const DT_LearnObject = 't_learn_obj';
 	const DT_LearnCategory = 't_learn_ctg';
 	const DT_LearnHistory = 't_learn_hist';
+	const DT_LearnPlan = 't_learn_plan';
+	const DT_LearnPlanDetail = 't_learn_plandtl';
 	const DT_FinSetting = 't_fin_setting';
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
@@ -69,6 +71,8 @@ class HIHConstants {
 	// Views
 	const DV_LearnObjectList = 'v_learn_obj';
 	const DV_LearnObjectHierarchy = 'v_learn_obj2';
+	const DV_LearnHistoryList = 'v_learn_histlist';
+	const DV_LearnHistoryHierarchy = 'v_learn_histhier';
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs4'; // changed from v_fin_report_bs3 on 2015.10.07 
@@ -227,7 +231,36 @@ class HIHLearnAward {
 }
 // Learn Plan Detail
 class HIHLearnPlanDetail {
+	public $ID;
+	public $ObjectID;
+	public $DeferredDay;
+	public $RecurType;
+	public $Comment;
 	
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidID;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 // Learn Plan Registration
 class HIHLearnPlanRegistration {
@@ -235,7 +268,34 @@ class HIHLearnPlanRegistration {
 }
 // Learn Plan
 class HIHLearnPlan {
+	public $ID;
+	public $Name;
+	public $Comment;
 	
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidID;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 
 ///
