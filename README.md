@@ -47,8 +47,8 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 	- Formula for calculating local currency: Local Currency = Foreign Currency / Rate;
 - 2015.9.17, It's DECIDED that using auglar-selectize instead of ui-select, because its requires .selected on the attribute which causes it is not easy to use ng-model directly on other controls;
 - 2015.10.20, It's DECIDED that the stored procedure in DB layer only conver simple CREATE/UPDATE/DELETE operation no others. The reason we need stored procedure is  that
-	- We need LAST_INSERT_ID() in Creation case;
-	- We need transaction in any case;
+	- We need LAST_INSERT_ID() in Creation case; [?] <= However, via mysqli->insert_id can anyway get the new insert ID out!
+	- We need transaction in any case; [?] <= It can also achieve in PHP layer!
 - To be updated.
 
 ### HIH, version web 0.1 to web 0.3

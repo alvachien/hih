@@ -1271,7 +1271,178 @@ function learn_plan_listread() {
 		$rtntable 
 	);
 }
-
+function learn_plan_create($objPlan) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nCode = 0;
+	$nPlanID = 0;
+	$sMsg = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* An insert on plan header first */
+	$query = "INSERT INTO `". HIHConstants::DT_LearnPlan. "` (`NAME`, `COMMENT`) VALUES (?, ?);";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "ss", $objPlan->Name, $objPlan->Comment );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			$nCode = 0;
+			$nPlanID = $mysqli->insert_id;
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$nCode = 1;
+		$sMsg = "Failed to parpare statement: " . $query;
+	}
+	
+	/* Then on detail table */
+	if ($nCode === 0 && $nPlanID > 0 && count($objPlan->DetailsArray) > 0) {
+		$query = "INSERT INTO " . HIHConstants::DT_LearnPlanDetail . "(`ID`, `OBJECTID`, `DEFERREDDAY`, `RECURTYPE`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+		
+		foreach ( $objPlan->DetailsArray as $value ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiiis", $nPlanID, $value->ObjectID, $value->DeferredDay, $value->RecurType, $value->Comment );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query;
+					break;
+				}
+			}
+		}		
+	} else {
+		$sError = $sMsg;
+	}
+	
+	/* Last, on registration table */
+	if (empty ( $sError ) && $nCode === 0 && $nPlanID > 0 && count($objPlan->ParticipantsArray) > 0) {
+	}
+	
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nPlanID 
+	);	
+}
+function learn_plan_change($objPlan) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nCode = 0;
+	$nPlanID = 0;
+	$sMsg = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* An insert on plan header first */
+	$query = "UPDATE `". HIHConstants::DT_LearnPlan. "` (`NAME`, `COMMENT`) VALUES (?, ?);";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "ss", $objPlan->Name, $objPlan->Comment );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			$nCode = 0;
+			$nPlanID = $mysqli->insert_id;
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$nCode = 1;
+		$sMsg = "Failed to parpare statement: " . $query;
+	}
+	
+	/* Then on detail table */
+	if ($nCode === 0 && $nPlanID > 0 && count($objPlan->DetailsArray) > 0) {
+		$query = "INSERT INTO " . HIHConstants::DT_LearnPlanDetail . "(`ID`, `OBJECTID`, `DEFERREDDAY`, `RECURTYPE`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+		
+		foreach ( $objPlan->DetailsArray as $value ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiiis", $nPlanID, $value->ObjectID, $value->DeferredDay, $value->RecurType, $value->Comment );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query;
+					break;
+				}
+			}
+		}		
+	} else {
+		$sError = $sMsg;
+	}
+	
+	/* Last, on registration table */
+	if (empty ( $sError ) && $nCode === 0 && $nPlanID > 0 && count($objPlan->ParticipantsArray) > 0) {
+	}
+	
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nPlanID 
+	);	
+}
 // 1.5 Learn award
 function learn_award_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -2351,6 +2522,8 @@ function finance_document_post($docobj) {
 		
 	$sError = "";
 	$nDocID = 0;
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement on header */
 	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE2`, `EXGRATE_PLAN2`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	

@@ -65,7 +65,7 @@
 	        	controller: 'LearnPlanController'
 	        })
 	        .state("home.learn.plan.display", {
-	            url: "/list",
+	            url: "/display/:id",
 	        	templateUrl: 'app/views/learn/learnplan.html',
 	        	controller: 'LearnPlanController'
 	        })
@@ -810,16 +810,23 @@
 			 };
 		}])
 
-		.controller('LearnPlanController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', 'utils', 
-			function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, utils) {
+		.controller('LearnPlanController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', '$q', 'utils', 
+			function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, $q, utils) {
 			$scope.Activity = "";
 		    $scope.ActivityID = hih.Constants.UIMode_Display;
 			 
 			$scope.CurrentLearnPlan = null;	
 			$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+			$scope.PlanDetailCollection = [];
 			$scope.DetailActivity = "Create Detail";
 			$scope.ParticipantActivity = "Create Participant";
 			$scope.showPart = 'hdr'; // Default show Header
+			
+			// Error messges
+			$scope.ReportedMessages = [];
+			$scope.cleanReportMessages = function() {
+				$scope.ReportedMessages = [];
+			};
 			
 			$scope.learnobjectConfig = {
 				create: false,
@@ -855,12 +862,100 @@
 				 $scope.Activity = "Common.Create";
 				 $scope.ActivityID = hih.Constants.UIMode_Create;
 			 };
+
+			 $scope.displayDetail = function(row) {
+				$scope.cleanReportMessages();
+				
+				for(var i = 0; i < $scope.PlanDetailCollection.length; i ++) {
+					if ($scope.PlanDetailCollection[i].ObjectID === row.ObjectID) {
+						$scope.SelectedPlanDetail = $scope.PlanDetailCollection[i]; 
+						break;
+					}
+				}
+	
+				$scope.ItemActivity = "Display Detail";
+			};
+			
+			$scope.editDetail = function(row) {
+				$scope.cleanReportMessages();
+				
+				for(var i = 0; i < $scope.PlanDetailCollection.length; i ++) {
+					if ($scope.PlanDetailCollection[i].ObjectID === row.ObjectID) {
+						$scope.SelectedPlanDetail = $scope.PlanDetailCollection[i]; 
+						break;
+					}
+				}
+				
+				$scope.ItemActivity = "Edit Detail";
+			};
+			
+			$scope.removeDetail = function(row) {
+				$scope.cleanReportMessages();
+				
+				// Show confirm dialog
+				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+					function() {
+						if ($scope.SelectedPlanDetail.ObjectID === row.ObjectID) {
+							// New detail
+							$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+							$scope.ItemActivity = "Create Plan Detail";
+						}
+								
+						for(var i = 0; i < $scope.PlanDetailCollection.length; i ++) {
+							if ($scope.PlanDetailCollection[i].ObjectID === row.ObjectID) {
+								$scope.PlanDetailCollection.splice(i, 1);
+								break;
+							}
+						}
+						
+						$scope.$apply();
+				});
+			};
+			 
+			$scope.saveCurrentDetail = function() {
+				$scope.cleanReportMessages();
+				
+				// Conver the string to integers
+				$scope.SelectedPlanDetail.ObjectID = parseInt($scope.SelectedPlanDetail.ObjectID);
+				
+				// Perform the check
+				var rptMsgs = $scope.SelectedPlanDetail.Verify($translate);
+				if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+					$q.all(rptMsgs)
+						.then(function(response) {
+							$scope.cleanReportMessages();
+							Array.prototype.push.apply($scope.ReportedMessages, response);
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						});
+					return;
+				}
+				$scope.SelectedPlanDetail.buildRelationship($rootScope.arLearnObject);
+				$scope.PlanDetailCollection.push($scope.SelectedPlanDetail);
+
+				// New detail
+				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+				$scope.ItemActivity = "Create Plan Detail";
+			 };
+			 
+			 $scope.cancelCurrentDetail = function() {
+				$scope.cleanReportMessages();
+				
+				// New detail
+				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+				$scope.ItemActivity = "Create Plan Detail";
+			 };
 			 
 			 $scope.submit = function() {
-				 //$scope.CurrentLearnHistory.Transfer();
+				 $scope.CurrentLearnPlan.Details = [];
 				 
-				 // Verify it!				 
-				 var msgTab = $scope.CurrentLearnHistory.Verify();
+				 // Copy the detail
+				 $.each($scope.PlanDetailCollection, function(idx, obj) {
+					$scope.CurrentLearnPlan.Details.push(obj); 
+				 });
+				 
+				 // Verify it!
+				 var msgTab = $scope.CurrentLearnPlan.Verify($translate);
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
 						// ToDo: change the multiple error string handling behavior. Combining the error into a longer one
@@ -874,16 +969,16 @@
 				 
 				 // Now, submit to the server
 				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
-					 utils.createLearnHistoryQ($scope.CurrentLearnHistory)
+					 utils.createLearnPlanQ($scope.CurrentLearnPlan)
 					 	.then(function(response) {
-							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+							 $state.go("home.learn.plan.display", { id : response });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-					 utils.changeLearnHistoryQ($scope.CurrentLearnHistory)
+					 utils.changeLearnPlanQ($scope.CurrentLearnPlan)
 					 	.then(function(response) {
-							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+							 $state.go("home.learn.plan.display", { id : response });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });

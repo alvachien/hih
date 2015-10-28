@@ -86,6 +86,9 @@ class HIHConstants {
 	const DP_UpdateLearnHistory = 'UPDATE_LEARNHISTORY';
 	const DP_DeleteLearnHistory = 'DELETE_LEARNHISTORY';
 	const DP_CreateLearnCategory = 'CREATE_LEARNCATEGORY';
+	const DP_CreateLearnPlan = 'CREATE_LEARNPLAN';
+	const DP_UpdateLearnPlan = 'UPDATE_LEARNPLAN';
+	const DP_DeleteLearnPlan = 'DELETE_LEARNPLAN';
 	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
 	const DP_FinReportCC = 'REPORT_FIN_CC';
 	const DP_FinReportTT = 'REPORT_FIN_TT';
@@ -262,8 +265,8 @@ class HIHLearnPlanDetail {
 		return $errCodes;
 	}
 }
-// Learn Plan Registration
-class HIHLearnPlanRegistration {
+// Learn Plan Participant
+class HIHLearnPlanParticipant {
 	
 }
 // Learn Plan
@@ -271,15 +274,41 @@ class HIHLearnPlan {
 	public $ID;
 	public $Name;
 	public $Comment;
+	// Details
+	public $DetailsArray = array ();
+	// Participants
+	public $ParticipantsArray = array();
 	
 	public function __construct($json = false) {
         if ($json) $this->fromJSON($json);
     }
 
 	public function fromJSON($jsonData) {
-		// jsonData contains ID, CategoryID, Name, Comment
+		$this->DetailsArray = array();
 		foreach ($jsonData AS $key => $value) {
-			$this->{$key} = $value;
+			switch ($key) {
+				case "ID":
+				case "Name":
+				case "Comment":
+				$this->{$key} = $value;
+				break;
+				
+				case "Details":
+				{
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLearnPlanDetail( $value[ $i ] );
+							$this->DetailsArray [$di->ObjectID] = $di;
+						}
+					}
+				}
+				break;
+				
+				default:
+				// Do nothing!
+				break;
+			}
 		}
 	}
 	

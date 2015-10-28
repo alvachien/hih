@@ -517,8 +517,7 @@
 						};
 						// Learn plans
 						rtnObj.loadLearnPlansQ = function(bForceReload) {
-							// Load learn histories with $q supports
-							var deferred = $q.defer();							
+							var deferred = $q.defer();
 							if ($rootScope.isLearnPlanLoaded && !bForceReload) {
 								deferred.resolve(true);
 							} else {
@@ -530,9 +529,14 @@
 										$rootScope.arLearnPlan = [];
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
-												var lrnplan = new hih.LearnPlan();
-												lrnplan.buildRelationship($rootScope.arUserList, $rootScope.arLearnObject);
-												$rootScope.arLearnPlan.push(lrnplan);
+												if (idx === 0) {
+													$.each(obj, function(idx2, obj2) {
+														var lrnplan = new hih.LearnPlan();
+														lrnplan.setContent(obj2);
+														lrnplan.buildRelationship($rootScope.arLearnObject, $rootScope.arUserList);
+														$rootScope.arLearnPlan.push(lrnplan);														
+													});
+												}
 											});
 										}
 										$rootScope.isLearnPlanLoaded = true;
@@ -541,7 +545,54 @@
 										deferred.reject(response.data.Message);
 									});
 							}
+							return deferred.promise;
+						};
+						rtnObj.createLearnPlanQ = function(objLearnPlan) {
+							var deferred = $q.defer();
+							var jsonData = objLearnPlan.ToJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNPLAN', jsonData: jsonData } )
+								.then(function(response) {
+									// Add it into the global memory
+									var nPlanID = parseInt(response.data);
+									objLearnPlan.ID = nPlanID;
+									$.each(objLearnPlan.Details, function(idx, obj) {
+										obj.ID = nPlanID;
+									});
+									
+									objLearnPlan.buildRelationship($rootScope.arLearnObject);
+									$rootScope.arLearnPlan.push(objLearnPlan);
+									
+									deferred.resolve(nPlanID);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+
+							return deferred.promise;
+						};
+						rtnObj.changeLearnPlanQ = function(objLearnPlan) {
+							var deferred = $q.defer();
+							var jsonData = objLearnPlan.ToJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNPLAN', jsonData: jsonData } )
+								.then(function(response) {
+									// Add it into the global memory
+									// var nPlanID = parseInt(response.data);
+									// objLearnPlan.ID = nPlanID;
+									// $.each(objLearnPlan.Details, function(idx, obj) {
+									// 	obj.ID = nPlanID;
+									// });
+									// 
+									// objLearnPlan.buildRelationship($rootScope.arLearnObject);
+									// $rootScope.arLearnPlan.push(objLearnPlan);
+									
+									deferred.resolve(nPlanID);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+
 							return deferred.promise;							
+						};
+						rtnObj.deleteLearnPlanQ = function(objLearnPlan) {
+							
 						};
 						// Learn awards
 						rtnObj.loadLearnAwards = function (bForceReload) {

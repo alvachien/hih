@@ -459,6 +459,7 @@
 	};
 	hih.LearnAward.prototype.Verify = function() {
 		var errMsgs = [];
+		return errMsgs;
 	};	
 	hih.LearnAward.prototype.ToJSONObject = function() {
 		var forJSON = {};
@@ -489,6 +490,7 @@
 		
 		// Runtime information
 		this.LearnObjectObject = {};
+		this.RecurTypeDisplay = "";
 	};
 	hih.extend(hih.LearnPlanDetail, hih.Model);
 	hih.LearnPlanDetail.prototype.setContent = function(obj) {
@@ -508,11 +510,19 @@
 				}
 			});
 		}
+		
+		// Recur Type Display
+		if (this.RecurType === hih.Constants.LearnPlanRecurType_HEbbinghaus) {
+			this.RecurTypeDisplay = "H. Ebbinghaus";
+		} else {
+			this.RecurTypeDisplay = "One Time";
+		}
 	};
-	hih.LearnPlanDetail.prototype.Verify = function() {
+	hih.LearnPlanDetail.prototype.Verify = function($translate) {
 		var errMsgs = [];
-		if (this.ObjectID === -1) {
-			// Error!
+
+		if (isNaN(this.ObjectID) || this.ObjectID === -1)	{
+			errMsgs.push($translate("Message.InvalidLearnObject"));
 		}
 		
 		return errMsgs;
@@ -520,7 +530,7 @@
 	hih.LearnPlanDetail.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" || i === "RecurTypeDisplay" ) 
 				continue;
 			
 			forJSON[i] = this[i];	
@@ -528,27 +538,30 @@
 		return forJSON;
 	};	
 	hih.LearnPlanDetail.prototype.ToJSON = function() {
-		var forJSON = this.toJSONObject();
+		var forJSON = this.ToJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
-	/* Learn Plan Registration */
-	hih.LearnPlanRegistration = function() {
+	
+	/* Learn Plan Participant */
+	hih.LearnPlanParticipant = function() {
 		// Attributes
 	};
-	hih.extend(hih.LearnPlanRegistration, hih.Model);
-	hih.LearnPlanRegistration.prototype.setContent = function(obj) {
+	hih.extend(hih.LearnPlanParticipant, hih.Model);
+	hih.LearnPlanParticipant.prototype.setContent = function(obj) {
 		
 	};
-	hih.LearnPlanRegistration.prototype.buildRelationship = function() {
+	hih.LearnPlanParticipant.prototype.buildRelationship = function() {
 		var that = this;
 	};
-	hih.LearnPlanRegistration.prototype.Verify = function() {
+	hih.LearnPlanParticipant.prototype.Verify = function() {
 		var errMsgs = [];
+		
+		return errMsgs;
 	};	
-	hih.LearnPlanRegistration.prototype.ToJSONObject = function() {
+	hih.LearnPlanParticipant.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
 			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
@@ -558,7 +571,7 @@
 		}
 		return forJSON;
 	};	
-	hih.LearnPlanRegistration.prototype.ToJSON = function() {
+	hih.LearnPlanParticipant.prototype.ToJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
@@ -573,30 +586,63 @@
 		this.Name = "";
 		this.Comment = "";
 		
-		this.DetailArray = [];
+		this.Details = [];
+		this.Participants = [];
 	};	
 	hih.extend(hih.LearnPlan, hih.Model);
 	hih.LearnPlan.prototype.setContent = function(obj) {
-		
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.Comment = obj.comment;
 	};
-	hih.LearnPlan.prototype.buildRelationship = function() {
+	hih.LearnPlan.prototype.buildRelationship = function(arObjs) {
 		var that = this;
+		$.each(that.Details, function(idx, obj) {
+			obj.buildRelationship(arObjs);
+		});
 	};
-	hih.LearnPlan.prototype.Verify = function() {
+	hih.LearnPlan.prototype.Verify = function($translate) {
 		var errMsgs = [];
+		
+		if (this.Name.trim().length <= 0) {
+			if ($translate)
+				errMsgs.push($translate("Message.InvalidName"));
+			else
+				errMsgs.push("Message.InvalidName");
+		}
+		
+		for(var i = 0; i < this.Details.length; i ++) {
+			var msg2 = this.Details[i].Verify($translate);
+			if (msg2.length > 0) {
+				Array.prototype.push.apply(errMsgs, msg2);
+			}
+		}
+				
+		return errMsgs;
 	};	
 	hih.LearnPlan.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "_super" || i === "DetailArray" ) 
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "Details" || i === "Participants" ) 
 				continue;
 			
 			forJSON[i] = this[i];	
 		}
+		for(var j = 0 ; j < this.Details.length; ++j) {
+			if (!$.isArray(forJSON.Details)) forJSON.Details = [];
+			var jsonItem = this.Details[j].toJSONObject();
+			forJSON.Details.push(jsonItem);
+		}
+		for(var j = 0 ; j < this.Participants.length; ++j) {
+			if (!$.isArray(forJSON.Participants)) forJSON.Participants = [];
+			
+			var jsonItem2 = this.Participants[j].toJSONObject();
+			forJSON.Participants.push(jsonItem2);
+		}
 		return forJSON;
 	};	
 	hih.LearnPlan.prototype.ToJSON = function() {
-		var forJSON = this.toJSONObject();
+		var forJSON = this.ToJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
 		}
@@ -950,7 +996,7 @@
 		}
 		// Valid from and Valid to
 		forJSON.ValidFrom = hih.ModelUtility.DateFormatter(this.ValidFrom);
-		forJSON.ValidTo = hih.ModelUtility.DateFormatter(this.ValidTo);		
+		forJSON.ValidTo = hih.ModelUtility.DateFormatter(this.ValidTo);
 		for(var j = 0 ; j < this.SRules.length; ++j) {
 			if (!$.isArray(forJSON.SRules)) forJSON.SRules = [];
 			forJSON.SRules.push(this.SRules[j].toJSONObject());

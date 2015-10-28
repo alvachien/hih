@@ -321,13 +321,17 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			
 		case "CREATELEARNPLAN":
 			{
-				
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loPlan = new HIHLearnPlan($jsondata);
+				HIHSrv_Function_1Param( 'learn_plan_create', $loPlan );
 			}
 			break;
 			
 		case "CHANGELEARNPLAN":
 			{
-				
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loPlan = new HIHLearnPlan($jsondata);
+				HIHSrv_Function_1Param( 'learn_plan_change', $loPlan );				
 			}
 			break;
 			

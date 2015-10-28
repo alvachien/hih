@@ -11,11 +11,11 @@
             {{ rptmsg  }}
         </div>
     </div>
-
+    
     <ul class="nav nav-tabs">
         <li role="presentation" ng-class="showPart === 'hdr' ? 'active' : ''"><a role="button" ng-click="showPart = 'hdr'"><span translate="Common.Header">Header</span></a></li>
         <li role="presentation" ng-class="showPart === 'det' ? 'active' : ''"><a role="button" ng-click="showPart = 'det'"><span translate="Common.Detail">Detail</span></a></li>
-        <li role="presentation" ng-class="showPart === 'reg' ? 'active' : ''"><a role="button" ng-click="showPart = 'reg'"><span translate="Learning.Participants">Participants</span></a></li>
+        <li role="presentation" ng-class="showPart === 'reg' ? 'active' : ''"><a role="button" ng-click="showPart = 'reg'"><span translate="Learn.Participants">Participants</span></a></li>
     </ul>
 
     <!-- Header -->
@@ -55,22 +55,21 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in rowCollection">
+				<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailCollection">
 					<td>{{row.ObjectID}}</td>
 					<td>{{row.LearnObjectObject.Name}}</td>
 					<td>{{row.DeferredDay}}</td>
-					<td>{{row.RecurType}}</td>
+					<td>{{row.RecurTypeDisplay}}</td>
 					<td>
-                        <button type="button" class="btn btn-sm">
+                        <button type="button" class="btn btn-sm" ng-click="displayDetail(row)">
                             <i class="glyphicon glyphicon-share">
                             </i>
                         </button>
-                        
-                        <button type="button" class="btn btn-sm">
+                        <button type="button" class="btn btn-sm" ng-click="editDetail(row)">
                             <i class="glyphicon glyphicon-edit">
                             </i>
                         </button>
-						<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+						<button type="button" ng-click="removeDetail(row)" class="btn btn-sm btn-danger">
 							<i class="glyphicon glyphicon-remove-circle">
 							</i>
 						</button>
@@ -89,7 +88,7 @@
                     <label class="control-label col-sm-2" translate="Learning.Object">Learning Object:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Select a learn object...' options='arLearnObject' 
-                                config="learnobjectConfig" ng-model="SelectPlanDetail.ObjectID"
+                                config="learnobjectConfig" ng-model="SelectedPlanDetail.ObjectID"
                                 ng-disabled="isReadonly" required="required"></selectize>
                     </div>
                 </div>
@@ -97,7 +96,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" >Recur Type:</label>
                     <div class="col-sm-10">
-                        <select ng-model="SelectedPlanDetail.RecurType">
+                        <select ng-model="SelectedPlanDetail.RecurType" >
                             <option value="1">One Time</option>
                             <option value="2">H. Ebbinghaus</option>
                         </select>
@@ -107,35 +106,34 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptItemAmt">Defer Days:</label>
                     <div class="col-sm-10">
-                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.TranAmount_Org" required="required"></input>
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.DeferredDay" required="required"></input>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="iptItemDesp" translate="Common.Comment">Comment: </label>
                     <div class="col-sm-10">
-                        <input type="text" id="iptItemDesp" ng-readonly="isReadonly" ng-model="SelectedDocumentItem.Desp" required="required"></input>
+                        <input type="text" id="iptItemDesp" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.Comment"></input>
 			        </div>
 		        </div>
 
                 <!-- Button group -->
                 <div class="form-group">
                 	<div class="col-sm-10">
-                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly">Save Detail</button>
-                        <button class="btn btn-danger" ng-click="cancelCurrentItem()">Cancel Detail Editing</button>
+                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentDetail()" ng-hide="isReadonly">Save Detail</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentDetail()">Cancel Detail Editing</button>
                     </div>
                 </div>
             </form>
-         </div>
+            </div>
+        </div>
     </div>
 	
 	<!-- Registration -->
     <div class="container" ng-show="showPart === 'reg'">
 		<label>Registration pages</label>
     </div>
-	
-	<br>
-
+    
     <!-- Buttons -->
     <div class="form-group">
     	<div class="col-sm-12 col-md-12 col-lg-12">
