@@ -1,29 +1,62 @@
 <div id="viewRegister">
-	<form class="form-register" name="registerForm">
-        <h2 class="form-register-heading" translate="Login.RegisterTitle">Register an user</h2>
+    <form class="form-register" name="registerForm">
+        <h3 class="form-register-heading" translate="Login.RegisterTitle">Register an user</h3>
 
-	<label for="inputUser" class="sr-only">User name</label> 
-        <input id="inputUser" class="form-control" placeholder="{{ 'Login.User' | translate }}"
-               ng-model="registerInfo.username" required autofocus> 
+        <div class="form-group">
+    	    <label for="inputUser" class="sr-only">User name</label> 
+            <input id="inputUser" class="form-control" placeholder="{{ 'Login.User' | translate }}"
+                   ng-model="registerInfo.UserID" required autofocus> 
+        </div>
         
-        <label for="inputPassword" class="sr-only">Password</label> 
-        <input type="password" id="inputPassword" class="form-control"
-               ng-model="registerInfo.password" placeholder="{{ 'Login.Password' | translate }}" required>
-
-	<label for="inputConfirmPassword" class="sr-only">Confirm Password</label> 
-        <input type="password" id="inputConfirmPassword"
-		class="form-control" ng-model="registerInfo.confirmpassword"
-		placeholder="{{ 'Login.ConfirmedPassword' | translate }}" required> 
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Password</label> 
+            <input type="password" id="inputPassword" class="form-control"
+               ng-model="registerInfo.Password" placeholder="{{ 'Login.Password' | translate }}" required>
+        </div>
         
-        <label for="inputMail" class="sr-only">Mailbox</label> 
-        <input type="email" id="inputMail" class="form-control" ng-model="registerInfo.mailbox"
-			placeholder="{{ 'Login.Email' | translate }}" required>
+        <div class="progress">
+            <div class="{{ProgressClass}}" role="progressbar" aria-valuenow="{{PasswordStrengthValue}}" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                <span class="sr-only">{{PasswordStrengthValue}}</span>
+            </div>
+        </div>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit"
+        <div class="form-group">
+	        <label for="inputConfirmPassword" class="sr-only">Confirmed Password</label> 
+            <input type="password" id="inputConfirmPassword"
+		          class="form-control" ng-model="registerInfo.ConfirmedPassword"
+		          placeholder="{{ 'Login.ConfirmedPassword' | translate }}" required> 
+        </div>
+        
+        <div class="form-group">
+    	    <label for="inputDisplayAs" class="sr-only">Display As</label> 
+            <input id="inputDisplayAs" class="form-control" placeholder="{{ 'Login.DisplayAs' | translate }}"
+                   ng-model="registerInfo.DisplayAs" required autofocus> 
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="radio" name="gender" value="1" ng-model="regGender">
+                Male
+            </label>
+            <label>
+                <input type="radio" name="gender" value="0" ng-model="regGender">
+                Female
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label for="inputMail" class="sr-only">Mailbox</label> 
+            <input type="email" id="inputMail" class="form-control" ng-model="registerInfo.Mailbox"
+		          placeholder="{{ 'Login.Email' | translate }}" required>
+        </div>
+        
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit"
                 ng-disabled="registerForm.$invalid" ng-click="submitRegister()" translate="Login.Register">
-            Register
-        </button>
-        <button class="btn btn-lg btn-block" ui-sref="login" translate="Common.Cancel">Cancel</button>
+                Register
+            </button>
+            <button class="btn btn-lg btn-block" ui-sref="login" translate="Common.Cancel">Cancel</button>
+        </div>
 	</form>
 </div>
 

@@ -80,11 +80,28 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					}
 				} else {
 					$sErrors = "User not login yet";
-					export_error ( sErrors );
+					export_error ( $sErrors );
 				}				
 			}
 			break;
 		
+		case "REGISTERUSER": {
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$objUsr = new HIHUser($jsondata);
+				
+				$errCodes = $objUsr->CheckValid();
+				if ($errCodes && count($errCodes) > 0) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					$errString = user_register2($objUsr);
+					if (empty ( $errString )) {
+					} else {
+						export_error( $errString );
+					}
+				}
+			}
+			break;
+			
 		// ===========================================================================================
 		// Learn Part
 		// ===========================================================================================
@@ -226,7 +243,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 							export_error($chkexistarray [0]);
 						} else {
 							if ($chkexistarray [1] === true) {
-								export_error(HIHConstants::EC_LearnHistoryExists);
+								export_error(HIHConstants::EC_LearnHistoryExist);
 							} else {
 								HIHSrv_Function_1Param( 'learn_hist_create2', $loHist);
 							}

@@ -102,10 +102,46 @@ class HIHConstants {
 /// User
 ///
 class HIHUser {
-	public $ID;
+	public $UserID;
 	public $DisplayAs;
-	public $CreatedOn;
+	public $Password;
 	public $Gender;
+	public $Mailbox;
+	
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid() {
+		$errCodes = array();
+		if (isset ( $this )) {
+			$strTemp = trim($this->UserID);
+			if ( !isset ( $strTemp ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidUser;
+			}
+			
+			$strTemp = trim($this->Password);
+			if (! isset ( $strTemp )) {
+				$errCodes[] = HIHConstants::EC_InvalidPassword;
+			}
+
+			$strTemp = trim($this->DisplayAs);
+			if (! isset ( $strTemp )) {
+				$errCodes[] = HIHConstants::EC_InvalidAlias;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 
 ///

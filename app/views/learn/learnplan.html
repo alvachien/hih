@@ -1,7 +1,7 @@
-<div id="viewLearnHistory" class="container">
+<div id="viewLearnPlan" class="container">
 	<div class="page-header">
 		<h2>
-			<span translate="Learn.LearningPlan">Learn Plan</span><small> {{Activity | translate}}</small>
+			<span translate="Learn.LearningPlan">Learn Plan</span><small> {{ Activity | translate }}</small>
 		</h2>
 	</div>
 
@@ -78,6 +78,41 @@
 			</tbody>
 		</table>
 		
+        <br />
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-body">
+                <div class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="simulateDate" is-open="isDateOpened"            		
+                            datepicker-options="dateOptions" close-text="{{'Common.Close' | translate}}" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openSimulateDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button class="btn btn-default" ng-click="showSimulate()" ng-hide="PlanDetailCollection.length <= 0 || isSimulate == true ">Simulate</button>
+                        <button class="btn btn-default" ng-click="hideSimulate()" ng-hide="isSimulate == false">Hide Simulate</button>
+                    </span>
+                </div>
+                
+                <div ng-show="isSimulate == true">
+                    <table st-table="simuColl" class="table">
+                        <thead>
+                            <tr>
+                                <th st-sort="objID">Object ID</th>
+                                <th st-sort="objName">Object Name</th>
+                                <th st-sort="defDay">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailSimulCollection">
+                                <td>{{row.ObjectID}}</td>
+                                <td>{{row.LearnObjectObject.Name}}</td>
+                                <td>{{row.Date}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        
 		<!-- Then, default one -->
         <div class="panel panel-default" style="margin: 30px, 10px;">
             <div class="panel-heading">{{DetailActivity | translate}}</div>
@@ -85,7 +120,7 @@
             <div class="panel-body">
             <form class="form-horizontal" role="form" name="frmItem">
                 <div class="form-group">
-                    <label class="control-label col-sm-2" translate="Learning.Object">Learning Object:</label>
+                    <label class="control-label col-sm-2" translate="Learn.Object">Learning Object:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Select a learn object...' options='arLearnObject' 
                                 config="learnobjectConfig" ng-model="SelectedPlanDetail.ObjectID"
@@ -96,9 +131,9 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" >Recur Type:</label>
                     <div class="col-sm-10">
-                        <select ng-model="SelectedPlanDetail.RecurType" >
-                            <option value="1">One Time</option>
-                            <option value="2">H. Ebbinghaus</option>
+                        <select ng-model="SelectedPlanDetail.RecurType" ng-disabled="isReadonly" required="required">
+                            <option ng-disabled="isReadonly" value="1">One Time</option>
+                            <option ng-disabled="isReadonly" value="2">H. Ebbinghaus</option>
                         </select>
                     </div>
                 </div>
@@ -137,8 +172,7 @@
     <!-- Buttons -->
     <div class="form-group">
     	<div class="col-sm-12 col-md-12 col-lg-12">
-        	<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
-            		>Submit</button>
+        	<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly">Submit</button>
             <button class="btn btn-danger" ng-click="close()">Cancel</button>
         </div>
     </div>	

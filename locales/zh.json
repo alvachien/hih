@@ -200,6 +200,9 @@
 		"InvalidExchangeRate": "不合法的汇率",
 		"LearnObjectStillInUse": "学习对象尚在使用",
 		"InvalidLearnOBject": "不合法的学习对象",
-		"InvalidUser": "不合法的用户"
+		"InvalidUser": "不合法的用户",
+		"InvalidPassword": "不合法的密码",
+		"InvalidConfirmedPassword": "确认密码与原密码不符",
+		"InvalidMailbox": "不合法的邮箱地址"
 	}
 }

@@ -184,16 +184,15 @@ function user_login($userid, $userpwd) {
 
 // 1.1 User and login
 function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );	
 	
 	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-			"Connect failed: %s\n" . mysqli_connect_error (),
-			null 
-		);
-	}
 	$sError = "";
+	if (!$link) {
+    	$sError = "Error: Unable to connect to MySQL." . PHP_EOL . "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+		return $sError;
+		exit;
+	}
 	$bExist = false;
 	
 	// Set language	
@@ -218,7 +217,7 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " . $query;
 	}
 	
 	// Insert it into database
@@ -236,6 +235,9 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 	/* close connection */
 	mysqli_close ( $link );
 	return $sError;
+}
+function user_register2($objRegUsr) {
+	return user_register($objRegUsr->UserID, $objRegUsr->Password, $objRegUsr->DisplayAs, $objRegUsr->Gender, $objRegUsr->Mailbox);
 }
 function user_combo() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -267,7 +269,7 @@ function user_combo() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query:" . $query;
 	}
 	
 	/* close connection */
@@ -277,7 +279,6 @@ function user_combo() {
 		$usertable 
 	);
 }
-
 // 1.2 Learn category
 function learn_category_read() {
 	// NOTE:
@@ -1068,7 +1069,7 @@ function learn_hist_exist($username, $objid, $lrndate) {
 function learn_hist_create($username, $objid, $learndate, $comment) {
 	
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
-	
+
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
@@ -1087,7 +1088,9 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 	// $learndate = date( 'Y-m-d', $learndate );
 	// $learndate = mysqli_real_escape_string($link, $learndate);
 	// $learndate = date('Y-m-d', strtotime(str_replace('-', '/', $learndate)));
-	$query = "CALL " . HIHConstants::DP_CreateLearnHistory . "('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
+	
+	// The procedure not work for EXISTS, therefore using the INSERT statement directly.
+	$query = "INSERT INTO " . HIHConstants::DT_LearnHistory . " VALUES ('" . $username . "', '" . $objid . "', '" . $learndate . "', '" . $comment . "');";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -1199,8 +1202,8 @@ function learn_plan_listread() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1380,15 +1383,14 @@ function learn_plan_change($objPlan) {
 	
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
-	/* An insert on plan header first */
-	$query = "UPDATE `". HIHConstants::DT_LearnPlan. "` (`NAME`, `COMMENT`) VALUES (?, ?);";
+	/* An update on plan header first */
+	$query = "UPDATE `". HIHConstants::DT_LearnPlan. "` SET `NAME` = ?, `COMMENT` = ? WHERE `ID` = ?;";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "ss", $objPlan->Name, $objPlan->Comment );
+		$stmt->bind_param ( "ssi", $objPlan->Name, $objPlan->Comment, $objPlan->ID );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nCode = 0;
-			$nPlanID = $mysqli->insert_id;
 		} else {
 			$nCode = 1;
 			$sMsg = "Failed to execute query: " . $query;
@@ -1402,21 +1404,41 @@ function learn_plan_change($objPlan) {
 	}
 	
 	/* Then on detail table */
-	if ($nCode === 0 && $nPlanID > 0 && count($objPlan->DetailsArray) > 0) {
-		$query = "INSERT INTO " . HIHConstants::DT_LearnPlanDetail . "(`ID`, `OBJECTID`, `DEFERREDDAY`, `RECURTYPE`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+	if ($nCode === 0) {
+		$query = "DELETE FROM " . HIHConstants::DT_LearnPlanDetail . " WHERE `ID` = ?;";
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "i", $objPlan->ID );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+				$nCode = 0;
+			} else {
+				$nCode = 1;
+				$sMsg = "Failed to execute query: " . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to parpare statement: " . $query;
+		}
 		
-		foreach ( $objPlan->DetailsArray as $value ) {
-			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiis", $nPlanID, $value->ObjectID, $value->DeferredDay, $value->RecurType, $value->Comment );
-				
-				/* Execute the statement */
-				if ($newstmt->execute ()) {
-				} else {
-					$sError = "Failed to execute query: " . $query;
-					break;
+		if ($nCode === 0) {
+			$query = "INSERT INTO " . HIHConstants::DT_LearnPlanDetail . "(`ID`, `OBJECTID`, `DEFERREDDAY`, `RECURTYPE`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+			
+			foreach ( $objPlan->DetailsArray as $value ) {
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "iiiis", $value->ID, $value->ObjectID, $value->DeferredDay, $value->RecurType, $value->Comment );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query;
+						break;
+					}
 				}
 			}
-		}		
+		}	
 	} else {
 		$sError = $sMsg;
 	}

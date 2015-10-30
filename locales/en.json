@@ -201,6 +201,9 @@
 		"InvalidExchangeRate": "Invalid exchange rate",
 		"LearnObjectStillInUse": "Learn objects still in use",
 		"InvalidLearnOBject": "Invalid learn object",
-		"InvalidUser": "Invalid user"
+		"InvalidUser": "Invalid user",
+		"InvalidPassword": "Invalid password",
+		"InvalidConfirmedPassword": "Difference exists between Password and Confirmed password",
+		"InvalidMailbox": "Invalid mailbox"
 	}
  }

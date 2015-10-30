@@ -1,9 +1,10 @@
 /* global $ */
 /* global angular */
+/* global hih */
 (function() {
 	'use strict';	
 	
-	angular.module('hihApp.Login', ["ui.router", "ngAnimate", "pascalprecht.translate"])
+	angular.module('hihApp.Login', ["ui.router", "ngAnimate", "pascalprecht.translate", "hihApp.Utility"])
 		.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', function ($stateProvider, $urlRouterProvider, $translateProvider) {
 			$stateProvider
 		        .state("login", {
@@ -62,16 +63,54 @@
 		}])
         
 		// Register controller
-		.controller('RegisterController', ['$scope', '$rootScope', '$state', '$translate', function($scope, $rootScope, $state, $translate) {
-	  		$scope.registerInfo = {
-	  				username: "",
-	  				password: "",
-	  				confirmpassword: "",
-	  				mailbox: ""
-	  			};
-	  			
+		.controller('RegisterController', ['$scope', '$rootScope', '$state', '$translate', 'utils', function($scope, $rootScope, $state, $translate, utils) {
+	  		$scope.registerInfo = new hih.UserRegistration();
+	  		$scope.PasswordStrengthValue = 0;
+			$scope.ProgressClass = "progress-bar progress-bar-danger";
+			$scope.regGender = "0";
+			  
+			$scope.$watch('registerInfo', function(newVal, oldVal) {
+				if (newVal.Password !== oldVal.Password) {
+					var nLevel = hih.ModelUtility.CheckPasswordStrength(newVal.Password);
+					if (nLevel === hih.Constants.Login_PwdStrgth_VeryStrong) {
+						$scope.PasswordStrengthValue = 100;
+						$scope.ProgressClass = "progress-bar progress-bar-success";
+					} else if (nLevel === hih.Constants.Login_PwdStrgth_Strong) {
+						$scope.PasswordStrengthValue = 80;
+						$scope.ProgressClass = "progress-bar progress-bar-info";
+						
+					} else if (nLevel === hih.Constants.Login_PwdStrgth_Normal) {
+						$scope.PasswordStrengthValue = 60;
+						$scope.ProgressClass = "progress-bar progress-bar-warning";
+					} else if (nLevel === hih.Constants.Login_PwdStrgth_Weak) {
+						$scope.PasswordStrengthValue = 30;
+						$scope.ProgressClass = "progress-bar progress-bar-danger";
+					} else {
+						$scope.PasswordStrengthValue = 0;
+						$scope.ProgressClass = "progress-bar progress-bar-danger";
+					}
+				}
+			}, true);
+			
 			$scope.submitRegister = function() {
+				$scope.registerInfo.Gender = parseInt($scope.regGender);
 				
+				var msgs = $scope.registerInfo.Verify();
+				if ($.isArray(msgs) && msgs.length > 0) {
+					// To-Do
+					// 
+					$.each(msgs, function(idx, objMsg) {
+						$rootScope.$broadcast('ShowMessageNeedTranslate', objMsg, 'Common.Error', 'error');
+					})
+					return;	
+				} else {
+					utils.registerUserQ($scope.registerInfo)
+						.then(function(response) {
+							$state.go("login");
+						}, function(reason) {
+							$rootScope.$broadcast('ShowMessage', "Error", reason);
+						});
+				}
 			};
 			
 			$scope.cancel = function() {

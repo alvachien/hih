@@ -39,7 +39,18 @@
 		FinDocType_CurrExchange: 3,
 		
 		FinTranType_TransferIn: 37,
-		FinTranType_TransferOut: 60
+		FinTranType_TransferOut: 60,
+		
+		// Login/Registration
+		Login_UserMinLength: 6,
+		Login_UserMaxLength: 25,
+		Login_PasswordMinLength: 6,
+		Login_PasswordMaxLength: 25,
+		Login_PwdStrgth_VeryWeek: 0,
+		Login_PwdStrgth_Week: 1,
+		Login_PwdStrgth_Normal: 2,
+		Login_PwdStrgth_Strong: 3,
+		Login_PwdStrgth_VeryStrong: 4
 	};
 	
 	// =========================================================
@@ -102,7 +113,54 @@
 		//return +(Math.round(num + "e+2")  + "e-2");
 		return Math.round(num * 100) / 100;
 	};
-	
+	hih.ModelUtility.CheckMail = function(strMail) {
+		var isValid = false;
+		
+		if (strMail.indexOf('@') >= 1) {
+			var m_valid_dom = strMail.substr(strMail.indexOf('@')+1);
+			if (m_valid_dom.indexOf('@') === -1) {
+				if (m_valid_dom.indexOf('.') >= 1) {
+					var m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.')+1);
+					if (m_valid_dom_e.length >= 1) {
+						isValid = true;
+					}
+				}
+			}
+		}
+
+		return isValid;
+	};
+	hih.ModelUtility.CheckStringLength = function (strField, minlength, maxLength) {
+    	var length_df = strField.length;
+    	var bResult = false;
+    
+    	if (length_df >= minlength && length_df <= maxLength) {
+        	bResult = true;
+    	}
+		
+    	return bResult;
+	};
+	hih.ModelUtility.CheckPasswordStrength = function (strField) {
+    	var pass_level = 0;
+    
+		if (strField.match(/[a-z]/g)) {
+			pass_level++;
+		}
+		if (strField.match(/[A-Z]/g)) {
+			pass_level++;
+		}
+		if (strField.match(/[0-9]/g)) {
+			pass_level++;
+		}
+		if (strField.length < 5) {
+			if(pass_level >= 1) pass_level--;
+		} else if (strField.length >= 20) {
+			pass_level++;
+		}
+
+	    return pass_level;
+	};
+
 	// =========================================================
 	// Root model
 	// =========================================================
@@ -120,6 +178,7 @@
 	// =========================================================
 	// Learn part and OO concept adopt in JavaScript
 	// =========================================================
+	
 	/* Method 1: using apply(or call) in the children's constructor */
 	/* User */
 	hih.User = function() {
@@ -133,6 +192,60 @@
 		this.UserID = obj.id;
 		this.DisplayAs = obj.text;
 	};
+	hih.UserRegistration = function() {
+		hih.Model.apply(this, arguments);
+		this._super = hih.Model.prototype;
+		
+		this.UserID = "";
+		this.DisplayAs = "";
+		this.Password = "";
+		this.ConfirmedPassword = "";
+		this.Mailbox = "";
+		this.Gender = 0;
+	};
+	hih.UserRegistration.prototype.Verify = function() {
+		var errMsgs = [];
+		
+		// User ID
+		if (hih.ModelUtility.CheckStringLength(this.UserID, hih.Constants.Login_UserMinLength, hih.Constants.Login_UserMaxLength)) {			
+		} else {
+			errMsgs.push("Message.InvalidUser");
+		}
+		// Password
+		if (hih.ModelUtility.CheckStringLength(this.Password, hih.Constants.Login_PasswordMinLength, hih.Constants.Login_PasswordMaxLength)) {			
+		} else {
+			errMsgs.push("Message.InvalidPassword");
+		}
+		// Password
+		if (this.Password === this.ConfirmedPassword) {			
+		} else {
+			errMsgs.push("Message.InvalidConfirmedPassword");
+		}
+		// Mailbox
+		if (hih.ModelUtility.CheckMail(this.Mailbox)) {			
+		} else {
+			errMsgs.push("Message.InvalidMailbox");
+		}
+		
+		return errMsgs;
+	};
+	hih.UserRegistration.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "_super" ) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};
+	hih.UserRegistration.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};	
 	
 	/* Method 2: changing the prototype */
 	/* Learn Object */
@@ -403,7 +516,10 @@
 		},
 		_Transfer: function() {
 			// Change the date
-			this.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);			
+			this.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);
+			if (typeof this.ObjectID === 'string' || this.ObjectID instanceof String) {
+				this.ObjectID = parseInt(this.ObjectID);
+			}
 		},
 		createNew: function() {
 			// Inherit from Model first
@@ -617,6 +733,8 @@
 				Array.prototype.push.apply(errMsgs, msg2);
 			}
 		}
+		
+		// Check the duplicate
 				
 		return errMsgs;
 	};	
@@ -630,13 +748,13 @@
 		}
 		for(var j = 0 ; j < this.Details.length; ++j) {
 			if (!$.isArray(forJSON.Details)) forJSON.Details = [];
-			var jsonItem = this.Details[j].toJSONObject();
+			var jsonItem = this.Details[j].ToJSONObject();
 			forJSON.Details.push(jsonItem);
 		}
 		for(var j = 0 ; j < this.Participants.length; ++j) {
 			if (!$.isArray(forJSON.Participants)) forJSON.Participants = [];
 			
-			var jsonItem2 = this.Participants[j].toJSONObject();
+			var jsonItem2 = this.Participants[j].ToJSONObject();
 			forJSON.Participants.push(jsonItem2);
 		}
 		return forJSON;

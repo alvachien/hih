@@ -2181,6 +2181,12 @@ INSERT INTO `t_fin_currency` (`CURR`,`NAME`,`Symbo`) VALUES ('KRW','韩元',NULL
 -- Tolerance for currency exchange
 INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('CurrencyExchangeToilence','2','货币兑换容错');
 
+/* ======================================================
+    Delta parts on 2015.10.28
+   ====================================================== */
+
+DELETE FROM `t_fin_setting` WHERE SETID = 'CurryExgToilence';
+INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('CurryExgToilence','2','货币兑换容错');
 
 /* ======================================================
     Delta parts on 2015.11.01+

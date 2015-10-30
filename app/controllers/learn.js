@@ -656,14 +656,14 @@
 				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
 					 utils.createLearnHistoryQ($scope.CurrentLearnHistory)
 					 	.then(function(response) {
-							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+							 $state.go("home.learn.history.display", { histid : response });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnHistoryQ($scope.CurrentLearnHistory)
 					 	.then(function(response) {
-							 $state.go("home.learn.history.display", { histid : $scope.CurrentLearnHistory.getLogicKey() });
+							 $state.go("home.learn.history.display", { histid : response });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });
@@ -828,10 +828,26 @@
 				$scope.ReportedMessages = [];
 			};
 			
+			// Date control
+			$scope.isDateOpened = false;	
+			$scope.DateFormat = "yyyy-MM-dd";
+			$scope.dateOptions = {
+				formatYear: 'yyyy',
+				startingDay: 1
+			};
+			$scope.openSimulateDate = function($event) {
+				$event.preventDefault();
+				$event.stopPropagation();
+				$scope.isDateOpened = true;
+			};
+			$scope.simulateDate = new Date();
+			$scope.isSimulate = false;
+			$scope.PlanDetailSimulCollection = [];
+			
 			$scope.learnobjectConfig = {
 				create: false,
 				onChange: function(value){
-					$log.info('LearnHistoryController, Learn object control, event onChange, ', value);
+					$log.info('LearnPlanController, Learn object control, event onChange, ', value);
 				},
 				valueField: 'ID',
 				labelField: 'Name',
@@ -840,10 +856,10 @@
 			};
 
 			if (angular.isDefined($stateParams.id)) {
-				if ($state.current.name === "home.learn.history.maintain") {
+				if ($state.current.name === "home.learn.plan.maintain") {
 					$scope.Activity = "Common.Edit";					 
 		    		$scope.ActivityID = hih.Constants.UIMode_Change;
-				} else if ($state.current.name === "home.learn.history.display") {
+				} else if ($state.current.name === "home.learn.plan.display") {
 					$scope.Activity = "Common.Display";
 				    $scope.ActivityID = hih.Constants.UIMode_Display;
 
@@ -853,6 +869,11 @@
 				$.each($rootScope.arLearnPlan, function(idx, obj) {
 					if (obj.ID === parseInt($stateParams.id)) {
 						$scope.CurrentLearnPlan = angular.copy(obj);
+						
+						// For Items
+						$.each(obj.Details, function(idx2, obj2) {
+							$scope.PlanDetailCollection.push(angular.copy(obj2));
+						})						
 
 						return false;
 					}
@@ -930,6 +951,7 @@
 						});
 					return;
 				}
+				$scope.SelectedPlanDetail.RecurType = parseInt($scope.SelectedPlanDetail.RecurType);
 				$scope.SelectedPlanDetail.buildRelationship($rootScope.arLearnObject);
 				$scope.PlanDetailCollection.push($scope.SelectedPlanDetail);
 
@@ -951,7 +973,8 @@
 				 
 				 // Copy the detail
 				 $.each($scope.PlanDetailCollection, function(idx, obj) {
-					$scope.CurrentLearnPlan.Details.push(obj); 
+					 obj.ID = $scope.CurrentLearnPlan.ID;
+					 $scope.CurrentLearnPlan.Details.push(obj); 
 				 });
 				 
 				 // Verify it!
@@ -983,6 +1006,20 @@
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });
 				 }
+			 };
+			 
+			 $scope.showSimulate = function() {
+				 $scope.PlanDetailSimulCollection = [];
+				
+				 $.each($scope.PlanDetailCollection, function(idx, obj) {
+					
+					var ndate = new Date($scope.simulateDate);
+					ndate.setDate($scope.simulateDate.getDate()+1); 
+				 });
+				 $scope.isSimulate = true;
+			 };
+			 $scope.hideSimulate = function() {
+				 $scope.isSimulate = false;
 			 };
 			 
 			 $scope.close = function() {

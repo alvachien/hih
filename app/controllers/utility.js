@@ -197,6 +197,19 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.registerUserQ = function(objRegUsr) {
+							var deferred = $q.defer();
+							var jsonUsr = objRegUsr.ToJSON();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'REGISTERUSER', jsonData: jsonUsr })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response);
+								});
+							return deferred.promise;							
+						};
 						
 ////////////////////////////////////////////////////////////////////						
 // Learn part
@@ -464,10 +477,16 @@
 							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNHISTORY', jsonData: jsonData } )
 								.then(function(response) {
 									// Add it into the global memory
-									objLearnHistory.buildRelationship($rootScope.arUser, $rootScope.arLearnObject);
-									$rootScope.arLearnHistory.push(objLearnHistory);
+									var lrnHist = hih.LearnHistory.createNew();
+									lrnHist.ObjectID = parseInt(objLearnHistory.ObjectID);
+									lrnHist.LearnDate = objLearnHistory.LearnDate;
+									lrnHist.UserID = objLearnHistory.UserID;
+									lrnHist.Comment = objLearnHistory.Comment;
+									lrnHist.Transfer();
+									lrnHist.buildRelationship($rootScope.arUserList, $rootScope.arLearnObject);
+									$rootScope.arLearnHistory.push(lrnHist);
 									
-									deferred.resolve(true);
+									deferred.resolve(lrnHist.getLogicKey());
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
@@ -490,10 +509,16 @@
 											$rootScope.arLearnHistory.splice(oldidx, 1);
 										}
 										
-										objLearnHistory.buildRelationship($rootScope.arUser, $rootScope.arLearnObject);
-										$rootScope.arLearnHistory.push(objLearnHistory);
+										var lrnHist = hih.LearnHistory.createNew();
+										lrnHist.ObjectID = parseInt(objLearnHistory.ObjectID);
+										lrnHist.LearnDate = objLearnHistory.LearnDate;
+										lrnHist.UserID = objLearnHistory.UserID;
+										lrnHist.Comment = objLearnHistory.Comment;
+										lrnHist.Transfer();
+										lrnHist.buildRelationship($rootScope.arUserList, $rootScope.arLearnObject);
+										$rootScope.arLearnHistory.push(lrnHist);
 										
-										deferred.resolve(true);
+										deferred.resolve(lrnHist.getLogicKey());
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});
@@ -529,13 +554,24 @@
 										$rootScope.arLearnPlan = [];
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
-												if (idx === 0) {
+												if (idx === 0) { // Plan header
 													$.each(obj, function(idx2, obj2) {
 														var lrnplan = new hih.LearnPlan();
 														lrnplan.setContent(obj2);
 														lrnplan.buildRelationship($rootScope.arLearnObject, $rootScope.arUserList);
-														$rootScope.arLearnPlan.push(lrnplan);														
+														$rootScope.arLearnPlan.push(lrnplan);
 													});
+												} else if (idx === 1) { // Plan detail
+													$.each(obj, function(idx2, obj2) {
+														$.each($rootScope.arLearnPlan, function(idx3, obj3) {
+															if (obj3.ID === parseInt(obj2.id)) {
+																var pdetail = new hih.LearnPlanDetail();
+																pdetail.setContent(obj2);
+																pdetail.buildRelationship($rootScope.arLearnObject);
+																obj3.Details.push(pdetail);
+															}
+														});
+													});													
 												}
 											});
 										}
@@ -574,17 +610,22 @@
 							var jsonData = objLearnPlan.ToJSON();
 							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNPLAN', jsonData: jsonData } )
 								.then(function(response) {
-									// Add it into the global memory
-									// var nPlanID = parseInt(response.data);
-									// objLearnPlan.ID = nPlanID;
-									// $.each(objLearnPlan.Details, function(idx, obj) {
-									// 	obj.ID = nPlanID;
-									// });
-									// 
-									// objLearnPlan.buildRelationship($rootScope.arLearnObject);
-									// $rootScope.arLearnPlan.push(objLearnPlan);
+									// Update the global memory
+									var oldidx = -1;
+									for(var idx = 0; idx < $rootScope.arLearnPlan.length; idx ++) {
+										if ($rootScope.arLearnPlan[idx].ID === objLearnPlan.ID) {
+											oldidx = idx;
+											break;
+										}
+									}
+									if (oldidx !== -1 ) {
+										$rootScope.arLearnPlan.splice(oldidx, 1);
+									}
 									
-									deferred.resolve(nPlanID);
+									objLearnPlan.buildRelationship($rootScope.arLearnObject);
+									$rootScope.arLearnPlan.push(objLearnPlan);
+									
+									deferred.resolve(objLearnPlan.ID);
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
