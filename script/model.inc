@@ -20,6 +20,7 @@ class HIHConstants {
 	const EC_InvalidContent = 6;
 	const EC_InvalidDate = 7;
 	const EC_InvalidID = 8;
+	const EC_InvalidUser = 9;
 
 	// EC Number range of DB part: 201 - 250
 	const EC_ConnectionFail = 201;
@@ -63,6 +64,7 @@ class HIHConstants {
 	const DT_LearnHistory = 't_learn_hist';
 	const DT_LearnPlan = 't_learn_plan';
 	const DT_LearnPlanDetail = 't_learn_plandtl';
+	const DT_LearnPlanParticipant = 't_learn_planpat';
 	const DT_FinSetting = 't_fin_setting';
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
@@ -303,7 +305,42 @@ class HIHLearnPlanDetail {
 }
 // Learn Plan Participant
 class HIHLearnPlanParticipant {
+	public $ID;
+	public $UserID;
+	public $StartDate;
+	public $Status;
+	public $Comment;
 	
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidID;
+			}
+			if ( !isset ( $this->UserID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidUser;
+			}
+			if ( !isset ( $this->StartDate ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidDate;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 // Learn Plan
 class HIHLearnPlan {

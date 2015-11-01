@@ -818,8 +818,8 @@
 			$scope.CurrentLearnPlan = null;	
 			$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
 			$scope.PlanDetailCollection = [];
-			$scope.DetailActivity = "Create Detail";
-			$scope.ParticipantActivity = "Create Participant";
+			$scope.DetailActivity = "Learn.CreateDetail";
+			$scope.ParticipantActivity = "Learn.CreateParticipant";
 			$scope.showPart = 'hdr'; // Default show Header
 			
 			// Error messges
@@ -894,7 +894,7 @@
 					}
 				}
 	
-				$scope.ItemActivity = "Display Detail";
+				$scope.ItemActivity = "Learn.DisplayDetail";
 			};
 			
 			$scope.editDetail = function(row) {
@@ -907,7 +907,7 @@
 					}
 				}
 				
-				$scope.ItemActivity = "Edit Detail";
+				$scope.ItemActivity = "Learn.EditDetail";
 			};
 			
 			$scope.removeDetail = function(row) {
@@ -957,7 +957,7 @@
 
 				// New detail
 				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
-				$scope.ItemActivity = "Create Plan Detail";
+				$scope.ItemActivity = "Learn.CreateDetail";
 			 };
 			 
 			 $scope.cancelCurrentDetail = function() {
@@ -965,7 +965,7 @@
 				
 				// New detail
 				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
-				$scope.ItemActivity = "Create Plan Detail";
+				$scope.ItemActivity = "Learn.CreateDetail";
 			 };
 			 
 			 $scope.submit = function() {
@@ -1012,10 +1012,79 @@
 				 $scope.PlanDetailSimulCollection = [];
 				
 				 $.each($scope.PlanDetailCollection, function(idx, obj) {
-					
-					var ndate = new Date($scope.simulateDate);
-					ndate.setDate($scope.simulateDate.getDate()+1); 
+					if (obj.RecurType === hih.Constants.LearnPlanRecurType_OneTime) {
+						var ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay)); 
+						var obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+					} else if(obj.RecurType === hih.Constants.LearnPlanRecurType_HEbbinghaus) {
+						// [0, 1, 2, 4, 7, 15]
+						// 0
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay)); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 1
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 1); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 2
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 2); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 4
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 4); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 7
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 7); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 15
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 15); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+						// 30
+						ndate = new Date($scope.simulateDate);
+						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 30); 
+						obj1 = {};
+						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.ObjectID = obj.ObjectID;
+						obj1.ObjectName = obj.LearnObjectObject.Name;
+						$scope.PlanDetailSimulCollection.push(obj1);
+					}
 				 });
+				 // Sort
+				 $scope.PlanDetailSimulCollection = $scope.PlanDetailSimulCollection.sort(function(a,b){
+					return a.PlanDate.localeCompare(b.PlanDate);
+				 });
+
 				 $scope.isSimulate = true;
 			 };
 			 $scope.hideSimulate = function() {

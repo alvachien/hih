@@ -108,7 +108,14 @@
  		"EditLearningAwardTitle": "Edit Learning Award",
  		"FilterByUser": "Filter by User",
  		"ObjectID": "Object ID",
- 		"ObjectName": "Object Name"
+ 		"ObjectName": "Object Name",
+		"SimulatePlan": "Simulate Plan",
+		"PlanDetailComparison": "Plan Detail Comparison",
+		"CreateDetail": "Create Detail",
+		"EditDetail": "Edit Detail",
+		"DisplayDetail": "Display Detail",
+		"CreateParticipant": "Create Participant",
+		"EditParticipant": "Edit Participant"
   	},
   	
   	"Mainpage": {

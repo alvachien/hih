@@ -1255,6 +1255,29 @@ function learn_plan_listread() {
 			$sError = "Failed to execute query.";
 		}
 	}
+
+	$rsttable3 = array ();
+	if (empty ( $sError ) && count ( $rsttable ) > 0) {
+		$query = "SELECT * FROM " . HIHConstants::DT_LearnPlanParticipant;
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				  $rsttable3 [] = array (
+					"id" => $row [0],
+					"userid" => $row [1],
+					"startdate" => $row[2],
+					"status" => $row [3],
+					"comment" => $row[4]
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query.";
+		}
+	}
 	
 	/* close connection */
 	mysqli_close ( $link );
@@ -1262,6 +1285,7 @@ function learn_plan_listread() {
 	if (count ( $rsttable2 ) > 0) {
 		$rtntable[] = $rsttable;
 		$rtntable[] = $rsttable2;
+		$rtntable[] = $rsttable3;
 	} else {
 		if (count ( $rsttable ) > 0) {
 			$rtntable[] = $rsttable;
@@ -1340,6 +1364,20 @@ function learn_plan_create($objPlan) {
 	
 	/* Last, on registration table */
 	if (empty ( $sError ) && $nCode === 0 && $nPlanID > 0 && count($objPlan->ParticipantsArray) > 0) {
+		$query = "INSERT INTO " . HIHConstants::DT_LearnPlanParticipant . "(`ID`, `USERID`, `STARTDATE`, `STATUS`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+		
+		foreach ( $objPlan->ParticipantsArray as $value ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "isdis", $nPlanID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query;
+					break;
+				}
+			}
+		}		
 	}
 	
 	/* Commit or rollback */
@@ -1443,8 +1481,42 @@ function learn_plan_change($objPlan) {
 		$sError = $sMsg;
 	}
 	
-	/* Last, on registration table */
-	if (empty ( $sError ) && $nCode === 0 && $nPlanID > 0 && count($objPlan->ParticipantsArray) > 0) {
+	/* Last, on participant table */
+	if (empty ( $sError ) && $nCode === 0 ) {
+		$query = "DELETE FROM " . HIHConstants::DT_LearnPlanParticipant . " WHERE `ID` = ?;";
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "i", $objPlan->ID );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+				$nCode = 0;
+			} else {
+				$nCode = 1;
+				$sMsg = "Failed to execute query: " . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$nCode = 1;
+			$sMsg = "Failed to parpare statement: " . $query;
+		}
+		
+		if ($nCode === 0) {
+			$query = "INSERT INTO " . HIHConstants::DT_LearnPlanParticipant . "(`ID`, `USERID`, `STARTDATE`, `STATUS`, `COMMENT`) VALUES (?, ?, ?, ?, ?);";
+			
+			foreach ( $objPlan->ParticipantsArray as $value ) {
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "isdis", $objPlan->ID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query;
+						break;
+					}
+				}
+			}			
+		}
 	}
 	
 	/* Commit or rollback */

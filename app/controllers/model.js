@@ -27,11 +27,11 @@
 		LearnPlanRecurType_OneTime: 1,
 		LearnPlanRecurType_HEbbinghaus: 2, // [0, 1, 2, 4, 7, 15]
 		
-		// Learn plan reg. status
-		LearnPlanRegStatus_InPlan:  1,
-		LearnPlanRegStatus_InProcess: 2,
-		LearnPlanRegStatus_Completed: 3,
-		LearnPlanRegStatus_Aborted: 4,
+		// Learn plan part. status
+		LearnPlanPatStatus_NotStart:  1,
+		LearnPlanPatStatus_InProcess: 2,
+		LearnPlanPatStatus_Completed: 3,
+		LearnPlanPatStatus_Aborted: 4,
 		
 		// Fin document type
 		FinDocType_Normal: 1,
@@ -664,23 +664,47 @@
 	/* Learn Plan Participant */
 	hih.LearnPlanParticipant = function() {
 		// Attributes
+		this.ID = -1;
+		this.UserID = "";
+		this.StartDate = new Date();
+		this.Status = hih.Constants.LearnPlanPatStatus_NotStart;
+		this.Comment = "";
+		
+		// Runtime information
+		this.UserObject = null;
 	};
 	hih.extend(hih.LearnPlanParticipant, hih.Model);
 	hih.LearnPlanParticipant.prototype.setContent = function(obj) {
-		
+		this.ID = parseInt(obj.id);
+		this.UserID = obj.userid;
+		this.StartDate = obj.startdate;
+		this.status = parseInt(obj.status);
+		this.comment = obj.comment;
 	};
-	hih.LearnPlanParticipant.prototype.buildRelationship = function() {
+	hih.LearnPlanParticipant.prototype.buildRelationship = function(arUser) {
 		var that = this;
+		
+		$.each(arUser, function(idx, obj) {
+			if (obj.UserID.localeCompare(that.UserID) === 0) {
+				that.UserObject = obj;
+				return false;
+			}
+		});
 	};
-	hih.LearnPlanParticipant.prototype.Verify = function() {
+	hih.LearnPlanParticipant.prototype.Verify = function($translate) {
 		var errMsgs = [];
+		
+		if (this.UserID && typeof this.UserID === "string" && this.UserID.length > 0) {
+		} else {
+			errMsgs.push($translate("Message.InvalidUser"));
+		}
 		
 		return errMsgs;
 	};	
 	hih.LearnPlanParticipant.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "UserObject" ) 
 				continue;
 			
 			forJSON[i] = this[i];
@@ -734,8 +758,15 @@
 			}
 		}
 		
-		// Check the duplicate
+		// Check the duplicate on details
 				
+		for(var i = 0; i < this.Participants.length; i ++) {
+			var msg3 = this.Participants[i].Verify($translate);
+			if (msg3.length > 0) {
+				Array.prototype.push.apply(errMsgs, msg3);
+			}
+		}
+		
 		return errMsgs;
 	};	
 	hih.LearnPlan.prototype.ToJSONObject = function() {
@@ -758,7 +789,7 @@
 			forJSON.Participants.push(jsonItem2);
 		}
 		return forJSON;
-	};	
+	};
 	hih.LearnPlan.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {

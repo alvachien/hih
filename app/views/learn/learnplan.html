@@ -44,8 +44,8 @@
 		<table st-table="detailColl" class="table">
 			<thead>
 				<tr>
-					<th st-sort="objID">Object ID</th>
-					<th st-sort="objName">Object Name</th>
+					<th st-sort="objID" translate="Common.ID">Object ID</th>
+					<th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
 					<th st-sort="defDay">Deffered Days</th>
 					<th st-sort="recType">Recur. Type</th>
 					<th>Operations</th>
@@ -80,6 +80,7 @@
 		
         <br />
         <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{'Learn.SimulatePlan' | translate}}</div>
             <div class="panel-body">
                 <div class="input-group">
                     <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="simulateDate" is-open="isDateOpened"            		
@@ -95,16 +96,16 @@
                     <table st-table="simuColl" class="table">
                         <thead>
                             <tr>
-                                <th st-sort="objID">Object ID</th>
-                                <th st-sort="objName">Object Name</th>
-                                <th st-sort="defDay">Date</th>
+                                <th st-sort="objID" translate="Common.ID">Object ID</th>
+                                <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
+                                <th st-sort="defDay" translate="Common.Date">Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailSimulCollection">
                                 <td>{{row.ObjectID}}</td>
-                                <td>{{row.LearnObjectObject.Name}}</td>
-                                <td>{{row.Date}}</td>
+                                <td>{{row.ObjectName}}</td>
+                                <td>{{row.PlanDate}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -120,7 +121,7 @@
             <div class="panel-body">
             <form class="form-horizontal" role="form" name="frmItem">
                 <div class="form-group">
-                    <label class="control-label col-sm-2" translate="Learn.Object">Learning Object:</label>
+                    <label class="control-label col-sm-2" translate="Learn.LearningObject">Learning Object:</label>
                     <div class="col-sm-10">
                         <selectize placeholder='Select a learn object...' options='arLearnObject' 
                                 config="learnobjectConfig" ng-model="SelectedPlanDetail.ObjectID"
@@ -164,9 +165,128 @@
         </div>
     </div>
 	
-	<!-- Registration -->
+	<!-- Participants -->
     <div class="container" ng-show="showPart === 'reg'">
-		<label>Registration pages</label>
+		<!-- Tables -->
+		<table st-table="partColl" class="table">
+			<thead>
+				<tr>
+					<th st-sort="userID" translate="Common.User">User</th>
+					<th st-sort="userAlias" translate="Login.DisplayAs">Display As</th>
+					<th st-sort="stdate">Start Date</th>
+					<th st-sort="sts">Status</th>
+					<th>Operations</th>
+				</tr>
+				<tr>
+					<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanParticipantCollection">
+					<td>{{row.UserID}}</td>
+					<td>{{row.UserObject.DisplayAs}}</td>
+					<td>{{row.StartDate}}</td>
+					<td>{{row.Status}}</td>
+					<td>
+                        <button type="button" class="btn btn-sm" ng-click="displayParticipant(row)">
+                            <i class="glyphicon glyphicon-share">
+                            </i>
+                        </button>
+                        <button type="button" class="btn btn-sm" ng-click="editParticipant(row)">
+                            <i class="glyphicon glyphicon-edit">
+                            </i>
+                        </button>
+						<button type="button" ng-click="removeParticipant(row)" class="btn btn-sm btn-danger">
+							<i class="glyphicon glyphicon-remove-circle">
+							</i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+        
+        <br />
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{'Learn.PlanDetailComparison' | translate}}</div>
+            <div class="panel-body">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="showComparison()" ng-hide="PlanDetailCollection.length <= 0 || isCompare == true ">Comparison</button>
+                        <button class="btn btn-default" ng-click="hidewComparison()" ng-hide="isCompare == false">Hide Comparison</button>
+                    </span>
+                </div>
+                
+                <div ng-show="isCompare == true">
+                    <table st-table="simuColl" class="table">
+                        <thead>
+                            <tr>
+                                <th st-sort="objID" translate="Common.ID">Object ID</th>
+                                <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
+                                <th st-sort="defDay" translate="Common.Date">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanPartCompCollection">
+                                <td>{{row.ObjectID}}</td>
+                                <td>{{row.ObjectName}}</td>
+                                <td>{{row.PlanDate}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        
+		<!-- Then, default one -->
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{DetailActivity | translate}}</div>
+            
+            <div class="panel-body">
+            <form class="form-horizontal" role="form" name="frmItem">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Learn.LearningObject">Learning Object:</label>
+                    <div class="col-sm-10">
+                        <selectize placeholder='Select a learn object...' options='arLearnObject' 
+                                config="learnobjectConfig" ng-model="SelectedPlanDetail.ObjectID"
+                                ng-disabled="isReadonly" required="required"></selectize>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" >Recur Type:</label>
+                    <div class="col-sm-10">
+                        <select ng-model="SelectedPlanDetail.RecurType" ng-disabled="isReadonly" required="required">
+                            <option ng-disabled="isReadonly" value="1">One Time</option>
+                            <option ng-disabled="isReadonly" value="2">H. Ebbinghaus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemAmt">Defer Days:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="iptItemAmt" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.DeferredDay" required="required"></input>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="iptItemDesp" translate="Common.Comment">Comment: </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="iptItemDesp" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.Comment"></input>
+			        </div>
+		        </div>
+
+                <!-- Button group -->
+                <div class="form-group">
+                	<div class="col-sm-10">
+                    	<button class="btn btn-default btn-primary" ng-click="saveCurrentDetail()" ng-hide="isReadonly">Save Detail</button>
+                        <button class="btn btn-danger" ng-click="cancelCurrentDetail()">Cancel Detail Editing</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
     </div>
     
     <!-- Buttons -->

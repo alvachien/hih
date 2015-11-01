@@ -2189,18 +2189,24 @@ DELETE FROM `t_fin_setting` WHERE SETID = 'CurryExgToilence';
 INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('CurryExgToilence','2','货币兑换容错');
 
 /* ======================================================
-    Delta parts on 2015.11.01+
+    Delta parts on 2015.10.31
    ====================================================== */
 
--- Table Create, t_learn_plan_reg, registration of the learning plan
-CREATE TABLE IF NOT EXISTS `t_learn_plan_reg` (
+-- Table Create, t_learn_planpat, participant of the learning plan
+CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
   `ID` int(11) NOT NULL,
   `USERID` int(25) NOT NULL,
   `STARTDATE` date NOT NULL,
   `STATUS` tinyint(4) DEFAULT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan registration';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan participant';
+
+
+/* ======================================================
+    Delta parts on 2015.11.01+
+   ====================================================== */
+
 
 
 -- Table Creation: Asset value change

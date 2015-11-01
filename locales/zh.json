@@ -108,7 +108,14 @@
  		"EditLearningAwardTitle": "修改学习成绩",
  		"FilterByUser": "根据用户过滤",
  		"ObjectID": "学习对象ID",
- 		"ObjectName": "学习对象名称"
+ 		"ObjectName": "学习对象名称",
+		"SimulatePlan": "计划模拟",
+		"PlanDetailComparison": "计划与记录对比",
+		"CreateDetail": "创建详细项",
+		"EditDetail": "编辑详细项",
+		"DisplayDetail": "显示详细项",
+		"CreateParticipant": "新建参与者",
+		"EditParticipant": "编辑参与者"
  	},
 
   	"Mainpage": {
