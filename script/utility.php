@@ -1,4 +1,5 @@
 <?php
+
 include_once 'model.inc';
 require_once 'syscfg.php';
 require_once 'config.php';
@@ -104,8 +105,8 @@ function user_login($userid, $userpwd) {
 	/* Check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: " . mysqli_connect_error (),
-				null 
+			"Connect failed: " . mysqli_connect_error (),
+			null 
 		);
 	}
 
@@ -114,7 +115,7 @@ function user_login($userid, $userpwd) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "SELECT * FROM " . MySqlUserTabel . " WHERE USERID = '" . $userid . "'";
+	$query = "SELECT * FROM " . HIHConstants::DT_User . " WHERE USERID = '" . $userid . "'";
 	$sErrorString = "";
 	
 	$exist = false;
@@ -152,8 +153,8 @@ function user_login($userid, $userpwd) {
 	/* close connection */
 	$mysqli->close ();
 	return array (
-			$sErrorString,
-			$objUser 
+		$sErrorString,
+		$objUser 
 	);
 	
 	// Procedural style
@@ -1252,7 +1253,7 @@ function learn_plan_listread() {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query.";
+			$sError = "Failed to execute query: " . $query; 
 		}
 	}
 
@@ -1275,7 +1276,7 @@ function learn_plan_listread() {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query.";
+			$sError = "Failed to execute query:" . $query;
 		}
 	}
 	
@@ -1319,6 +1320,7 @@ function learn_plan_create($objPlan) {
 	$nPlanID = 0;
 	$sMsg = "";
 	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* An insert on plan header first */
@@ -1352,6 +1354,7 @@ function learn_plan_create($objPlan) {
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
+					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query;
 					break;
@@ -1368,10 +1371,11 @@ function learn_plan_create($objPlan) {
 		
 		foreach ( $objPlan->ParticipantsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "isdis", $nPlanID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
+				$newstmt->bind_param ( "issis", $nPlanID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
+					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query;
 					break;
@@ -1388,6 +1392,8 @@ function learn_plan_create($objPlan) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -1417,8 +1423,8 @@ function learn_plan_change($objPlan) {
 	$sError = "";
 	$nCode = 0;
 	$nPlanID = 0;
-	$sMsg = "";
 	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* An update on plan header first */
@@ -1431,14 +1437,14 @@ function learn_plan_change($objPlan) {
 			$nCode = 0;
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query;
 	}
 	
 	/* Then on detail table */
@@ -1451,14 +1457,14 @@ function learn_plan_change($objPlan) {
 				$nCode = 0;
 			} else {
 				$nCode = 1;
-				$sMsg = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query;
 		}
 		
 		if ($nCode === 0) {
@@ -1470,15 +1476,17 @@ function learn_plan_change($objPlan) {
 					
 					/* Execute the statement */
 					if ($newstmt->execute ()) {
+						$newstmt->close();
 					} else {
 						$sError = "Failed to execute query: " . $query;
 						break;
 					}
+				} else {
+					$sError = "Failed to execute query: " . $query;
+					break;
 				}
 			}
 		}	
-	} else {
-		$sError = $sMsg;
 	}
 	
 	/* Last, on participant table */
@@ -1491,14 +1499,14 @@ function learn_plan_change($objPlan) {
 				$nCode = 0;
 			} else {
 				$nCode = 1;
-				$sMsg = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query;
 		}
 		
 		if ($nCode === 0) {
@@ -1510,12 +1518,16 @@ function learn_plan_change($objPlan) {
 					
 					/* Execute the statement */
 					if ($newstmt->execute ()) {
+						$newstmt->close();
 					} else {
 						$sError = "Failed to execute query: " . $query;
 						break;
 					}
+				} else {
+					$sError = "Failed to execute query: " . $query;
+					break;
 				}
-			}			
+			}
 		}
 	}
 	
@@ -1527,6 +1539,102 @@ function learn_plan_change($objPlan) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nPlanID 
+	);	
+}
+function learn_plan_delete($nPlanID) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$mysqli->autocommit ( false );
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* A delete on plan header first */
+	$query = "DELETE FROM `". HIHConstants::DT_LearnPlan. "` WHERE `ID` = ?;";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $nPlanID );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	// Details
+	if (empty ( $sError ) ) {
+		$query = "DELETE FROM " . HIHConstants::DT_LearnPlanDetail . " WHERE `ID` = ?;";
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "i", $nPlanID );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+			} else {
+				$sError = "Failed to execute query: " . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$sError = "Failed to parpare statement: " . $query;
+		}
+	}
+	
+	// Participants
+	if (empty ( $sError ) ) {
+		$query = "DELETE FROM " . HIHConstants::DT_LearnPlanParticipant . " WHERE `ID` = ?;";
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "i", $nPlanID );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+			} else {
+				$sError = "Failed to execute query: " . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$sError = "Failed to parpare statement: " . $query;
+		}
+	}
+	
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -2686,6 +2794,8 @@ function finance_document_post($docobj) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -2764,6 +2874,8 @@ function finance_document_delete($docid) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -3072,6 +3184,8 @@ function finance_internalorder_create($objIO) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -3135,6 +3249,8 @@ function finance_internalorder_delete($ordid) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */

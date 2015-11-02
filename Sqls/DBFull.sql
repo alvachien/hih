@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_plandtl` (
 
 CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
   `ID` int(11) NOT NULL,
-  `USERID` int(25) NOT NULL,
+  `USERID` varchar(25) NOT NULL,
   `STARTDATE` date NOT NULL,
   `STATUS` tinyint(4) DEFAULT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,

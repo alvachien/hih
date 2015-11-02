@@ -491,7 +491,7 @@
 				
 				forJSON[i] = this[i];	
 			}
-			forJSON.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);
+			forJSON.LearnDate = hih.ModelUtility.DatabaseDateFormatter(this.LearnDate);
 			return forJSON;
 		},
 		_toJSON: function() {
@@ -629,9 +629,9 @@
 		
 		// Recur Type Display
 		if (this.RecurType === hih.Constants.LearnPlanRecurType_HEbbinghaus) {
-			this.RecurTypeDisplay = "H. Ebbinghaus";
+			this.RecurTypeDisplay = "Learn.HEbbinghaus";
 		} else {
-			this.RecurTypeDisplay = "One Time";
+			this.RecurTypeDisplay = "Learn.OneTime";
 		}
 	};
 	hih.LearnPlanDetail.prototype.Verify = function($translate) {
@@ -672,14 +672,30 @@
 		
 		// Runtime information
 		this.UserObject = null;
+		this.StatusDisplay = "Common.NotStart";
 	};
 	hih.extend(hih.LearnPlanParticipant, hih.Model);
+	hih.LearnPlanParticipant.prototype.buildUIDisplay = function() {
+		// Status
+		if (this.Status === hih.Constants.LearnPlanPatStatus_NotStart) {
+			this.StatusDisplay = "Common.NotStart";
+		} else if (this.Status === hih.Constants.LearnPlanPatStatus_InProcess) {
+			this.StatusDisplay = "Common.InProcess";
+		}  else if (this.Status === hih.Constants.LearnPlanPatStatus_Completed) {
+			this.StatusDisplay = "Common.Completed";
+		}  else if (this.Status === hih.Constants.LearnPlanPatStatus_Aborted) {
+			this.StatusDisplay = "Common.Aborted";
+		}		
+	};
 	hih.LearnPlanParticipant.prototype.setContent = function(obj) {
 		this.ID = parseInt(obj.id);
 		this.UserID = obj.userid;
 		this.StartDate = obj.startdate;
-		this.status = parseInt(obj.status);
+		this.Status = parseInt(obj.status);
 		this.comment = obj.comment;
+		
+		// UI Display
+		this.buildUIDisplay();
 	};
 	hih.LearnPlanParticipant.prototype.buildRelationship = function(arUser) {
 		var that = this;
@@ -704,11 +720,12 @@
 	hih.LearnPlanParticipant.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "_super" || i === "UserObject" ) 
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "UserObject" || i === "StatusDisplay" || i === "StartDate") 
 				continue;
 			
 			forJSON[i] = this[i];
 		}
+		forJSON["StartDate"] = hih.ModelUtility.DatabaseDateFormatter(this.StartDate);
 		return forJSON;
 	};	
 	hih.LearnPlanParticipant.prototype.ToJSON = function() {

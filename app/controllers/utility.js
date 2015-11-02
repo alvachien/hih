@@ -571,6 +571,17 @@
 																obj3.Details.push(pdetail);
 															}
 														});
+													});
+												} else if (idx === 2) { // Plan participant
+													$.each(obj, function(idx2, obj2) {
+														$.each($rootScope.arLearnPlan, function(idx3, obj3) {
+															if (obj3.ID === parseInt(obj2.id)) {
+																var ppart = new hih.LearnPlanParticipant();
+																ppart.setContent(obj2);
+																ppart.buildRelationship($rootScope.arUserList);
+																obj3.Participants.push(ppart);
+															}
+														});
 													});													
 												}
 											});
@@ -632,8 +643,27 @@
 
 							return deferred.promise;							
 						};
-						rtnObj.deleteLearnPlanQ = function(objLearnPlan) {
-							
+						rtnObj.deleteLearnPlanQ = function(nPlanID) {
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype: 'DELETELEARNPLAN', planid: nPlanID } )
+								.then(function(response) {
+									// Update the global memory
+									var oldidx = -1;
+									for(var idx = 0; idx < $rootScope.arLearnPlan.length; idx ++) {
+										if ($rootScope.arLearnPlan[idx].ID === nPlanID) {
+											oldidx = idx;
+											break;
+										}
+									}
+									if (oldidx !== -1 ) {
+										$rootScope.arLearnPlan.splice(oldidx, 1);
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+
+							return deferred.promise;							
 						};
 						// Learn awards
 						rtnObj.loadLearnAwards = function (bForceReload) {

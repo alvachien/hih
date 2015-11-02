@@ -41,7 +41,12 @@
 		"ValidTo": "有效期至",
 		"Description": "描述",
 		"Header": "头信息",
-		"Detail": "详细信息",		
+		"Detail": "详细信息",
+		"Status": "状态",
+		"NotStart": "未开始",
+		"InProcess": "进行中",
+		"Completed": "已完成",
+		"Aborted": "已放弃",
 		
 		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
@@ -115,7 +120,13 @@
 		"EditDetail": "编辑详细项",
 		"DisplayDetail": "显示详细项",
 		"CreateParticipant": "新建参与者",
-		"EditParticipant": "编辑参与者"
+		"EditParticipant": "编辑参与者",
+		"DisplayParticipant": "显示参与者",
+		"StartDate": "开始日期",
+		"OneTime": "一次",
+		"HEbbinghaus": "H. Ebbinghaus记忆曲线",
+		"DefferedDays": "顺延日期",
+		"RecurType": "重复类型"
  	},
 
   	"Mainpage": {

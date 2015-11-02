@@ -41,7 +41,12 @@
 		"ValidTo": "Valid To",
 		"Description": "Description",
 		"Header": "Header",
-		"Detail": "Detail",		
+		"Detail": "Detail",
+		"Status": "Status",
+		"NotStart": "Not Start",
+		"InProcess": "In Process",
+		"Completed": "Completed",
+		"Aborted": "Aborted",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
@@ -115,7 +120,13 @@
 		"EditDetail": "Edit Detail",
 		"DisplayDetail": "Display Detail",
 		"CreateParticipant": "Create Participant",
-		"EditParticipant": "Edit Participant"
+		"EditParticipant": "Edit Participant",
+		"DisplayParticipant": "Display Participant",
+		"StartDate": "Start Date",
+		"OneTime": "One Time",
+		"HEbbinghaus": "H. Ebbinghaus",
+		"DefferedDays": "Deffered Days",
+		"RecurType": "Recur. Type"
   	},
   	
   	"Mainpage": {

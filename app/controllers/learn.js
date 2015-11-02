@@ -720,7 +720,9 @@
 				{ name:'plancmt', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '150' }
 		    ];
 			
-			utils.loadLearnCategoriesQ()
+			var q1 = utils.loadUserListQ();
+			var q2 = utils.loadLearnCategoriesQ();
+			$q.all([q1, q2])
 				.then(function(response) {
 					utils.loadLearnObjectsQ()
 						.then(function(response2) {
@@ -758,16 +760,16 @@
 				}
 				
 				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-					// utils.deleteLearnHistoryQ($scope.selectedRows[0])
-					// 	.then(function(response) {
-					// 		// Empty selection table
-					// 		$scope.selectedRows = [];
-					// 		
-					// 		// Just refresh it!
-					// 		$scope.refreshList();
-					// 	}, function(reason) {
-					// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
-					// 	});
+					utils.deleteLearnPlanQ($scope.selectedRows[0].ID)
+						.then(function(response) {
+							// Empty selection table
+							$scope.selectedRows = [];
+							
+							// Just refresh it!
+							$scope.refreshList();
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
 				});
 			 };
 			
@@ -818,8 +820,10 @@
 			$scope.CurrentLearnPlan = null;	
 			$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
 			$scope.PlanDetailCollection = [];
+			$scope.PlanParticipantCollection = [];
 			$scope.DetailActivity = "Learn.CreateDetail";
 			$scope.ParticipantActivity = "Learn.CreateParticipant";
+			$scope.SelectedPlanParticipant = new hih.LearnPlanParticipant();
 			$scope.showPart = 'hdr'; // Default show Header
 			
 			// Error messges
@@ -828,7 +832,7 @@
 				$scope.ReportedMessages = [];
 			};
 			
-			// Date control
+			// Date controls
 			$scope.isDateOpened = false;	
 			$scope.DateFormat = "yyyy-MM-dd";
 			$scope.dateOptions = {
@@ -840,9 +844,16 @@
 				$event.stopPropagation();
 				$scope.isDateOpened = true;
 			};
-			$scope.simulateDate = new Date();
+			$scope.isStartDateOpened = false;
+			$scope.openStartDate = function($event) {
+				$event.preventDefault();
+				$event.stopPropagation();
+				$scope.isStartDateOpened = true;
+			};
 			$scope.isSimulate = false;
 			$scope.PlanDetailSimulCollection = [];
+			$scope.isCompare = false;
+			$scope.PlanPartCompCollection = [];
 			
 			$scope.learnobjectConfig = {
 				create: false,
@@ -870,9 +881,13 @@
 					if (obj.ID === parseInt($stateParams.id)) {
 						$scope.CurrentLearnPlan = angular.copy(obj);
 						
-						// For Items
+						// For Details
 						$.each(obj.Details, function(idx2, obj2) {
 							$scope.PlanDetailCollection.push(angular.copy(obj2));
+						})
+						// For Participants
+						$.each(obj.Participants, function(idx3, obj3) {
+							$scope.PlanParticipantCollection.push(angular.copy(obj3));
 						})						
 
 						return false;
@@ -894,7 +909,7 @@
 					}
 				}
 	
-				$scope.ItemActivity = "Learn.DisplayDetail";
+				$scope.DetailActivity = "Learn.DisplayDetail";
 			};
 			
 			$scope.editDetail = function(row) {
@@ -907,7 +922,7 @@
 					}
 				}
 				
-				$scope.ItemActivity = "Learn.EditDetail";
+				$scope.DetailActivity = "Learn.EditDetail";
 			};
 			
 			$scope.removeDetail = function(row) {
@@ -957,7 +972,7 @@
 
 				// New detail
 				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
-				$scope.ItemActivity = "Learn.CreateDetail";
+				$scope.DetailActivity = "Learn.CreateDetail";
 			 };
 			 
 			 $scope.cancelCurrentDetail = function() {
@@ -965,16 +980,94 @@
 				
 				// New detail
 				$scope.SelectedPlanDetail = new hih.LearnPlanDetail();
-				$scope.ItemActivity = "Learn.CreateDetail";
+				$scope.DetailActivity = "Learn.CreateDetail";
+			 };
+			 
+			 $scope.displayParticipant = function(row) {
+				$scope.cleanReportMessages();
+				
+				$scope.SelectedPlanParticipant = row;				
+	
+				$scope.ParticipantActivity = "Learn.DisplayParticipant";				 
+			 };
+			 $scope.editParticipant = function(row) {
+				$scope.cleanReportMessages(); 
+				
+				$scope.SelectedPlanParticipant = row;
+				
+				$scope.ParticipantActivity = "Learn.EditParticipant";				 
+			 };
+			 $scope.removeParticipant = function(row) {
+				$scope.cleanReportMessages(); 
+				
+				// Show confirm dialog
+				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+					function() {
+						if ($scope.SelectedPlanParticipant.UserID === row.UserID
+							&& $scope.SelectedPlanParticipant.StartDate === row.StartDate ) {
+							// New detail
+							$scope.SelectedPlanParticipant = new hih.LearnPlanParticipant();
+							$scope.ParticipantActivity = "Learn.CreateParticipant";
+						}
+								
+						for(var i = 0; i < $scope.PlanParticipantCollection.length; i ++) {
+							if ($scope.SelectedPlanParticipant.UserID === row.UserID
+								&& $scope.SelectedPlanParticipant.StartDate === row.StartDate) {
+								$scope.PlanParticipantCollection.splice(i, 1);
+								break;
+							}
+						}
+						
+						$scope.$apply();
+				});
+			 };
+			 $scope.saveCurrentParticipant = function() {
+				$scope.cleanReportMessages();
+				
+				// Conver the date and integer
+				//$scope.SelectedPlanParticipant.StartDate = hih.ModelUtility.DateFormatter($scope.SelectedPlanParticipant.StartDate);
+				$scope.SelectedPlanParticipant.Status = parseInt($scope.SelectedPlanParticipant.Status);
+
+				// Perform the check
+				var rptMsgs = $scope.SelectedPlanParticipant.Verify($translate);
+				if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+				 	$q.all(rptMsgs)
+				 		.then(function(response) {
+				 			$scope.cleanReportMessages();
+				 			Array.prototype.push.apply($scope.ReportedMessages, response);
+				 		}, function(reason) {
+				 			$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+				 		});
+				 	return;
+				}
+				$scope.SelectedPlanParticipant.buildUIDisplay();	
+				$scope.SelectedPlanParticipant.buildRelationship($rootScope.arUserList);
+				$scope.PlanParticipantCollection.push($scope.SelectedPlanParticipant);
+
+				// New detail
+				$scope.SelectedPlanParticipant = new hih.LearnPlanParticipant();
+				$scope.ParticipantActivity = "Learn.CreateParticipant";
+			 };
+			 $scope.cancelCurrentParticipant = function() {
+				$scope.cleanReportMessages();
+				 
+				$scope.SelectedPlanParticipant = new hih.LearnPlanParticipant();
+				$scope.ParticipantActivity = "Learn.CreateParticipant";				 
 			 };
 			 
 			 $scope.submit = function() {
 				 $scope.CurrentLearnPlan.Details = [];
+				 $scope.CurrentLearnPlan.Participants = [];
 				 
 				 // Copy the detail
 				 $.each($scope.PlanDetailCollection, function(idx, obj) {
 					 obj.ID = $scope.CurrentLearnPlan.ID;
 					 $scope.CurrentLearnPlan.Details.push(obj); 
+				 });
+				 // Copy the participants
+				 $.each($scope.PlanParticipantCollection, function(idx, obj) {
+					 obj.ID = $scope.CurrentLearnPlan.ID;
+					 $scope.CurrentLearnPlan.Participants.push(obj); 
 				 });
 				 
 				 // Verify it!

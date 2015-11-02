@@ -48,7 +48,6 @@ class HIHConstants {
 	const EC_Delete_ObjectInUse = 251;
 	const EC_Delete_CategoryInUse = 252;
 	const EC_InvalidLearnObject = 253;
-	const EC_InvalidUser = 254;
 	const EC_LearnHistoryExist = 255;
 	const EC_LearnHistoryNotExist = 256;
 	
@@ -59,6 +58,7 @@ class HIHConstants {
 	
 	// Database part
 	// Tables
+	const DT_User = 't_user';
 	const DT_LearnObject = 't_learn_obj';
 	const DT_LearnCategory = 't_learn_ctg';
 	const DT_LearnHistory = 't_learn_hist';
@@ -375,6 +375,17 @@ class HIHLearnPlan {
 							$this->DetailsArray [$di->ObjectID] = $di;
 						}
 					}
+				}
+				break;
+				
+				case "Participants": {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLearnPlanParticipant( $value[ $i ] );
+							$this->ParticipantsArray [] = $di;
+						}
+					}					
 				}
 				break;
 				

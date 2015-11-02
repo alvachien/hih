@@ -354,7 +354,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			
 		case "DELETELEARNPLAN":
 			{
-				
+				$nID = escape( $realParamArr['planid'] );
+				HIHSrv_Function_1Param( 'learn_plan_delete', $nID );				
 			}
 			break;
 			
