@@ -1417,7 +1417,7 @@
 	hih.FinanceDocument.prototype.setContent = function(obj) {
 		this.DocID = parseInt(obj.docid);
 		this.DocTypeID = parseInt(obj.doctype);
-		this.TranDate = obj.trandate;
+		this.TranDate = new Date(obj.trandate);
 		this.TranCurrency = obj.trancurr;
 		this.Desp = obj.desp;
 		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
@@ -1586,7 +1586,7 @@
 			}			
 		}
 		// Tran Date
-		forJSON.TranDate = hih.ModelUtility.DateFormatter(this.TranDate);
+		forJSON.TranDate = hih.ModelUtility.DatabaseDateFormatter(this.TranDate);
 		
 		// Currency exchange document
 		if (this.DocTypeID !== hih.Constants.FinDocType_CurrExchange) {

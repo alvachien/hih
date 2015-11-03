@@ -664,7 +664,7 @@
 		$scope.gridOptions.columnDefs = [
 	    	{ name:'docid', field: 'DocID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
 	    	{ name:'doctypename', field: 'DocTypeObject.Name', displayName: 'Finance.DocumentType', headerCellFilter: "translate", width:90 },
-			{ name:'trandate', field: 'TranDate', displayName: 'Common.Date', headerCellFilter: "translate", width: 150},
+			{ name:'trandate', field: 'TranDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: 150},
 			//{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
 			{ name:'trancurrname', field:'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
 			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
@@ -892,7 +892,7 @@
   		};
         // For date control
 		$scope.isDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -1181,7 +1181,7 @@
   		};
         // For date control
 		$scope.isDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -1325,7 +1325,7 @@
 
         // For date control
 		$scope.isDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -1527,7 +1527,7 @@
   		};		  
         // For date control
 		$scope.isDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -2412,7 +2412,7 @@
         // For date control
 		$scope.isValidfromDateOpened = false;
 		$scope.isValidtoDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -2730,7 +2730,7 @@
         // For date control
 		$scope.isValidfromDateOpened = false;
 		$scope.isValidtoDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1
@@ -2868,7 +2868,7 @@
         // For date control
 		$scope.isValidfromDateOpened = false;
 		$scope.isValidtoDateOpened = false;
-		$scope.DateFormat = "yyyy-MM-dd";
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
 		$scope.dateOptions = {
 		    formatYear: 'yyyy',
 		    startingDay: 1

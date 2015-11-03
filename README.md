@@ -21,6 +21,7 @@ As described above,  HIH, Home Info. Hub, is a warehouse storing the necessary i
 - Learn Object
 - Learn History
 - Learn Award
+- Learn Plan
 
 ## Who needs HIH
 If you have more than two computers, no doubtly you will feel it's hard to synchronze the data between them. 
@@ -52,8 +53,9 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 - 2015.11.3, It's DECIDED that the HIH using 'yyyy.MM.dd' as the default UI format for date for now. The customizing the date formatting waiting for next version. The ISO format 'yyyy-MM-dd' for database storage is no change.
 - To be updated.
 
-### HIH, version web 0.1 to web 0.3
-Using: jQuery, jEasyUI.
+### HIH, website version 
+1. Version 0.1 to web 0.3, Using: jQuery, jEasyUI;
+2. Version 0.4 to now, using Angular JS, Boostrap, ...
 
 ### HIH, desktop version history
 1. Version 1.0, named as PIH, built with MFC, Visual C++;
