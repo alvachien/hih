@@ -316,6 +316,32 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 			
+		case "CREATELEARNAWARD2": {
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loAward = new HIHLearnAward($jsondata);
+				$errCodes = $loAward->CheckValid(true);
+
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_award_create2', $loAward );
+				}
+			}
+			break;
+			
+		case "CHANGELEARNAWARD": {
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loAward = new HIHLearnAward($jsondata);
+				$errCodes = $loAward->CheckValid();
+
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_award_change', $loAward );
+				}			
+			}
+			break; 
+		
 		case "DELETELEARNAWARD":
 			{
 				$id = escape ( $realParamArr ['id'] );
@@ -407,6 +433,17 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				// 	export_error ( sErrors );
 				// }
 			}
+			break;
+		case "CHANGEFINANCEACCOUNT": {
+				$acdata = json_decode( $realParamArr ['acdata'] );
+				$acObj = new HIHAccount($acdata);
+				$errCodes = $acObj->CheckValid();
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'finance_account_change', $acObj);
+				}			
+			}	
 			break;
 			
 		case "DELETEFINANCEACCOUNT": {

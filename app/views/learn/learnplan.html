@@ -24,15 +24,15 @@
 		<form class="form-horizontal" role="form" name="frmObj">
 			<div class="form-group">
 				<label class="control-label col-sm-2" translate="Common.Name">Name</label>
-				<div class="col-sm-10">
-					<input type="text" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Name">
+				<div class="col-sm-10 input-group">
+					<input type="text" class="form-control" width="300" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Name">
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label class="control-label col-sm-2" translate="Common.Comment">Comment</label>
-				<div class="col-sm-10">
-					<input type="text" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Comment">
+				<div class="col-sm-10 input-group">
+					<input type="text" class="form-control" width="300" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Comment">
 				</div>
 			</div>
 		</form>
@@ -48,10 +48,10 @@
 					<th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
 					<th st-sort="defDay" translate="Learn.DefferedDays">Deffered Days</th>
 					<th st-sort="recType" translate="Learn.RecurType">Recur. Type</th>
-					<th>Operations</th>
+					<th translate="Common.Operations">Operations</th>
 				</tr>
 				<tr>
-					<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+					<th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text"/></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -105,7 +105,7 @@
                             <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailSimulCollection">
                                 <td>{{row.ObjectID}}</td>
                                 <td>{{row.ObjectName}}</td>
-                                <td>{{row.PlanDate}}</td>
+                                <td>{{row.PlanDate | date:'yyyy.MM.dd' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -175,10 +175,10 @@
 					<th st-sort="userAlias" translate="Login.DisplayAs">Display As</th>
 					<th st-sort="stdate" translate="Learn.StartDate">Start Date</th>
 					<th st-sort="sts" translate="Common.Status">Status</th>
-					<th>Operations</th>
+					<th translate="Common.Operations">Operations</th>
 				</tr>
 				<tr>
-					<th colspan="5"><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+					<th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text"/></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -196,6 +196,10 @@
                             <i class="glyphicon glyphicon-edit">
                             </i>
                         </button>
+                        <button type="button" class="btn btn-sm" ng-click="showComparison(row)">
+                            <i class="glyphicon glyphicon-adjust">
+                            </i>
+                        </button>                        
 						<button type="button" ng-click="removeParticipant(row)" class="btn btn-sm btn-danger">
 							<i class="glyphicon glyphicon-remove-circle">
 							</i>
@@ -206,30 +210,33 @@
 		</table>
         
         <br />
-        <div class="panel panel-default" style="margin: 30px, 10px;" ng-hide="PlanParticipantCollection.length <= 0">
+        <div class="panel panel-default" style="margin: 30px, 10px;" ng-hide="isCompare == false">
             <div class="panel-heading">{{'Learn.PlanDetailComparison' | translate}}</div>
             <div class="panel-body">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="showComparison()" ng-hide="isCompare == true ">Comparison</button>
-                        <button class="btn btn-default" ng-click="hidewComparison()" ng-hide="isCompare == false">Hide Comparison</button>
+                        <button class="btn btn-default" ng-click="hideComparison()">Hide Comparison</button>
                     </span>
                 </div>
                 
                 <div ng-show="isCompare == true">
-                    <table st-table="simuColl" class="table">
+                    <table st-table="compTable" class="table">
                         <thead>
                             <tr>
                                 <th st-sort="objID" translate="Common.ID">Object ID</th>
                                 <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
-                                <th st-sort="defDay" translate="Common.Date">Date</th>
+                                <th st-sort="pdate" translate="Common.Date">Date</th>
+                                <th st-sort="hdate" translate="Learn.StartDate">Start Date</th>
+                                <th st-sort="diff" translate="Learn.DefferedDays">Deffered Days</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanPartCompCollection">
+                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanPartCompCollection track by $index">
                                 <td>{{row.ObjectID}}</td>
                                 <td>{{row.ObjectName}}</td>
                                 <td>{{row.PlanDate | date:'yyyy.MM.dd' }}</td>
+                                <td>{{row.HistoryDate | date:'yyyy.MM.dd' }}</td>
+                                <td>{{row.Difference }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -281,6 +288,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" translate="Common.Comment">Comment</label>
                     <div class="col-sm-10">
+                        <input type="text" ng-readonly="isReadonly" ng-model="SelectedPlanParticipant.Comment"></input>
                     </div>
                 </div>
                 

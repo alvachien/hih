@@ -49,6 +49,7 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 - 2015.10.20, It's DECIDED that the stored procedure in DB layer only conver simple CREATE/UPDATE/DELETE operation no others. The reason we need stored procedure is  that
 	- We need LAST_INSERT_ID() in Creation case; [?] <= However, via mysqli->insert_id can anyway get the new insert ID out!
 	- We need transaction in any case; [?] <= It can also achieve in PHP layer!
+- 2015.11.3, It's DECIDED that the HIH using 'yyyy.MM.dd' as the default UI format for date for now. The customizing the date formatting waiting for next version. The ISO format 'yyyy-MM-dd' for database storage is no change.
 - To be updated.
 
 ### HIH, version web 0.1 to web 0.3

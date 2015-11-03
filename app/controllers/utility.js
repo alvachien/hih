@@ -605,6 +605,9 @@
 									$.each(objLearnPlan.Details, function(idx, obj) {
 										obj.ID = nPlanID;
 									});
+									$.each(objLearnPlan.Participants, function(idx, obj) {
+										obj.ID = nPlanID;
+									});
 									
 									objLearnPlan.buildRelationship($rootScope.arLearnObject);
 									$rootScope.arLearnPlan.push(objLearnPlan);
@@ -722,6 +725,58 @@
 									});
 							}
 							return deferred.promise;
+						};
+						rtnObj.createLearnAwardQ = function(objAward) {
+							var deferred = $q.defer();
+							var jsonData = objAward.ToJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNAWARD2', jsonData: jsonData } )
+								.then(function(response) {
+									var nAwdID = -1;
+									if ($.isArray(response.data) && response.data.length > 0 ) {
+										$.each(response.data, function(idx, obj) {
+											var newObj = new hih.LearnAward();
+											newObj.setContent(obj);
+											newObj.buildRelationship($rootScope.arUserList);
+											nAwdID = newObj.ID;
+											$rootScope.arLearnAward.push(newObj);
+										});
+									}
+									deferred.resolve(nAwdID);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+
+							return deferred.promise;							
+						};
+						rtnObj.changeLearnAwardQ = function(objAward) {
+							var deferred = $q.defer();
+							var jsonData = objAward.ToJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNAWARD', jsonData: jsonData } )
+								.then(function(response) {
+									// Update the global memory
+									var oldidx = -1;
+									for(var idx = 0; idx < $rootScope.arLearnAward.length; idx ++) {
+										if ($rootScope.arLearnAward[idx].ID === objAward.ID) {
+											oldidx = idx;
+											break;
+										}
+									}
+									if (oldidx !== -1 ) {
+										$rootScope.arLearnAward.splice(oldidx, 1);
+									}
+									
+									objAward.buildRelationship($rootScope.arUserList);
+									$rootScope.arLearnAward.push(objAward);
+									
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+
+							return deferred.promise;
+						};
+						rtnObj.deleteLearnAwardQ = function(nAwardID) {
+							// To-DO
 						};
 						// Learn categories
 						rtnObj.loadLearnCategories = function () {
@@ -914,6 +969,35 @@
 								deferred.reject(response.data.Message);
 							});
 							return deferred.promise;							
+						};
+						rtnObj.changeFinanceAccountQ = function(objAcnt) {
+							var deferred = $q.defer();
+							var strJSON = JSON && JSON.stringify(objAcnt) || $.toJSON(objAcnt);
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CHANGEFINANCEACCOUNT',
+								acdata: strJSON })
+							.then(function(response) {
+								// Update the global memory
+								var oldidx = -1;
+								for(var idx = 0; idx < $rootScope.arFinanceAccount.length; idx ++) {
+									if ($rootScope.arFinanceAccount[idx].ID === parseInt(objAcnt.ID)) {
+										oldidx = idx;
+										break;
+									}
+								}
+								if (oldidx !== -1 ) {
+									$rootScope.arFinanceAccount.splice(oldidx, 1);
+								}
+								
+								objAcnt.buildCategory($rootScope.arFinanceAccountCategory);
+								$rootScope.arFinanceAccount.push(objAcnt);
+								
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
 						};
 						rtnObj.deleteFinanceAccountQ = function(acntid) {
 							var deferred = $q.defer();

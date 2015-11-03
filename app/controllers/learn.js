@@ -485,7 +485,7 @@
 				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '150' },
 				//{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
 				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '200' },
-				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date', headerCellFilter: "translate", width: '100' }
+				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date',  headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: '100' }
 		    ];
 			
 			var q1 = utils.loadUserListQ();
@@ -590,7 +590,7 @@
 
 			$scope.isReadonly = false;
 			$scope.isDateOpened = false;	
-			$scope.DateFormat = "yyyy-MM-dd";
+			$scope.DateFormat = hih.Constants.UI_DateFormat;
 			$scope.dateOptions = {
 				formatYear: 'yyyy',
 				startingDay: 1
@@ -834,7 +834,7 @@
 			
 			// Date controls
 			$scope.isDateOpened = false;	
-			$scope.DateFormat = "yyyy-MM-dd";
+			$scope.DateFormat = hih.Constants.UI_DateFormat;
 			$scope.dateOptions = {
 				formatYear: 'yyyy',
 				startingDay: 1
@@ -850,6 +850,7 @@
 				$event.stopPropagation();
 				$scope.isStartDateOpened = true;
 			};
+			$scope.simulateDate = new Date();
 			$scope.isSimulate = false;
 			$scope.PlanDetailSimulCollection = [];
 			$scope.isCompare = false;
@@ -986,7 +987,8 @@
 			 $scope.displayParticipant = function(row) {
 				$scope.cleanReportMessages();
 				
-				$scope.SelectedPlanParticipant = row;				
+				$scope.SelectedPlanParticipant = row;
+				$scope.SelectedPlanParticipant.Status = $scope.SelectedPlanParticipant.Status.toString(); 				
 	
 				$scope.ParticipantActivity = "Learn.DisplayParticipant";				 
 			 };
@@ -994,6 +996,7 @@
 				$scope.cleanReportMessages(); 
 				
 				$scope.SelectedPlanParticipant = row;
+				$scope.SelectedPlanParticipant.Status = $scope.SelectedPlanParticipant.Status.toString();
 				
 				$scope.ParticipantActivity = "Learn.EditParticipant";				 
 			 };
@@ -1025,7 +1028,6 @@
 				$scope.cleanReportMessages();
 				
 				// Conver the date and integer
-				//$scope.SelectedPlanParticipant.StartDate = hih.ModelUtility.DateFormatter($scope.SelectedPlanParticipant.StartDate);
 				$scope.SelectedPlanParticipant.Status = parseInt($scope.SelectedPlanParticipant.Status);
 
 				// Perform the check
@@ -1101,73 +1103,65 @@
 				 }
 			 };
 			 
-			 $scope.showSimulate = function() {
+			 $scope.simulateDetailInternal = function(valDate) {
 				 $scope.PlanDetailSimulCollection = [];
 				
 				 $.each($scope.PlanDetailCollection, function(idx, obj) {
 					if (obj.RecurType === hih.Constants.LearnPlanRecurType_OneTime) {
-						var ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay)); 
 						var obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay)); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 					} else if(obj.RecurType === hih.Constants.LearnPlanRecurType_HEbbinghaus) {
 						// [0, 1, 2, 4, 7, 15]
 						// 0
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay)); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay)); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 1
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 1); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 1); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 2
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 2); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 2); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 4
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 4); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 4); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 7
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 7); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 7); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 15
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 15); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 15); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
 						// 30
-						ndate = new Date($scope.simulateDate);
-						ndate.setDate($scope.simulateDate.getDate() + parseInt(obj.DeferredDay) + 30); 
 						obj1 = {};
-						obj1.PlanDate = hih.ModelUtility.DateFormatter(ndate);
+						obj1.PlanDate = new Date(valDate);
+						obj1.PlanDate.setDate(valDate.getDate() + parseInt(obj.DeferredDay) + 30); 
 						obj1.ObjectID = obj.ObjectID;
 						obj1.ObjectName = obj.LearnObjectObject.Name;
 						$scope.PlanDetailSimulCollection.push(obj1);
@@ -1175,13 +1169,66 @@
 				 });
 				 // Sort
 				 $scope.PlanDetailSimulCollection = $scope.PlanDetailSimulCollection.sort(function(a,b){
-					return a.PlanDate.localeCompare(b.PlanDate);
+					return a.PlanDate.getTime() - b.PlanDate.getTime();
 				 });
-
+			 };
+			 $scope.showSimulate = function() {
+				 $scope.simulateDetailInternal($scope.simulateDate);
 				 $scope.isSimulate = true;
 			 };
 			 $scope.hideSimulate = function() {
 				 $scope.isSimulate = false;
+			 };
+			 $scope.showComparison = function(row) {
+				 $scope.PlanPartCompCollection = [];
+				 
+				 utils.loadLearnHistoriesQ()
+				 	.then(function(response) {
+						 // Step 1. compare the history
+						 var arHist = $rootScope.arLearnHistory.filter(function(val) {
+							if (val.LearnDate.getTime() >= row.StartDate.getTime() && val.UserID === val.UserID) {
+								return true;
+							} 
+						 });
+						 arHist = arHist.sort(function(val1, val2) {
+							return val1.LearnDate.getTime() - val2.LearnDate.getTime(); 
+						 });
+						 
+						 // Step 2. retrieve the details simulation result
+						 $scope.simulateDetailInternal(row.StartDate);
+						 
+						 // Step 3. Compare two arrays
+						 var bEntryFound = false;
+						 for(var i = 0; i < $scope.PlanDetailSimulCollection.length; i ++) {
+							 bEntryFound = false;
+							 var pComp = {};
+							 pComp.PlanDate = $scope.PlanDetailSimulCollection[i].PlanDate;
+							 pComp.ObjectID = $scope.PlanDetailSimulCollection[i].ObjectID;
+							 pComp.ObjectName = $scope.PlanDetailSimulCollection[i].ObjectName;
+							 
+							 for(var j = 0; j < arHist.length; j ++ ) {
+								 if (bEntryFound) continue;
+								 
+								 if (arHist[j].ObjectID === pComp.ObjectID) {
+									 pComp.HistoryDate = arHist[j].LearnDate;
+									 pComp.Difference = pComp.PlanDate.getTime() - pComp.HistoryDate.getTime();
+									 $scope.PlanPartCompCollection.push(pComp);
+									 arHist.splice(j, 1);
+									 bEntryFound = true;;
+								 }
+							 }
+							 
+							 if (!bEntryFound)
+							 	$scope.PlanPartCompCollection.push(pComp);
+						 }
+						 
+						 $scope.isCompare = true;						 
+					 }, function(reason) {
+						 $rootScope.$broadcast("ShowMessage", "Error", reason);
+					 });
+			 };
+			 $scope.hideComparison = function() {
+				 $scope.isCompare = false;				 
 			 };
 			 
 			 $scope.close = function() {
@@ -1190,12 +1237,11 @@
 		}])
 		
 		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'uiGridConstants', 'utils', 
-		    function($scope, $rootScope, $state, $http, $translate, uiGridConstants, utils) {
-			utils.loadLearnAwards();
+		    function($scope, $rootScope, $state, $http, $translate, uiGridConstants, utils) {			
 			
 			// Grid options
 			$scope.gridOptions = {};
-			$scope.gridOptions.data = 'myData';
+			$scope.gridOptions.data = 'arLearnAward';
 			$scope.gridOptions.enableSorting = true;
 			$scope.gridOptions.enableColumnResizing = true;
 			$scope.gridOptions.enableFiltering = true;
@@ -1208,10 +1254,10 @@
 			$scope.gridOptions.selectionRowHeaderWidth = 35;
 			
 			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.id;
+			 	return row.ID;
 			};
 			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.id;
+			 	return row.ID;
 			};			
 			$scope.gridOptions.onRegisterApi = function(gridApi) {
       			$scope.gridApi = gridApi;
@@ -1234,28 +1280,25 @@
 		    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'50' },
 		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width: '90' },
 		    	{ name:'displayas', field: 'UserDisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'100' },				
-				{ name:'adate', field:'AwardDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter:'date', width: '120' },
+				{ name:'adate', field:'AwardDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: '120' },
 				{ name:'score', field:'Score', displayName: 'Learn.Score', headerCellFilter: "translate", width: '100',
 					aggregationType:uiGridConstants.aggregationTypes.avg }, // type:'boolean' for sorting 
 				{ name:'reason', field:'Reason', displayName: 'Learn.Reason', headerCellFilter: "translate", width: '200' }
 		    ];
 		  
-		    if (angular.isArray($rootScope.arLearnAward ) && $rootScope.arLearnAward.length > 0) {
-			    $scope.myData = [];
-				$.each($rootScope.arLearnAward, function(idx, obj) {
-		  			$scope.myData.push(angular.copy(obj));					
-				});			  
-		    };
+			utils.loadUserListQ()
+				.then(function(response) {
+					utils.loadLearnAwardsQ()
+						.then(function(response2) {
+							
+						}, function(reason2) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						});
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 		  
-		    $scope.selectedRows = [];
-		    $scope.$on("LearnAwardLoaded", function() {
-		    	console.log("HIH LearnAward List: Loaded event fired!");
-		    	$scope.myData = [];
-				$.each($rootScope.arLearnAward, function(idx, obj) {
-		  			$scope.myData.push(angular.copy(obj));					
-				});	
-		    });
-		    
+		    $scope.selectedRows = [];		    
 			if (!$rootScope.DeletionDialogTitle || !$rootScope.DeletionDialogMsg) {
 				$translate(['Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem']).then(function (translations) {
     				$rootScope.DeletionDialogTitle = translations['Common.DeleteConfirmation'];
@@ -1323,23 +1366,19 @@
 			// Refresh list
 			$scope.refreshList = function() {
 				// Reload the whole list
-				utils.loadLearnAwards(true);
+				utils.loadLearnAwardsQ(true);
 			};
 		}])
 		
-		.controller('LearnAwardController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', 'utils', function($scope, $rootScope, $state, $stateParams, $http, utils) {
+		.controller('LearnAwardController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
 			$scope.Activity = "";
-			 
-			$scope.AwardID = -1;
-			$scope.isReadonly = false;
-			$scope.UserIDs = $rootScope.arUserList;			 
-			$scope.AwardDate = new Date();
-			$scope.SelectedUser = {};
-			$scope.Score = 0;
-			$scope.Reason = "";
-			 
+			$scope.ActivityID = hih.Constants.UIMode_Create;
+			
+			$scope.CurrentLearnAward = new hih.LearnAward();
+			
+			// Date control
 			$scope.isDateOpened = false;	
-			$scope.DateFormat = "yyyy-MM-dd";
+			$scope.DateFormat = hih.Constants.UI_DateFormat;
 			$scope.dateOptions = {
 				formatYear: 'yyyy',
 				startingDay: 1
@@ -1348,88 +1387,69 @@
 				$event.preventDefault();
 				$event.stopPropagation();
 				
-				if (!$scope.isReadonly)
+				if ($scope.ActivityID != hih.Constants.UIMode_Display)
 					$scope.isDateOpened = true;
 			};
  
 			if (angular.isDefined($stateParams.objid)) {
-				$scope.AwardID = $stateParams.objid;
-				 
 				if ($state.current.name === "home.learn.award.maintain") {
 					$scope.Activity = "Common.Edit";					 
-					 
+					$scope.ActivityID = hih.Constants.UIMode_Change; 
 				} else if ($state.current.name === "home.learn.award.display") {
 					$scope.Activity = "Common.Display";
-					$scope.isReadonly = true;
+					$scope.ActivityID = hih.Constants.UIMode_Display;
 				}
  				 
 				$.each($rootScope.arLearnAward, function(idx, obj) {
-					// Learn Award example: {"id":"23","userid":"du","displayas":"Du","adate":"2015-02-22","score":"56","reason":"test"}
-					if (obj.id === $scope.AwardID) {
-						if (angular.isArray($scope.UserIDs)) {
-							$.each($scope.UserIDs, function (idx2, obj2) {
-								// User ID example: {"id":"ac","text":"AC"}
-								if (obj2.ID === obj.UserID) {
-									$scope.SelectedUser.selected = obj2;
-									return false;
-								}
-							});								 
-						}
-						 
-						$scope.AwardDate = obj.adate;
-						$scope.Score = obj.score;
-						$scope.Reason = obj.reason;
+					if (obj.ID === parseInt($stateParams.objid)) {
+						$scope.CurrentLearnAward = angular.copy(obj);
 						return false;
 					}
 				});
 			 } else {
 				 $scope.Activity = "Common.Create";
+				 $scope.ActivityID = hih.Constants.UIMode_Create;
 			 };
 			 
 			 $scope.submit = function() {
-				 // To-Do: Validation!!!!
-				 if ($scope.SelectedUser && $scope.SelectedUser.selected) {					 
-				 } else {
-					 $rootScope.$broadcast("ShowMessage", "Error", "User is must!", "error");
-					 return;
-				 }
-				 if ($scope.Score >= 0 && $scope.Score <= 100){
-					 
-				 } else {
-					 $rootScope.$broadcast("ShowMessage", "Error", "Score is must!", "error");
-					 return;
+				 // String => Float
+				 $scope.CurrentLearnAward.Score = parseFloat($scope.CurrentLearnAward.Score);
+				 
+				 // Verify it!
+				 var msgTab = $scope.CurrentLearnAward.Verify();
+				 if (msgTab && msgTab.length > 0) {
+					$translate(msgTab).then(function (translations) {
+						// Show errors
+						$.each(translations, function(idx, obj) {
+							$rootScope.$broadcast("ShowMessage", "Error", obj);
+						});
+  					});	
+				 	return;
 				 }
 				 
-				 // Submit the server
-				 var datefmt = utils.dateformatter($scope.AwardDate);
-				 // user, awarddate, awardscore, awardreason
-				 $http.post('script/hihsrv.php', { objecttype: 'CREATELEARNAWARD', user:$scope.SelectedUser.selected.id, 
-					 awarddate: datefmt, awardscore: $scope.Score, awardreason: $scope.Reason  } ).
-				 	success(function(data, status, headers, config) {
-					  // Then, go to display page
-					  $scope.gen_id = data[0].id;
-					  
-					  utils.loadLearnAwards(true);
-				  }).
-				  error(function(data, status, headers, config) {
-					  // called asynchronously if an error occurs or server returns response with an error status.
-					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
-				  });
+				 // Now, submit to the server
+				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+					 utils.createLearnAwardQ($scope.CurrentLearnAward)
+					 	.then(function(response) {
+							 $state.go("home.learn.award.display", { objid : response });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+					 utils.changeLearnAwardQ($scope.CurrentLearnAward)
+					 	.then(function(response) {
+							 $state.go("home.learn.award.display", { objid : $scope.CurrentLearnAward.ID });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 }
 			 };
 			 
 			 $scope.close = function() {
-				 //$location.path('/learnobjectlist');
-				 
 				 // Cannot go the parent, it shall go the list view!
  				 // $state.go("^");
 				 $state.go("home.learn.award.list");
 			 };
-			 
-    		 $scope.$on("LearnAwardLoaded", function() {
-				console.log("HIH LearnAward: Award list loaded event fired!");
-				
-				$state.go("home.learn.award.display", { objid : $scope.gen_id });
-			});	
 		}])
 		
 	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', function($scope, $rootScope, $state, $http, $log, $q, utils) {

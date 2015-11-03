@@ -65,6 +65,7 @@ class HIHConstants {
 	const DT_LearnPlan = 't_learn_plan';
 	const DT_LearnPlanDetail = 't_learn_plandtl';
 	const DT_LearnPlanParticipant = 't_learn_planpat';
+	const DT_LearnAward = 't_learn_award';
 	const DT_FinSetting = 't_fin_setting';
 	const DT_FinDocument = 't_fin_document';
 	const DT_FinDocumentItem = 't_fin_document_item';
@@ -75,6 +76,7 @@ class HIHConstants {
 	const DV_LearnObjectHierarchy = 'v_learn_obj2';
 	const DV_LearnHistoryList = 'v_learn_histlist';
 	const DV_LearnHistoryHierarchy = 'v_learn_histhier';
+	const DV_LearnAward = 'v_learn_award';
 	const DV_FinAccount = 'v_fin_account';
 	const DV_FinDocument = 'v_fin_document';
 	const DV_FinReportBS = 'v_fin_report_bs4'; // changed from v_fin_report_bs3 on 2015.10.07 
@@ -91,7 +93,8 @@ class HIHConstants {
 	const DP_CreateLearnPlan = 'CREATE_LEARNPLAN';
 	const DP_UpdateLearnPlan = 'UPDATE_LEARNPLAN';
 	const DP_DeleteLearnPlan = 'DELETE_LEARNPLAN';
-	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
+	const DP_CreateLearnAward = 'CREATE_LEARNAWARD';
+	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';	
 	const DP_FinReportCC = 'REPORT_FIN_CC';
 	const DP_FinReportTT = 'REPORT_FIN_TT';
 	
@@ -244,6 +247,10 @@ class HIHLearnHistory {
 // Learn Award
 class HIHLearnAward {
 	public $ID;
+	public $UserID;
+	public $AwardDate;
+	public $Score;
+	public $Reason;
 	
 	public function __construct($json = false) {
         if ($json) $this->fromJSON($json);
@@ -258,6 +265,7 @@ class HIHLearnAward {
 	
 	public function CheckValid($bNonCreateCase = false) {
 		$errCodes = array();
+		
 		if (isset ( $this )) {
 			// The ID shall be check only in update/delete case
 			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
@@ -265,6 +273,9 @@ class HIHLearnAward {
 			}
 		} else {
 			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		if (! isset ( $this->UserID )) {
+			$errCodes[] = HIHConstants::EC_InvalidUser;
 		}
 		
 		return $errCodes;

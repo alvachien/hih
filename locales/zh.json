@@ -47,6 +47,7 @@
 		"InProcess": "进行中",
 		"Completed": "已完成",
 		"Aborted": "已放弃",
+		"Operations": "操作",
 		
 		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
@@ -221,6 +222,7 @@
 		"InvalidUser": "不合法的用户",
 		"InvalidPassword": "不合法的密码",
 		"InvalidConfirmedPassword": "确认密码与原密码不符",
-		"InvalidMailbox": "不合法的邮箱地址"
+		"InvalidMailbox": "不合法的邮箱地址",
+		"InvalidScore": "不合法的分数"
 	}
 }

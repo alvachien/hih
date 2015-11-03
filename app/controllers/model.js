@@ -23,6 +23,8 @@
 		UIMode_Change: 2,
 		UIMode_Display: 3,
 		
+		UI_DateFormat: "yyyy.MM.dd",
+		
 		// Learn plan recurr. type
 		LearnPlanRecurType_OneTime: 1,
 		LearnPlanRecurType_HEbbinghaus: 2, // [0, 1, 2, 4, 7, 15]
@@ -459,6 +461,7 @@
 					}
 				});
 			}
+			
 			if($.isArray(arLearnObject) && arLearnObject.length > 0) {
 				that.LearnObject = {};
 				$.each(arLearnObject, function(idx, obj) {
@@ -472,15 +475,11 @@
 		_setContent: function(data) {
 			this.UserID = data.userid;
 			this.ObjectID = parseInt(data.objectid);
-			this.LearnDate = data.learndate;
+			this.LearnDate = new Date(data.learndate);
 			this.Comment = data.comment;
 		},
 		_getLogicKey: function() {
-			return [this.ObjectID, this.UserID, this.LearnDate].reduce(function(previousValue, currentValue, index, arra) {
-				var pv = previousValue.toString();
-				var cv = currentValue.toString();
-				return pv.concat('_', cv);
-			});
+			return this.logicKey;
 		},
 		_toJSONObject: function() {
 			var forJSON = {};
@@ -515,8 +514,14 @@
 			return errMsgs;
 		},
 		_Transfer: function() {
-			// Change the date
-			this.LearnDate = hih.ModelUtility.DateFormatter(this.LearnDate);
+			// Logic key
+			var arList = [this.ObjectID, this.UserID, hih.ModelUtility.DateFormatter(this.LearnDate)]; 
+			this.logicKey = arList.reduce(function(previousValue, currentValue, index, arra) {
+				var pv = previousValue.toString();
+				var cv = currentValue.toString();
+				return pv.concat('_', cv);
+			});
+			// ID from string to integer!
 			if (typeof this.ObjectID === 'string' || this.ObjectID instanceof String) {
 				this.ObjectID = parseInt(this.ObjectID);
 			}
@@ -534,6 +539,7 @@
 			// Runtime information
 			lrnhist.LearnObject = {};
 			lrnhist.UserObject = {};
+			lrnhist.logicKey = "";
 			
 			// OO Concept
 			lrnhist._super = hih.Model.prototype;
@@ -553,11 +559,11 @@
 		// Attributes
 		this.ID = -1;
 		this.UserID = "";
-		this.UserDisplayAs = "";
-		this.UserObject = {};
 		this.AwardDate = new Date();
 		this.Score = 0.0;
 		this.Reason = "";
+		
+		this.UserObject = {};
 	};
 	// Build prototype chain
 	hih.extend(hih.LearnAward, hih.Model);
@@ -565,30 +571,54 @@
 		// id, userid, displayas, adate, score, reason
 		this.ID = parseInt(obj.id);
 		this.UserID = obj.userid;
-		this.UserDisplayAs = obj.displayas;
-		this.AwardDate = obj.adate;
+		this.AwardDate = new Date(obj.adate);
 		this.Score = obj.score;
 		this.Reason = obj.reason;
 	};
-	hih.LearnAward.prototype.buildRelationship = function() {
+	hih.LearnAward.prototype.buildRelationship = function(arUser) {
 		var that = this;
+		
+		if($.isArray(arUser) && arUser.length > 0) {
+			that.UserObject = {};
+			$.each(arUser, function(idx, obj) {
+				if (obj.UserID === that.UserID) {
+					that.UserObject = obj;
+					return false;
+				}
+			});
+		}
 	};
 	hih.LearnAward.prototype.Verify = function() {
 		var errMsgs = [];
+
+		if (this.UserID && typeof this.UserID === "string" && this.UserID.length > 0) {
+		} else {
+			errMsgs.push("Message.InvalidUser");
+		}
+		if (isNaN(this.Score) || typeof this.Score !== "number" ) {
+			errMsgs.push("Message.InvalidScore");
+		} else {
+			if (this.Score > 100 || this.Score < 0) {
+				errMsgs.push("Message.InvalidScore");
+			}
+		}
+		
 		return errMsgs;
 	};	
 	hih.LearnAward.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "_super" || i === "LearnObjectObject" ) 
+			if (!this.hasOwnProperty(i) || i === "_super" || i === "UserObject" || i === "AwardDate" ) 
 				continue;
 			
-			forJSON[i] = this[i];	
+			forJSON[i] = this[i];
 		}
+		
+		forJSON["AwardDate"] = hih.ModelUtility.DatabaseDateFormatter(this.AwardDate); 
 		return forJSON;
 	};	
 	hih.LearnAward.prototype.ToJSON = function() {
-		var forJSON = this.toJSONObject();
+		var forJSON = this.ToJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
 		}
@@ -690,7 +720,7 @@
 	hih.LearnPlanParticipant.prototype.setContent = function(obj) {
 		this.ID = parseInt(obj.id);
 		this.UserID = obj.userid;
-		this.StartDate = obj.startdate;
+		this.StartDate = new Date(obj.startdate);
 		this.Status = parseInt(obj.status);
 		this.comment = obj.comment;
 		

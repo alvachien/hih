@@ -22,40 +22,36 @@
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptCtgy" translate="Common.Category">Category:</label>
+			<label class="control-label col-sm-2" translate="Common.Category">Category:</label>
 			<div class="col-sm-10">
-				<ui-select ng-model="AccountCategoryObject.selected" theme="select2"  search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-			    	<ui-select-match placeholder="{{'Common.SearchViaName' | translate}}">{{$select.selected.Name}}</ui-select-match>
-			    	<ui-select-choices repeat="acntctgy in AllAccountCategories">
-			      		<div ng-bind-html="acntctgy.Name | highlight: $select.search"></div>
-			      		<small>
-			      			ID: {{acntctgy.ID}} <br />			      			
-			        		Name: <span ng-bind-html="''+acntctgy.Name | highlight: $select.search"></span>
-			      		</small>
-			    	</ui-select-choices>
-				</ui-select>
+                <!--<selectize placeholder='Pick category...' options='arFinanceAccountCategory' config="sourceCurrConfig" ng-model="DocumentObject.TranCurrency"
+                    ng-disabled="isReadonly" 
+                    required></selectize>-->
+				<select ng-model="AccountObject.CategoryID" ng-disabled="ActivityID == 3"
+					ng-options="fac.ID as fac.Name for fac in arFinanceAccountCategory">
+				</select>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
+				<input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
 						placeholder="{{'Common.Name' | translate}}" ng-model="AccountObject.Name" required>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptContent" translate="Common.Comment">Comment</label>
+			<label class="control-label col-sm-2" for="iptComment" translate="Common.Comment">Comment</label>
 			<div class="col-sm-10">
-				<textarea rows="5" ng-readonly="isReadonly" id="iptContent"
-						ng-model="AccountObject.Comment"></textarea>
+				<input  class="form-control" ng-readonly="ActivityID == 3" id="iptComment"
+						ng-model="AccountObject.Comment" />
 			</div>
 		</div>
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"
 					ng-disabled="frmObj.$invalid || !frmObj.$dirty" translate="Common.Submit">Submit</button>
 				<button class="btn btn-danger" ng-click="close()" translate="Common.Cancel">Cancel</button>
 			</div>

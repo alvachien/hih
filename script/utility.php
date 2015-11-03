@@ -1514,7 +1514,7 @@ function learn_plan_change($objPlan) {
 			
 			foreach ( $objPlan->ParticipantsArray as $value ) {
 				if ($newstmt = $mysqli->prepare ( $query )) {
-					$newstmt->bind_param ( "isdis", $objPlan->ID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
+					$newstmt->bind_param ( "issis", $objPlan->ID, $value->UserID, $value->StartDate, $value->Status, $value->Comment );
 					
 					/* Execute the statement */
 					if ($newstmt->execute ()) {
@@ -1665,18 +1665,18 @@ function learn_award_listread() {
 	
 	// Perform the query
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlLearnAwardView . " ORDER BY ADATE desc";
+	$query = "SELECT * FROM " . HIHConstants::DV_LearnAward . " ORDER BY ADATE desc";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"id" => $row [0],
-					"userid" => $row [1],
-					"displayas" => $row [2],
-					"adate" => $row [3],
-					"score" => $row [4],
-					"reason" => $row [5] 
+				"id" => $row [0],
+				"userid" => $row [1],
+				"displayas" => $row [2],
+				"adate" => $row [3],
+				"score" => $row [4],
+				"reason" => $row [5] 
 			);
 		}
 		
@@ -1689,14 +1689,14 @@ function learn_award_listread() {
 	// Average and total score
 	$footer = array ();
 	if (count ( $rsttable ) > 0) {
-		$query = "SELECT avg(score), sum(score) FROM " . MySqlLearnAwardTable . ";";
+		$query = "SELECT avg(score), sum(score) FROM " . HIHConstants::DT_LearnAward . ";";
 		
 		if ($result = mysqli_query ( $link, $query )) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$footer [] = array (
-						"avg" => $row [0],
-						"total" => $row [1] 
+					"avg" => $row [0],
+					"total" => $row [1] 
 				);
 			}
 			
@@ -1707,17 +1707,17 @@ function learn_award_listread() {
 		}
 	} else {
 		$footer [] = array (
-				"avg" => 0,
-				"total" => 0 
+			"avg" => 0,
+			"total" => 0 
 		);
 	}
 	
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$rsttable,
-			$footer 
+		$sError,
+		$rsttable,
+		$footer 
 	);
 }
 function learn_award_listread_byuser($username) {
@@ -1739,7 +1739,7 @@ function learn_award_listread_byuser($username) {
 	
 	// Perform the query
 	$rsttable = array ();
-	$query = "SELECT * FROM " . MySqlLearnAwardView . " WHERE userid = '" . $username . "' ORDER BY ADATE desc";
+	$query = "SELECT * FROM " . HIHConstants::DV_LearnAward . " WHERE userid = '" . $username . "' ORDER BY ADATE desc";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -1763,7 +1763,7 @@ function learn_award_listread_byuser($username) {
 	// Average and total score
 	$footer = array ();
 	if (count ( $rsttable ) > 0) {
-		$query = "SELECT userid, avg(score), sum(score) FROM " . MySqlLearnAwardTable . " WHERE userid = '" . $username . "' group by userid;";
+		$query = "SELECT userid, avg(score), sum(score) FROM " . HIHConstants::DT_LearnAward . " WHERE userid = '" . $username . "' group by userid;";
 		
 		if ($result = mysqli_query ( $link, $query )) {
 			/* fetch associative array */
@@ -1800,8 +1800,8 @@ function learn_award_create($userid, $adate, $score, $reason) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -1817,7 +1817,7 @@ function learn_award_create($userid, $adate, $score, $reason) {
 	
 	// Create award: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlLearnAwardCreateProc . " (?,?,?,?);";
+	$query = "CALL " . HIHConstants::DP_CreateLearnAward . " (?,?,?,?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "ssis", $userid, $adate, $score, $reason );
@@ -1848,18 +1848,18 @@ function learn_award_create($userid, $adate, $score, $reason) {
 	if ($nCode > 0) {
 		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
-		$query = "SELECT id, userid, displayas, adate, score, reason FROM " . MySqlLearnAwardView . " WHERE id = " . $nNewid;
+		$query = "SELECT id, userid, displayas, adate, score, reason FROM " . HIHConstants::DV_LearnAward . " WHERE id = " . $nNewid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
 			while ( $row = $result->fetch_row () ) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"userid" => $row [1],
-						"displayas" => $row [2],
-						"adate" => $row [3],
-						"score" => $row [4],
-						"reason" => $row [5] 
+					"id" => $row [0],
+					"userid" => $row [1],
+					"displayas" => $row [2],
+					"adate" => $row [3],
+					"score" => $row [4],
+					"reason" => $row [5] 
 				);
 			}
 			/* free result set */
@@ -1876,6 +1876,85 @@ function learn_award_create($userid, $adate, $score, $reason) {
 			$sError,
 			$rsttable 
 	);
+}
+function learn_award_create2($objAwrd) {
+	return learn_award_create($objAwrd->UserID, $objAwrd->AwardDate, $objAwrd->Score, $objAwrd->Reason);
+}
+function learn_award_change($objAward) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+
+	$mysqli->autocommit ( false );
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	// Create award: return code, message and last insert id
+	/* Select the rows for update */
+	$query = "SELECT * FROM " . HIHConstants::DT_LearnAward . " WHERE ID = ? FOR UPDATE;";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $objAward->ID );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	/* Update the entry in DB */
+	if (empty($sError)) {
+		$query = "UPDATE " . HIHConstants::DT_LearnAward . " SET `USERID` = ?, `ADATE` = ?, `SCORE` = ?, `REASON` = ? WHERE ID = ?;";	
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "ssisi", $objAward->UserID, $objAward->AwardDate, $objAward->Score, $objAward->Reason, $objAward->ID );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+			} else {
+				$sError = "Failed to execute query: " . $query;
+			}
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$sError = "Failed to parpare statement: " . $query;
+		}
+	}
+
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		"" 
+	);	
 }
 function learn_award_delete($id) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -1894,7 +1973,7 @@ function learn_award_delete($id) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "DELETE FROM " . MySqlLearnAwardTable . " WHERE ID = '" . $id . "';";
+	$query = "DELETE FROM " . HIHConstants::DT_LearnAward . " WHERE ID = '" . $id . "';";
 	
 	if (false === mysqli_query ( $link, $query )) {
 		$sError = "Execution failed, no results!" . $query;
@@ -1930,7 +2009,7 @@ function learn_award_multidelete($ids) {
 	//$in = join(',', array_fill(0, count($ids), '?'));
 	//$array = array_map('intval', explode(',', $ids));
 	$array = implode("','",$ids);	
-	$query = "DELETE FROM " . MySqlLearnAwardTable . " WHERE ID IN ('" . $array ."')";
+	$query = "DELETE FROM " . HIHConstants::DT_LearnAward . " WHERE ID IN ('" . $array ."')";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		//$stmt->bind_param ( str_repeat('i', count($ids)), $ids );
 		/* Execute the statement */
@@ -2073,12 +2152,12 @@ function finance_account_listread() {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"id" => $row [0],
-					"ctgyid" => $row [1],
-					"name" => $row [2],
-					"comment" => $row [3],
-					"ctgyname" => $row [4],
-					"assetflag" => $row [5] 
+				"id" => $row [0],
+				"ctgyid" => $row [1],
+				"name" => $row [2],
+				"comment" => $row [3],
+				"ctgyname" => $row [4],
+				"assetflag" => $row [5] 
 			);
 		}
 		

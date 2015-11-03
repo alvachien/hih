@@ -670,7 +670,8 @@ END;
   ====================================================== */
 
 --Finance part
--- Account categoryINSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
+-- Account category
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (1,'现金',1,NULL);
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (2,'存储卡',1,NULL);
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (3,'信用卡',1,NULL);
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (4,'应付账款',0,'如贷款等');

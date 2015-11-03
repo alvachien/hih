@@ -286,7 +286,7 @@
 		// Grid options
         $scope.selectedRows = [];
 		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
+		$scope.gridOptions.data = 'arFinanceAccount';
 		$scope.gridOptions.enableSorting = true;
 		$scope.gridOptions.enableColumnResizing = true;
 		$scope.gridOptions.enableFiltering = true;
@@ -340,12 +340,7 @@
 	  	    .then(function(response) {
 			    utils.loadFinanceAccountsQ()
 			  	    .then(function(response2) {
-					    if (angular.isArray($rootScope.arFinanceAccount) && $rootScope.arFinanceAccount.length > 0) {
-						    $scope.myData = [];
-						    $.each($rootScope.arFinanceAccount, function(idx, obj) {
-							    $scope.myData.push(angular.copy(obj));					
-						    });
-					    }
+						  // Do nothing...
 				    }, function(reason2) {
 					    // Error occurred
 					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
@@ -409,12 +404,7 @@
 		$scope.refreshList = function() {
 			utils.loadFinanceAccountsQ(true)
 			    .then(function(response2) {
-				    if (angular.isArray($rootScope.arFinanceAccount ) && $rootScope.arFinanceAccount.length > 0) {
-					    $scope.myData = [];
-						$.each($rootScope.arFinanceAccount, function(idx, obj) {
-						    $scope.myData.push(angular.copy(obj));					
-						});
-					}
+					// Do nothing!
 				}, function(reason2) {
 					    // Error occurred
 					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
@@ -518,11 +508,9 @@
 	.controller('FinanceAccountController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils', 
 	    function($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
 		$scope.Activity = "";
-		$scope.isReadonly = false;
+		$scope.ActivityID = hih.Constants.UIMode_Create;
 		
 		$scope.AccountObject = new hih.FinanceAccount();
-		$scope.AccountCategoryObject = {};
-		$scope.AllAccountCategories = $rootScope.arFinanceAccountCategory;
 		
 		// Messages
 		$scope.ReportedMessages = [];
@@ -533,16 +521,16 @@
         if (angular.isDefined($stateParams.accountid)) {
 			if ($state.current.name === "home.finance.account.maintain") {
 			    $scope.Activity = "Common.Edit";
+				$scope.ActivityID = hih.Constants.UIMode_Change;
 			} else if ($state.current.name === "home.finance.account.display") {
 				$scope.Activity = "Common.Display";
-				$scope.isReadonly = true;
+				$scope.ActivityID = hih.Constants.UIMode_Display;
 			}
 			
 			var nAcntID = parseInt($stateParams.accountid);
 			$.each($rootScope.arFinanceAccount, function (idx, obj) {				
 				if (obj.ID === nAcntID) {
 					$scope.AccountObject = angular.copy(obj);
-					$scope.AccountCategoryObject.selected = obj.CategoryObject;
 					return false;
 				}
 			});
@@ -553,19 +541,13 @@
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
 			
-			// Update the category id
-			if ($scope.AccountCategoryObject.selected) {
-				if ($scope.AccountObject.CategoryID !== $scope.AccountCategoryObject.selected.ID) {
-					$scope.AccountObject.CategoryID = $scope.AccountCategoryObject.selected.ID;					
-				}
-			} else {
-				$scope.AccountObject.CategoryID = -1;
-			}
-			
-			var errMsgs = $scope.AccountObject.Verify();
+			// String => Integer
+			$scope.AccountObject.CategoryID = parseInt($scope.AccountObject.CategoryID);
+			 
+			var errMsgs = $scope.AccountObject.Verify($translate);
 			if (errMsgs && errMsgs.length > 0) {
 				$q.all(errMsgs).then(function (translations) {
-					Array.prototype.push.call($scope.cleanReportMessages, translations);
+					Array.prototype.push.call($scope.ReportedMessages, translations);
   				}, function(reason) {
 					  $rootScope.$broadcast("ShowMessage", "Error", reason);
 				  });				
@@ -575,18 +557,33 @@
 			// Now submit to the server side
 			var strJSON = JSON && JSON.stringify($scope.AccountObject) || $.toJSON($scope.AccountObject);
 			if (strJSON) {
-				utils.createFinanceAccountQ(strJSON)
-					.then(function(response) {
-						// First of all, update the rootScope
-						if (response) {
-							$state.go("home.finance.account.display",  { accountid : response });
-						} else {
-							$state.go("home.finance.account.list");
-						}
-					}, function(reason) {
-						// Failed, throw out error message
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
-					});
+				if (this.ActivityID === hih.Constants.UIMode_Create) {
+					utils.createFinanceAccountQ(strJSON)
+						.then(function(response) {
+							// First of all, update the rootScope
+							if (response) {
+								$state.go("home.finance.account.display",  { accountid : response });
+							} else {
+								$state.go("home.finance.account.list");
+							}
+						}, function(reason) {
+							// Failed, throw out error message
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
+				} else if (this.ActivityID === hih.Constants.UIMode_Change) {
+					utils.changeFinanceAccountQ($scope.AccountObject)
+						.then(function(response) {
+							// First of all, update the rootScope
+							if (response) {
+								$state.go("home.finance.account.display",  { accountid : response });
+							} else {
+								$state.go("home.finance.account.list");
+							}
+						}, function(reason) {
+							// Failed, throw out error message
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});					
+				}
 			} else {
 				$rootScope.$broadcast("ShowMessage", "Error", "To-Do: reason");
 			}

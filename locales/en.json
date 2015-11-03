@@ -47,6 +47,7 @@
 		"InProcess": "In Process",
 		"Completed": "Completed",
 		"Aborted": "Aborted",
+		"Operations": "Operations",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
@@ -222,6 +223,7 @@
 		"InvalidUser": "Invalid user",
 		"InvalidPassword": "Invalid password",
 		"InvalidConfirmedPassword": "Difference exists between Password and Confirmed password",
-		"InvalidMailbox": "Invalid mailbox"
+		"InvalidMailbox": "Invalid mailbox",
+		"InvalidScore": "Invalid score"
 	}
  }
