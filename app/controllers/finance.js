@@ -536,6 +536,7 @@
 			});
 		} else {
 			$scope.Activity = "Common.Create";
+			$scope.ActivityID = hih.Constants.UIMode_Create;
 		}
 		 
 		$scope.submit = function() {
@@ -575,7 +576,7 @@
 						.then(function(response) {
 							// First of all, update the rootScope
 							if (response) {
-								$state.go("home.finance.account.display",  { accountid : response });
+								$state.go("home.finance.account.display",  { accountid : $scope.AccountObject.ID });
 							} else {
 								$state.go("home.finance.account.list");
 							}

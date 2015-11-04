@@ -1901,7 +1901,6 @@ function learn_award_change($objAward) {
 	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
-	// Create award: return code, message and last insert id
 	/* Select the rows for update */
 	$query = "SELECT * FROM " . HIHConstants::DT_LearnAward . " WHERE ID = ? FOR UPDATE;";
 	if ($stmt = $mysqli->prepare ( $query )) {
@@ -2400,6 +2399,79 @@ function finance_account_create($acntObj) {
 		$rsttable 
 	);
 }
+function finance_account_change($acntObj) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$mysqli->autocommit ( false );
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+
+	/* Select the rows for update */
+	$query = "SELECT * FROM " . HIHConstants::DT_FinAccount . " WHERE ID = ? FOR UPDATE;";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $acntObj->ID );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	/* Then, update the account */
+	$query = "UPDATE " . HIHConstants::DT_FinAccount . " SET `CTGYID` = ?, `NAME` = ?, `COMMENT` = ? WHERE ID = ?;";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "issi", $acntObj->CategoryID, $acntObj->Name, $acntObj->Comment, $acntObj->ID );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query;
+	}
+	
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		"" 
+	);
+}
 function finance_account_delete($acntid) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
@@ -2417,7 +2489,7 @@ function finance_account_delete($acntid) {
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
-	$query = "DELETE FROM " . MySqlFinAccountTable . " WHERE ID=?;";
+	$query = "DELETE FROM " . HIHConstants::DT_FinAccount . " WHERE ID = ?;";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $acntid );
 		/* Execute the statement */
@@ -2427,6 +2499,7 @@ function finance_account_delete($acntid) {
 		}
 	}
 	
+	/* Commit or rollback */
 	if (empty ( $sError )) {
 		if (! $mysqli->errno) {
 			$mysqli->commit ();
@@ -2434,6 +2507,8 @@ function finance_account_delete($acntid) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */

@@ -434,6 +434,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				// }
 			}
 			break;
+			
 		case "CHANGEFINANCEACCOUNT": {
 				$acdata = json_decode( $realParamArr ['acdata'] );
 				$acObj = new HIHAccount($acdata);

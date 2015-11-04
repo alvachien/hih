@@ -16,7 +16,7 @@
 		FinanceTranTypeSplitChar: " > ",
 		
 		FinSetting_LocalCurrency: "LocalCurrency",
-		FinSetting_CurrencyExchangeToilence: "CurrencyExchangeToil",
+		FinSetting_CurrencyExchangeToilence: "CurryExgToilence",
 		
 		// UI modes
 		UIMode_Create: 1,
