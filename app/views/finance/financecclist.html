@@ -6,20 +6,20 @@
 		
 		<div class="btn-toolbar" role="toolbar" aria-label="...">
 		  <div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn-group btn-primary" ng-click="newItem()" translate="Common.New">New</button>
+			<button type="button" class="btn-group btn-primary" ng-click="newCC()" translate="Common.New">New</button>
 			<button type="button" class="btn-group btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
 		  </div>
 		  
 		  <div class="btn-group" role="group" aria-label="...">
-  			<button type="button" ng-click="displayItem()" ng-disabled="selectedRows.length <= 0"
+  			<button type="button" ng-click="displayCC()"
 					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
 					translate="Common.Display">					
 			</button>
-			<button type="button" ng-click="editItem()" ng-disabled="selectedRows.length <= 0"
+			<button type="button" ng-click="editCC()"
 					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
 					translate="Common.Edit">
 			</button>
-			<button type="button" ng-click="removeItem()" ng-disabled="selectedRows.length <= 0"
+			<button type="button" ng-click="removeCC()"
 					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
 					translate="Common.Delete">
 			</button>
@@ -27,6 +27,40 @@
 		</div>
 	</div>	
 
-	<div id="gridFinCCs" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
-		 style="width: 100%; height: 500px;"></div>
+	<table st-table="ccList" st-safe-src="arFinanceControlCenter" class="table">
+		<thead>
+			<tr>
+				<th st-sort="id" translate="Common.ID">ID</th>
+				<th st-sort="name" translate="Common.Name">Name</th>
+				<th st-sort="parent" translate="Common.Parent">Parent</th>
+				<th st-sort="comment" translate="Common.Comment">Comment</th>
+				<th translate="Common.Operations">Operations</th>
+			</tr>
+			<tr>
+				<th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text"/></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in ccList">
+				<td>{{row.ID}}</td>
+				<td>{{row.Name}}</td>
+				<td>{{row.ParentObject.Name}}</td>
+				<td>{{row.Comment}}</td>
+				<td>
+					<button type="button" class="btn btn-sm" ng-click="displayCC(row)">
+						<i class="glyphicon glyphicon-share">
+						</i>
+					</button>
+					<button type="button" class="btn btn-sm" ng-click="editCC(row)">
+						<i class="glyphicon glyphicon-edit">
+						</i>
+					</button>
+					<button type="button" ng-click="removeCC(row)" class="btn btn-sm btn-danger">
+						<i class="glyphicon glyphicon-remove-circle">
+						</i>
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

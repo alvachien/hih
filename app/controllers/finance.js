@@ -6,7 +6,7 @@
 
 	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select',
 	 	'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'chart.js'])
+	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'chart.js', 'smart-table'])
 	    
 	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
       $stateProvider
@@ -252,6 +252,47 @@
   		};
 	})
 	
+	// Selection checkbox in Smart-Table
+	.directive('stSelect', function () {
+    	return {
+        	require: '^stTable',
+        	template: '<input type="checkbox"/>',
+        	scope: {
+            	row: '=stSelect'
+        	},
+        	link: function (scope, element, attr, ctrl) {
+				element.bind('change', function (evt) {
+                	scope.$apply(function () {
+                    	ctrl.select(scope.row, 'multiple');
+                	});
+            	});
+
+            	scope.$watch('row.isSelected', function (newValue, oldValue) {
+                	if (newValue === true) {
+                    	element.parent().addClass('st-selected');
+                	} else {
+                    	element.parent().removeClass('st-selected');
+                	}
+            	});
+        	}
+    	}
+	})
+
+	// Count on rows in Smart-Table
+	.directive('stSummary', function () {
+		return {
+			restrict: 'E',
+			require: '^stTable',
+			template: '<div>records:{{size}}</div>',
+			scope: {},
+			link: function (scope, element, attr, ctrl) {
+				scope.$watch(ctrl.getFilteredCollection, function(val) {
+					scope.size = (val || []).length;
+				})
+			}
+		}
+	})	
+
 	.controller('FinanceSettingController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 			$scope.displayedCollection = [];
@@ -1880,56 +1921,13 @@
 	
 	.controller("FinanceControlCenterListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
-		// Grid options
-        $scope.selectedRows = [];
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-			
- 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				if (row.isSelected) {
- 					$scope.selectedRows.push(row.entity);     					
- 				} else {
- 					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.id === row.entity.id) {
-							$scope.selectedRows.splice(idx, 1);
-							return false;
-						}
-					});
- 				}
-  		    });
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'parent', field:'ParentObject.Name', displayName: 'Common.Parent', headerCellFilter: "translate", width: 90 },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 }
-	    ];
-	  
+	  	$scope.ccList = [];
+		  
 	    utils.loadFinanceControlCentersQ()
 			.then(function(response) {
 				if (angular.isArray($rootScope.arFinanceControlCenter ) && $rootScope.arFinanceControlCenter.length > 0) {
-					$scope.myData = [];
 					$.each($rootScope.arFinanceControlCenter, function(idx, obj) {
-						$scope.myData.push(angular.copy(obj));					
+						$scope.ccList.push(angular.copy(obj));					
 				    });
 				}
 			}, function(reason) {
@@ -1937,8 +1935,19 @@
 			});
 
 		// Remove to the real data holder
-	    $scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length !== 1) {
+	    $scope.removeCC = function(row) {
+			if (row) {
+				utils.deleteControlCenterQ(row.ID)
+					.then(function(response) {
+						// Just refresh it!
+						$scope.refreshList();
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+				
+				return;
+			} else {
+				
 				$translate('Message.SelectSingleItemForDeletion')
 					.then(
 						function(response) {
@@ -1953,9 +1962,6 @@
 			
 			utils.deleteControlCenterQ($scope.selectedRows[0].ID)
 				.then(function(response) {
-					// Empty selection table
-					$scope.selectedRows = [];
-					
 					// Just refresh it!
 					$scope.refreshList();
 				}, function(reason) {
@@ -1964,23 +1970,21 @@
 	    };
 	    
 	    // Display
-	    $scope.displayItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-				return;
-			
-	    	$state.go("home.finance.controlcenter.display",  { id : $scope.selectedRows[0].ID });
+	    $scope.displayCC = function (row) {
+			if (row) {
+				$state.go("home.finance.controlcenter.display",  { id : row.ID });
+			}	    	
 	    };
 		
 	    // Edit
-	    $scope.editItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-		        return;
-			
-		    $state.go("home.finance.controlcenter.maintain",  { id : $scope.selectedRows[0].ID });
+	    $scope.editCC = function (row) {
+			if (row) {
+				$state.go("home.finance.controlcenter.maintain",  { id : row.ID });
+			}
 	    };
 		
 	    // Create
-	    $scope.newItem = function() {
+	    $scope.newCC = function() {
 	        $state.go('home.finance.controlcenter.create');
 	    };
 		
@@ -1989,10 +1993,10 @@
 			utils.loadFinanceControlCentersQ(true)
 			    .then(function(response2) {
 					if (angular.isArray($rootScope.arFinanceControlCenter ) && $rootScope.arFinanceControlCenter.length > 0) {
-						$scope.myData = [];
+						$scope.ccList = [];
 						$.each($rootScope.arFinanceControlCenter, function(idx, obj) {
-							$scope.myData.push(angular.copy(obj));					
-						});
+							$scope.ccList.push(angular.copy(obj));					
+					    });
 					}
 				}, function(reason2) {
 				    // Error occurred
