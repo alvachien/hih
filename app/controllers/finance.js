@@ -252,47 +252,6 @@
   		};
 	})
 	
-	// Selection checkbox in Smart-Table
-	.directive('stSelect', function () {
-    	return {
-        	require: '^stTable',
-        	template: '<input type="checkbox"/>',
-        	scope: {
-            	row: '=stSelect'
-        	},
-        	link: function (scope, element, attr, ctrl) {
-				element.bind('change', function (evt) {
-                	scope.$apply(function () {
-                    	ctrl.select(scope.row, 'multiple');
-                	});
-            	});
-
-            	scope.$watch('row.isSelected', function (newValue, oldValue) {
-                	if (newValue === true) {
-                    	element.parent().addClass('st-selected');
-                	} else {
-                    	element.parent().removeClass('st-selected');
-                	}
-            	});
-        	}
-    	}
-	})
-
-	// Count on rows in Smart-Table
-	.directive('stSummary', function () {
-		return {
-			restrict: 'E',
-			require: '^stTable',
-			template: '<div>records:{{size}}</div>',
-			scope: {},
-			link: function (scope, element, attr, ctrl) {
-				scope.$watch(ctrl.getFilteredCollection, function(val) {
-					scope.size = (val || []).length;
-				})
-			}
-		}
-	})	
-
 	.controller('FinanceSettingController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 			$scope.displayedCollection = [];

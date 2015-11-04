@@ -4,10 +4,103 @@
 (function() {
 	"use strict";
 
-	angular.module('hihApp.Utility', [])
+	angular.module('hihApp.Utility', ['smart-table'])
+		.directive('csSelect', function () {
+			return {
+				require: '^stTable',
+				template: '<input type="checkbox"/>',
+				scope: {
+					row: '=csSelect'
+				},
+				link: function (scope, element, attr, ctrl) {
+					element.bind('change', function (evt) {
+						scope.$apply(function () {
+							ctrl.select(scope.row, 'multiple');
+						});
+					});
+		
+					scope.$watch('row.isSelected', function (newValue, oldValue) {
+						if (newValue === true) {
+							element.parent().addClass('st-selected');
+						} else {
+							element.parent().removeClass('st-selected');
+						}
+					});
+				}
+			};
+		})
+		
+		.directive('stSum', function () {
+			return {
+				restrict: 'E',
+					require: '^stTable',
+					template: '<div>{{ "Common.Sum" | translate }}: {{ sum_columnname }} </div>',
+					scope: {
+						columnname: '@columnname'
+					},
+				controller: function ($scope) {
+					$scope.sum_columnname = 0;
+				},
+				link: function (scope, element, attr, ctrl) {
+					scope.$watch(ctrl.getFilteredCollection, function(val) {
+						var nArr = (val || []);
+						for(var i = 0; i < nArr.length; i ++) {
+							scope.sum_columnname += nArr[i][scope.columnname];
+						}
+					});
+				}
+			};
+		})
+			
+		.directive('stCount', function () {
+			return {
+				restrict: 'E',
+					require: '^stTable',
+					template: '<div>{{ "Common.Count" | translate }}: {{ cnt_columnname }} </div>',
+					scope: {
+					},
+				controller: function ($scope) {
+					$scope.cnt_columnname = 0;
+				},
+				link: function (scope, element, attr, ctrl) {
+					scope.$watch(ctrl.getFilteredCollection, function(val) {
+						var nArr = (val || []);
+						scope.cnt_columnname = nArr.length;
+					});
+				}
+			};
+		})
 
-			.factory(
-					'utils',
+		.directive('stMax', function () {
+			return {
+				restrict: 'E',
+					require: '^stTable',
+					template: '<div>{{ "Common.Max" | translate }}: {{ max_columnname }} </div>',
+					scope: {
+						columnname: '@columnname'
+					},
+				controller: function ($scope) {
+					$scope.max_columnname = 0;
+				},
+				link: function (scope, element, attr, ctrl) {
+					scope.$watch(ctrl.getFilteredCollection, function(val) {
+						var nArr = (val || []);
+						for(var i = 0; i < nArr.length; i ++) {
+							if (i === 1) {
+								scope.max_columnname = nArr[i][scope.columnname];
+							}
+							
+							if (scope.sum_columnname < nArr[i][scope.columnname]) {
+								scope.sum_columnname = nArr[i][scope.columnname]
+							}
+						}
+					});
+				}
+			};
+		})
+			
+		.factory(
+			'utils',
 					function($rootScope, $http, $q) {
 						
 						var rtnObj = {};

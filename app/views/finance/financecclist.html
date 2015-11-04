@@ -30,6 +30,7 @@
 	<table st-table="ccList" st-safe-src="arFinanceControlCenter" class="table">
 		<thead>
 			<tr>
+				<th></th>
 				<th st-sort="id" translate="Common.ID">ID</th>
 				<th st-sort="name" translate="Common.Name">Name</th>
 				<th st-sort="parent" translate="Common.Parent">Parent</th>
@@ -37,11 +38,12 @@
 				<th translate="Common.Operations">Operations</th>
 			</tr>
 			<tr>
-				<th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text"/></th>
+				<th colspan="6"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in ccList">
+				<td cs-select="row"></td>
 				<td>{{row.ID}}</td>
 				<td>{{row.Name}}</td>
 				<td>{{row.ParentObject.Name}}</td>
@@ -62,5 +64,12 @@
 				</td>
 			</tr>
 		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="6">
+					<st-count></st-count>
+				</td>
+			</tr>
+		</tfoot>
 	</table>
 </div>
