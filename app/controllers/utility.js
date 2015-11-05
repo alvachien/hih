@@ -30,14 +30,14 @@
 			};
 		})
 		
-		.directive('stSum', function () {
+		.directive('cstSum', function () {
 			return {
 				restrict: 'E',
-					require: '^stTable',
-					template: '<div>{{ "Common.Sum" | translate }}: {{ sum_columnname }} </div>',
-					scope: {
-						columnname: '@columnname'
-					},
+				require: '^stTable',
+				template: '<div>{{ "Common.Sum" | translate }}: {{ sum_columnname }} </div>',
+				scope: {
+					columnname: '@columnname'
+				},
 				controller: function ($scope) {
 					$scope.sum_columnname = 0;
 				},
@@ -52,7 +52,7 @@
 			};
 		})
 			
-		.directive('stCount', function () {
+		.directive('cstCount', function () {
 			return {
 				restrict: 'E',
 					require: '^stTable',
@@ -71,7 +71,7 @@
 			};
 		})
 
-		.directive('stMax', function () {
+		.directive('cstMax', function () {
 			return {
 				restrict: 'E',
 					require: '^stTable',
@@ -1557,7 +1557,7 @@
 								'script/hihsrv.php',
 								{ objecttype: 'CREATEFINANCECONTROLCENTER', 
 									name: ccObj.Name, 
-									parent: ccObj.ParentID,
+									parent: ccObj.ParentID === 0? null : ccObj.ParentID,
 									comment: ccObj.Comment })
 							.then(function(response) {
 								// The server returns the new object out

@@ -15,6 +15,7 @@
 		"HierarchyView": "树形视图",
 		"Themes": "主题",
 		"Default": "默认",
+		"BackToList": "返回列表视图",
 
 		"New": "新建",
         "Change": "修改",
@@ -192,7 +193,11 @@
 		"SourceCurrency": "转出货币",
 		"TargetCurrency": "转入货币",
 
-  		"CreateAccountTitle": "创建账户"
+  		"CreateAccountTitle": "创建账户",
+		"ChooseAControlCenter": "选择一个控制中心",
+		"ChooseAnAccount": "选择一个账户",
+		"ChooseAnOrder": "选择一个定单",
+		"ChooseACurrency": "选择一种货币"
   	},
 	  
 	"Message": {

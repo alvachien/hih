@@ -71,6 +71,7 @@ class HIHConstants {
 	const DT_FinDocumentItem = 't_fin_document_item';
 	const DT_FinAccount = 't_fin_account';
 	const DT_FinExchangeRate = 't_fin_exrate';
+	const DT_FinControlCenter = 't_fin_controlcenter';
 	// Views
 	const DV_LearnObjectList = 'v_learn_obj';
 	const DV_LearnObjectHierarchy = 'v_learn_obj2';
@@ -94,7 +95,8 @@ class HIHConstants {
 	const DP_UpdateLearnPlan = 'UPDATE_LEARNPLAN';
 	const DP_DeleteLearnPlan = 'DELETE_LEARNPLAN';
 	const DP_CreateLearnAward = 'CREATE_LEARNAWARD';
-	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';	
+	const DP_CreateFinAccount = 'CREATE_FINANCEACCOUNT';
+	const DP_CreateFinControlCenter = 'CREATE_FINANCECONTROLCENTER';	
 	const DP_FinReportCC = 'REPORT_FIN_CC';
 	const DP_FinReportTT = 'REPORT_FIN_TT';
 	

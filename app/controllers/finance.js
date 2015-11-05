@@ -1884,6 +1884,7 @@
 		  
 	    utils.loadFinanceControlCentersQ()
 			.then(function(response) {
+				$scope.ccList = [];
 				if (angular.isArray($rootScope.arFinanceControlCenter ) && $rootScope.arFinanceControlCenter.length > 0) {
 					$.each($rootScope.arFinanceControlCenter, function(idx, obj) {
 						$scope.ccList.push(angular.copy(obj));					
@@ -1895,18 +1896,26 @@
 
 		// Remove to the real data holder
 	    $scope.removeCC = function(row) {
+			var nCCID = 0;
 			if (row) {
-				utils.deleteControlCenterQ(row.ID)
-					.then(function(response) {
-						// Just refresh it!
-						$scope.refreshList();
-					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
-					});
-				
-				return;
+				nCCID = row.ID;
 			} else {
-				
+				for(var i = 0; i < $scope.ccList.length; i ++) {
+					if ($scope.ccList[i].isSelected) {
+						nCCID = $scope.ccList[i].ID;
+						break;
+					}
+				}
+			}
+			utils.deleteControlCenterQ(nCCID)
+				.then(function(response) {
+					// Just refresh it!
+					$scope.refreshList();
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+
+			if (1 === 2) {
 				$translate('Message.SelectSingleItemForDeletion')
 					.then(
 						function(response) {
@@ -1918,28 +1927,38 @@
 					);
 				return;				
 			}
-			
-			utils.deleteControlCenterQ($scope.selectedRows[0].ID)
-				.then(function(response) {
-					// Just refresh it!
-					$scope.refreshList();
-				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});
 	    };
 	    
 	    // Display
 	    $scope.displayCC = function (row) {
+			var nCCID = 0;
 			if (row) {
-				$state.go("home.finance.controlcenter.display",  { id : row.ID });
-			}	    	
+				nCCID = row.ID;
+			} else {				
+				for(var i = 0; i < $scope.ccList.length; i ++) {
+					if ($scope.ccList[i].isSelected) {
+						nCCID = $scope.ccList[i].ID;
+						break;
+					}
+				}
+			}
+			$state.go("home.finance.controlcenter.display",  { id : nCCID });
 	    };
 		
 	    // Edit
 	    $scope.editCC = function (row) {
+			var nCCID = 0;
 			if (row) {
-				$state.go("home.finance.controlcenter.maintain",  { id : row.ID });
+				nCCID = row.ID;
+			} else {				
+				for(var i = 0; i < $scope.ccList.length; i ++) {
+					if ($scope.ccList[i].isSelected) {
+						nCCID = $scope.ccList[i].ID;
+						break;
+					}
+				}
 			}
+			$state.go("home.finance.controlcenter.maintain",  { id : nCCID });
 	    };
 		
 	    // Create
@@ -2071,16 +2090,29 @@
 	.controller("FinanceControlCenterController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 		$scope.Activity = "";
+		$scope.ActivityID = hih.Constants.UIMode_Create;
 		$scope.isReadonly = false;
 		
-		$scope.ControlCenterObject = new hih.FinanceControlCenter();		
-		$scope.AllControlCenters = $rootScope.arFinanceControlCenter;
-		
+		$scope.ControlCenterObject = new hih.FinanceControlCenter();
+
+		// Selective control
+		$scope.ccConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceControlCenterController, CC control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1
+  		};
+		 
         if (angular.isDefined($stateParams.id)) {
 			if ($state.current.name === "home.finance.controlcenter.maintain") {
 			    $scope.Activity = "Common.Edit";
+				$scope.ActivityID = hih.Constants.UIMode_Change;
 			} else if ($state.current.name === "home.finance.controlcenter.display") {
 				$scope.Activity = "Common.Display";
+				$scope.ActivityID = hih.Constants.UIMode_Display;
 				$scope.isReadonly = true;
 			}
 			
@@ -2088,14 +2120,12 @@
 			$.each($rootScope.arFinanceControlCenter, function (idx, obj) {				
 				if (obj.ID === nCCID) {
 					$scope.ControlCenterObject = angular.copy(obj);
-					var parObj = $scope.ControlCenterObject.ParentObject;
-					$scope.ControlCenterObject.ParentObject = {};
-					$scope.ControlCenterObject.ParentObject.selected = parObj;
 					return false;
 				}
 			});
 		} else {
 			$scope.Activity = "Common.Create";
+			$scope.ActivityID = hih.Constants.UIMode_Create;
 		}
 
 		$scope.ReportedMessages = [];
@@ -2106,11 +2136,8 @@
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
 			
-			// Parent control center
-			if ($scope.ControlCenterObject.ParentObject.selected) {
-				$scope.ControlCenterObject.ParentID = $scope.ControlCenterObject.ParentObject.selected.ID; 
-			} else {
-				$scope.ControlCenterObject.ParentID = null;
+			if ($scope.ControlCenterObject.ParentID === -1) {
+				$scope.ControlCenterObject.ParentID = 0;
 			}
 			
 			var msgTable = $scope.ControlCenterObject.Verify($translate);
@@ -2125,16 +2152,18 @@
 			}
 			
 			// Now submit to the server side
-			utils.createControlCenterQ($scope.ControlCenterObject)
-				.then(function(response) {
-					if (response) {
-						$state.go("home.finance.controlcenter.display",  { id : response });						
-					} else {
-						$scope.close();
-					}
-				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});
+			if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+				utils.createControlCenterQ($scope.ControlCenterObject)
+					.then(function(response) {
+						if (response) {
+							$state.go("home.finance.controlcenter.display",  { id : response });						
+						} else {
+							$scope.close();
+						}
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			}
 		};
 		
 		$scope.close = function() {
@@ -2144,57 +2173,14 @@
 				
 	.controller("FinanceOrderListController", ['$scope', '$rootScope', '$state', '$http', '$q', '$translate', '$log', 'utils', 
 		function($scope, $rootScope, $state, $http, $q, $translate, $log, utils) {
-		// Grid options
-        $scope.selectedRows = [];
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
 			
- 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				if (row.isSelected) {
- 					$scope.selectedRows.push(row.entity);     					
- 				} else {
- 					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.id === row.entity.id) {
-							$scope.selectedRows.splice(idx, 1);
-							return false;
-						}
-					});
- 				}
-  		    });
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'validfrm', field:'ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width: 90 },
-			{ name:'validto', field:'ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width: 90 },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 120 }
-	    ];
-	  
+		$scope.orderList = [];
 	    utils.loadFinanceOrderQ()
 			.then(function(response) {
+				$scope.orderList = [];
 				if (angular.isArray($rootScope.arFinanceOrder ) && $rootScope.arFinanceOrder.length > 0) {
-					$scope.myData = [];
 					$.each($rootScope.arFinanceOrder, function(idx, obj) {
-						$scope.myData.push(angular.copy(obj));					
+						$scope.orderList.push(angular.copy(obj));					
 					});
 				}
 			}, function(reason) {
@@ -2203,20 +2189,19 @@
 		
 		// Remove to the real data holder
 	    $scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length !== 1) {
-				$translate('Message.SelectSingleOrderForDeletion')
-					.then(
-						function(response) {
-							$rootScope.$broadcast("ShowMessage", "Error", response);
-						},
-						function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-						}
-					);
-				return;				
+			var nID = 0;
+			if (row) {
+				nID = row.ID;
+			} else {
+				for(var i = 0; i < $scope.orderList.length; i ++) {
+					if ($scope.orderList[i].isSelected) {
+						nID = $scope.orderList[i].ID;
+						break;
+					}
+				}
 			}
 			
-			utils.deleteFinanceOrderQ($scope.selectedRows[0].ID)
+			utils.deleteFinanceOrderQ(nID)
 				.then(function(response) {
 					// Empty selection table
 					$scope.selectedRows = [];
@@ -2226,22 +2211,53 @@
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
+
+			if (1 === 2) {
+				$translate('Message.SelectSingleItemForDeletion')
+					.then(
+						function(response) {
+							$rootScope.$broadcast("ShowMessage", "Error", response);
+						},
+						function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+						}
+					);
+				return;				
+			}			
 	    };
 	    
 	    // Display
 	    $scope.displayItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-				return;
+			var nID = 0;
+			if (row) {
+				nID = row.ID;
+			} else {				
+				for(var i = 0; i < $scope.orderList.length; i ++) {
+					if ($scope.orderList[i].isSelected) {
+						nID = $scope.orderList[i].ID;
+						break;
+					}
+				}
+			}
 			
-	    	$state.go("home.finance.order.display",  { id : $scope.selectedRows[0].ID });
+	    	$state.go("home.finance.order.display",  { id : nID });
 	    };
 		
 	    // Edit
 	    $scope.editItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-		        return;
+			var nID = 0;
+			if (row) {
+				nID = row.ID;
+			} else {				
+				for(var i = 0; i < $scope.orderList.length; i ++) {
+					if ($scope.orderList[i].isSelected) {
+						nID = $scope.orderList[i].ID;
+						break;
+					}
+				}
+			}
 			
-		    $state.go("home.finance.order.maintain",  { id : $scope.selectedRows[0].ID });
+	    	$state.go("home.finance.order.maintain",  { id : nID });
 	    };
 		
 	    // Create
@@ -2254,9 +2270,9 @@
 			utils.loadFinanceOrderQ(true)
 			    .then(function(response) {
 				if (angular.isArray($rootScope.arFinanceOrder ) && $rootScope.arFinanceOrder.length > 0) {
-					$scope.myData = [];
+					$scope.orderList = [];
 					$.each($rootScope.arFinanceOrder, function(idx, obj) {
-						$scope.myData.push(angular.copy(obj));					
+						$scope.orderList.push(angular.copy(obj));					
 					});
 				}
 				}, function(reason2) {

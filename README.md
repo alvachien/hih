@@ -15,7 +15,8 @@ As described above,  HIH, Home Info. Hub, is a warehouse storing the necessary i
 - Documents
 - Multiple Currencies Enablement
 - Reporting
-- Others?
+- Controlling perspective: Control Center and Order
+- Asset (to do)
 
 ### Learing trace
 - Learn Object
@@ -51,6 +52,7 @@ Built with AngularJS, Angular UI, TinyMCE, etc. See more in Acknowledge menu.
 	- We need LAST_INSERT_ID() in Creation case; [?] <= However, via mysqli->insert_id can anyway get the new insert ID out!
 	- We need transaction in any case; [?] <= It can also achieve in PHP layer!
 - 2015.11.3, It's DECIDED that the HIH using 'yyyy.MM.dd' as the default UI format for date for now. The customizing the date formatting waiting for next version. The ISO format 'yyyy-MM-dd' for database storage is no change.
+- 2015.11.4, Switch from UI-Grid to Smart-Table, because the unstable of UI-Grid as well as the performance. Customer plugin (directrive) created for Smart-Table to simulate the column footer.
 - To be updated.
 
 ### HIH, website version 

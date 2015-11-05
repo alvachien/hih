@@ -27,6 +27,7 @@
 		</div>
 	</div>	
 
+	<br>
 	<table st-table="ccList" st-safe-src="arFinanceControlCenter" class="table">
 		<thead>
 			<tr>
@@ -38,26 +39,26 @@
 				<th translate="Common.Operations">Operations</th>
 			</tr>
 			<tr>
-				<th colspan="6"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
+				<th colspan="6"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in ccList">
+			<tr ng-repeat="row in ccList">
 				<td cs-select="row"></td>
 				<td>{{row.ID}}</td>
 				<td>{{row.Name}}</td>
 				<td>{{row.ParentObject.Name}}</td>
 				<td>{{row.Comment}}</td>
 				<td>
-					<button type="button" class="btn btn-sm" ng-click="displayCC(row)">
+					<button type="button" class="btn btn-sm" ng-click="displayCC(row)" tooltip="{{'Common.Display' | translate}}">
 						<i class="glyphicon glyphicon-share">
 						</i>
 					</button>
-					<button type="button" class="btn btn-sm" ng-click="editCC(row)">
+					<button type="button" class="btn btn-sm" ng-click="editCC(row)" tooltip="{{'Common.Edit' | translate}}">
 						<i class="glyphicon glyphicon-edit">
 						</i>
 					</button>
-					<button type="button" ng-click="removeCC(row)" class="btn btn-sm btn-danger">
+					<button type="button" ng-click="removeCC(row)" class="btn btn-sm btn-danger" tooltip="{{'Common.Delete' | translate}}">
 						<i class="glyphicon glyphicon-remove-circle">
 						</i>
 					</button>
@@ -67,7 +68,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="6">
-					<st-count></st-count>
+					<cst-count></cst-count>
 				</td>
 			</tr>
 		</tfoot>

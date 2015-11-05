@@ -147,7 +147,7 @@ function user_login($userid, $userpwd) {
 		/* free result set */
 		$result->close ();
 	} else {
-		$sErrorString = "Failed to execute query!";
+		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;;;
 	}
 	
 	/* close connection */
@@ -218,7 +218,7 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: " . $query;
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	// Insert it into database
@@ -229,7 +229,7 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 			/* free result set */
 			// mysqli_free_result($result);
 		} else {
-			$sError = "Failed to execute query.";
+			$sError = "Failed to execute query:". $query . " ; Error: " . mysqli_error($link);
 		}
 	}
 	
@@ -262,15 +262,15 @@ function user_combo() {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$usertable [] = array (
-					"id" => $row [0],
-					"text" => $row [1] 
+				"id" => $row [0],
+				"text" => $row [1] 
 			);
 		}
 		
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query:" . $query;
+		$sError = "Failed to execute query:" . $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -321,7 +321,7 @@ function learn_category_read() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -367,7 +367,7 @@ function learn_category_readex() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -417,14 +417,14 @@ function learn_category_create($parctgy, $name, $comment) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;;;
 	}
 	
 	$rsttable = array ();
@@ -437,12 +437,12 @@ function learn_category_create($parctgy, $name, $comment) {
 			/* fetch associative array */
 			while ( $row = $result->fetch_row () ) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"parent" => $row [1],
-						"text" => $row [2],
-						"attributes" => array (
-								"comment" => $row [3] 
-						) 
+					"id" => $row [0],
+					"parent" => $row [1],
+					"text" => $row [2],
+					"attributes" => array (
+						"comment" => $row [3] 
+					) 
 				);
 			}
 			/* free result set */
@@ -462,8 +462,8 @@ function learn_category_delete($ctgyid) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -486,8 +486,8 @@ function learn_category_delete($ctgyid) {
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$sSuccess 
+		$sError,
+		$sSuccess 
 	);
 }
 // 1.3 Learn object
@@ -497,8 +497,8 @@ function learn_object_listread() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -527,7 +527,7 @@ function learn_object_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query . " ; Error: " . mysqli_error();
 	}
 	
 	/* close connection */
@@ -574,14 +574,14 @@ function learn_object_create($ctgyid, $name, $content) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
@@ -656,14 +656,14 @@ function learn_object_change($id, $ctgyid, $name, $content) {
 			}
 		} else {
 			$nCode = 1;
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
@@ -729,13 +729,13 @@ function learn_object_checkusage($ids) {
 				//}
 			}
 		} else {
-			$sError = "Failed to execute query: " . $prequery;
+			$sError = "Failed to execute query: " . $prequery. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$prestmt->close ();
 	} else {
-		$sError = "Failed to prepare statement: " . $prestmt;
+		$sError = "Failed to prepare statement: " . $prestmt. " ; Error: " . $mysqli->error;
 	}
 
 	/* close connection */
@@ -774,13 +774,13 @@ function learn_object_multidelete($ids) {
 				}
 			}
 		} else {
-			$sError = "Failed to execute query: " . $prequery;
+			$sError = "Failed to execute query: " . $prequery. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$prestmt->close ();
 	} else {
-		$sError = "Failed to prepare statement: " . $prestmt;
+		$sError = "Failed to prepare statement: " . $prestmt. " ; Error: " . $mysqli->error;
 	}
 
 	if (empty ( $sError )) {
@@ -790,13 +790,13 @@ function learn_object_multidelete($ids) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$sError = "Failed to prepare statement: " . $stmt;
+			$sError = "Failed to prepare statement: " . $stmt. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -807,6 +807,8 @@ function learn_object_multidelete($ids) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback( );
 	}
 	
 	/* close connection */
@@ -835,16 +837,16 @@ function learn_object_combo() {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$objtable [] = array (
-					"id" => $row [0],
-					"categoryname" => $row [1],
-					"name" => $row [2] 
+				"id" => $row [0],
+				"categoryname" => $row [1],
+				"name" => $row [2] 
 			);
 		}
 		
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query:" .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -903,7 +905,7 @@ function learn_object_hierread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -921,8 +923,8 @@ function learn_hist_listread() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -954,14 +956,14 @@ function learn_hist_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query" . $query;
+		$sError = "Failed to execute query" . $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$objtable 
+		$sError,
+		$objtable 
 	);
 }
 function learn_hist_hierread() {
@@ -1015,7 +1017,7 @@ function learn_hist_hierread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query ". $query;
+		$sError = "Failed to execute query ". $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -1060,7 +1062,7 @@ function learn_hist_exist($username, $objid, $lrndate) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: SELECT COUNT(*) FROM LEARHISTABLE.";
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -1106,7 +1108,7 @@ function learn_hist_create($username, $objid, $learndate, $comment) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: CALL LEARNHISTCALLPROC.";
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	// Don't need re-read because no LAST_INSERT_ID is this case.
@@ -1149,7 +1151,7 @@ function learn_hist_change($lohist) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: " . HIHConstants::DP_UpdateLearnHistory;
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	// Don't need re-read because no LAST_INSERT_ID is this case.
@@ -1189,7 +1191,7 @@ function learn_hist_delete($userid, $objid, $learndate) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: " . HIHConstants::DP_DeleteLearnHistory;
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -1231,7 +1233,7 @@ function learn_plan_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query" . $query;
+		$sError = "Failed to execute query" . $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	$rsttable2 = array ();
@@ -1253,7 +1255,7 @@ function learn_plan_listread() {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query: " . $query; 
+			$sError = "Failed to execute query: " . $query. " ; Error: " . mysqli_error($link); 
 		}
 	}
 
@@ -1276,7 +1278,7 @@ function learn_plan_listread() {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query:" . $query;
+			$sError = "Failed to execute query:" . $query. " ; Error: " . mysqli_error($link);
 		}
 	}
 	
@@ -1334,14 +1336,14 @@ function learn_plan_create($objPlan) {
 			$nPlanID = $mysqli->insert_id;
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Then on detail table */
@@ -1356,7 +1358,7 @@ function learn_plan_create($objPlan) {
 				if ($newstmt->execute ()) {
 					$newstmt->close();
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 			}
@@ -1377,7 +1379,7 @@ function learn_plan_create($objPlan) {
 				if ($newstmt->execute ()) {
 					$newstmt->close();
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 			}
@@ -1437,14 +1439,14 @@ function learn_plan_change($objPlan) {
 			$nCode = 0;
 		} else {
 			$nCode = 1;
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Then on detail table */
@@ -1457,14 +1459,14 @@ function learn_plan_change($objPlan) {
 				$nCode = 0;
 			} else {
 				$nCode = 1;
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
 			$nCode = 1;
-			$sError = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		if ($nCode === 0) {
@@ -1478,11 +1480,11 @@ function learn_plan_change($objPlan) {
 					if ($newstmt->execute ()) {
 						$newstmt->close();
 					} else {
-						$sError = "Failed to execute query: " . $query;
+						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 						break;
 					}
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 			}
@@ -1499,14 +1501,14 @@ function learn_plan_change($objPlan) {
 				$nCode = 0;
 			} else {
 				$nCode = 1;
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
 			$nCode = 1;
-			$sError = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		if ($nCode === 0) {
@@ -1520,11 +1522,11 @@ function learn_plan_change($objPlan) {
 					if ($newstmt->execute ()) {
 						$newstmt->close();
 					} else {
-						$sError = "Failed to execute query: " . $query;
+						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 						break;
 					}
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 			}
@@ -1580,13 +1582,13 @@ function learn_plan_delete($nPlanID) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	// Details
@@ -1597,13 +1599,13 @@ function learn_plan_delete($nPlanID) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$sError = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -1615,13 +1617,13 @@ function learn_plan_delete($nPlanID) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$sError = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -1652,8 +1654,8 @@ function learn_award_listread() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1683,7 +1685,7 @@ function learn_award_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	// Average and total score
@@ -1703,7 +1705,7 @@ function learn_award_listread() {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query.";
+			$sError = "Failed to execute query: " .$query . " ; Error: " . mysqli_error($link);
 		}
 	} else {
 		$footer [] = array (
@@ -1726,8 +1728,8 @@ function learn_award_listread_byuser($username) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$sError = "";
@@ -1757,7 +1759,7 @@ function learn_award_listread_byuser($username) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	// Average and total score
@@ -1777,7 +1779,7 @@ function learn_award_listread_byuser($username) {
 			/* free result set */
 			mysqli_free_result ( $result );
 		} else {
-			$sError = "Failed to execute query.";
+			$sError = "Failed to execute query: ".$query. " ; Error: " . mysqli_error($link);
 		}
 	} else {
 		$footer [] = array (
@@ -1834,14 +1836,14 @@ function learn_award_create($userid, $adate, $score, $reason) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
@@ -1908,13 +1910,13 @@ function learn_award_change($objAward) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Update the entry in DB */
@@ -1925,13 +1927,13 @@ function learn_award_change($objAward) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$sError = "Failed to parpare statement: " . $query;
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 
@@ -1975,7 +1977,7 @@ function learn_award_delete($id) {
 	$query = "DELETE FROM " . HIHConstants::DT_LearnAward . " WHERE ID = '" . $id . "';";
 	
 	if (false === mysqli_query ( $link, $query )) {
-		$sError = "Execution failed, no results!" . $query;
+		$sError = "Execution failed, no results!" . $query . " ; Error: " . mysqli_error($link);
 	} else {
 		$sSuccess = sprintf ( "%d Row deleted.\n", mysqli_affected_rows ( $link ) );
 	}
@@ -2014,13 +2016,13 @@ function learn_award_multidelete($ids) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	if (empty ( $sError )) {
@@ -2074,7 +2076,7 @@ function finance_setting_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2118,7 +2120,7 @@ function finance_exgrate_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query" . $query;
+		$sError = "Failed to execute query" . $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2163,7 +2165,7 @@ function finance_account_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2213,13 +2215,13 @@ function finance_account_hierread() {
 				);
 			}
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	if (! empty ( $sError )) {
@@ -2248,13 +2250,13 @@ function finance_account_hierread() {
 				);
 			}
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;;;
 	}
 	
 	if (! empty ( $sError )) {
@@ -2356,14 +2358,14 @@ function finance_account_create($acntObj) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
@@ -2426,13 +2428,13 @@ function finance_account_change($acntObj) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Then, update the account */
@@ -2443,13 +2445,13 @@ function finance_account_change($acntObj) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Commit or rollback */
@@ -2495,7 +2497,7 @@ function finance_account_delete($acntid) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -2554,7 +2556,7 @@ function finance_account_category_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2599,7 +2601,7 @@ function finance_currency_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2635,21 +2637,21 @@ function finance_trantype_listread($usetext = false) {
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			if ($usetext) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"parent" => $row [1],
-						"text" => $row [2],
-						"expense" => $row [3],
-						"comment" => $row [4] 
+					"id" => $row [0],
+					"parent" => $row [1],
+					"text" => $row [2],
+					"expense" => $row [3],
+					"comment" => $row [4] 
 				)
 				// "iconCls" => ($row[3])? "icon-remove" : "icon-add"
 				;
 			} else {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"parent" => $row [1],
-						"name" => $row [2],
-						"expense" => $row [3],
-						"comment" => $row [4] 
+					"id" => $row [0],
+					"parent" => $row [1],
+					"name" => $row [2],
+					"expense" => $row [3],
+					"comment" => $row [4] 
 				)
 				// "iconCls" => ($row[3])? "icon-remove" : "icon-add"
 				;
@@ -2659,7 +2661,7 @@ function finance_trantype_listread($usetext = false) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2712,7 +2714,7 @@ function finance_trantype_hierread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2754,7 +2756,7 @@ function finance_doctype_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: " .$query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2804,7 +2806,7 @@ function finance_document_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query: ". $query;
+		$sError = "Failed to execute query: ". $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2850,7 +2852,7 @@ function finance_document_curexg_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query:" . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -2890,7 +2892,7 @@ function finance_document_post($docobj) {
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 		}
 	}
 	
@@ -2905,7 +2907,7 @@ function finance_document_post($docobj) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 					break;
 				}
 			}
@@ -2922,7 +2924,7 @@ function finance_document_post($docobj) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 				}
 			}
 		}		
@@ -2935,7 +2937,7 @@ function finance_document_post($docobj) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 				}
 			}			
 		}		
@@ -2979,13 +2981,13 @@ function finance_document_delete($docid) {
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
-	$query = "DELETE FROM " . HIHConstants::DT_FinDocument . " WHERE ID=?;";
+	$query = "DELETE FROM " . HIHConstants::DT_FinDocument . " WHERE ID = ?;";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $docid );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -2999,7 +3001,7 @@ function finance_document_delete($docid) {
 			/* Execute the statement */
 			if ($newstmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
 		}
@@ -3015,7 +3017,7 @@ function finance_document_delete($docid) {
 			/* Execute the statement */
 			if ($newstmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
 		}
@@ -3080,7 +3082,7 @@ function finance_documentitem_listread($docid) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -3130,7 +3132,7 @@ function finance_documentitem_listreadbyaccount($accountid) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -3180,7 +3182,7 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -3224,7 +3226,7 @@ function finance_internalorder_listread() {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query:" . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -3271,7 +3273,7 @@ function finance_internalordersr_listread($ordid) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query:" . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
@@ -3287,8 +3289,8 @@ function finance_internalorder_create($objIO) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$mysqli->autocommit ( false );
@@ -3309,7 +3311,7 @@ function finance_internalorder_create($objIO) {
 		if ($stmt->execute ()) {
 			$nOrdID = $mysqli->insert_id;
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -3324,7 +3326,7 @@ function finance_internalorder_create($objIO) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 			}
@@ -3356,8 +3358,8 @@ function finance_internalorder_delete($ordid) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$mysqli->autocommit ( false );
@@ -3376,7 +3378,7 @@ function finance_internalorder_delete($ordid) {
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -3390,7 +3392,7 @@ function finance_internalorder_delete($ordid) {
 			/* Execute the statement */
 			if ($newstmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
 		}
@@ -3438,17 +3440,17 @@ function finance_controlcenter_listread($usetext) {
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			if ($usetext) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"text" => $row [1],
-						"parent" => $row [2],
-						"comment" => $row [3] 
+					"id" => $row [0],
+					"text" => $row [1],
+					"parent" => $row [2],
+					"comment" => $row [3] 
 				);
 			} else {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"name" => $row [1],
-						"parent" => $row [2],
-						"comment" => $row [3] 
+					"id" => $row [0],
+					"name" => $row [1],
+					"parent" => $row [2],
+					"comment" => $row [3] 
 				);
 			}
 		}
@@ -3456,14 +3458,14 @@ function finance_controlcenter_listread($usetext) {
 		/* free result set */
 		mysqli_free_result ( $result );
 	} else {
-		$sError = "Failed to execute query.";
+		$sError = "Failed to execute query: ". $query. " ; Error: " . mysqli_error($link);
 	}
 	
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$rsttable 
+		$sError,
+		$rsttable 
 	);
 }
 function finance_controlcenter_create($name, $parent, $comment) {
@@ -3472,8 +3474,8 @@ function finance_controlcenter_create($name, $parent, $comment) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -3487,9 +3489,8 @@ function finance_controlcenter_create($name, $parent, $comment) {
 	$nNewid = 0;
 	$sMsg = "";
 	
-	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "CALL " . MySqlFinControlCenterCreateProc . " (?,?,?);";
+	$query = "CALL " . HIHConstants::DP_CreateFinControlCenter . " (?,?,?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		if (! isset ( $parent )) {
@@ -3512,30 +3513,30 @@ function finance_controlcenter_create($name, $parent, $comment) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
 	if ($nCode > 0) {
 		$sError = $sMsg;
 	} else if ($nCode === 0 && $nNewid > 0) {
-		$query = "SELECT * FROM " . MySqlFinControlCenterTable . " WHERE id = " . $nNewid;
+		$query = "SELECT * FROM " . HIHConstants::DT_FinControlCenter . " WHERE id = " . $nNewid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
 			while ( $row = $result->fetch_row () ) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"name" => $row [1],
-						"parent" => $row [2],
-						"comment" => $row [3] 
+					"id" => $row [0],
+					"name" => $row [1],
+					"parent" => $row [2],
+					"comment" => $row [3] 
 				);
 			}
 			/* free result set */
@@ -3549,8 +3550,8 @@ function finance_controlcenter_create($name, $parent, $comment) {
 	$mysqli->close ();
 	
 	return array (
-			$sError,
-			$rsttable 
+		$sError,
+		$rsttable 
 	);
 }
 function finance_controlcenter_delete($ccid) {
@@ -3559,8 +3560,8 @@ function finance_controlcenter_delete($ccid) {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	$mysqli->autocommit ( false );
@@ -3573,13 +3574,13 @@ function finance_controlcenter_delete($ccid) {
 	$sError = "";
 	
 	/* Prepare an delete statement on header */
-	$query = "DELETE FROM " . MySqlFinControlCenterTable . " WHERE ID=?;";
+	$query = "DELETE FROM " . HIHConstants::DT_FinControlCenter . " WHERE ID=?;";
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $ccid );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 		} else {
-			$sError = "Failed to execute query: " . $query;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -3590,6 +3591,8 @@ function finance_controlcenter_delete($ccid) {
 			$mysqli->rollback ();
 			$sError = $mysqli->error;
 		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -3610,8 +3613,8 @@ function finance_report_balancesheet() {
 	/* check connection */
 	if (mysqli_connect_errno ()) {
 		return array (
-				"Connect failed: %s\n" . mysqli_connect_error (),
-				null 
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
 		);
 	}
 	
@@ -3652,14 +3655,14 @@ function finance_report_balancesheet() {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	return array (
@@ -3721,14 +3724,14 @@ function finance_report_internalorder() {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	return array (
@@ -3789,14 +3792,14 @@ function finance_report_controlcenter($fromdate = '19000101', $todate = '9999123
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	return array ( $sMsg, $rstAr );
@@ -3850,14 +3853,14 @@ function finance_report_trantype($fromdate = '19000101', $todate = '99991231') {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	return array ( $sMsg, $rstAr );

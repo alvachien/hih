@@ -15,6 +15,7 @@
 		"HierarchyView": "Hierarchy View",
 		"Themes": "Themes",
 		"Default": "Default",
+		"BackToList": "Back to List",
 		
 		"New": "New",
 		"Change" : "Change",
@@ -193,7 +194,11 @@
 		"SourceCurrency": "Source Currency",
 		"TargetCurrency": "Target Currency",
   		
-  		"CreateAccountTitle": "Create an Account"
+  		"CreateAccountTitle": "Create an Account",
+		"ChooseAControlCenter": "Choose a Control Center",
+		"ChooseAnAccount": "Choose an Account",
+		"ChooseAnOrder": "Choose an Order",
+		"ChooseACurrency": "Choose a currency"
   	},
 	
 	"Message": {

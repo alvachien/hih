@@ -529,6 +529,9 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "CREATEFINANCECONTROLCENTER": {
 			$ccname = escape ( $realParamArr ['name'] );
 			$ccparent = escape ( $realParamArr ['parent'] );
+			if (empty($ccparent)) {
+				$ccparent = NULL;
+			}			
 			$cccomment = escape ( $realParamArr ['comment'] );
 			
 			HIHSrv_Function_3Param('finance_controlcenter_create', $ccname, $ccparent, $cccomment);
