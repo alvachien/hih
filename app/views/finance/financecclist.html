@@ -6,8 +6,10 @@
 		
 		<div class="btn-toolbar" role="toolbar" aria-label="...">
 		  <div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn-group btn-primary" ng-click="newCC()" translate="Common.New">New</button>
-			<button type="button" class="btn-group btn-primary" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+			<button type="button" class="btn-group btn-primary" tooltip="{{'Common.New' | translate}}"
+				ng-click="newCC()" translate="Common.New">New</button>
+			<button type="button" class="btn-group btn-primary" tooltip="{{'Common.Refersh' | translate}}"
+				ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
 		  </div>
 		  
 		  <div class="btn-group" role="group" aria-label="...">
@@ -28,7 +30,7 @@
 	</div>	
 
 	<br>
-	<table st-table="ccList" st-safe-src="arFinanceControlCenter" class="table">
+	<table st-table="ccList" st-safe-src="arFinanceControlCenter" class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th></th>

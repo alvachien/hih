@@ -41,7 +41,7 @@
     <!-- Details -->
     <div class="container" ng-show="showPart === 'det'">
 		<!-- Tables -->
-		<table st-table="detailColl" class="table">
+		<table st-table="detailColl" st-safe-src="PlanDetailCollection" class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th st-sort="objID" translate="Common.ID">Object ID</th>
@@ -93,7 +93,7 @@
                 </div>
                 
                 <div ng-show="isSimulate == true">
-                    <table st-table="simuColl" class="table">
+                    <table st-table="simuColl" st-safe-src="PlanDetailSimulCollection" class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th st-sort="objID" translate="Common.ID">Object ID</th>
@@ -168,7 +168,7 @@
 	<!-- Participants -->
     <div class="container" ng-show="showPart === 'reg'">
 		<!-- Tables -->
-		<table st-table="partColl" class="table">
+		<table st-table="partColl" st-saft-src="PlanParticipantCollection" class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th st-sort="userID" translate="Login.User">User</th>
@@ -220,7 +220,7 @@
                 </div>
                 
                 <div ng-show="isCompare == true">
-                    <table st-table="compTable" class="table">
+                    <table st-table="compTable" st-safe-src="PlanPartCompCollection" class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th st-sort="objID" translate="Common.ID">Object ID</th>

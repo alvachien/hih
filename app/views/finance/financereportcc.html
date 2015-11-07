@@ -44,8 +44,40 @@
 	<div>Currency: <span class="label label-default">{{ReportCurrency}}</span></div>
 	<br>
 	
-	<div id="gridFinReportCC" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
-		 style="width: 100%; height: 500px;"></div>
+	<table st-table="rptCollection" st-safe-src="dataReport" class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th st-sort="ccName" translate="Finance.ControlCenter">CC</th>
+				<th st-sort="dbamt" translate="Finance.Incoming">Incoming</th>
+				<th st-sort="ctamt" translate="Finance.Outgoing">Outing</th>
+				<th st-sort="ctamt" translate="Finance.Balance">Balance</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in rptCollection">
+				<td>{{row.ControlCenterObject.Name}}</td>
+				<td>{{row.TranDebitAmount | currency: '￥'}}</td>
+				<td>{{row.TranCreditAmount | currency: '￥'}}</td>
+				<td>{{row.TranAmount | currency: '￥'}}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="1">
+					<cst-count></cst-count>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="TranDebitAmount"></cst-sum>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="TranCreditAmount"></cst-sum>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="TranAmount"></cst-sum>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
 		 
 	<!-- Chart -->
 	<br>

@@ -8,6 +8,42 @@
 	<div>Currency: <span class="label label-default">{{ReportCurrency}}</span></div>
 	<br> 
 	
-	<div id="gridFinReportOrder" ui-grid="gridOptions" ui-grid-selection ui-grid-resize-columns
-		 style="width: 100%; height: 500px;"></div>
+	<table st-table="rptCollection" st-safe-src="dataReport" class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th st-sort="ordername" translate="Finance.Order">Order</th>
+				<th st-sort="valfrm" translate="Common.ValidFrom">From</th>
+				<th st-sort="valto" translate="Common.ValidTo">To</th>
+				<th st-sort="debitamt" translate="Finance.Incoming">Incoming</th>
+				<th st-sort="creditamt" translate="Finance.Outgoing">Outgoing</th>
+				<th st-sort="balance" translate="Finance.Balance">Balance</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in rptCollection">
+				<td>{{row.OrderObject.Name}}</td>
+				<td>{{row.OrderObject.ValidFrom | date:'yyyy.MM.dd'}}</td>
+				<td>{{row.OrderObject.ValidTo  | date:'yyyy.MM.dd'}}</td>
+				<td>{{row.DebitAmount | currency: '￥' }}</td>
+				<td>{{row.CreditAmount | currency: '￥'}}</td>
+				<td>{{row.Balance | currency: '￥'}}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					<cst-count></cst-count>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="DebitAmount"></cst-sum>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="CreditAmount"></cst-sum>
+				</td>
+				<td colspan="1">
+					<cst-sum columnname="Balance"></cst-sum>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
 </div>

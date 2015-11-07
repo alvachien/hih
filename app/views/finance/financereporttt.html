@@ -44,41 +44,81 @@
 	<div>Currency: <span class="label label-default">{{ReportCurrency}}</span></div>
 	<br>
 	
-	<div class="row">
-  		<div class="col-xs-12 col-sm-12 col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title" translate="Finance.Incoming">Incoming</h3>
-				</div>
-				<div class="panel-body">
-					<div id="gridIncoming" ui-grid="gridOptionsIncoming" ui-grid-selection ui-grid-resize-columns
-		 				style="width: 100%; height: 500px;"></div>
-						 
-					<br>
-					<br>
-					<canvas id="polar-area-inc" class="chart chart-polar-area"
-							chart-data="dataChartIncoming" chart-labels="labelsChartIncoming">
-					</canvas> 
-				</div>
-			</div>			  
-		</div>
-		
-  		<div class="col-xs-12 col-sm-12 col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title" translate="Finance.Outgoing">Outgoing</h3>
-				</div>
-				<div class="panel-body">
-					<div id="gridOutgoing" ui-grid="gridOptionsOutgoing" ui-grid-selection ui-grid-resize-columns
-		 				style="width: 100%; height: 500px;"></div>
-					
-					<br>
-					<br>
-					<canvas id="polar-area-out" class="chart chart-polar-area"
-							chart-data="dataChartOutgoing" chart-labels="labelsChartOutgoing">
-					</canvas> 
-				</div>
-			</div>			  
-		</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title" translate="Finance.Incoming">Incoming</h3>
+			</div>
+			<div class="panel-body">
+				<table st-table="rptInCollection" st-safe-src="dataReportIncoming" class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th st-sort="ttName" translate="Finance.TransactionType">Account</th>
+							<th st-sort="tamt" translate="Finance.Balance">Balance</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="row in rptInCollection">
+							<td>{{row.Name}}</td>
+							<td>{{row.TranAmount | currency: '￥'}}</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="1">
+								<cst-count></cst-count>
+							</td>
+							<td colspan="1">
+								<cst-sum columnname="TranAmount"></cst-sum>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>			  
+		<br>
+		<br>
+		<canvas id="polar-area-inc" class="chart chart-polar-area"
+				chart-data="dataChartIncoming" chart-labels="labelsChartIncoming">
+		</canvas> 
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title" translate="Finance.Outgoing">Outgoing</h3>
+			</div>
+			<div class="panel-body">
+				<table st-table="rptOutCollection" st-safe-src="dataReportOutgoing" class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th st-sort="ttName" translate="Finance.TransactionType">Account</th>
+							<th st-sort="tamt" translate="Finance.Balance">Balance</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="row in rptInCollection">
+							<td>{{row.Name}}</td>
+							<td>{{row.TranAmount}}</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="1">
+								<cst-count></cst-count>
+							</td>
+							<td colspan="1">
+								<cst-sum columnname="TranAmount"></cst-sum>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>			  
+		<br>
+		<br>
+		<canvas id="polar-area-out" class="chart chart-polar-area"
+				chart-data="dataChartOutgoing" chart-labels="labelsChartOutgoing">
+		</canvas> 
 	</div>
 </div>

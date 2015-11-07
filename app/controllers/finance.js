@@ -4,9 +4,8 @@
 (function() {
 	'use strict';
 
-	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select',
-	 	'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-	    'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'chart.js', 'smart-table'])
+	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize',
+	 	'ngTouch', 'selectize', 'chart.js', 'smart-table'])
 	    
 	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
       $stateProvider
@@ -238,20 +237,6 @@
     ;
 	}])
 	
-	.directive('stringToNumber', function() {
-  		return {
-    		require: 'ngModel',
-    		link: function(scope, element, attrs, ngModel) {
-      			ngModel.$parsers.push(function(value) {
-        			return '' + value;
-      			});
-      			ngModel.$formatters.push(function(value) {
-        			return parseFloat(value);
-      			});
-    		}
-  		};
-	})
-	
 	.controller('FinanceSettingController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 			$scope.displayedCollection = [];
@@ -283,57 +268,8 @@
 		
 	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
-		// Grid options
-        $scope.selectedRows = [];
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'arFinanceAccount';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-			
- 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				if (row.isSelected) {
- 					$scope.selectedRows.push(row.entity);     					
- 				} else {
- 					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.id === row.entity.id) {
-							$scope.selectedRows.splice(idx, 1);
-							return false;
-						}
-					});
- 				}
-  		    });
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	//{ name:'ctgyid', field: 'CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width:90 },
-			{ name:'ctgyname', field: 'CategoryObject.Name', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
-			{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-			{ name:'assetflag', field:'CategoryObject.AssetFlag', displayName: 'Finance.Asset', headerCellFilter: "translate", width: 90,
-				cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
-          			if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
-					else { return 'accountnotasset'; }
-        		}
-			 },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 200 }
-	    ];
-	  
+		$scope.dispList = [].concat($rootScope.arFinanceAccount);
+
 	    var promise1 = utils.loadCurrenciesQ();
 	    var promise2 = utils.loadFinanceAccountCategoriesQ();	  
 	    $q.all([promise1, promise2])
@@ -352,24 +288,33 @@
 
 	    // Remove to the real data holder
 	    $scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length !== 1) {
-				$translate('Message.SelectSingleItemForDeletion')
-					.then(
-						function(response) {
-							$rootScope.$broadcast("ShowMessage", "Error", response);
-						},
-						function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-						}
-					);
-				return;				
+			var nAccntID = 0;
+			if (row) {
+				nAccntID = row.ID;
+			} else {
+				for(var i = 0; i < $scope.dispList.length; i ++) {
+					if ($scope.dispList[i].isSelected) {
+						nAccntID = $scope.dispList[i].ID;
+						break;
+					}
+				}
+				if (0 === nAccntID) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}			
 			}
 			
 			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-				utils.deleteFinanceAccountQ($scope.selectedRows[0].ID)
+				utils.deleteFinanceAccountQ(nAccntID)
 					.then(function(response) {
-						// Empty selection table
-						$scope.selectedRows = [];
 						
 						// Just refresh it!
 						$scope.refreshList();
@@ -381,18 +326,36 @@
 	    
 	    // Display
 	    $scope.displayItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-				return;
+			var nAccntID = 0;
+			if (row) {
+				nAccntID = row.ID;
+			} else {
+				for(var i = 0; i < $scope.dispList.length; i ++) {
+					if ($scope.dispList[i].isSelected) {
+						nAccntID = $scope.dispList[i].ID;
+						break;
+					}
+				}
+			}
 			
-	    	$state.go("home.finance.account.display",  { accountid : $scope.selectedRows[0].ID });
+	    	$state.go("home.finance.account.display",  { accountid : nAccntID });
 	    };
 		
 	    // Edit
 	    $scope.editItem = function (row) {
-	        if ($scope.selectedRows.length <= 0)
-		        return;
+			var nAccntID = 0;
+			if (row) {
+				nAccntID = row.ID;
+			} else {
+				for(var i = 0; i < $scope.dispList.length; i ++) {
+					if ($scope.dispList[i].isSelected) {
+						nAccntID = $scope.dispList[i].ID;
+						break;
+					}
+				}
+			}
 			
-		    $state.go("home.finance.account.maintain",  { accountid : $scope.selectedRows[0].ID });
+		    $state.go("home.finance.account.maintain",  { accountid : nAccntID });
 	    };
 		
 	    // Create
@@ -406,8 +369,8 @@
 			    .then(function(response2) {
 					// Do nothing!
 				}, function(reason2) {
-					    // Error occurred
-					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+					// Error occurred
+					$rootScope.$broadcast("ShowMessage", "Error", reason2);
 				});
 		};
 	}])
@@ -595,8 +558,11 @@
 		};
 	}])	
 	
-	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'uiGridConstants', 'utils', 
-	    function($scope, $rootScope, $state, $http, $log, $q, $translate, uiGridConstants, utils) {
+	.controller('FinanceDocumentListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
+			
+		$scope.docCollection = [].concat($rootScope.arFinaneDocument);
+		
 		var promise1 = utils.loadCurrenciesQ();
 		var promise2 = utils.loadFinanceTransactionTypesQ();
 		var promise3 = utils.loadFinanceAccountCategoriesQ();
@@ -608,12 +574,7 @@
 				utils.loadFinanceAccountsQ().then(function(response2) {
 					utils.loadFinanceDocumentsQ()
 						.then(function(response3) {
-						    if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
-								$scope.myData = [];
-								$.each($rootScope.arFinanceDocument, function(idx, obj) {
-									$scope.myData.push(angular.copy(obj));					
-								});			  
-							};
+							// Do nothing
 						}, function(reason3) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason3);
 						});
@@ -624,86 +585,35 @@
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
 
-		// Grid options
-        $scope.selectedRows = [];
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.enableRowSelection = true;
-		$scope.gridOptions.enableFullRowSelection = true;
-		$scope.gridOptions.selectionRowHeaderWidth = 35;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.DocID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.DocID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-			
- 			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 				if (row.isSelected) {
- 					$scope.selectedRows.push(row.entity);     					
- 				} else {
- 					$.each($scope.selectedRows, function(idx, obj) {
-						if (obj.DocID === row.entity.DocID) {
-							$scope.selectedRows.splice(idx, 1);
-							return false;
-						}
-					});
- 				}
-  		    });
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'docid', field: 'DocID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-	    	{ name:'doctypename', field: 'DocTypeObject.Name', displayName: 'Finance.DocumentType', headerCellFilter: "translate", width:90 },
-			{ name:'trandate', field: 'TranDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: 150},
-			//{ name:'trancurr', field:'TranCurrency', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'trancurrname', field:'TranCurrencyObject.Name', displayName: 'Finance.Currency', headerCellFilter: "translate", width: 150 },
-			{ name:'tranamount', field:'TranAmount', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
-				 aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
-			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 200 }
-	    ];	  
-		
-	    $scope.$on("FinanceDocumentLoaded", function() {
-	    	$log.info("HIH FinanceDocument List: Loaded event fired!");
-	    });
-	    
-	    $scope.$on("FinanceDocumentTypeLoaded", function() {
-	    	$log.info("HIH FinanceDocument List: Type Loaded event fired!");
-	    });	
-
 		// Remove to the real data holder
 		$scope.removeItem = function removeItem(row) {
-			if ($scope.selectedRows.length !== 1) {
-				$translate('Message.SelectSingleItemForDeletion')
-					.then(
-						function(response) {
-							$rootScope.$broadcast("ShowMessage", "Error", response);
-						},
-						function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-						}
-					);
-				return;				
+			var nDocID = 0;
+			if (row) {
+				nDocID = row.DocID;
+			} else {
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						nDocID = $scope.docCollection[i].DocID;
+						break;
+					}
+				}
+				if ( 0 === nDocID) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
 			}
-			
 			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-				utils.deleteFinanceDocumentQ($scope.selectedRows[0].DocID)
+				utils.deleteFinanceDocumentQ(nDocID)
 					.then(function(response) {
-						// Empty selection table
-						$scope.selectedRows = [];
-						
 						// Just refresh it!
-						// To-Do: for Performance
 						$scope.refreshList();
 					}, function(reason) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason);
@@ -713,29 +623,50 @@
 	    
 		// Display
 		$scope.displayItem = function (row) {
-			if ($scope.selectedRows.length <= 0)
-				return;
+			var ralrow = null;
 			
-			if ($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_Transfer) {
-				$state.go("home.finance.document.display_tran",  { docid : $scope.selectedRows[0].DocID });	
-			} else if($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-				$state.go("home.finance.document.display_currexg",  { docid : $scope.selectedRows[0].DocID });
+			if (row) {
+				ralrow = row;
 			} else {
-		    	$state.go("home.finance.document.display",  { docid : $scope.selectedRows[0].DocID });				
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						ralrow = $scope.docCollection[i];
+						break;
+					}
+				}
+			}
+			
+			if (ralrow.DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.display_tran",  { docid : ralrow.DocID });	
+			} else if(ralrow.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.display_currexg",  { docid : ralrow.DocID });
+			} else {
+		    	$state.go("home.finance.document.display",  { docid : ralrow.DocID });
 			}
 		};
 		
 		// Edit
 		$scope.editItem = function (row) {
-			if ($scope.selectedRows.length <= 0)
-				return;
-			if ($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_Transfer) {
-				$state.go("home.finance.document.maintain_tran",  { docid : $scope.selectedRows[0].DocID });
-			} else if($scope.selectedRows[0].DocTypeID === hih.Constants.FinDocType_CurrExchange) {
-				$state.go("home.finance.document.maintain_currexg",  { docid : $scope.selectedRows[0].DocID });
+			var ralrow = null;
+			
+			if (row) {
+				ralrow = row;
 			} else {
-		    	$state.go("home.finance.document.maintain",  { docid : $scope.selectedRows[0].DocID });				
-			}	    	
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						ralrow = $scope.docCollection[i];
+						break;
+					}
+				}
+			}
+			
+			if (ralrow.DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.maintain_tran",  { docid : ralrow.DocID });	
+			} else if(ralrow.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.maintain_currexg",  { docid : ralrow.DocID });
+			} else {
+		    	$state.go("home.finance.document.maintain",  { docid : ralrow.DocID });
+			}
 		};
 		
 		// Create
@@ -749,10 +680,6 @@
 			utils.loadFinanceDocumentsQ(true)
 			    .then(function(response) {
 					if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
-						$scope.myData = [];
-						$.each($rootScope.arFinanceDocument, function(idx, obj) {
-							$scope.myData.push(angular.copy(obj));					
-						});
 						
 						// Force it refresh!
 						$scope.$apply();
@@ -1357,8 +1284,8 @@
 		};
 	}])
 		
-	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, uiGridConstants, utils) {
+	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.showhdr = true; // Default value
@@ -1371,61 +1298,6 @@
 			$scope.ReportedMessages = [];
 		};
 		
-		// For item table
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'ItemsCollection';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ItemID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ItemID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'itemid', field: 'ItemID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
-	    	//{ name:'accountid', field: 'accountid', displayName: 'Finance.Account', headerCellFilter: "translate", width:50 },
-			{ name:'accountname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width: 150 },
-			//	cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
-            //			if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
-			//		else { return 'accountnotasset'; }
-        	//	}},
-			//{ name:'accountcategoryname', field:'AccountObject.CategoryObject.Name', displayName: 'Finance.AccountCategory', headerCellFilter: "translate", width: 90 },
-			{ name:'trantypename', field:'TranTypeObject.Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width: 100 },
-			//	cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
-          	//		if (grid.getCellValue(row,col) === 1) { return 'accountasset';} 
-			//		else { return 'accountnotasset'; }
-        	//	} },
-			//{ name:'trantypeexpense', field:'TranTypeObject.ExpenseFlag', displayName: 'Finance.ExpenseFlag', headerCellFilter: "translate", width: 100 },
-			{ name:'tranamountlc', field:'TranAmount_Org', displayName: 'Finance.Amount', headerCellFilter: "translate", width: 150,
-				aggregationType:uiGridConstants.aggregationTypes.sum, cellClass: 'amountcell' },
-			{ name:'desp', field:'Desp', displayName: 'Common.Comment', headerCellFilter: "translate", width: 100 },
-			{ name:'itemcc', field:'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width: 100 },
-			{ name:'itemord', field:'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width: 100 },			
-			{ name: 'edit', field:'ItemID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
-					cellTemplate:'<div class="ui-grid-cell-contents">\
-						<div class="btn-toolbar" role="toolbar">\
-							<div class="btn-group" role="group">\
-								<button class="btn primary" ng-click="grid.appScope.displayItem(COL_FIELD)" translate="Common.Display"></button>\
-								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.editItem(COL_FIELD)" translate="Common.Edit"></button>\
-								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.deleteItem(COL_FIELD)" translate="Common.Delete"></button>\
-							</div>\
-						</div>\
-					</div>',
-					enableFiltering: false
-			}
-	   ];
-
         // Attributes
 		$scope.DocumentObject = new hih.FinanceDocument();
 		$scope.ItemsCollection = [];
@@ -1906,6 +1778,18 @@
 						break;
 					}
 				}
+				if (0 === nCCID) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
 			}
 			utils.deleteControlCenterQ(nCCID)
 				.then(function(response) {
@@ -1914,19 +1798,6 @@
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
-
-			if (1 === 2) {
-				$translate('Message.SelectSingleItemForDeletion')
-					.then(
-						function(response) {
-							$rootScope.$broadcast("ShowMessage", "Error", response);
-						},
-						function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-						}
-					);
-				return;				
-			}
 	    };
 	    
 	    // Display
@@ -1971,10 +1842,7 @@
 			utils.loadFinanceControlCentersQ(true)
 			    .then(function(response2) {
 					if (angular.isArray($rootScope.arFinanceControlCenter ) && $rootScope.arFinanceControlCenter.length > 0) {
-						$scope.ccList = [];
-						$.each($rootScope.arFinanceControlCenter, function(idx, obj) {
-							$scope.ccList.push(angular.copy(obj));					
-					    });
+						// Do nothing
 					}
 				}, function(reason2) {
 				    // Error occurred
@@ -2095,7 +1963,7 @@
 		
 		$scope.ControlCenterObject = new hih.FinanceControlCenter();
 
-		// Selective control
+		// Selective control for control center
 		$scope.ccConfig = {
 			create: false,
 			onChange: function(value){
@@ -2177,12 +2045,7 @@
 		$scope.orderList = [];
 	    utils.loadFinanceOrderQ()
 			.then(function(response) {
-				$scope.orderList = [];
-				if (angular.isArray($rootScope.arFinanceOrder ) && $rootScope.arFinanceOrder.length > 0) {
-					$.each($rootScope.arFinanceOrder, function(idx, obj) {
-						$scope.orderList.push(angular.copy(obj));					
-					});
-				}
+				// Do nothing
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
@@ -2199,31 +2062,28 @@
 						break;
 					}
 				}
+				
+				if (0 === nID) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
 			}
 			
 			utils.deleteFinanceOrderQ(nID)
 				.then(function(response) {
-					// Empty selection table
-					$scope.selectedRows = [];
-					
 					// Just refresh it!
 					$scope.refreshList();
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
-
-			if (1 === 2) {
-				$translate('Message.SelectSingleItemForDeletion')
-					.then(
-						function(response) {
-							$rootScope.$broadcast("ShowMessage", "Error", response);
-						},
-						function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-						}
-					);
-				return;				
-			}			
 	    };
 	    
 	    // Display
@@ -2269,12 +2129,7 @@
 		$scope.refreshList = function() {
 			utils.loadFinanceOrderQ(true)
 			    .then(function(response) {
-				if (angular.isArray($rootScope.arFinanceOrder ) && $rootScope.arFinanceOrder.length > 0) {
-					$scope.orderList = [];
-					$.each($rootScope.arFinanceOrder, function(idx, obj) {
-						$scope.orderList.push(angular.copy(obj));					
-					});
-				}
+					// Do nothing
 				}, function(reason2) {
 				    // Error occurred
 				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
@@ -2282,30 +2137,49 @@
 		};
 	}])
 
-	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+	.controller("FinanceOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 		$scope.Activity = "";
+		$scope.ActivityID = hih.Constants.UIMode_Create;
 		$scope.isReadonly = false;
+		
 		$scope.showhdr = true; // Default value
-		$scope.ItemActivity = "Finance.CreateItem";
+		
+		$scope.ItemActivity = "Finance.CreateRule";
 		$scope.OrderObject = new hih.FinanceOrder();
 		$scope.RuleObjects = [];
 		$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
 		
-	    var promise1 = utils.loadFinanceControlCentersQ();
-        if (angular.isDefined($stateParams.id)) {
-			if ($state.current.name === "home.finance.order.maintain") {
-	    		$scope.Activity = "Common.Edit";
-			} else if ($state.current.name === "home.finance.order.display") {
-				$scope.Activity = "Common.Display";
-				$scope.isReadonly = true;
-			}
+		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+		
+		// Selective control for control center
+		$scope.ccConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceOrderController, CC control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1
+  		};
+		
+	    utils.loadFinanceControlCentersQ().
+			then(function(response) {
+				$scope.AllCostCenter = $rootScope.arFinanceControlCenter;
+				if (angular.isDefined($stateParams.id)) {
+					if ($state.current.name === "home.finance.order.maintain") {
+						$scope.Activity = "Common.Edit";
+						$scope.ActivityID = hih.Constants.UIMode_Change;
+					} else if ($state.current.name === "home.finance.order.display") {
+						$scope.Activity = "Common.Display";
+						$scope.ActivityID = hih.Constants.UIMode_Display;
+						$scope.isReadonly = true;
+					}
 			
-			var nOrdID = parseInt($stateParams.id);
-			promise1.then(
-				function(response) {
-					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;
-
+					var nOrdID = parseInt($stateParams.id);
 					utils.loadFinanceSettlementRulesQ(nOrdID)
 						.then(function(response2) {
 							$.each($rootScope.arFinanceOrder, function (idx, obj) {				
@@ -2322,72 +2196,14 @@
 						function(reason2) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason2);
 						});
-				},
-				function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				} else {
+					$scope.Activity = "Common.Create";
+					$scope.ActivityID = hih.Constants.UIMode_Create;
 				}
-			)
-		} else {
-			$scope.Activity = "Common.Create";
-			promise1
-				.then(function(response) {	
-					$scope.AllCostCenters = $rootScope.arFinanceControlCenter;				
-				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);					
-				});
-		}
-		
-		// For settlement rules
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'RuleObjects';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'ruleid', field: 'RuleID', displayName: 'Finance.ItemID', headerCellFilter: "translate", width:50 },
-	    	{ name:'ccid', field: 'ControlCenterID', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:50 },
-			{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:100 },
-			{ name:'precent', field: 'Precentage', displayName: 'Common.Precent', headerCellFilter: "translate", width: 100,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: 150 },
-			{ name: 'edit', field:'RuleID', displayName: 'Common.Edit', headerCellFilter: "translate",  width: 240,
-					cellTemplate:'<div class="ui-grid-cell-contents">\
-						<div class="btn-toolbar" role="toolbar">\
-							<div class="btn-group" role="group">\
-								<button class="btn primary" ng-click="grid.appScope.displayItem(COL_FIELD)" translate="Common.Display"></button>\
-								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.editItem(COL_FIELD)" translate="Common.Edit"></button>\
-								<button class="btn primary" ng-disabled="grid.appScope.isReadonly" ng-click="grid.appScope.deleteItem(COL_FIELD)" translate="Common.Delete"></button>\
-							</div>\
-						</div>\
-					</div>',
-					enableFiltering: false
-			}
-	    ];
-
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.RuleID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.RuleID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
- 			// gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
- 			// 	if (row.isSelected) {
-			//  		$scope.SelectedRuleObject = {};
-			// 		angular.copy(row.entity, $scope.SelectedRuleObject);
-			// 		$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
- 			// 	} else {
-			// 		$scope.SelectedRuleObject = {};
-			// 		$scope.SelectedRuleObject.ControlCenterObject = {};
- 			// 	}
-  		    // });
-		};
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+ 		$scope.displayedCollection = [].concat($scope.RuleObjects);
 		
         // For date control
 		$scope.isValidfromDateOpened = false;
@@ -2436,45 +2252,42 @@
 			}
 		};
 
-		$scope.displayItem = function(ruleid) {
+		$scope.displayItem = function(row) {
 			$scope.cleanReportMessages();
-			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
-				if ($scope.RuleObjects[i].RuleID === ruleid) {
-					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
-					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
-					break;
-				}
-			}
-
-			$scope.ItemActivity = "Finance.DisplayItem";
+			$scope.SelectedRuleObject = row;
+			$scope.ItemActivity = "Finance.DisplayRule";
 		};
 		
-		$scope.editItem = function(ruleid) {
+		$scope.editItem = function(row) {
 			$scope.cleanReportMessages();
-			for(var i = 0; i < $scope.RuleObjects.length; i ++) {
-				if ($scope.RuleObjects[i].RuleID === ruleid) {
-					$scope.SelectedRuleObject = $scope.RuleObjects[i]; 
-					$scope.SelectedRuleObject.ControlCenterObject.selected = $scope.SelectedRuleObject.ControlCenterObject;
-					break;
-				}
-			}
+			$scope.SelectedRuleObject = row;
+			$scope.ItemActivity = "Finance.EditRule";
+		};
+		
+		$scope.removeItem = function(row) {
+			$scope.cleanReportMessages();
 			
-			$scope.ItemActivity = "Finance.EditItem";
-		};
-		
-		$scope.deleteItem = function(ruleid) {
-			$scope.cleanReportMessages();
-			// ToDo: delete the settlement rule
+			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+				function() {
+					if ($scope.SelectedRuleObject.RuleID === row.RuleID) {
+						$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
+						$scope.ItemActivity = "Finance.CreateRule";
+					}
+									
+					for(var i = 0; i < $scope.RuleObjects.length; i ++) {
+						if ($scope.RuleObjects[i].ItemID === row.RuleID) {
+							$scope.RuleObjects.splice(i, 1);
+							break;
+						}
+					}
+				});
 		};
 		
 		$scope.saveCurrentItem = function() {
 			$scope.cleanReportMessages();
 			
-			// Control center
-			if ($scope.SelectedRuleObject.ControlCenterObject.selected) {
-				$scope.SelectedRuleObject.ControlCenterID = $scope.SelectedRuleObject.ControlCenterObject.selected.ID; 
-				//$scope.SelectedRuleObject.ControlCenterObject = $scope.SelectedRuleObject.ControlCenterObject.selected;
-			}
+			// String to integer
+			$scope.SelectedRuleObject.ControlCenterID = parseInt($scope.SelectedRuleObject.ControlCenterID);
 			
 			// Perform the check
 			var rptMsgs = $scope.SelectedRuleObject.Verify($translate);
@@ -2489,6 +2302,8 @@
 				return;
 			}
 			
+			$scope.SelectedRuleObject.buildRelationship($rootScope.arFinanceControlCenter);
+			
 			// Next item ID
 			if ($scope.SelectedRuleObject.RuleID === -1) {
 				$scope.updateNextItemID();
@@ -2501,17 +2316,13 @@
 			
 			// New item
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
-			$scope.ItemActivity = "Finance.CreateItem";
+			$scope.ItemActivity = "Finance.CreateRule";
 		};
 		$scope.cancelCurrentItem = function() {
 			$scope.cleanReportMessages();
+			
 			$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
-			$scope.ItemActivity = "Finance.CreateItem";
-		};
-		
-		$scope.ReportedMessages = [];
-		$scope.cleanReportMessages = function() {
-			$scope.ReportedMessages = [];
+			$scope.ItemActivity = "Finance.CreateRule";
 		};
 		
 		$scope.submit = function() {
@@ -2539,7 +2350,7 @@
 			// Now, ready for submit!
 			var strJSON = JSON && JSON.stringify($scope.OrderObject) || $.toJSON($scope.OrderObject);
 			if (strJSON) {
-				if ($scope.OrderObject.ID === -1) {
+				if ($scope.ActivityID === hih.Constants.UIMode_Create) {
 					// Create order
 					utils.createFinanceOrderQ(strJSON)
 						.then(function(response) {
@@ -2567,53 +2378,24 @@
 		};				
 	}])
 
-	.controller("FinanceReportBSController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+	.controller("FinanceReportBSController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 			
 		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
-		
-		// The class sevice for Balance sheet
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'dataReport';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'acntname', field: 'AccountObject.Name', displayName: 'Finance.Account', headerCellFilter: "translate", width:250 },
-	    	{ name:'dbtbalance', field: 'DebitBalance', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'cdtbalance', field: 'CreditBalance', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
-		];
-
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.AccountID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.AccountID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
 		
 		$scope.dataReport = [];
 		$scope.dataIncoming = [];
 		$scope.dataOutgoing = [];
 		$scope.labelsIncoming = [];
 		$scope.labelsOutgoing = [];
+		$scope.rptCollection = [].concat($rootScope.arFinanceReportBS);
+		
 		var promise1 = utils.loadFinanceAccountsQ();
 		var promise2 = utils.loadCurrenciesQ();
 		$q.all(promise1, promise2)
 			.then(function(response) {
 				utils.loadFinanceReportBSQ()
-					.then(function(response2) {
+					.then(function(response2) {						
 						$scope.displayBSContent();
 					}, function(reason2) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason2);
@@ -2643,60 +2425,11 @@
 		};
 	}])
 	
-	.controller("FinanceReportTTController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+	.controller("FinanceReportTTController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 			
 		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
-
-		// Incoming grid
-		$scope.gridOptionsIncoming = {};
-		$scope.gridOptionsIncoming.data = 'dataReportIncoming';
-		$scope.gridOptionsIncoming.enableSorting = true;
-		$scope.gridOptionsIncoming.enableColumnResizing = true;
-		$scope.gridOptionsIncoming.enableFiltering = true;
-		$scope.gridOptionsIncoming.enableGridMenu = false;
-		$scope.gridOptionsIncoming.enableColumnMenus = false;
-		$scope.gridOptionsIncoming.columnDefs = [
-	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum  }
-		];
-
-		$scope.gridOptionsIncoming.rowIdentity = function(row) {
-		 	return row.TranTypeID;
-		};
-		$scope.gridOptionsIncoming.getRowIdentity = function(row) {
-		 	return row.TranTypeID;
-		};			
-		$scope.gridOptionsIncoming.onRegisterApi = function(gridApi) {
-  			$scope.gridApiIncoming = gridApi;
-		};		
-		$scope.dataReportIncoming = [];
 		
-		// Outgoing grid
-		$scope.gridOptionsOutgoing = {};
-		$scope.gridOptionsOutgoing.data = 'dataReportOutgoing';
-		$scope.gridOptionsOutgoing.enableSorting = true;
-		$scope.gridOptionsOutgoing.enableColumnResizing = true;
-		$scope.gridOptionsOutgoing.enableFiltering = true;
-		$scope.gridOptionsOutgoing.enableGridMenu = false;
-		$scope.gridOptionsOutgoing.enableColumnMenus = false;
-		$scope.gridOptionsOutgoing.columnDefs = [
-	    	{ name:'ttname', field: 'Name', displayName: 'Finance.TransactionType', headerCellFilter: "translate", width:300 },
-			{ name:'tranamount', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum  }
-		];
-
-		$scope.gridOptionsOutgoing.rowIdentity = function(row) {
-		 	return row.TranTypeID;
-		};
-		$scope.gridOptionsOutgoing.getRowIdentity = function(row) {
-		 	return row.TranTypeID;
-		};			
-		$scope.gridOptionsOutgoing.onRegisterApi = function(gridApi) {
-  			$scope.gridApiOutgoing = gridApi;
-		};		
-		$scope.dataReportOutgoing = [];
 		// Chart incoming
 		$scope.dataChartIncoming = [];
 		$scope.labelsChartIncoming = [];
@@ -2755,6 +2488,8 @@
 		};
 		
 		$scope.displayTTReport = function() {
+			$scope.rptInCollection = [].concat($rootScope.dataReportIncoming);
+			$scope.rptOutCollection = [].concat($rootScope.dataReportOutgoing);
 			$scope.dataReportIncoming = [];
 			$scope.dataReportOutgoing = [];
 			$scope.dataChartOutgoing = [];
@@ -2801,42 +2536,11 @@
 		};
 	}])
 	
-	.controller("FinanceReportCCController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+	.controller("FinanceReportCCController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 			
 		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
 
-		// The class sevice for Balance sheet
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'dataReport';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'ccname', field: 'ControlCenterObject.Name', displayName: 'Finance.ControlCenter', headerCellFilter: "translate", width:150 },
-			{ name:'dbamt', field: 'TranDebitAmount', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'ctamt', field: 'TranCreditAmount', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'balance', field: 'TranAmount', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
-		];
-
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ControlCenterID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ControlCenterID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-		
 		// Chart option
 		$scope.optionsCC = {
 			scaleBeginAtZero : true
@@ -2898,6 +2602,7 @@
 			if ($.isArray($rootScope.arFinanceReportCC) && $rootScope.arFinanceReportCC.length > 0) {
 				$scope.dataReport = angular.copy($rootScope.arFinanceReportCC);
 			}
+			$scope.rptCollection = [].concat($scope.dataReport);
 			
 			// For chart
 			$scope.labelsCC = [];
@@ -2918,45 +2623,13 @@
 		};
 	}])
 	
-	.controller("FinanceReportOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'uiGridConstants', 'utils', 
-		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, uiGridConstants, utils) {
+	.controller("FinanceReportOrderController", ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$stateParams', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $q, $log, $stateParams, $translate, utils) {
 			
 		$scope.ReportCurrency = $rootScope.objFinanceSetting.LocalCurrency;
 
-		// The class sevice for Balance sheet
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'dataReport';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		$scope.gridOptions.showColumnFooter = true;
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'ordername', field: 'OrderObject.Name', displayName: 'Finance.Order', headerCellFilter: "translate", width:150 },
-	    	{ name:'ordvalfrm', field: 'OrderObject.ValidFrom', displayName: 'Common.ValidFrom', headerCellFilter: "translate", width:100 },
-	    	{ name:'ordvalto', field: 'OrderObject.ValidTo', displayName: 'Common.ValidTo', headerCellFilter: "translate", width:100 },
-			{ name:'debitamt', field: 'DebitAmount', displayName: 'Finance.Incoming', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'creditamt', field: 'CreditAmount', displayName: 'Finance.Outgoing', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum },
-			{ name:'balance', field: 'Balance', displayName: 'Finance.Balance', headerCellFilter: "translate", width:180,
-				cellClass: 'amountcell', aggregationType:uiGridConstants.aggregationTypes.sum }
-		];
-
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.OrderID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.OrderID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-		
 		$scope.dataReport = [];
+		$scope.rptCollection = [].concat($scope.dataReport);
 		var promise1 = utils.loadFinanceOrderQ();
 		var promise2 = utils.loadCurrenciesQ();
 		$q.all(promise1, promise2)
@@ -2964,6 +2637,7 @@
 				utils.loadFinanceReportOrderQ()
 					.then(function(response2) {
 						$scope.dataReport = $rootScope.arFinanceReportOrder;
+						$scope.rptCollection = [].concat($scope.dataReport);
 					}, function(reason2) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason2);
 					});

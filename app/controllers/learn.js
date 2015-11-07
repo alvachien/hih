@@ -4,9 +4,8 @@
 (function() {
 	'use strict';
 	
-	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 'ui.select', 'ngJsTree',  
-		'ngTouch', 'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns',
-		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'smart-table'])
+	angular.module('hihApp.Learn', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize', 
+		'ngJsTree', 'ngTouch', 'selectize', 'smart-table'])
 		.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
 	      $stateProvider
 	        .state("home.learn", {
@@ -137,60 +136,16 @@
 			;
 		}])
 		
-		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'uiGridConstants', 'uiGridGroupingConstants', 'utils', 
-			function($scope, $rootScope, $state, $http, $interval, $translate, $log, uiGridConstants, uiGridGroupingConstants, utils) {
-
-			// Grid options
-			$scope.gridOptions = {};
-			$scope.gridOptions.data = 'myData';
-			$scope.gridOptions.enableSorting = true;
-			$scope.gridOptions.enableColumnResizing = true;
-			$scope.gridOptions.enableFiltering = true;
-			$scope.gridOptions.enableGridMenu = false;
-			$scope.gridOptions.enableColumnMenus = false;
-			$scope.gridOptions.showGridFooter = true;
-			$scope.gridOptions.enableRowSelection = true;
-			$scope.gridOptions.enableFullRowSelection = true;
-			$scope.gridOptions.selectionRowHeaderWidth = 35;
-			
-			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.ID;
-			};
-			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.ID;
-			};			
-			$scope.gridOptions.onRegisterApi = function(gridApi) {
-                $scope.gridApi = gridApi;
-				
-                gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
-     				 if (row.isSelected) {
-     					$scope.selectedRows.push(row.entity);     					
-     				 } else {
-     					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.id === row.entity.id) {
-								$scope.selectedRows.splice(idx, 1);
-								return false;
-							}
-						});
-     				 }
-      		     });
-    		};
-			
-			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:90 },
-				{ name:'categoryname', field: 'CategoryObject.FullDisplayText', displayName: 'Common.Category', headerCellFilter: "translate", width: 150},
-				{ name:'name', field:'Name', displayName: 'Common.Name', headerCellFilter: "translate", width: 150 },
-				{ name:'content', field:'Content', displayName: 'Common.Content', headerCellFilter: "translate", width: 400 }
-		    ];
+		.controller('LearnObjectListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
+			function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
 		  
+		  	$scope.dispList = [].concat($rootScope.arLearnObject);
+			 
 			utils.loadLearnCategoriesQ()
 				.then(function(response) {
 					utils.loadLearnObjectsQ().
 						then(function(response2) {
-							$scope.myData = [];
-							$.each($rootScope.arLearnObject, function(idx, obj) {
-								$scope.myData.push(angular.copy(obj));					
-							});			  
+							// Do nothing
 						}, function(reason2) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason2);
 						} );
@@ -198,30 +153,22 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
 		  
-		    $scope.selectedRows = [];
-		    $scope.$on("LearnObjectLoaded", function() {
-                $log.info("HIH LearnObject List: Loaded event fired!");
-		    });
-		    
-		    $scope.$on("LearnCategoryLoaded", function() {
-		  	    $log.info("HIH LearnObject List: Category Loaded event fired!");
-		    });	
-
             // Remove to the real data holder
-            $scope.removeItem = function removeItem(row) {
-                if ($scope.selectedRows.length <= 0)
-                    return;
-				
+            $scope.removeItem = function (row) {
 				var strIDs = "";
-				  
-				// Following logic need enhance for multiple items deletion
-				$.each($scope.selectedRows, function(idx, obj) {
-					if (idx === 0) {						
-					} else {
-						strIDs = strIDs.concat(",");
+				if (row) {
+					strIDs = row.ID.toString()
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							if (strIDs.length <= 0) {								
+							} else {
+								strIDs = strIDs.concat(hih.Constants.IDSplitChar);								
+							}
+							strIDs = strIDs.concat($scope.dispList[i].ID.toString());						
+						}
 					}
-					strIDs = strIDs.concat(obj.ID.toString());
-				});
+				}
 				
 				utils.checkLearnObjectUsageQ(strIDs)
 					.then(function(response) {
@@ -246,18 +193,36 @@
 			
 			// Display
 			$scope.displayItem = function (row) {
-				if ($scope.selectedRows.length <= 0)
-					return;
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 				
-				$state.go("home.learn.object.display",  { objid : $scope.selectedRows[0].ID });
+				$state.go("home.learn.object.display",  { objid : nID });
 			};
 			
 			// Edit
 			$scope.editItem = function (row) {
-				if ($scope.selectedRows.length <= 0)
-					return;
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 				
-				$state.go("home.learn.object.maintain",  { objid : $scope.selectedRows[0].ID });
+				$state.go("home.learn.object.maintain",  { objid : nID });
 			};
 			
 			// Create
@@ -271,10 +236,7 @@
 				// Reload the whole list
 				utils.loadLearnObjectsQ(true)
 					.then(function(response) {
-						$scope.myData = [];
-						$.each($rootScope.arLearnObject, function(idx, obj) {
-							$scope.myData.push(angular.copy(obj));					
-						});			  
+						// Do nothing
 					}, function(reason) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason);
 					});
@@ -355,7 +317,7 @@
 					$scope.treeConfig.version++;
 				}			
 			 });			
-		}])		
+		}])
 		
 		.controller('LearnObjectController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$log', 'utils', 
 		    function($scope, $rootScope, $state, $stateParams, $http, $translate, $log, utils) {
@@ -440,53 +402,10 @@
 			 };			 
 		}])
 		
-		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
+		.controller('LearnHistoryListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', 
+			function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
 			
-			// Grid option
-			$scope.gridOptions = {};
-			$scope.gridOptions.data = 'myData';
-			$scope.gridOptions.enableSorting = true;
-			$scope.gridOptions.enableColumnResizing = true;
-			$scope.gridOptions.enableFiltering = true;
-			$scope.gridOptions.enableGridMenu = false;
-			$scope.gridOptions.enableColumnMenus = false;
-			$scope.gridOptions.showGridFooter = true;
-			$scope.gridOptions.enableRowSelection = true;
-			$scope.gridOptions.enableFullRowSelection = true;
-			$scope.gridOptions.selectionRowHeaderWidth = 35;
-			
-			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.getLogicKey();
-			};
-			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.getLogicKey();
-			};			
-			$scope.gridOptions.onRegisterApi = function(gridApi) {
-      			$scope.gridApi = gridApi;
-				
-     			 gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
-     				 if (row.isSelected) {
-     					$scope.selectedRows.push(row.entity);     					
-     				 } else {
-     					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.getLogicKey() === row.entity.getLogicKey()) {
-								$scope.selectedRows.splice(idx, 1);
-								return false;
-							}
-						});
-     				 }
-      		     });
-    		};
-
-			$scope.gridOptions.columnDefs = [
-		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width:'100' },
-		    	{ name:'displayas', field: 'UserObject.DisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'150' },
-				//{ name:'objectid', field: 'ObjectID', displayName: 'Learn.ObjectID', headerCellFilter: "translate", width: '5%' },
-				{ name:'objectname', field:'LearnObject.Name', displayName: 'Learn.ObjectName', headerCellFilter: "translate", width: '150' },
-				//{ name:'categoryid', field:'LearnObject.CategoryObject.ID', displayName: 'Common.CategoryID', headerCellFilter: "translate", width: '5%' },
-				{ name:'categoryname', field:'LearnObject.CategoryObject.FullDisplayText', displayName: 'Common.CategoryName', headerCellFilter: "translate", width: '200' },
-				{ name:'learndate', field:'LearnDate', displayName: 'Common.Date',  headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: '100' }
-		    ];
+			$scope.dispList = [].concat($rootScope.arLearnHistory);
 			
 			var q1 = utils.loadUserListQ();
 			var q2 = utils.loadLearnCategoriesQ();
@@ -496,10 +415,7 @@
 						.then(function(response2) {
 							utils.loadLearnHistoriesQ()
 								.then(function(response3) {
-									$scope.myData = [];
-									$.each($rootScope.arLearnHistory, function(idx, obj) {
-										$scope.myData.push(angular.copy(obj));					
-									});
+									// Do nothing...
 								}, function(reason3) {
 									$rootScope.$broadcast("ShowMessage", "Error", reason3);
 								});							
@@ -511,11 +427,21 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});			
 		  
-		    $scope.selectedRows = [];
-		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				if ($scope.selectedRows.length !== 1) {
+				var realRow = null;
+				if (row) {
+					realRow = row;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							realRow = $scope.dispList[i];
+							break;
+						}
+					}
+				}
+
+				if (!realRow) {
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
@@ -529,35 +455,49 @@
 				}
 				
 				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-					utils.deleteLearnHistoryQ($scope.selectedRows[0])
+					utils.deleteLearnHistoryQ(realRow)
 						.then(function(response) {
-							// Empty selection table
-							$scope.selectedRows = [];
-							
 							// Just refresh it!
 							$scope.refreshList();
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
 				});
+				
 			 };
 			
 			 // Display
-			 $scope.displayItem = function () {
-				if ($scope.selectedRows.length <= 0)
-					return;
+			 $scope.displayItem = function (row) {
+				var sID = "";
+				if (row) {
+					sID = row.getLogicKey();
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							sID = $scope.dispList[i].getLogicKey();
+							break;
+						}
+					}
+				}
 				
-				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.display",   { histid : row.getLogicKey() });
+				$state.go("home.learn.history.display",   { histid : sID });
 			 };
 			
 			 // Edit
-			 $scope.editItem = function () {
-				if ($scope.selectedRows.length <= 0)
-					return;
+			 $scope.editItem = function (row) {
+				var sID = "";
+				if (row) {
+					sID = row.getLogicKey();
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							sID = $scope.dispList[i].getLogicKey();
+							break;
+						}
+					}
+				}
 
-				var row = $scope.selectedRows[0];
-				$state.go("home.learn.history.maintain",  { histid : row.getLogicKey() });
+				$state.go("home.learn.history.maintain",  { histid : sID });
 			 };
 			
 			 // Create
@@ -571,10 +511,7 @@
 				// Reload the whole list
 				utils.loadLearnHistoriesQ(true)
 					.then(function(response2) {
-						$scope.myData = [];
-						$.each($rootScope.arLearnHistory, function(idx, obj) {
-							$scope.myData.push(angular.copy(obj));					
-						});
+						// Do nothing!
 					}, function(reason2) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason2);
 					});					
@@ -678,48 +615,7 @@
 		.controller('LearnPlanListController', ['$scope', '$rootScope', '$state', '$http', '$q', '$log', '$translate', 'utils', 
 			function($scope, $rootScope, $state, $http, $q, $log, $translate, utils) {
 			
-			// Grid option
-			$scope.gridOptions = {};
-			$scope.gridOptions.data = 'myData';
-			$scope.gridOptions.enableSorting = true;
-			$scope.gridOptions.enableColumnResizing = true;
-			$scope.gridOptions.enableFiltering = true;
-			$scope.gridOptions.enableGridMenu = false;
-			$scope.gridOptions.enableColumnMenus = false;
-			$scope.gridOptions.showGridFooter = true;
-			$scope.gridOptions.enableRowSelection = true;
-			$scope.gridOptions.enableFullRowSelection = true;
-			$scope.gridOptions.selectionRowHeaderWidth = 35;
-			
-			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.ID;
-			};
-			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.ID;
-			};			
-			$scope.gridOptions.onRegisterApi = function(gridApi) {
-      			$scope.gridApi = gridApi;
-				
-     			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
-     				if (row.isSelected) {
-     					$scope.selectedRows.push(row.entity);     					
-     				} else {
-     					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.ID === row.entity.ID) {
-								$scope.selectedRows.splice(idx, 1);
-								return false;
-							}
-						});
-     				}
-      		    });
-    		};
-
-			$scope.gridOptions.columnDefs = [
-		    	{ name:'planid', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'100' },
-		    	{ name:'planname', field: 'Name', displayName: 'Common.Name', headerCellFilter: "translate", width:'150' },
-				{ name:'plancmt', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '150' }
-		    ];
-			
+			$scope.dispList = [].concat($rootScope.arLearnPlan);
 			var q1 = utils.loadUserListQ();
 			var q2 = utils.loadLearnCategoriesQ();
 			$q.all([q1, q2])
@@ -728,10 +624,7 @@
 						.then(function(response2) {
 							utils.loadLearnPlansQ()
 								.then(function(response3) {
-									$scope.myData = [];
-									$.each($rootScope.arLearnPlan, function(idx, obj) {
-										$scope.myData.push(angular.copy(obj));					
-									});
+									// Do nothing.
 								}, function(reason3) {
 									$rootScope.$broadcast("ShowMessage", "Error", reason3);
 								});
@@ -742,29 +635,37 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});			
 		  
-		    $scope.selectedRows = [];
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
-				if ($scope.selectedRows.length !== 1) {
-					$translate('Message.SelectSingleItemForDeletion')
-						.then(
-							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
-							},
-							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
-							}
-						);
-					return;				
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					nID = -1;
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+					if (nID === -1) {
+						$translate('Message.SelectSingleItemForDeletion')
+							.then(
+								function(response) {
+									$rootScope.$broadcast("ShowMessage", "Error", response);
+								},
+								function(reason) {
+									$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								}
+							);
+						return;				
+					}
 				}
 				
 				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
-					utils.deleteLearnPlanQ($scope.selectedRows[0].ID)
+					utils.deleteLearnPlanQ(nID)
 						.then(function(response) {
-							// Empty selection table
-							$scope.selectedRows = [];
-							
 							// Just refresh it!
 							$scope.refreshList();
 						}, function(reason) {
@@ -774,21 +675,37 @@
 			 };
 			
 			 // Display
-			 $scope.displayItem = function () {
-				if ($scope.selectedRows.length <= 0)
-					return;
+			 $scope.displayItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 				
-				var row = $scope.selectedRows[0];
-				$state.go("home.learn.plan.display",   { id : row.ID });
+				$state.go("home.learn.plan.display",   { id : nID });
 			 };
 			
 			 // Edit
-			 $scope.editItem = function () {
-				if ($scope.selectedRows.length <= 0)
-					return;
+			 $scope.editItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 
-				var row = $scope.selectedRows[0];
-				$state.go("home.learn.plan.maintain",  { id : row.ID });
+				$state.go("home.learn.plan.maintain",  { id : nID });
 			 };
 			
 			 // Create
@@ -802,10 +719,7 @@
 				// Reload the whole list
 				utils.loadLearnPlansQ(true)
 					.then(function(response2) {
-						$scope.myData = [];
-						$.each($rootScope.arLearnPlan, function(idx, obj) {
-							$scope.myData.push(angular.copy(obj));					
-						});
+						// Do nothing!
 					}, function(reason2) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason2);
 					});					
@@ -1236,61 +1150,15 @@
 			 };
 		}])
 		
-		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'uiGridConstants', 'utils', 
-		    function($scope, $rootScope, $state, $http, $translate, uiGridConstants, utils) {			
+		.controller('LearnAwardListController', ['$scope', '$rootScope', '$state', '$http', '$translate', 'utils', 
+		    function($scope, $rootScope, $state, $http, $translate, utils) {
 			
-			// Grid options
-			$scope.gridOptions = {};
-			$scope.gridOptions.data = 'arLearnAward';
-			$scope.gridOptions.enableSorting = true;
-			$scope.gridOptions.enableColumnResizing = true;
-			$scope.gridOptions.enableFiltering = true;
-			$scope.gridOptions.enableGridMenu = false;
-			$scope.gridOptions.enableColumnMenus = false;
-			$scope.gridOptions.showGridFooter = true;
-			$scope.gridOptions.showColumnFooter = true;
-			$scope.gridOptions.enableRowSelection = true;
-			$scope.gridOptions.enableFullRowSelection = true;
-			$scope.gridOptions.selectionRowHeaderWidth = 35;
-			
-			$scope.gridOptions.rowIdentity = function(row) {
-			 	return row.ID;
-			};
-			$scope.gridOptions.getRowIdentity = function(row) {
-			 	return row.ID;
-			};			
-			$scope.gridOptions.onRegisterApi = function(gridApi) {
-      			$scope.gridApi = gridApi;
-				
-     			gridApi.selection.on.rowSelectionChanged($scope,function(row) {      		        
-     				if (row.isSelected) {
-     					$scope.selectedRows.push(row.entity);     					
-     				} else {
-     					$.each($scope.selectedRows, function(idx, obj) {
-							if (obj.id === row.entity.id) {
-								$scope.selectedRows.splice(idx, 1);
-								return false;
-							}
-						});
-     				}
-      		    });
-    		};
-
-			$scope.gridOptions.columnDefs = [
-		    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'50' },
-		    	{ name:'userid', field: 'UserID', displayName: 'Login.User', headerCellFilter: "translate", width: '90' },
-		    	{ name:'displayas', field: 'UserDisplayAs', displayName: 'Login.DisplayAs', headerCellFilter: "translate", width:'100' },				
-				{ name:'adate', field:'AwardDate', displayName: 'Common.Date', headerCellFilter: "translate", cellFilter: "date:'yyyy.MM.dd'", width: '120' },
-				{ name:'score', field:'Score', displayName: 'Learn.Score', headerCellFilter: "translate", width: '100',
-					aggregationType:uiGridConstants.aggregationTypes.avg }, // type:'boolean' for sorting 
-				{ name:'reason', field:'Reason', displayName: 'Learn.Reason', headerCellFilter: "translate", width: '200' }
-		    ];
-		  
+			$scope.dispList = [].concat($rootScope.arLearnAward);
 			utils.loadUserListQ()
 				.then(function(response) {
 					utils.loadLearnAwardsQ()
 						.then(function(response2) {
-							
+							// Do nothing
 						}, function(reason2) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason2);
 						});
@@ -1298,7 +1166,6 @@
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
 		  
-		    $scope.selectedRows = [];		    
 			if (!$rootScope.DeletionDialogTitle || !$rootScope.DeletionDialogMsg) {
 				$translate(['Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem']).then(function (translations) {
     				$rootScope.DeletionDialogTitle = translations['Common.DeleteConfirmation'];
@@ -1307,20 +1174,21 @@
 			}
 			
 			// Remove to the real data holder
-			$scope.removeItem = function removeItem(row) {
-				if ($scope.selectedRows.length <= 0) 
-					return;
-				
+			$scope.removeItem = function (row) {
 				var strIDs = "";
-				  
-				// Following logic need enhance for multiple items deletion
-				$.each($scope.selectedRows, function(idx, obj) {
-					if (idx === 0) {						
-					} else {
-						strIDs = strIDs.concat(hih.Constants.IDSplitChar);
+				if (row) {
+					strIDs = row.ID.toString();
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							if (strIDs.length <= 0) {								
+							} else {
+								strIDs = strIDs.concat(hih.Constants.IDSplitChar);
+							}
+							strIDs = strIDs.concat($scope.dispList[i].ID.toString());
+						}
 					}
-					strIDs = strIDs.concat(obj.ID.toString());
-				});
+				}
 				
 		    	// Popup dialog for confirm
 				$rootScope.$broadcast('ShowMessage', $rootScope.DeletionDialogTitle, $rootScope.DeletionDialogMsg, "warning", function() {
@@ -1342,19 +1210,37 @@
 			 };
 			
 			// Display
-			$scope.displayItem = function () {
-				if ($scope.selectedRows.length <= 0) 
-					return;
+			$scope.displayItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 
-		    	$state.go("home.learn.award.display",  { objid : $scope.selectedRows[0].ID });
+		    	$state.go("home.learn.award.display",  { objid : nID });
 			};
 			
 			// Edit
-			$scope.editItem = function () {
-				if ($scope.selectedRows.length <= 0) 
-					return;
+			$scope.editItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
 
-		    	$state.go("home.learn.award.maintain",  { objid : $scope.selectedRows[0].ID });
+		    	$state.go("home.learn.award.maintain",  { objid : nID });
 			};
 			
 			// Create
@@ -1453,49 +1339,15 @@
 		}])
 		
 	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', function($scope, $rootScope, $state, $http, $log, $q, utils) {
-		// Grid options
-		$scope.gridOptions = {};
-		$scope.gridOptions.data = 'myData';
-		$scope.gridOptions.enableSorting = true;
-		$scope.gridOptions.enableColumnResizing = true;
-		$scope.gridOptions.enableFiltering = true;
-		$scope.gridOptions.enableGridMenu = false;
-		$scope.gridOptions.enableColumnMenus = false;
-		$scope.gridOptions.showGridFooter = true;
-		
-		$scope.gridOptions.rowIdentity = function(row) {
-		 	return row.ID;
-		};
-		$scope.gridOptions.getRowIdentity = function(row) {
-		 	return row.ID;
-		};			
-		$scope.gridOptions.onRegisterApi = function(gridApi) {
-  			$scope.gridApi = gridApi;
-		};
-		
-		$scope.gridOptions.columnDefs = [
-	    	{ name:'id', field: 'ID', displayName: 'Common.ID', headerCellFilter: "translate", width:'80' },
-	    	{ name:'parent', field: 'ParentID', displayName: 'Common.Parent', headerCellFilter: "translate", width:'80' },
-			{ name:'text', field: 'Text', displayName: 'Common.Text', headerCellFilter: "translate", width: '100' },
-			{ name:'fulltext', field: 'FullDisplayText', displayName: 'Common.Text', headerCellFilter: "translate", width: '150' },
-			{ name:'comment', field:'Comment', displayName: 'Common.Comment', headerCellFilter: "translate", width: '100' }
-	  	];
-	  
 		utils.loadLearnCategoriesQ()
 			.then(function(response) {
-				$scope.myData = [];
 				if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {					
-					$.each($rootScope.arLearnCategory, function(idx, obj) {
-						$scope.myData.push(angular.copy(obj));					
-					});			  
+					//$.each($rootScope.arLearnCategory, function(idx, obj) {
+					//});			  
 				};				
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
-
-		$scope.$on("LearnCategoryLoaded", function() {
-			$log.info("HIH LearnCategory List: Category Loaded event fired!");
-		});		
 	}])
 	
 	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {

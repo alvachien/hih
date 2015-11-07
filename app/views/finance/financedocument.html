@@ -16,7 +16,7 @@
     <div class="form-group">
     	<div class="col-sm-10">
         	<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly" translate="Common.Submit">Submit</button>
-            <button class="btn btn-danger" ng-click="close()" translate="Common.Cancel">Cancel</button>
+            <button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
         </div>
     </div>
 
@@ -98,8 +98,58 @@
 
     <!-- Items -->
     <div class="container" ng-show="!showhdr">
-    	<div id="gridFinDocItems" ui-grid="gridOptions" ui-grid-resize-columns
-		 	 style="width: 100%; height: 500px;"></div>
+        <table st-table="diCollection" st-safe-src="ItemsCollection" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th st-sort="itemid" translate="Finance.ItemID">ID</th>
+                    <th st-sort="acnt" translate="Finance.Account">CC ID</th>
+                    <th st-sort="ttname" translate="Finance.TransactionType">CC Name</th>
+                    <th st-sort="tranamountlc" translate="Finance.Amount">Precentage</th>
+                    <th st-sort="desp" translate="Common.Comment">Comment</th>
+                    <th st-sort="itemcc" translate="Finance.ControlCenter">Comment</th>
+                    <th st-sort="itemord" translate="Finance.Order">Comment</th>
+                    <th translate="Common.Operations">Operations</th>
+                </tr>
+                <tr>
+                    <th colspan="8"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in diCollection">
+                    <td>{{row.ItemID}}</td>
+                    <td>{{row.AccountObject.Name}}</td>
+                    <td>{{row.TranTypeObject.Name}}</td>
+                    <td>{{row.TranAmount_Org}}</td>
+                    <td>{{row.Desp}}</td>
+                    <td>{{row.ControlCenterObject.Name}}</td>
+                    <td>{{row.OrderObject.Name}}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm" ng-click="displayItem(row.ItemID)" tooltip="{{'Common.Display' | translate}}">
+                            <i class="glyphicon glyphicon-share">
+                            </i>
+                        </button>
+                        <button type="button" class="btn btn-sm" ng-click="editItem(row.ItemID)" tooltip="{{'Common.Edit' | translate}}">
+                            <i class="glyphicon glyphicon-edit">
+                            </i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row.ItemID)" tooltip="{{'Common.Delete' | translate}}">
+                            <i class="glyphicon glyphicon-remove-circle">
+                            </i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <cst-count></cst-count>
+                    </td>
+                    <td colspan="5">
+                        <cst-sum columnname="TranAmount_Org"></cst-sum>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
 
         <!-- Item Detail -->
         <div class="panel panel-default" style="margin: 30px, 10px;">

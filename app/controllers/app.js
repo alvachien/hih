@@ -3,10 +3,8 @@
 (function() {
 	"use strict";	
 	
-	angular.module('hihApp', ["ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', "ui.select", 'ngSanitize', 
-		'hihApp.Finance', 'pascalprecht.translate', 'ngJsTree', 'ngTouch', 
-		'ui.grid', 'ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.resizeColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.moveColumns', 
-		'ui.grid.exporter', 'ui.grid.importer', 'ui.grid.grouping', 'selectize', 'chart.js'])
+	angular.module('hihApp', ["ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'ui.bootstrap', 'ngSanitize', 
+		'hihApp.Finance', 'pascalprecht.translate', 'ngJsTree', 'ngTouch', 'selectize', 'chart.js'])
 		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log) {
 			 $rootScope.$state = $state;
 			 $rootScope.$stateParams = $stateParams;
@@ -188,8 +186,8 @@
 		});
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$translate', 'i18nService', 'utils', 
-		function($scope, $rootScope, $state, $http, $log, $translate, i18nService, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $http, $log, $translate, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		
 		// Load the finance setting out
@@ -248,11 +246,11 @@
 			$log.info("HIH: Language change triggerd!");
 			$translate.use(newLang);
 			
-		  	if (newLang === "zh") {
-				i18nService.setCurrentLang('zh-CN');					  
-			} else {
-				i18nService.setCurrentLang('en');
-			}
+		  	// if (newLang === "zh") {
+			// 	i18nService.setCurrentLang('zh-CN');					  
+			// } else {
+			// 	i18nService.setCurrentLang('en');
+			// }
 		};
 	}])
 
