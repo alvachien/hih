@@ -67,15 +67,16 @@
 					columnname: '@columnname'					
 				},
 				controller: function ($scope) {
-					$scope.sum_columnname = 0;
+					$scope.sum_columnname = 0.0;
 				},
 				link: function (scope, element, attr, ctrl) {
 					scope.$watch(ctrl.getFilteredCollection, function(val) {
 						var nArr = (val || []);
 						scope.sum_columnname = 0;
 						for(var i = 0; i < nArr.length; i ++) {
-							scope.sum_columnname += parseInt(nArr[i][scope.columnname]);
+							scope.sum_columnname += parseFloat(nArr[i][scope.columnname]);
 						}
+						scope.sum_columnname = scope.sum_columnname.toFixed(2);
 					});
 				}
 			};

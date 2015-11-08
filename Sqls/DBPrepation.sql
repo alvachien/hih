@@ -2205,7 +2205,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
 
 
 /* ======================================================
-    Delta parts on 2015.11.01+
+    Delta parts on 2016.01.01+
    ====================================================== */
 
 
@@ -2220,6 +2220,46 @@ CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
   PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Asset Change';
 
+
+-- Table Create, t_lib_loc
+CREATE TABLE IF NOT EXISTS `t_lib_loc` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(25) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lib location';
+
+-- Table Create, t_lib_book, book
+CREATE TABLE IF NOT EXISTS `t_lib_book` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(25) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book';
+
+-- Table Create, t_lib_bookloc, location of book
+CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
+  `BOOKID` int(11) NOT NULL,
+  `LOCID` int(11) NOT NULL,
+  `MEDIA` varchar(25) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`BOOKID`, `LOCID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book location';
+
+-- Table Create, t_lib_movie
+CREATE TABLE IF NOT EXISTS `t_lib_movie` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(25) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Movie';
+
+-- Table Create, t_lib_movieloc, location of movie
+CREATE TABLE IF NOT EXISTS `t_lib_movieloc` (
+  `MOVIEID` int(11) NOT NULL,
+  `LOCID` int(11) NOT NULL,
+  `MEDIA` varchar(25) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`MOVIEID`, `LOCID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Movie location';
 
 /* The End */ 
 
