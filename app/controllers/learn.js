@@ -360,7 +360,7 @@
 			    inline: false,
 			    menubar: false,
 			    statusbar: false,
-			    toolbar: "bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat",
+			    toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
 			    plugins : 'advlist autolink link image lists charmap print preview',
 			    skin: 'lightgray',
 			    theme : 'modern'
