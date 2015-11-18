@@ -456,6 +456,12 @@ function learn_category_create($parctgy, $name, $comment) {
 	$mysqli->close ();
 	return array ( $sError, $rsttable );
 }
+function learn_category_create2($objCtgy) {
+	return learn_category_create($objCtgy->ParentID, $objCtgy->Name, $objCtgy->Comment);
+}
+function learn_category_change($objCtgy) {
+	// To-Do!!!
+}
 function learn_category_delete($ctgyid) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

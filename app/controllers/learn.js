@@ -133,6 +133,21 @@
 	        	templateUrl: 'app/views/learn/learncategoryhierarchy.html',
 	        	controller: 'LearnCategoryHierarchyController'
 	        })
+	        .state("home.learn.category.create", {
+	        	url: '/create',
+	        	templateUrl: 'app/views/learn/learncategory.html',
+	        	controller: 'LearnCategoryController'
+	        })
+	        .state("home.learn.category.display", {
+	        	url: '/display/:id',
+	        	templateUrl: 'app/views/learn/learncategory.html',
+	        	controller: 'LearnCategoryController'
+	        })
+	        .state("home.learn.category.maintain", {
+	        	url: '/maintain/:id',
+	        	templateUrl: 'app/views/learn/learncategory.html',
+	        	controller: 'LearnCategoryController'
+	        })
 			;
 		}])
 		
@@ -1348,7 +1363,122 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+			
+			// Display
+			$scope.displayItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
+				
+				$state.go("home.learn.category.display",  { id : nID });
+			};
+			
+			// Edit
+			$scope.editItem = function (row) {
+				var nID = 0;
+				if (row) {
+					nID = row.ID;
+				} else {
+					for(var i = 0; i < $scope.dispList.length; i ++) {
+						if ($scope.dispList[i].isSelected) {
+							nID = $scope.dispList[i].ID;
+							break;
+						}
+					}
+				}
+				
+				$state.go("home.learn.category.maintain",  { id : nID });
+			};
+			
+			// Create
+			$scope.newItem = function() {
+				$state.go('home.learn.category.create');
+			};
+			
+			// Refresh list
+			$scope.refreshList = function() {
+				// Reload the whole list
+				utils.loadLearnCategoriesQ(true)
+					.then(function(response) {
+						// Do nothing
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			};
 	}])
+
+	.controller('LearnCategoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
+			$scope.Activity = "";
+			$scope.ActivityID = hih.Constants.UIMode_Create;
+			
+			$scope.CategoryObject = new hih.LearnCategory();
+			
+			if (angular.isDefined($stateParams.id)) {
+				if ($state.current.name === "home.learn.category.maintain") {
+					$scope.Activity = "Common.Edit";					 
+					$scope.ActivityID = hih.Constants.UIMode_Change; 
+				} else if ($state.current.name === "home.learn.category.display") {
+					$scope.Activity = "Common.Display";
+					$scope.ActivityID = hih.Constants.UIMode_Display;
+				}
+ 				 
+				$.each($rootScope.arLearnCategory, function(idx, obj) {
+					if (obj.ID === parseInt($stateParams.id)) {
+						$scope.CategoryObject = angular.copy(obj);
+						return false;
+					}
+				});
+			 } else {
+				 $scope.Activity = "Common.Create";
+				 $scope.ActivityID = hih.Constants.UIMode_Create;
+			 };
+			 
+			 $scope.submit = function() {
+				 // String => Float
+				 //$scope.CurrentLearnAward.Score = parseFloat($scope.CurrentLearnAward.Score);
+				 
+				 // Verify it!
+				 var msgTab = $scope.CategoryObject.Verify();
+				 if (msgTab && msgTab.length > 0) {
+					$translate(msgTab).then(function (translations) {
+						// Show errors
+						$.each(translations, function(idx, obj) {
+							$rootScope.$broadcast("ShowMessage", "Error", obj);
+						});
+  					});	
+				 	return;
+				 }
+				 
+				 // Now, submit to the server
+				 if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+					 utils.createLearnCategoryQ($scope.CategoryObject)
+					 	.then(function(response) {
+							 $state.go("home.learn.category.display", { id : response });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+					 utils.changeLearnCategoryQ($scope.CategoryObject)
+					 	.then(function(response) {
+							 $state.go("home.learn.award.display", { objid : $scope.CategoryObject.ID });
+						 }, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+						 });
+				 }
+			 };
+			 
+			 $scope.close = function() {
+				 $state.go("home.learn.category.list");
+			 };
+		}])
 	
 	.controller('LearnCategoryHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', function($scope, $rootScope, $state, $http, $log, utils) {
 		utils.loadLearnCategories();	

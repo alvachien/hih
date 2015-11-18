@@ -145,6 +145,46 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			break;
 
+		case "CREATELEARNCATEGORY": 
+			{
+				// For JSON-based parameter, can NOT escape it directly!
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loCtgy = new HIHLearnCategory($jsondata);
+				$errCodes = $loCtgy->CheckValid();
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_category_create2', $loCtgy);
+				}
+			}
+			break;
+			
+		case "CHANGELEARNCATEGORY": {
+				// For JSON-based parameter, can NOT escape it directly!
+				$jsondata = json_decode( $realParamArr ['jsonData'] );
+				$loCtgy = new HIHLearnCategory($jsondata);
+				$errCodes = $loCtgy->CheckValid(true);
+				if (!empty($errCodes)) {
+					export_error ( implode( ';', $errCodes) );
+				} else {
+					HIHSrv_Function_1Param( 'learn_category_change', $loCtgy);
+				}			
+			}
+			break;
+			
+		case "CHECKLEARNCATEGORYUSAGE": 
+			{
+				$objids =  explode(',', escape( $realParamArr ['ids'] ));
+				
+				HIHSrv_Function_1Param( 'learn_category_checkusage', $objids );			
+			}	
+			break;
+			
+		case "DELETELEARNCATEGORY": {
+			
+			}
+			break;
+			
 		case "CREATELEARNOBJECT" :
 			{
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {

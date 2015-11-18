@@ -968,6 +968,70 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.createLearnCategoryQ = function(objLearnCtgy) {
+							var deferred = $q.defer();
+							var jsonData = objLearnCtgy.toJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNCATEGORY', jsonData: jsonData } )
+									.then(function(response) {
+										if ($.isArray(response.data) && response.data.length >= 1) {
+											var lrnobj = new hih.LearnObject();
+											lrnobj.setContent(response.data[0]);
+											lrnobj.buildRelationship($rootScope.arLearnCategory);
+											$rootScope.arLearnObject.push(lrnobj);
+	
+											deferred.resolve(lrnobj.ID);											
+										}
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;							
+						};
+						rtnObj.changeLearnCategoryQ = function(objLearnObj) {
+							var deferred = $q.defer();
+							var jsonData = objLearnObj.toJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNOBJECT', jsonData: jsonData } )
+									.then(function(response) {
+										// The response here without any information.
+										var oldidx = -1;
+										for(var idx = 0; idx < $rootScope.arLearnObject.length; idx ++) {
+											if ($rootScope.arLearnObject[idx].ID === objLearnObj.ID) {
+												oldidx = idx;
+												break;
+											}
+										}
+										if (oldidx !== -1 ) {
+											$rootScope.arLearnObject.splice(oldidx, 1);
+										}
+										
+										objLearnObj.buildRelationship($rootScope.arLearnCategory);
+										$rootScope.arLearnObject.push(objLearnObj);
+										
+										deferred.resolve(objLearnObj.ID);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;
+						};
+						rtnObj.checkLearnCategoryUsageQ = function(strIDs) {
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype: 'CHECKLEARNOBJECTSUSAGE', ids: strIDs } )
+									.then(function(response) {
+										deferred.resolve(parseInt(response.data));											
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;							
+						};
+						rtnObj.deleteLearnCategoryQ = function(strIDs) {
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype: 'DELETELEARNOBJECTS', ids: strIDs } )
+									.then(function(response) {
+										deferred.resolve(response.data);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							return deferred.promise;
+						};
 
 ////////////////////////////////////////////////////////////////////
 // Finance part

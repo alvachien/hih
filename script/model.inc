@@ -161,6 +161,37 @@ class HIHLearnCategory {
 	public $ParentID;
 	public $Name;
 	public $Comment;
+
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+
+	public function fromJSON($jsonData) {
+		// jsonData contains ID, CategoryID, Name, Comment
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+	
+	public function CheckValid($bNonCreateCase = false) {
+		$errCodes = array();
+		if (isset ( $this )) {
+			// The ID shall be check only in update/delete case
+			if ( $bNonCreateCase && !isset ( $this->ID ) ) {
+				$errCodes[] = HIHConstants::EC_InvalidAccount;
+			}
+			
+			$strTemp = trim($this->Name);
+			if ($strTemp === '') {				
+				$errCodes[] = HIHConstants::EC_InvalidName;
+			}
+		} else {
+			$errCodes[] = HIHConstants::EC_Unknown;
+		}
+		
+		return $errCodes;
+	}
 }
 // Learn Object
 class HIHLearnObject {

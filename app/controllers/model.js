@@ -420,6 +420,9 @@
 		};
 		return treenode;
 	};
+	hih.LearnCategory.prototype.Verify = function() {
+		
+	};
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
 	/* Just two methods provided. */
