@@ -64,6 +64,11 @@
         	templateUrl: 'app/views/finance/financedocumentlist.html',
         	controller: 'FinanceDocumentListController'
         })
+        .state("home.finance.document.hierarchy", {
+        	url: "/hierarchy",
+        	templateUrl: 'app/views/finance/financedocumenthier.html',
+        	controller: 'FinanceDocumentHierarchyController'
+        })
         .state("home.finance.document.create", {
         	url: '/create',
         	templateUrl: 'app/views/finance/financedocument.html',
@@ -691,6 +696,212 @@
 		};
 	}])
 
+	.controller('FinanceDocumentHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
+
+			$scope.treeData = [];
+			$scope.ignoreModelChanges = function() { return false; };
+	        $scope.treeConfig = {
+            	core : {
+                     multiple : false,
+                     animation: true,
+                     error : function(error) {
+                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                     },
+                     check_callback : true,
+                     worker : true,
+    				 themes: {
+                     	name: 'default-dark',
+    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+    					responsive: true,
+    					stripes: true
+                	}
+                 },
+				types: {
+					default: {
+						icon : 'glyphicon glyphicon-folder-close'
+					},
+					Account: {
+						icon : 'glyphicon glyphicon-equalizer'
+					},
+					Category: {
+						icon : 'glyphicon glyphicon-gift'
+					},
+					Journey : {
+						icon : 'glyphicon glyphicon-list'
+					}
+				},
+                 version : 1,
+    			 plugins : [ 'wholerow', 'types' ]
+            };			
+		
+		$scope.onTreeNodeChanged = function(e, data) {
+			if (data.selected.length > 0) {
+				var typ = data.instance.get_node(data.selected[0]).Type;
+				var id = data.instance.get_node(data.selected[0]).id;
+				if (typ === "Account") {
+					//id.substring(4)
+				} else if (typ === "Category") {
+					//id.substring(4)
+				} else if (typ === "Journey") {
+					//id.substring()
+				}
+			}
+			var i, j, r = [];
+    		for(i = 0, j = data.selected.length; i < j; i++) {
+      			r.push(data.instance.get_node(data.selected[i]).text);
+    		}
+			$log.info("HIH DocumentHierarchyView, Selected Nodes:" + r.join(', '));
+		};
+		$scope.docCollection = [];
+	
+		var promise1 = utils.loadCurrenciesQ();
+		var promise2 = utils.loadFinanceTransactionTypesQ();
+		var promise3 = utils.loadFinanceAccountCategoriesQ();
+		var promise4 = utils.loadFinanceDocumentTypesQ();
+		var promise10 = utils.loadFinanceControlCentersQ();
+		var promise11 = utils.loadFinanceOrderQ();
+		//var promise12 = utils.loadFinanceAccountHierarchyQ();
+		$q.all(promise1, promise2, promise3, promise4, promise10, promise11)
+			.then(function(response) {
+				utils.loadFinanceAccountsQ().then(function(response2) {
+					utils.loadFinanceAccountHierarchyQ()
+						.then(function(response3) {
+							if (angular.isArray($rootScope.arFinanceAccountHierarchy) && $rootScope.arFinanceAccountHierarchy.length > 0) {				
+								$.each($rootScope.arFinanceAccountHierarchy, function(idx, obj) {
+									var treenode = {};
+									angular.copy(obj, treenode);
+									treenode.state = {
+										opened: true	
+									};
+									
+									$scope.treeData.push(treenode); 
+								});
+								
+								$scope.treeConfig.version++;
+							}
+						// utils.loadFinanceDocumentsQ()
+						// 	.then(function(response4) {
+						// 		// Do nothing
+						// 	}, function(reason4) {
+						// 		$rootScope.$broadcast("ShowMessage", "Error", reason3);
+						// 	});
+						}, function(reason3) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason3);
+						});
+				}, function(reason2) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+				})
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});
+
+		// Remove to the real data holder
+		$scope.removeItem = function removeItem(row) {
+			var nDocID = 0;
+			if (row) {
+				nDocID = row.DocID;
+			} else {
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						nDocID = $scope.docCollection[i].DocID;
+						break;
+					}
+				}
+				if ( 0 === nDocID) {
+					$translate('Message.SelectSingleItemForDeletion')
+						.then(
+							function(response) {
+								$rootScope.$broadcast("ShowMessage", "Error", response);
+							},
+							function(reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+							}
+						);
+					return;				
+				}
+			}
+			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+				utils.deleteFinanceDocumentQ(nDocID)
+					.then(function(response) {
+						// Just refresh it!
+						$scope.refreshList();
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+			});
+		 };
+	    
+		// Display
+		$scope.displayItem = function (row) {
+			var ralrow = null;
+			
+			if (row) {
+				ralrow = row;
+			} else {
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						ralrow = $scope.docCollection[i];
+						break;
+					}
+				}
+			}
+			
+			if (ralrow.DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.display_tran",  { docid : ralrow.DocID });	
+			} else if(ralrow.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.display_currexg",  { docid : ralrow.DocID });
+			} else {
+		    	$state.go("home.finance.document.display",  { docid : ralrow.DocID });
+			}
+		};
+		
+		// Edit
+		$scope.editItem = function (row) {
+			var ralrow = null;
+			
+			if (row) {
+				ralrow = row;
+			} else {
+				for(var i = 0; i < $scope.docCollection.length; i ++) {
+					if ($scope.docCollection[i].isSelected) {
+						ralrow = $scope.docCollection[i];
+						break;
+					}
+				}
+			}
+			
+			if (ralrow.DocTypeID === hih.Constants.FinDocType_Transfer) {
+				$state.go("home.finance.document.maintain_tran",  { docid : ralrow.DocID });	
+			} else if(ralrow.DocTypeID === hih.Constants.FinDocType_CurrExchange) {
+				$state.go("home.finance.document.maintain_currexg",  { docid : ralrow.DocID });
+			} else {
+		    	$state.go("home.finance.document.maintain",  { docid : ralrow.DocID });
+			}
+		};
+		
+		// Create
+		$scope.newItem = function() {
+			//$location.path('/learnobject');
+			$state.go('home.finance.document.create');
+		};
+
+		// Refresh the list
+		$scope.refreshList = function() {
+			utils.loadFinanceDocumentsQ(true)
+			    .then(function(response) {
+					if (angular.isArray($rootScope.arFinanceDocument ) && $rootScope.arFinanceDocument.length > 0) {
+						
+						// Force it refresh!
+						$scope.$apply();
+					};
+				}, function(reason2) {
+				    // Error occurred
+				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				});
+		};
+	}])
+	
 	.controller('FinanceDocumentTranController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
 		// This class serviced for the creation of Transfer document 

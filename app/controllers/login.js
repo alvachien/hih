@@ -16,8 +16,7 @@
 		        	url: '/register',
 		        	templateUrl: 'app/views/register.html',
 		        	controller: 'RegisterController'
-		        });
-			
+		        });			
 		}])
 		
 		.controller('LoginController', ['$scope', '$rootScope', '$state', '$http', '$translate', function($scope, $rootScope, $state, $http, $translate) {

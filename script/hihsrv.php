@@ -527,6 +527,18 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
+		case "GETFINANCEDOCUMENTITEMLIST_BYACCNT": {
+			$acntid = escape ( $realParamArr ['accountid'] );
+			HIHSrv_Function_1Param( 'finance_documentitem_listreadbyaccount', $acntid );
+		}
+		break;
+
+		case "GETFINANCEDOCUMENTITEMLIST_BYCTGY": {
+			$ctgyid = escape ( $realParamArr ['categoryid'] );
+			HIHSrv_Function_1Param( 'finance_documentitem_listreadbyacntctgy', $ctgyid );
+		}
+		break;
+		
 		case "CREATEFINANCEDOCUMENT": {
 			// For JSON-based parameter, can NOT escape it directly!
 			$docdata = json_decode( $realParamArr ['docdata'] );
