@@ -1459,6 +1459,10 @@
 									$.each(response.data, function(idx, obj) {
 										var di = new hih.FinanceDocumentItem();
 										di.setContent(obj);
+										di.buildRelationship($rootScope.arFinanceAccount,
+											$rootScope.arFinanceControlCenter, 
+											$rootScope.arFinanceOrder,
+											$rootScope.arFinanceTransactionType);
 										$rootScope.arFinanceDocumentItemByAccount.push(di);
 									});
 								}

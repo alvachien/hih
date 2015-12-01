@@ -52,12 +52,12 @@
 					<tr>
 						<th></th>
 						<th st-sort="docid" translate="Common.ID">ID</th>
-						<th st-sort="doctypename" translate="Finance.DocumentType">Doc Type</th>
-						<th st-sort="trandate" translate="Common.Date">Tran Data</th>
-						<th st-sort="trancurrname" translate="Common.Precent">Currency</th>
+						<th st-sort="trandate" translate="Common.Date">Tran Date</th>
+						<th st-sort="trantype" >Tran Type</th>
 						<th st-sort="tranamount" translate="Finance.Amount">Amount</th>
 						<th st-sort="desp" translate="Common.Comment">Comment</th>
-						<th translate="Common.Operations">Operations</th>
+						<th st-sort="cc" >Cost Center</th>
+						<th st-sort="ord" >Order</th>
 					</tr>
 					<tr>
 						<th colspan="8"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
@@ -67,25 +67,12 @@
 					<tr ng-repeat="row in docitemCollection">
 						<td cs-select="row"></td>
 						<td>{{row.DocID}}</td>
-						<td>{{row.DocTypeObject.Name}}</td>
 						<td>{{row.TranDate | date:'yyyy.MM.dd'}}</td>
-						<td>{{row.TranCurrencyObject.Name}}</td>
+						<td>{{row.TranTypeObject.Name}}</td>
 						<td>{{row.TranAmount | currency: '￥'}}</td>
 						<td>{{row.Desp}}</td>
-						<td>
-							<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
-								<i class="glyphicon glyphicon-share">
-								</i>
-							</button>
-							<button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
-								<i class="glyphicon glyphicon-edit">
-								</i>
-							</button>
-							<button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row)" tooltip="{{'Common.Delete' | translate}}">
-								<i class="glyphicon glyphicon-remove-circle">
-								</i>
-							</button>
-						</td>
+						<td>{{row.ControlCenterObject.Name}}</td>
+						<td>{{row.OrderObject.Name}}</td>
 					</tr>
 				</tbody>
 				<tfoot>

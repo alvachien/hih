@@ -752,7 +752,7 @@
 							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
-						});					
+						});
 				} else if (typ === "Category") {
 					//id.substring(4)
 				} else if (typ === "Journey") {
