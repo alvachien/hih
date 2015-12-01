@@ -551,6 +551,10 @@ class HIHDocumentItem {
 			if (($this->OrderID === 0) && ($this->ControlCenterID === 0)) {
 				$errCodes[] = HIHConstants::EC_NoCCNoOrd;
 			}
+			
+			if (!isset($this->Desp)) {
+				$errCodes[] = HIHConstants::EC_InvalidDesp;
+			}
 		} else {
 			$errCodes[] = HIHConstants::EC_Unknown;
 		}

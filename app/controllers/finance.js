@@ -269,6 +269,10 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+			
+		$scope.displayDoc = function(row) {
+			$state.go("home.finance.document.display",  { docid : row.ID });
+		};
 		}])
 		
 	.controller('FinanceAccountListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
@@ -1830,6 +1834,7 @@
 								// Document ID
 								$scope.DocumentObject.DocID = parseInt(response);
 								$rootScope.arFinanceDocument.push($scope.DocumentObject);
+								
 								// Now navigate to display
 								$state.go("home.finance.document.display",  { docid : response });
 							}

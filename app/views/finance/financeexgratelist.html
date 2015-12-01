@@ -13,7 +13,7 @@
 				<td>{{row.TranDate}}</td>
 				<td>{{row.ForeignCurrency}}</td>
 				<td>{{row.Rate}}</td>
-				<td><a ng-href="hih/#/finance/document/display_currexg/{{row.RefDocumentID}}">{{row.RefDocumentID}}</a></td>
+				<td><a ng-click="displayDoc(row)">{{row.RefDocumentID}}</a></td>
 			</tr>
 		</tbody>
 	</table>

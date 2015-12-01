@@ -2203,6 +2203,21 @@ CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
   PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan participant';
 
+/* ======================================================
+    Delta parts on 2015.12.2
+   ====================================================== */
+
+-- Table creation: User logon history
+CREATE TABLE IF NOT EXISTS `t_user_hist` (
+  `USERID` varchar(25) NOT NULL,
+  `SEQNO` int(11) NOT NULL,
+  `HISTTYP` tinyint(4) NOT NULL,
+  'TIMESTAMP' datetime not null,
+  `OTHERS` varchar(50),
+  PRIMARY KEY (`USERID`, `SEQNO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
+
+-- Table update
 
 /* ======================================================
     Delta parts on 2016.01.01+

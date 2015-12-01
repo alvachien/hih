@@ -2908,7 +2908,7 @@ function finance_document_post($docobj) {
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->TranDesp );
+				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->Desp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {

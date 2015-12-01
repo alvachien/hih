@@ -192,6 +192,16 @@ CREATE TABLE IF NOT EXISTS `t_user` (
   PRIMARY KEY (`USERID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
 
+-- Table creation: User logon history
+CREATE TABLE IF NOT EXISTS `t_user_hist` (
+  `USERID` varchar(25) NOT NULL,
+  `SEQNO` int(11) NOT NULL,
+  `HISTTYP` tinyint(4) NOT NULL,
+  'TIMESTAMP' datetime not null,
+  `OTHERS` varchar(50),
+  PRIMARY KEY (`USERID`, `SEQNO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
+
 /*======================================================
     Views 
   ====================================================== */
