@@ -422,8 +422,8 @@
                      check_callback : true,
                      worker : true,
     				 themes: {
-                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+                     	name: 'default',
+    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
@@ -602,7 +602,7 @@
 						break;
 					}
 				}
-				if ( 0 === nDocID) {
+				if (0 === nDocID) {
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
@@ -699,48 +699,60 @@
 	.controller('FinanceDocumentHierarchyController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
 	    function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
 
-			$scope.treeData = [];
-			$scope.ignoreModelChanges = function() { return false; };
-	        $scope.treeConfig = {
-            	core : {
-                     multiple : false,
-                     animation: true,
-                     error : function(error) {
-                         $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
-                     },
-                     check_callback : true,
-                     worker : true,
-    				 themes: {
-                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
-    					responsive: true,
-    					stripes: true
-                	}
-                 },
-				types: {
-					default: {
-						icon : 'glyphicon glyphicon-folder-close'
+		$scope.treeData = [];
+		$scope.ignoreModelChanges = function() { return false; };
+	    $scope.treeConfig = {
+			core : {
+					multiple : false,
+					animation: true,
+					error : function(error) {
+						$log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
 					},
-					Account: {
-						icon : 'glyphicon glyphicon-equalizer'
-					},
-					Category: {
-						icon : 'glyphicon glyphicon-gift'
-					},
-					Journey : {
-						icon : 'glyphicon glyphicon-list'
+					check_callback : true,
+					worker : true,
+					themes: {
+						//name: 'default-dark',
+						//url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
+						//responsive: true,
+						//stripes: true,
+						//variant : "large"
+						name: 'default',
+						url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
+						responsive: true,
+						stripes: true
 					}
 				},
-                 version : 1,
-    			 plugins : [ 'wholerow', 'types' ]
-            };			
+			types: {
+				default: {
+					icon : 'glyphicon glyphicon-folder-close'
+				},
+				Account: {
+					icon : 'glyphicon glyphicon-equalizer'
+				},
+				Category: {
+					icon : 'glyphicon glyphicon-gift'
+				},
+				Journey : {
+					icon : 'glyphicon glyphicon-list'
+				}
+			},
+				version : 1,
+				plugins : [ 'wholerow', 'types' ]
+        };			
 		
+		$scope.docitemCollection = [];
+		$scope.safedocitemColl = [];
 		$scope.onTreeNodeChanged = function(e, data) {
 			if (data.selected.length > 0) {
-				var typ = data.instance.get_node(data.selected[0]).Type;
+				var typ = data.instance.get_node(data.selected[0]).type;
 				var id = data.instance.get_node(data.selected[0]).id;
 				if (typ === "Account") {
-					//id.substring(4)
+					utils.loadFinanceDocumentItemsByAccountQ(id.substring(4))
+						.then(function(response) {
+							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});					
 				} else if (typ === "Category") {
 					//id.substring(4)
 				} else if (typ === "Journey") {
@@ -753,7 +765,6 @@
     		}
 			$log.info("HIH DocumentHierarchyView, Selected Nodes:" + r.join(', '));
 		};
-		$scope.docCollection = [];
 	
 		var promise1 = utils.loadCurrenciesQ();
 		var promise2 = utils.loadFinanceTransactionTypesQ();
@@ -1868,8 +1879,8 @@
                      check_callback : true,
                      worker : true,
     				 themes: {
-                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+                     	name: 'default',
+    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
@@ -2076,8 +2087,8 @@
                      check_callback : true,
                      worker : true,
     				 themes: {
-                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+                     	name: 'default',
+    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}

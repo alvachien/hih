@@ -1448,6 +1448,27 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.loadFinanceDocumentItemsByAccountQ = function(accountid) {
+							var deferred = $q.defer();
+							$rootScope.arFinanceDocumentItemByAccount = [];
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'GETFINANCEDOCUMENTITEMLIST_BYACCNT', accountid: accountid})
+							.then(function(response) {
+								if ($.isArray(response.data) && response.data.length > 0) {
+									$.each(response.data, function(idx, obj) {
+										var di = new hih.FinanceDocumentItem();
+										di.setContent(obj);
+										$rootScope.arFinanceDocumentItemByAccount.push(di);
+									});
+								}
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							
+							return deferred.promise;							
+						};
 						rtnObj.createFinanceDocumentQ = function(jsonData) {
 							var deferred = $q.defer();
 							$http.post(

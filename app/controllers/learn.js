@@ -274,7 +274,7 @@
 	                     //worker : true,
 	    				 themes: {
 	                     	name: 'default-dark',
-	    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+	    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
 	    					responsive: true,
 	    					stripes: true
 	                	}
@@ -1496,7 +1496,7 @@
                      worker : true,
     				 themes: {
                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.1.1/themes/default-dark/style.min.css",
+    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
