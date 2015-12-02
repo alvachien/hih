@@ -2207,6 +2207,12 @@ CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
     Delta parts on 2015.12.2
    ====================================================== */
 
+-- Table update: Document Item
+ALTER TABLE `t_fin_document_item`
+	ALTER `DESP` DROP DEFAULT;
+ALTER TABLE `t_fin_document_item`
+	CHANGE COLUMN `DESP` `DESP` VARCHAR(45) NOT NULL AFTER `ORDERID`;
+    
 -- Table creation: User logon history
 CREATE TABLE IF NOT EXISTS `t_user_hist` (
   `USERID` varchar(25) NOT NULL,
@@ -2217,8 +2223,58 @@ CREATE TABLE IF NOT EXISTS `t_user_hist` (
   PRIMARY KEY (`USERID`, `SEQNO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
 
--- Table update
-
+-- Replace Finance Item 3
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_document_item3` AS
+    select 
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+        `t_fin_document_item`.`USECURR2` AS `usecurr2`,
+        (case
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                `t_fin_document`.`TRANCURR`
+            else `t_fin_document`.`TRANCURR2`
+        end) AS `trancurr`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount_org`,
+        `t_fin_tran_type`.`EXPENSE` AS `trantype_EXPENSE`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount`,
+        (case
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                (case
+                    when (`t_fin_document`.`EXGRATE` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`)
+                    else `t_fin_document_item`.`TRANAMOUNT`
+                end)
+            else (case
+                when (`t_fin_document`.`EXGRATE2` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`)
+                else `t_fin_document_item`.`TRANAMOUNT`
+            end)
+        end) AS `tranamount_lc`,
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`,
+        `t_fin_document`.`TRANDATE` AS `TRANDATE`,
+        `ctgytab`.`ID` AS `CATEGORYID`,
+        `ctgytab`.`NAME` AS `CATEGORYNAME`,
+        `ctgytab`.`ASSETFLAG` AS `CATEGORYASSETFLAG`        
+    from
+        ((`t_fin_document_item`
+        join `t_fin_tran_type` ON ((`t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`)))
+        join `t_fin_account` `accounttab` ON ((`t_fin_document_item`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+		  left join `t_fin_document` ON ((`t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`))) ;
+          
+		  
 /* ======================================================
     Delta parts on 2016.01.01+
    ====================================================== */

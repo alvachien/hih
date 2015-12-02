@@ -1397,6 +1397,90 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
+	// 7a. Document Item for Display
+	hih.FinanceDocumentItemForDisp = function FinanceDocumentItemForDisp () {
+		this.DocID = -1;
+		this.ItemID = -1;
+		this.AccountID = -1;
+		this.TranTypeID = -1;
+		this.TranAmount_Org = 0.0;
+		this.TranAmount = 0.0;
+		this.ControlCenterID = -1;
+		this.OrderID = -1;
+		this.Desp = "";
+		this.UseCurrency2 = false;
+		
+		// Runtime information
+		this.TranDate = new Date();
+		this.TranAmountInLC = 0.0;
+		this.ControlCenterObject = {};
+		this.OrderObject = {};
+		this.AccountObject = {};
+		this.TranTypeObject = {};
+	};
+	hih.extend(hih.FinanceDocumentItemForDisp, hih.Model);
+	hih.FinanceDocumentItemForDisp.prototype.setContent = function(obj) {
+		this.TranDate = new Date(obj.trandate);
+		this.DocID = parseInt(obj.docid);
+		this.ItemID = parseInt(obj.itemid);
+		this.AccountID = parseInt(obj.accountid);
+		this.TranTypeID = parseInt(obj.trantype);
+		if (!isNaN(obj.controlcenterid)) {
+			this.ControlCenterID = parseInt(obj.controlcenterid);
+		} else {
+			this.ControlCenterID = -1;
+		} 
+		if (!isNaN(obj.orderid)) {
+			this.OrderID = parseInt(obj.orderid);
+		} else {
+			this.OrderID = -1;
+		}
+		var usecurr2 = parseInt(obj.usecurr2);
+		if (usecurr2 === 1) {
+			this.UseCurrency2 = true;
+		} else {
+			this.UseCurrency2 = false;
+		}
+		this.TranAmount_Org = parseFloat(obj.tranamount_org).toFixed(2);
+		this.TranAmount = parseFloat(obj.tranamount).toFixed(2);
+		this.TranAmountInLC = parseFloat(obj.tranamount_lc).toFixed(2);
+		this.Desp = obj.desp;
+	};
+	hih.FinanceDocumentItemForDisp.prototype.buildRelationship = function(arAccount, arCC, arOrder, arTranType) {
+		var that = this;
+		if (arAccount && $.isArray(arAccount) && arAccount.length > 0) {
+			$.each(arAccount, function(idx, obj){
+				if (obj.ID === that.AccountID) {
+					that.AccountObject = obj;
+					return false;
+				}
+			});
+		}
+		if (this.ControlCenterID !== -1 && arCC && $.isArray(arCC) && arCC.length > 0) {
+			$.each(arCC, function(idx, obj){
+				if (obj.ID === that.ControlCenterID) {
+					that.ControlCenterObject = obj;
+					return false;
+				}
+			});
+		}
+		if (this.OrderID !== -1 && arOrder && $.isArray(arOrder) && arOrder.length > 0) {
+			$.each(arOrder, function(idx, obj){
+				if (obj.ID === that.OrderID) {
+					that.OrderObject = obj;
+					return false;
+				}
+			});
+		}
+		if (arTranType && $.isArray(arTranType) && arTranType.length > 0) {
+			$.each(arTranType, function(idx, obj){
+				if (obj.ID === that.TranTypeID) {
+					that.TranTypeObject = obj;
+					return false;
+				}
+			});
+		}
+	};
 	// 8. Document
 	hih.FinanceDocument = function FinanceDocument() {
 		this.DocID = -1;		 

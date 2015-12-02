@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_document_item` (
   `USECURR2` TINYINT NULL DEFAULT NULL,
   `CONTROLCENTERID` int(11) DEFAULT NULL,
   `ORDERID` int(11) DEFAULT NULL,
-  `DESP` varchar(45) DEFAULT NULL,
+  `DESP` varchar(45) NOT NULL,
   PRIMARY KEY (`DOCID`,`ITEMID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Document Item';
 
@@ -326,28 +326,50 @@ CREATE OR REPLACE
     SQL SECURITY DEFINER
 VIEW `v_fin_document_item3` AS
     select 
-        `docid`,
-        `itemid`,
-        `accountid`,
-        `trantype`,
-		`usecurr2`,
-        `trancurr`,
-        `tranamount_org`,
-        --`trantype_EXPENSE`,
+        `t_fin_document_item`.`DOCID` AS `docid`,
+        `t_fin_document_item`.`ITEMID` AS `itemid`,
+        `t_fin_document_item`.`ACCOUNTID` AS `accountid`,
+        `t_fin_document_item`.`TRANTYPE` AS `trantype`,
+        `t_fin_document_item`.`USECURR2` AS `usecurr2`,
         (case
-            when (`trantype_EXPENSE` = 1) then (`tranamount` * -(1))
-            when (`trantype_EXPENSE` = 0) then `tranamount`
-        end) AS `tranamount`,
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                `t_fin_document`.`TRANCURR`
+            else `t_fin_document`.`TRANCURR2`
+        end) AS `trancurr`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount_org`,
+        `t_fin_tran_type`.`EXPENSE` AS `trantype_EXPENSE`,
+        `t_fin_document_item`.`TRANAMOUNT` AS `tranamount`,
         (case
-            when (`trantype_EXPENSE` = 1) then (`tranamount_lc` * -(1))
-            when (`trantype_EXPENSE` = 0) then `tranamount_lc`
+            when
+                (isnull(`t_fin_document_item`.`USECURR2`)
+                    or (`t_fin_document_item`.`USECURR2` = ''))
+            then
+                (case
+                    when (`t_fin_document`.`EXGRATE` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE`)
+                    else `t_fin_document_item`.`TRANAMOUNT`
+                end)
+            else (case
+                when (`t_fin_document`.`EXGRATE2` is not null) then (`t_fin_document_item`.`TRANAMOUNT` / `t_fin_document`.`EXGRATE2`)
+                else `t_fin_document_item`.`TRANAMOUNT`
+            end)
         end) AS `tranamount_lc`,
-        `CONTROLCENTERID`,
-        `ORDERID`,
-        `desp`
+        `t_fin_document_item`.`CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `t_fin_document_item`.`ORDERID` AS `ORDERID`,
+        `t_fin_document_item`.`DESP` AS `desp`,
+        `t_fin_document`.`TRANDATE` AS `TRANDATE`,
+        `ctgytab`.`ID` AS `CATEGORYID`,
+        `ctgytab`.`NAME` AS `CATEGORYNAME`,
+        `ctgytab`.`ASSETFLAG` AS `CATEGORYASSETFLAG`        
     from
-        `v_fin_document_item2`;
-	
+        ((`t_fin_document_item`
+        join `t_fin_tran_type` ON ((`t_fin_document_item`.`TRANTYPE` = `t_fin_tran_type`.`ID`)))
+        join `t_fin_account` `accounttab` ON ((`t_fin_document_item`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+		  left join `t_fin_document` ON ((`t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`))) ;
+          	
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 

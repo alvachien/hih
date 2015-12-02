@@ -746,7 +746,10 @@
 		
 		$scope.docitemCollection = [];
 		$scope.safedocitemColl = [];
+		
 		$scope.onTreeNodeChanged = function(e, data) {
+			$scope.docitemCollection = [];
+			
 			if (data.selected.length > 0) {
 				var typ = data.instance.get_node(data.selected[0]).type;
 				var id = data.instance.get_node(data.selected[0]).id;
@@ -758,7 +761,12 @@
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
 				} else if (typ === "Category") {
-					//id.substring(4)
+					utils.loadFinanceDocumentItemsByCategoryQ(id.substring(4))
+						.then(function(response) {
+							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
 				} else if (typ === "Journey") {
 					//id.substring()
 				}
@@ -795,12 +803,6 @@
 								
 								$scope.treeConfig.version++;
 							}
-						// utils.loadFinanceDocumentsQ()
-						// 	.then(function(response4) {
-						// 		// Do nothing
-						// 	}, function(reason4) {
-						// 		$rootScope.$broadcast("ShowMessage", "Error", reason3);
-						// 	});
 						}, function(reason3) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason3);
 						});
@@ -823,7 +825,7 @@
 						break;
 					}
 				}
-				if ( 0 === nDocID) {
+				if ( 0 === nDocID ) {
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {

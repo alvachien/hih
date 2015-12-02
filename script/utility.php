@@ -3114,7 +3114,7 @@ function finance_documentitem_listreadbyaccount($accountid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE accountid = '" . $accountid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE accountid = '" . $accountid . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -3127,11 +3127,15 @@ function finance_documentitem_listreadbyaccount($accountid) {
 				"usecurr2" => $row[4],
 				"trancurr" => $row [5],
 				"tranamount_org" => $row [6],
-				"tranamount" => $row [7],
-				"tranamount_lc" => $row [8],
-				"controlcenterid" => $row [9],
-				"orderid" => $row [10],
-				"desp" => $row [11],
+				"trantype_expense" => $row [7],
+				"tranamount" => $row [8],
+				"tranamount_lc" => $row [9],
+				"controlcenterid" => $row [10],
+				"orderid" => $row [11],
+				"desp" => $row [12],
+				"trandate" => $row [13],
+				"categoryid" => $row[14],
+				"categoryname" => $row[15]
 			);
 		}
 		
@@ -3164,7 +3168,7 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE accountcategory = '" . $acntctgyid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE categoryid = '" . $acntctgyid . "';";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -3177,11 +3181,15 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 				"usecurr2" => $row[4],
 				"trancurr" => $row [5],
 				"tranamount_org" => $row [6],
-				"tranamount" => $row [7],
-				"tranamount_lc" => $row [8],
-				"controlcenterid" => $row [9],
-				"orderid" => $row [10],
-				"desp" => $row [11],
+				"trantype_expense" => $row [7],
+				"tranamount" => $row [8],
+				"tranamount_lc" => $row [9],
+				"controlcenterid" => $row [10],
+				"orderid" => $row [11],
+				"desp" => $row [12],
+				"trandate" => $row [13],
+				"categoryid" => $row[14],
+				"categoryname" => $row[15]
 			);
 		}
 		

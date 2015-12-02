@@ -19,23 +19,6 @@
  					</ul>
                 </div>
 			</div>
-			<button type="button" class="btn-group btn-primary" tooltip="{{'Common.Refresh' | translate}}"
-				ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
-		  </div>
-		  
-		  <div class="btn-group" role="group" aria-label="">
-  			<button type="button" ng-click="displayItem()"
-					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
-					translate="Common.Display">					
-			</button>
-			<button type="button" ng-click="editItem()"
-					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
-					translate="Common.Edit">
-			</button>
-			<button type="button" ng-click="removeItem()"
-					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
-					translate="Common.Delete">
-			</button>
 		  </div>
 		</div>
 	</div>
@@ -50,22 +33,20 @@
 			<table st-table="docitemCollection" st-safe-src="safedocitemColl" class="table table-striped table-hover">
 				<thead>
 					<tr>
-						<th></th>
 						<th st-sort="docid" translate="Common.ID">ID</th>
 						<th st-sort="trandate" translate="Common.Date">Tran Date</th>
 						<th st-sort="trantype" >Tran Type</th>
 						<th st-sort="tranamount" translate="Finance.Amount">Amount</th>
 						<th st-sort="desp" translate="Common.Comment">Comment</th>
-						<th st-sort="cc" >Cost Center</th>
-						<th st-sort="ord" >Order</th>
+						<th st-sort="cc">Cost Center</th>
+						<th st-sort="ord">Order</th>
 					</tr>
 					<tr>
-						<th colspan="8"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
+						<th colspan="7"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="row in docitemCollection">
-						<td cs-select="row"></td>
 						<td>{{row.DocID}}</td>
 						<td>{{row.TranDate | date:'yyyy.MM.dd'}}</td>
 						<td>{{row.TranTypeObject.Name}}</td>
@@ -82,7 +63,7 @@
 						</td>
 						<td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
 						</td>
-						<td colspan="3" class="text-center">
+						<td colspan="2" class="text-center">
 							<cst-sum columnname="TranAmount"></cst-sum>
 						</td>
 					</tr>

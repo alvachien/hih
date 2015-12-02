@@ -1457,7 +1457,32 @@
 							.then(function(response) {
 								if ($.isArray(response.data) && response.data.length > 0) {
 									$.each(response.data, function(idx, obj) {
-										var di = new hih.FinanceDocumentItem();
+										var di = new hih.FinanceDocumentItemForDisp();
+										di.setContent(obj);
+										di.buildRelationship($rootScope.arFinanceAccount,
+											$rootScope.arFinanceControlCenter, 
+											$rootScope.arFinanceOrder,
+											$rootScope.arFinanceTransactionType);
+										$rootScope.arFinanceDocumentItemByAccount.push(di);
+									});
+								}
+								deferred.resolve(true);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							
+							return deferred.promise;							
+						};						
+						rtnObj.loadFinanceDocumentItemsByCategoryQ = function(ctgyid) {
+							var deferred = $q.defer();
+							$rootScope.arFinanceDocumentItemByAccount = [];
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'GETFINANCEDOCUMENTITEMLIST_BYCTGY', categoryid: ctgyid})
+							.then(function(response) {
+								if ($.isArray(response.data) && response.data.length > 0) {
+									$.each(response.data, function(idx, obj) {
+										var di = new hih.FinanceDocumentItemForDisp();
 										di.setContent(obj);
 										di.buildRelationship($rootScope.arFinanceAccount,
 											$rootScope.arFinanceControlCenter, 
