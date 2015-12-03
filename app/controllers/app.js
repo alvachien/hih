@@ -220,6 +220,11 @@
 				$rootScope.CurrentUser = {};
 				$scope.CurrentUser = {};
 				
+				for(var prop in $rootScope) {
+				    if($rootScope.hasOwnProperty(prop))
+						delete $rootScope[prop];
+				}
+				
 				// Redirect to login page
 				$state.go('login');
 			}, function(data, status, headers, config) {
