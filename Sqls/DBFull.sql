@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `t_user_hist` (
   `USERID` varchar(25) NOT NULL,
   `SEQNO` int(11) NOT NULL,
   `HISTTYP` tinyint(4) NOT NULL,
-  'TIMESTAMP' datetime not null,
+  `TIMEPOINT` datetime NOT NULL,
   `OTHERS` varchar(50),
   PRIMARY KEY (`USERID`, `SEQNO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
@@ -873,13 +873,12 @@ END$$
 
 DELIMITER ;
 
+-- Procedure: REPORT_FIN_TT
 DROP procedure IF EXISTS `REPORT_FIN_CC`;
+
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `REPORT_FIN_CC`(
-	IN p_fromdate date,
-	IN p_todate date
-	)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `REPORT_FIN_CC`(IN `p_fromdate` date, IN `p_todate` date )
 BEGIN
 
 DROP temporary TABLE if exists tmp_fin_report_cc ;
@@ -935,7 +934,7 @@ left outer join (
 		tab_a.tranamount as debit_tranamount,
 		tab_b.tranamount as credit_tranamount
 	from tmp_fin_report_cc1 tab_a
-	join tmp_fin_report_cc2 tab_b
+	left outer join tmp_fin_report_cc2 tab_b
 	on tab_a.ccid = tab_b.ccid ) cc_data
 on t_fin_controlcenter.id = cc_data.ccid;
 
@@ -947,6 +946,7 @@ END$$
 
 DELIMITER ;
 
+-- Procedure: REPORT_FIN_TT
 DROP procedure IF EXISTS `REPORT_FIN_TT`;
 
 DELIMITER $$

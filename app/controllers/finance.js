@@ -740,8 +740,8 @@
 					icon : 'glyphicon glyphicon-list'
 				}
 			},
-				version : 1,
-				plugins : [ 'wholerow', 'types' ]
+			version : 1,
+			plugins : [ 'wholerow', 'types' ]
         };			
 		
 		$scope.docitemCollection = [];
@@ -756,6 +756,7 @@
 				if (typ === "Account") {
 					utils.loadFinanceDocumentItemsByAccountQ(id.substring(4))
 						.then(function(response) {
+							$scope.safedocitemColl = [].concat($rootScope.arFinanceDocumentItemByAccount);
 							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
@@ -763,6 +764,7 @@
 				} else if (typ === "Category") {
 					utils.loadFinanceDocumentItemsByCategoryQ(id.substring(4))
 						.then(function(response) {
+							$scope.safedocitemColl = [].concat($rootScope.arFinanceDocumentItemByAccount);
 							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
@@ -775,6 +777,7 @@
     		for(i = 0, j = data.selected.length; i < j; i++) {
       			r.push(data.instance.get_node(data.selected[i]).text);
     		}
+			
 			$log.info("HIH DocumentHierarchyView, Selected Nodes:" + r.join(', '));
 		};
 	
@@ -838,6 +841,7 @@
 					return;				
 				}
 			}
+			
 			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
 				utils.deleteFinanceDocumentQ(nDocID)
 					.then(function(response) {
@@ -1164,6 +1168,9 @@
 									$rootScope.arCurrency
 								);
 								$scope.DocumentObject.Items = [];
+								if (!$rootScope.arFinanceDocument) {
+									$rootScope.arFinanceDocument = [];
+								}
 								$rootScope.arFinanceDocument.push($scope.DocumentObject);
 								$scope.DocumentObject = new hih.FinanceDocument();
 								$state.go("home.finance.document.display_tran",  { docid : response });

@@ -2218,7 +2218,7 @@ CREATE TABLE IF NOT EXISTS `t_user_hist` (
   `USERID` varchar(25) NOT NULL,
   `SEQNO` int(11) NOT NULL,
   `HISTTYP` tinyint(4) NOT NULL,
-  'TIMESTAMP' datetime not null,
+  `TIMEPOINT` datetime NOT NULL,
   `OTHERS` varchar(50),
   PRIMARY KEY (`USERID`, `SEQNO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
@@ -2274,6 +2274,80 @@ VIEW `v_fin_document_item3` AS
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
 		  left join `t_fin_document` ON ((`t_fin_document_item`.`DOCID` = `t_fin_document`.`ID`))) ;
           
+/* ======================================================
+    Delta parts on 2015.12.03
+   ====================================================== */
+DROP procedure IF EXISTS `REPORT_FIN_CC`;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `REPORT_FIN_CC`(IN `p_fromdate` date, IN `p_todate` date )
+BEGIN
+
+DROP temporary TABLE if exists tmp_fin_report_cc ;
+DROP temporary TABLE if exists tmp_fin_report_cc1;
+DROP temporary TABLE if exists tmp_fin_report_cc2;
+
+create temporary table tmp_fin_report_cc 
+select
+  tab_c.controlcenterid, 
+  tab_a.trantype_expense,
+  round(tab_a.tranamount_lc * tab_c.precent / 100, 4) as tranamount
+  from v_fin_document_item2 tab_a
+	left outer join t_fin_intorder_settrule tab_c
+		on tab_a.orderid = tab_c.intordid
+	where tab_a.orderid is not null and tab_a.orderid != 0 
+	and tab_a.trandate between p_fromdate and p_todate
+
+union all
+
+select
+  controlcenterid as controlcenterid, 
+  trantype_expense,
+  round(tranamount_lc, 4) as tranamount
+  from v_fin_document_item2 tab_a
+	where controlcenterid is not null and controlcenterid != 0
+	and trandate between p_fromdate and p_todate;
+
+create temporary table tmp_fin_report_cc1
+select 
+    controlcenterid as `ccid`,
+    round(sum(`tranamount`),2) AS `tranamount`
+	from tmp_fin_report_cc 
+	where trantype_expense = 0
+	group by controlcenterid;
+
+create temporary table tmp_fin_report_cc2
+select 
+    controlcenterid as `ccid`,
+    round(sum(`tranamount`),2) AS `tranamount`
+	from tmp_fin_report_cc 
+	where trantype_expense = 1
+	group by controlcenterid;
+
+select t_fin_controlcenter.id as ccid,
+	t_fin_controlcenter.name as ccname,
+	t_fin_controlcenter.parid as ccparid,
+	(case when cc_data.debit_tranamount is not null then cc_data.debit_tranamount else 0.0 end) as debit_tranamount,
+	(case when cc_data.credit_tranamount is not null then cc_data.credit_tranamount else 0.0 end) as credit_tranamount,
+	(case when cc_data.debit_tranamount is not null then cc_data.debit_tranamount else 0.0 end) - (case when cc_data.credit_tranamount is not null then cc_data.credit_tranamount else 0.0 end) as balance_tranamount
+from t_fin_controlcenter
+left outer join (
+	select tab_a.ccid as ccid,
+		tab_a.tranamount as debit_tranamount,
+		tab_b.tranamount as credit_tranamount
+	from tmp_fin_report_cc1 tab_a
+	left outer join tmp_fin_report_cc2 tab_b
+	on tab_a.ccid = tab_b.ccid ) cc_data
+on t_fin_controlcenter.id = cc_data.ccid;
+
+DROP temporary TABLE if exists tmp_fin_report_cc1 ;
+DROP temporary TABLE if exists tmp_fin_report_cc2 ;
+DROP temporary TABLE if exists tmp_fin_report_cc ;
+
+END$$
+
+DELIMITER ;
 		  
 /* ======================================================
     Delta parts on 2016.01.01+

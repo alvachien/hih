@@ -3114,7 +3114,7 @@ function finance_documentitem_listreadbyaccount($accountid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE accountid = '" . $accountid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE accountid = '" . $accountid . "' ORDER BY trandate DESC;";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -3168,7 +3168,7 @@ function finance_documentitem_listreadbyacntctgy($acntctgyid) {
 	
 	// Read category
 	$rsttable = array ();
-	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE categoryid = '" . $acntctgyid . "';";
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem3 . " WHERE categoryid = '" . $acntctgyid . "' ORDER BY trandate DESC;";
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
