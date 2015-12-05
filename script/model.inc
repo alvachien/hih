@@ -59,6 +59,7 @@ class HIHConstants {
 	// Database part
 	// Tables
 	const DT_User = 't_user';
+	const DT_UserHist = 't_user_hist';
 	const DT_LearnObject = 't_learn_obj';
 	const DT_LearnCategory = 't_learn_ctg';
 	const DT_LearnHistory = 't_learn_hist';
@@ -104,6 +105,13 @@ class HIHConstants {
 	// Global variables
 	const GC_InternalSplitChar = '_';
 	const GC_ExternalSplitChar = ';';
+	
+	const GC_UserHistType_Create = 0;
+	const GC_UserHistType_Login = 1;
+	const GC_UserHistType_Logout = 2;
+	const GC_UserHistType_ChangePassword = 3;
+	const GC_UserHistType_ResetPassword = 4;
+	const GC_UserHistType_Delete = 5;
 }
 
 ///

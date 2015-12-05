@@ -63,7 +63,13 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		
 		case "USERLOGOUT" :
 			{
-				session_destroy ();
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					
+					$objUsr = unserialize($_SESSION ['HIH_CurrentUser']);
+					user_hist_add($objUsr->ID, HIHConstants::GC_UserHistType_Logout, NULL);
+					
+					session_destroy ();
+				}			
 			}
 			break;
 			
@@ -82,6 +88,20 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 					$sErrors = "User not login yet";
 					export_error ( $sErrors );
 				}				
+			}
+			break;
+			
+		case "GETUSERLOGHIST": {
+				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+					$objUsr = unserialize($_SESSION ['HIH_CurrentUser']);
+
+					$arRst = user_hist_getlist( $objUsr->ID );
+					if (! IsNullOrEmptyString ( $arRst [0] )) {
+						export_error ( $arRst [0] );
+					} else {
+						echo json_encode ( $arRst [1] );
+					}
+				}
 			}
 			break;
 		
@@ -199,7 +219,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 						export_error ( $arRst [0] );
 					} else {
 						echo json_encode ( $arRst [1] );
-					}						
+					}
 				} else {
 					$sErrors = "User not login yet";
 					export_error ( sErrors );

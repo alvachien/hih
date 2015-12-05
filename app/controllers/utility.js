@@ -295,7 +295,7 @@
 						};
 						rtnObj.loadUserListQ = function (bForceReload) {
 							// Load users  with $q supports
-							var deferred = $q.defer();							
+							var deferred = $q.defer();
 							if ($rootScope.isUserListLoad && !bForceReload) {
 								deferred.resolve(true);
 							} else {
@@ -332,6 +332,27 @@
 									deferred.reject(response);
 								});
 							return deferred.promise;							
+						};
+						rtnObj.loadUserLogListQ = function() {
+							var deferred = $q.defer();
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETUSERLOGHIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arUserList = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var objUsr = new hih.User();
+												objUsr.setContent(obj);
+												$rootScope.arUserList.push(objUsr);
+											});
+										}
+										$rootScope.isUserListLoad = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
 						};
 						
 ////////////////////////////////////////////////////////////////////						

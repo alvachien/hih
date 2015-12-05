@@ -2348,7 +2348,52 @@ DROP temporary TABLE if exists tmp_fin_report_cc ;
 END$$
 
 DELIMITER ;
-		  
+
+/* ======================================================
+    Delta parts on 2015.12.05
+   ====================================================== */
+
+DELIMITER $$
+  
+CREATE TRIGGER `t_user_hist_BINS` BEFORE INSERT ON `t_user_hist` FOR EACH ROW BEGIN
+if ( isnull(new.TIMEPOINT) ) then
+ set new.TIMEPOINT=now();
+end if;
+END
+
+$$
+DELIMITER ;
+
+-- Update table
+ALTER TABLE `t_user_hist`
+	CHANGE COLUMN `TIMEPOINT` `TIMEPOINT` DATETIME NULL DEFAULT NULL AFTER `HISTTYP`;
+
+-- Create procedure
+DROP procedure IF EXISTS `CREATE_USER_HIST`;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CREATE_USER_HIST`(IN `iv_user` VARCHAR(50), IN `iv_type` TINYINT, IN `iv_others` VARCHAR(50))
+BEGIN
+
+DECLARE nextseq INT(11) DEFAULT 0;
+
+select max(`SEQNO`) INTO nextseq FROM t_user_hist WHERE `USERID` = iv_user;
+
+IF nextseq IS NULL OR nextseq = 0 THEN
+	SET nextseq = 1;
+ELSE
+	SET nextseq = nextseq + 1;
+END IF;
+
+INSERT INTO t_user_hist (`USERID`, `SEQNO`, `HISTTYP`, `OTHERS`)
+		VALUES (iv_user, nextseq, iv_type, iv_others);
+
+END
+$$
+DELIMITER ;
+
+
 /* ======================================================
     Delta parts on 2016.01.01+
    ====================================================== */

@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `t_user_hist` (
   `USERID` varchar(25) NOT NULL,
   `SEQNO` int(11) NOT NULL,
   `HISTTYP` tinyint(4) NOT NULL,
-  `TIMEPOINT` datetime NOT NULL,
+  `TIMEPOINT` datetime NULL DEFAULT NULL,
   `OTHERS` varchar(50),
   PRIMARY KEY (`USERID`, `SEQNO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
@@ -1471,10 +1471,35 @@ BEGIN
 	END IF;
 
 	SELECT errcode, errmsg;
-
 END$$
 
 DELIMITER ;
+
+
+DELIMITER ;
+
+-- Procedure: Create User Hist 
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CREATE_USER_HIST`(IN `iv_user` VARCHAR(50), IN `iv_type` TINYINT, IN `iv_others` VARCHAR(50))
+BEGIN
+
+DECLARE nextseq INT(11) DEFAULT 0;
+
+select max(`SEQNO`) INTO nextseq FROM t_user_hist WHERE `USERID` = iv_user;
+
+IF nextseq IS NULL OR nextseq = 0 THEN
+	SET nextseq = 1;
+ELSE
+	SET nextseq = nextseq + 1;
+END IF;
+
+INSERT INTO t_user_hist (`USERID`, `SEQNO`, `HISTTYP`, `OTHERS`)
+		VALUES (iv_user, nextseq, iv_type, iv_others);
+
+END$$
+
+DELIMITER 
 
 
 /*======================================================
@@ -1482,13 +1507,24 @@ DELIMITER ;
   ====================================================== */
 DELIMITER $$
 DROP TRIGGER IF EXISTS t_learn_hist_BINS$$
-CREATE TRIGGER `t_learn_hist_BINS` BEFORE INSERT ON `t_learn_hist` FOR EACH ROW
+CREATE TRIGGER `t_learn_hist_BINS` BEFORE INSERT ON `t_learn_hist` FOR EACH ROW BEGIN
 if ( isnull(new.LEARNDATE) ) then
  set new.LEARNDATE=curdate();
 end if;
+END
 $$
 DELIMITER ;
 
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS t_user_hist_BINS$$  
+CREATE TRIGGER `t_user_hist_BINS` BEFORE INSERT ON `t_user_hist` FOR EACH ROW BEGIN
+if ( isnull(new.TIMEPOINT) ) then
+ set new.TIMEPOINT=now();
+end if;
+END
+$$
+DELIMITER ;
 
 /*======================================================
     Pre-delivered content 

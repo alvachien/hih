@@ -52,7 +52,14 @@
 		Login_PwdStrgth_Week: 1,
 		Login_PwdStrgth_Normal: 2,
 		Login_PwdStrgth_Strong: 3,
-		Login_PwdStrgth_VeryStrong: 4
+		Login_PwdStrgth_VeryStrong: 4,
+		
+		UserHistType_Create: 0,
+		UserHistType_Login: 1,
+		UserHistType_Logout: 2,
+		UserHistType_ChangePassword: 3,
+		UserHistType_ResetPassword: 4,
+		UserHistType_Delete: 5
 	};
 	
 	// =========================================================
@@ -93,24 +100,24 @@
 			return new Date();
 		}
 	};
-	hih.ModelUtility.FinanceAssetFlagCell = function finAssetflag(val) {
-		if (val === '1') {
-			return '<span style="color:green; font-weight: bold;">资产</span>';
-		} else if (val === '0') {
-			return '<span style="color:red; font-weight: bold;">负债</span>';
-		} else {
-			return '<span style="color:red;">Unknown</span>';
-		}	
-	};
-	hih.ModelUtility.FinanceExpenseFlagCell = function finExpenseFlag(val) {
-		if (val === '1' || val === 1) {
-			return '<span style="color:red; font-weight: bold;">开支</span>';
-		} else if (val === '0' || val === 0) {
-			return '<span style="color:green; font-weight: bold;">收入</span>';
-		} else {
-			return '<span style="color:red;">Unknown</span>';
-		}
-	};
+	// hih.ModelUtility.FinanceAssetFlagCell = function finAssetflag(val) {
+	// 	if (val === '1') {
+	// 		return '<span style="color:green; font-weight: bold;">资产</span>';
+	// 	} else if (val === '0') {
+	// 		return '<span style="color:red; font-weight: bold;">负债</span>';
+	// 	} else {
+	// 		return '<span style="color:red;">Unknown</span>';
+	// 	}	
+	// };
+	// hih.ModelUtility.FinanceExpenseFlagCell = function finExpenseFlag(val) {
+	// 	if (val === '1' || val === 1) {
+	// 		return '<span style="color:red; font-weight: bold;">开支</span>';
+	// 	} else if (val === '0' || val === 0) {
+	// 		return '<span style="color:green; font-weight: bold;">收入</span>';
+	// 	} else {
+	// 		return '<span style="color:red;">Unknown</span>';
+	// 	}
+	// };
 	hih.ModelUtility.Round2Two = function (num) {
 		//return +(Math.round(num + "e+2")  + "e-2");
 		return Math.round(num * 100) / 100;

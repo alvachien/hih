@@ -135,6 +135,15 @@ function user_login($userid, $userpwd) {
 				$objUser->DisplayAs = $row [1];
 				$objUser->CreatedOn = $row [3];
 				$objUser->Gender = $row [4];
+				
+				// And update the log info.
+				$query2 = "CALL create_user_hist ('". $userid. "', ". HIHConstants::GC_UserHistType_Login. ", NULL)";
+				
+				if ($mysqli->query($query2)) {
+					// Do nothing!
+				} else {
+					$sErrorString = "Failed to execute query: " .$query2 . " ; Error: " . $mysqli->error;;;
+				}				
 			}
 			
 			break;
@@ -236,6 +245,81 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 	/* close connection */
 	mysqli_close ( $link );
 	return $sError;
+}
+function user_hist_add($userid, $logtype, $other) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* Check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: " . mysqli_connect_error (),
+			null 
+		);
+	}
+
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	$query = "CALL create_user_hist ('". $userid. "', ". $logtype. ", '". $other. "')";
+	$sErrorString = "";
+	
+	if ($mysqli->query ( $query )) {
+	} else {
+		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;;;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sErrorString,
+		NULL 
+	);
+}
+function user_hist_getlist($userid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* Check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: " . mysqli_connect_error (),
+			null 
+		);
+	}
+
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	$query = "select * from ". HIHConstants::DT_UserHist . " WHERE userid = '". $userid. "';";
+	$sError = "";
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+			$rsttable [] = array (
+				"userid" => $row [0],
+				"seqno" => $row [1],
+				"histtype" => $row [2],
+				"timepoint" => $row [3],
+				"others" => $row [4] 
+			);
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$rsttable 
+	);	
 }
 function user_register2($objRegUsr) {
 	return user_register($objRegUsr->UserID, $objRegUsr->Password, $objRegUsr->DisplayAs, $objRegUsr->Gender, $objRegUsr->Mailbox);
