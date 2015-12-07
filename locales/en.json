@@ -187,6 +187,7 @@
   		"Asset": "Asset",
   		"Amount": "Amount",
   		"ExpenseFlag": "Revenue/Expense",
+		"Direction": "Direction",
   		"Incoming": "Incoming",
   		"Outgoing": "Outgoing",
 		"NormalDocument": "Normal Document",
@@ -202,6 +203,8 @@
 		"TargetOrder": "Target Order",
 		"SourceCurrency": "Source Currency",
 		"TargetCurrency": "Target Currency",
+		"BeginDate": "Begin Date",
+		"EndDate": "End Date",
   		
   		"CreateAccountTitle": "Create an Account",
 		"ChooseAControlCenter": "Choose a Control Center",

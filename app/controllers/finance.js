@@ -109,6 +109,11 @@
         	templateUrl: 'app/views/finance/financedocument_tran.html',
         	controller: 'FinanceDocumentTranController'
         })
+        .state("home.finance.document.display_downpay", {
+        	url: '/display_downpay/:docid',
+        	templateUrl: 'app/views/finance/financedocument_downpay.html',
+        	controller: 'FinanceDocumentDownPayController'
+        })
         .state("home.finance.document.maintain", {
         	url: '/maintain/:docid',
         	templateUrl: 'app/views/finance/financedocument.html',
@@ -1508,14 +1513,159 @@
 
 	.controller('FinanceDocumentDownPayController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
-		// This class serviced for the creation of Down payment document
+		// This class serviced for the creation/display/maintenance of Down payment document
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
 		$scope.DocumentObject = new hih.FinanceDocument();
+		$scope.DocumentObject.DocTypeID = 5; 
+		$scope.TranCurrencyIsLocal = true;
+		$scope.DownpaymentType = "1";
 		
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
+		};
+		
+		// Currency select control
+		$scope.currConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentDownPayController, Currency control, event onChange, ', value);
+				if (value === $rootScope.objFinanceSetting.LocalCurrency) {
+					$scope.TranCurrencyIsLocal = true;
+				} else {
+					$scope.TranCurrencyIsLocal = false;
+					
+					var er = utils.getExpectedExchangeRate($scope.DocumentObject.TranDate, value);
+					if (er && !isNaN(er)) {
+						$scope.DocumentObject.ExchangeRate = parseFloat(er);
+					}
+				}
+				$scope.$apply();				  
+    		},
+			valueField: 'Currency',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Account select control
+		$scope.srcaccountConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentDownPayController, Account control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+			optgroups: $rootScope.arFinanceAccountCategory,
+			optgroupField: 'CategoryID',
+			optgroupLabelField: 'Name',
+			optgroupValueField: 'ID',
+		    maxItems: 1,
+    		required: true,
+			searchField: ['Name'],
+			render: {
+				optgroup_header: function(data, escape) {
+					return '<div class="optgroup-header">' + escape(data.Name) + '</div>';
+				}
+			}
+  		};
+		// Tran type select control 
+		$scope.srctrantypeConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentDownPayController, Tran. Type control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'FullDisplayName',
+		    maxItems: 1,
+    		required: true,
+			render: {
+				 option: function(data, escape) {
+					return data.ExpenseFlag ? '<div class="trantypeexpense">' + escape(data.FullDisplayName) + '</div>'
+							: '<div class="trantypenonexpense">' + escape(data.FullDisplayName) + '</div>';
+				}
+			}
+  		};
+		// CC select control
+		$scope.srcccConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentDownPayController, Control Center control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		// Order select control
+		$scope.srcorderConfig = {
+			create: false,
+			onChange: function(value){
+      			$log.info('FinanceDocumentDownPayController, Order control, event onChange, ', value);
+    		},
+			valueField: 'ID',
+			labelField: 'Name',
+		    maxItems: 1,
+    		required: true
+  		};
+		 
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
+		};
+		// Start date
+		$scope.isStartDateOpened = false;
+		$scope.openStartDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isStartDateOpened = true;				
+			}
+		};
+		// End date
+		$scope.isEndDateOpened = false;
+		$scope.openEndDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isEndDateOpened = true;				
+			}
+		};
+		
+		if (angular.isDefined($stateParams.docid)) {
+			if ($state.current.name === "home.finance.document.maintain_downpay") {
+				$scope.Activity = "Common.Edit";
+			} else if ($state.current.name === "home.finance.document.display_downpay") {
+				$scope.Activity = "Common.Display";
+				$scope.isReadonly = true;
+			}
+		} else {
+			// Set the default currency to local currency
+			$scope.DocumentObject.TranCurrency = $rootScope.objFinanceSetting.LocalCurrency;
+			$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Downpay;
+			$scope.TranCurrencyIsLocal = true;
+
+		    $scope.Activity = "Common.Create";
+		}
+
+		$scope.submit = function() {
+			
+		};
+		$scope.backToList = function() {
+			
 		};
 	}])
 		

@@ -13,12 +13,12 @@
                placeholder="{{ 'Login.Password' | translate }}" ng-model="credentials.password" required
                ng-minlength="6">
 
-        <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block" type="submit"
-                    ng-disabled="loginForm.$invalid" ng-click="login()" translate="Login.SignIn">
-                Sign in
-            </button>
-            <button class="btn btn-lg btn-block" ui-sref="register" translate="Login.SignUp">Sign up</button>
+	<div class="form-group">
+           <button class="btn btn-lg btn-primary btn-block" type="submit"
+                   ng-disabled="loginForm.$invalid" ng-click="login()" translate="Login.SignIn">
+                                Sign in
+           </button>
+           <button class="btn btn-lg btn-block" ui-sref="register" translate="Login.SignUp">Sign up</button>
         </div>
    </form>
 </div>

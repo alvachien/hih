@@ -2395,6 +2395,71 @@ DELIMITER ;
 
 
 /* ======================================================
+    Delta parts on 2016.12.07
+   ====================================================== */
+
+-- Table contents
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (8,'预付款账户',2,NULL);
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (9,'预收款账户',3,NULL);
+
+-- View v_fin_report_bs1
+CREATE OR REPLACE 
+    ALGORITHM = UNDEFINED DEFINER=`root`@`localhost` VIEW `v_fin_report_bs1` AS select 
+        `docid` AS `docid`,
+        `itemid` AS `itemid`,
+        `accountid` AS `accountid`,
+        `trantype` AS `trantype`,
+		`usecurr2` AS `usecurr2`,
+        `trancurr` AS `trancurr`,
+        `tranamount_lc` AS `tranamount_lc`,
+		round(sum(`tranamount_lc`), 2) AS `balance_lc`,
+        `CONTROLCENTERID` AS `CONTROLCENTERID`,
+        `ORDERID` AS `ORDERID`,
+        `desp` AS `desp`,
+        `accounttab`.`CTGYID` AS `categoryid`,
+        `ctgytab`.`ASSETFLAG` AS `categoryassetflag`
+    from
+        `v_fin_document_item1`
+        join `t_fin_account` `accounttab` ON ((`v_fin_document_item1`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+    where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1
+	group by `accountid`;
+ 
+ -- View v_fin_report_bs2
+CREATE OR REPLACE
+    ALGORITHM = UNDEFINED DEFINER=`root`@`localhost` VIEW `v_fin_report_bs2` AS select 
+        `accountid` AS `accountid`,
+        -- `tranamount_lc` AS `tranamount_lc`,
+        `trantype_EXPENSE`,
+		round(sum(`tranamount_lc`), 2) AS `balance_lc`,
+        -- `CONTROLCENTERID` AS `CONTROLCENTERID`,
+        -- `ORDERID` AS `ORDERID`,
+        -- `desp` AS `desp`,
+        `accounttab`.`CTGYID` AS `categoryid`,
+        `ctgytab`.`ASSETFLAG` AS `categoryassetflag`
+    from
+        `v_fin_document_item2`
+        join `t_fin_account` `accounttab` ON ((`v_fin_document_item2`.`ACCOUNTID` = `accounttab`.`ID`))
+        join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+		where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1        
+	group by `accountid`, `trantype_EXPENSE`  ; 
+
+-- Create table for downpayment account: t_fin_account_dp
+CREATE TABLE IF NOT EXISTS `t_fin_account_dp` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `DIRECT` tinyint NOT NULL DEFAULT 1,
+  `STARTDATE` date NOT NULL,
+  `ENDDATE` date NOT NULL,
+  `RPTTYPE` tinyint NOT NULL DEFAULT 0,
+  `RPTTIMES` int(11) NOT NULL DEFAULT 1,
+  `REFDOCID` int(11) NOT NULL,
+  `DEFRRDAYS` varchar(100) DEFAULT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='Downpayment account';
+
+
+/* ======================================================
     Delta parts on 2016.01.01+
    ====================================================== */
 

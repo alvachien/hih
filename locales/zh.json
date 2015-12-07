@@ -186,6 +186,7 @@
   		"Asset": "资产",
   		"Amount": "金额",
   		"ExpenseFlag": "收支",
+		"Direction": "方向",
   		"Incoming": "收入",
   		"Outgoing": "开支",
 		"NormalDocument": "普通凭证",
@@ -201,6 +202,8 @@
 		"TargetOrder": "转入订单",
 		"SourceCurrency": "转出货币",
 		"TargetCurrency": "转入货币",
+		"BeginDate": "开始日期",
+		"EndDate": "结束日期",
 
   		"CreateAccountTitle": "创建账户",
 		"ChooseAControlCenter": "选择一个控制中心",

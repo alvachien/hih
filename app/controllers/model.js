@@ -39,6 +39,9 @@
 		FinDocType_Normal: 1,
 		FinDocType_Transfer: 2,
 		FinDocType_CurrExchange: 3,
+		FinDocType_Installment: 4,
+		FinDocType_DownpayOut: 5,
+		FinDocType_DownpayIn: 6,
 		
 		FinTranType_TransferIn: 37,
 		FinTranType_TransferOut: 60,
@@ -59,7 +62,27 @@
 		UserHistType_Logout: 2,
 		UserHistType_ChangePassword: 3,
 		UserHistType_ResetPassword: 4,
-		UserHistType_Delete: 5
+		UserHistType_Delete: 5,
+		
+		// Downpayment direction
+		DownpaymentDir_Outgoing: 0,
+		DownpaymentDir_Incoming: 1,
+		
+		// Downpay repeat type
+		DownpayRepeatType_PerMonth: 0,
+		DownpayRepeatType_PerFortnight: 1,
+		DownpayRepeatType_PerWeek: 2,
+		DownpayRepeatType_PerDay: 3,
+		DownpayRepeatType_PerQuarter: 4,
+		DownPayRepeatType_PerHalfYear: 5,
+		DownPayRepeatType_PerYear: 6,
+		DownRayRepeatType_Manual: 7,
+		
+		// Account Category Asset
+		AccountCategoryAssetFlag_Asset: 1,
+		AccountCategoryAssetFlag_Liability : 0,
+		AccountCategoryAssetFlag_DownpayOut: 2, // Outgoing downpayment
+		AccountCategoryAssetFlag_DownpayIn: 3 	// Incoming downpayment
 	};
 	
 	// =========================================================
@@ -200,6 +223,15 @@
 	hih.User.prototype.setContent = function(obj) {
 		this.UserID = obj.id;
 		this.DisplayAs = obj.text;
+	};
+	hih.UserLog = function() {
+		this.UserID = "";
+		this.LogType = 0;
+		this.TimePoint = new Date();
+		this.Others = "";
+	};
+	hih.UserLog.prototype.setContent = function(obj) {
+		this.UserID = obj.userid;
 	};
 	hih.UserRegistration = function() {
 		hih.Model.apply(this, arguments);
@@ -1014,6 +1046,16 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);		
 	};
+	hih.FinanceAccountDownpayment = function() {
+		this.StartDate = new Date();
+		this.EndDate = new Date();
+		this.RepeatType = 1;
+		this.RepeatTimes = 1;
+		this.DeferredDays = [];
+		this.RefDocID = -1;
+		this.Others = "";
+	};
+	hih.extend(hih.FinanceAccountDownpayment, hih.FinanceAccount);
 	// 5. Controlling Center
 	hih.FinanceControlCenter = function FinanceControlCenter() {
 		this.ID = -1;

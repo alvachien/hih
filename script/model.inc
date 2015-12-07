@@ -112,6 +112,26 @@ class HIHConstants {
 	const GC_UserHistType_ChangePassword = 3;
 	const GC_UserHistType_ResetPassword = 4;
 	const GC_UserHistType_Delete = 5;
+
+	// Downpayment direction
+	const GC_DownpaymentDir_Outgoing = 0;
+	const GC_DownpaymentDir_Incoming = 1;
+
+	// Downpayment account repeat type 
+	const GC_DownpayRepeatType_PerMonth 	= 0;
+	const GC_DownpayRepeatType_PerFortnight = 1;
+	const GC_DownpayRepeatType_PerWeek 		= 2;
+	const GC_DownpayRepeatType_PerDay 		= 3;
+	const GC_DownpayRepeatType_PerQuarter 	= 4;
+	const GC_DownPayRepeatType_PerHalfYear 	= 5;
+	const GC_DownPayRepeatType_PerYear 		= 6;
+	const GC_DownRayRepeatType_Manual 		= 7;
+	
+	// Account category asset flag 
+	const GC_AccountCategoryAssetFlag_Asset 		= 1;
+	const GC_AccountCategoryAssetFlag_Liability 	= 0;
+	const GC_AccountCategoryAssetFlag_DownpayOut 	= 2;
+	const GC_AccountCategoryAssetFlag_DownpayIn 	= 3;	
 }
 
 ///

@@ -335,24 +335,28 @@
 						};
 						rtnObj.loadUserLogListQ = function() {
 							var deferred = $q.defer();
+							if ($rootScope.isUserLogListLoad) {
+								deferred.resolve(true);
+							} else {
 								$http.post(
 									'script/hihsrv.php',
 									{ objecttype : 'GETUSERLOGHIST' })
 									.then(function(response) {
 										// The response object has these properties:
-										$rootScope.arUserList = [];
+										$rootScope.arUserLogList = [];
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
-												var objUsr = new hih.User();
-												objUsr.setContent(obj);
-												$rootScope.arUserList.push(objUsr);
+												var objUsrLog = new hih.UserLog();
+												objUsrLog.setContent(obj);
+												$rootScope.arUserLogList.push(objUsr);
 											});
 										}
-										$rootScope.isUserListLoad = true;
+										$rootScope.isUserLogListLoad = true;
 										deferred.resolve(true);
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});
+							}
 						};
 						
 ////////////////////////////////////////////////////////////////////						

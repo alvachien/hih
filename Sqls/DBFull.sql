@@ -27,7 +27,19 @@ CREATE TABLE IF NOT EXISTS `t_fin_account` (
   `NAME` varchar(30) NOT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Account';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Account';
+
+CREATE TABLE IF NOT EXISTS `t_fin_account_dp` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `DIRECT` tinyint NOT NULL DEFAULT 1,
+  `STARTDATE` date NOT NULL,
+  `ENDDATE` date NOT NULL,
+  `RPTTYPE` tinyint NOT NULL DEFAULT 1,
+  `REFDOCID` int(11) NOT NULL,
+  `DEFRRDAYS` varchar(100) DEFAULT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downpayment account';
 
 CREATE TABLE IF NOT EXISTS `t_fin_account_ctgy` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -35,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_account_ctgy` (
   `ASSETFLAG` tinyint(4) NOT NULL DEFAULT '1',
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Account Category';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Account Category';
 
 CREATE TABLE IF NOT EXISTS `t_fin_controlcenter` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_controlcenter` (
   `PARID` int(11) DEFAULT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Cost Center';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cost Center';
 
 CREATE TABLE IF NOT EXISTS `t_fin_currency` (
   `CURR` varchar(5) NOT NULL,
@@ -57,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_doc_type` (
   `NAME` varchar(30) NOT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Document Type';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Document Type';
 
 CREATE TABLE IF NOT EXISTS `t_fin_exrate` (
   `TRANDATE` date NOT NULL,
@@ -80,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_document` (
   `EXGRATE2` DOUBLE NULL DEFAULT NULL,
   `EXGRATE_PLAN2` TINYINT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Document';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Document';
 
 CREATE TABLE IF NOT EXISTS `t_fin_document_item` (
   `DOCID` int(11) NOT NULL,
@@ -102,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_intorder` (
   `VALID_TO` date NOT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Order';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Order';
 
 CREATE TABLE IF NOT EXISTS `t_fin_intorder_settrule` (
   `INTORDID` int(11) NOT NULL,
@@ -120,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_tran_type` (
   `PARID` smallint(6) DEFAULT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='Transaction Type';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Transaction Type';
 
 -- Learning part
 CREATE TABLE IF NOT EXISTS `t_learn_award` (
@@ -130,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_award` (
   `SCORE` int(11) NOT NULL,
   `REASON` varchar(45) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='Learn award';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learn award';
 
 CREATE TABLE IF NOT EXISTS `t_learn_ctg` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -138,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_ctg` (
   `NAME` varchar(45) NOT NULL,
   `COMMENT` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='Learn category';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learn category';
 
 CREATE TABLE IF NOT EXISTS `t_learn_hist` (
   `USERID` varchar(25) NOT NULL,
@@ -154,14 +166,14 @@ CREATE TABLE IF NOT EXISTS `t_learn_obj` (
   `NAME` varchar(45) DEFAULT NULL,
   `CONTENT` text NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='Learn Object';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learn Object';
 
 CREATE TABLE IF NOT EXISTS `t_learn_plan` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(45) NOT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan header';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learn Plan header';
 
 CREATE TABLE IF NOT EXISTS `t_learn_plandtl` (
   `ID` int(11) NOT NULL,
@@ -179,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `t_learn_planpat` (
   `STATUS` tinyint(4) DEFAULT NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`, `USERID`, `STARTDATE`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Learn Plan participant';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Learn Plan participant';
 
 -- User part
 CREATE TABLE IF NOT EXISTS `t_user` (
@@ -454,6 +466,7 @@ VIEW `v_fin_report_bs1` AS
         `v_fin_document_item1`
         join `t_fin_account` `accounttab` ON ((`v_fin_document_item1`.`ACCOUNTID` = `accounttab`.`ID`))
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+    where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`;
 
 CREATE OR REPLACE
@@ -492,6 +505,7 @@ VIEW `v_fin_report_bs2` AS
         `v_fin_document_item2`
         join `t_fin_account` `accounttab` ON ((`v_fin_document_item2`.`ACCOUNTID` = `accounttab`.`ID`))
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
+    where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`, `trantype_EXPENSE`;
 
 CREATE OR REPLACE
@@ -1538,6 +1552,8 @@ INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (4,'
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (5,'应收账款',1,NULL);
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (6,'金融账户',1,'支付宝等');
 INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (7,'重大资产',1,NULL);
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (8,'预付款账户',2,NULL);
+INSERT INTO `t_fin_account_ctgy` (`ID`,`NAME`,`ASSETFLAG`,`COMMENT`) VALUES (9,'预收款账户',3,NULL);
 
 -- Currency
 INSERT INTO `t_fin_currency` (`CURR`,`NAME`,`Symbo`) VALUES ('CNY','人民币',NULL);

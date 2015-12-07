@@ -1,7 +1,7 @@
 <div id="viewFinanceDocument_DownPay">
 	<div class="page-header">
 		<h2>
-			<span translate="Finance.Document">Finance Document</span><small> {{Activity | translate}}</small>
+			<span translate="Finance.DownPaymentDocument">Finance Downpayment Document</span><small> {{Activity | translate}}</small>
 		</h2>
 	</div>
 	
@@ -14,50 +14,170 @@
     
 	<form class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID:</label>
+			<label class="control-label col-sm-2" for="iptDocID" translate="Common.ID">ID:</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptID"
-						readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="ControlCenterObject.ID">
+				<input type="text" class="form-control" id="iptDocID"
+						readonly="readonly" placeholder="{{'Common.ID' | translate }}" ng-model="DocumentObject.DocID">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
+			<label class="control-label col-sm-2" translate="Finance.Direction">Direction</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
-						placeholder="{{'Common.Name' | translate}}" ng-model="ControlCenterObject.Name" required>
-			</div>
-		</div>
-		
-	    <div class="form-group">
-        	<label class="control-label col-sm-2" translate="Common.Parent">Parent</label>
-            <div class="col-sm-10">
-                <ui-select ng-model="ControlCenterObject.ParentObject.selected" theme="select2" search-enabled="true" ng-disabled="isReadonly" style="min-width: 300px;">
-                	<ui-select-match placeholder="Select a parent via the name...">{{$select.selected.Name}}</ui-select-match>
-                    <ui-select-choices repeat="allcc in AllControlCenters">
-                        <div ng-bind-html="allcc.Name | highlight: $select.search"></div>
-                        <small>
-                            ID: {{allcc.ID}} <br />
-                            Name: <span ng-bind-html="''+allcc.Name | highlight: $select.search"></span>
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
-             </div>
-         </div>
-		
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptContent" translate="Common.Comment">Comment</label>
-			<div class="col-sm-10">
-				<textarea rows="5" ng-readonly="isReadonly" id="iptContent"
-						ng-model="ControlCenterObject.Comment"></textarea>
+				<select ng-model="DownpaymentType" ng-disabled="isReadonly" required="required">
+					<option ng-disabled="isReadonly" value="1" translate="Finance.Outgoing">Outgoing</option>
+					<option ng-disabled="isReadonly" value="2" translate="Finance.Incoming">Incoming</option>
+				</select>
 			</div>
 		</div>
 
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Common.Date">Date</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
+                            datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptDesp" translate="Common.Description">Description</label>
+			<div class="col-sm-10">
+				<input type="text" ng-readonly="isReadonly" id="iptDesp" required class="form-control"
+						ng-model="DocumentObject.Desp"></input>
+			</div>
+		</div>
+
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.SourceAccount">Src. Account:</label>
+				<div class="col-sm-10">
+					<selectize placeholder='Pick source account...' options='arFinanceAccount' config="srcaccountConfig" ng-model="srcAccountID" 
+							ng-disabled="isReadonly" required></selectize>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.Currency">Currency:</label>
+				<div class="col-sm-10">
+					<selectize placeholder='Pick currency...' options='arCurrency' config="currConfig" ng-model="DocumentObject.TranCurrency"
+						ng-disabled="isReadonly" required></selectize>
+				</div>
+			</div>
+			
+			<div class="form-group animate-show" data-ng-hide="TranCurrencyIsLocal">
+				<label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input type="text" ng-readonly="isReadonly" id="iptExgRate" required class="form-control"
+								ng-model="DocumentObject.ExchangeRate"></input>
+						<span class="input-group-addon">
+							<input type="checkbox" ng-disabled="isReadonly" ng-model="DocumentObject.ProposedExchangeRate">
+						</span>		
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group" ng-if="!isReadonly">
+				<label class="control-label col-sm-2" for="iptDocAmount" translate="Finance.Amount">Amount</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="iptDocAmount" 
+							placeholder="{{'Finance.Amount' | translate}}" ng-model="DocumentObject.TranAmount" required>
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.SourceControlCenter">Src. Control Center </label>
+				<div class="col-sm-10">
+					<selectize placeholder='Pick control center...' options='arFinanceControlCenter' config="srcccConfig" ng-model="srcCCID"
+							ng-disabled="isReadonly"></selectize>
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.SourceOrder">Src. Order:</label>
+				<div class="col-sm-10">
+					<selectize placeholder='Pick order...' options='arFinanceOrder' config="srcorderConfig" ng-model="srcOrderID" 
+							ng-disabled="isReadonly"></selectize>
+				</div>
+			</div>
+		</div>
+		
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.BeginDate">Start Date</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="AccountObject.StartDate" is-open="isStartDateOpened"
+								datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" translate="Finance.EndDate">End Date</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="AccountObject.EndDate" is-open="isEndDateOpened"
+								datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="openEndtDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+			</div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" translate="Finance.RepeatType">Repeat Type:</label>
+                <div class="col-sm-10">
+					<select ng-model="AccountObject.RepeatType" ng-disabled="isReadonly" required="required">
+						<option ng-disabled="isReadonly" value="0">Per Month</option>
+						<option ng-disabled="isReadonly" value="1">Per Fortnight</option>
+						<option ng-disabled="isReadonly" value="2">Per Week</option>
+						<option ng-disabled="isReadonly" value="3">Per Day</option>
+						<option ng-disabled="isReadonly" value="4">Per Quarter</option>
+						<option ng-disabled="isReadonly" value="5">Per Half Year</option>
+						<option ng-disabled="isReadonly" value="6">Per Year</option>
+						<option ng-disabled="isReadonly" value="7">Manual</option>
+					</select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Repeat Times:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="AccountObject.RepeatTimes" required></input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" >Deferred days:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="AccountObject.DeferredDays" required></input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" translate="Finance.Amount">Sub Amount:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="SubAmount" required></input>
+                </div>
+            </div>
+        </div>
+
+		<!-- Button row -->
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
 					ng-disabled="frmObj.$invalid || !frmObj.$dirty" translate="Common.Submit">Submit</button>
-				<button class="btn btn-danger" ng-click="close()" translate="Common.Cancel">Cancel</button>
+				<button class="btn btn-danger" ng-click="backtoList()" translate="Common.Cancel">Cancel</button>
 			</div>
 		</div>
 	</form>
