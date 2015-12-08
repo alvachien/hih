@@ -123,6 +123,20 @@
 			return new Date();
 		}
 	};
+	hih.ModelUtility.DaysBetween = function(first, second) {
+
+	    // Copy date parts of the timestamps, discarding the time parts.
+    	var one = new Date(first.getYear(), first.getMonth(), first.getDate());
+    	var two = new Date(second.getYear(), second.getMonth(), second.getDate());
+
+    	// Do the math.
+    	var millisecondsPerDay = 1000 * 60 * 60 * 24;
+    	var millisBetween = two.getTime() - one.getTime();
+    	var days = millisBetween / millisecondsPerDay;
+
+    	// Round down.
+    	return Math.floor(days);
+	};
 	// hih.ModelUtility.FinanceAssetFlagCell = function finAssetflag(val) {
 	// 	if (val === '1') {
 	// 		return '<span style="color:green; font-weight: bold;">资产</span>';
@@ -1049,6 +1063,8 @@
 	hih.FinanceAccountDownpayment = function() {
 		this.StartDate = new Date();
 		this.EndDate = new Date();
+    	this.EndDate.setDate(this.EndDate.getDate() + 30);
+		
 		this.RepeatType = 1;
 		this.RepeatTimes = 1;
 		this.DeferredDays = [];
@@ -1754,7 +1770,40 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
-	// 8. Balance sheet report
+	// 8a. Finance temp document for downpayment
+	hih.FinanceDPTempDoc = function FinanceDPTempDoc() {
+		this.DocID = -1;
+		this.RefDocID = -1;
+		this.AccountID = -1;
+		this.TranDate = new Date();
+		this.TranTypeID = -1;
+		this.Amount = 0.0; 
+		this.ControlCenterID = -1;
+		this.OrderID = -1;
+		this.Desp = "";
+		
+		// Runtime object
+		this.AccountObject = {};
+		this.RefDocObject = {};
+		this.TranTypeObject = {};
+		this.ControlCenterObject = {};
+		this.OrderObject = {};
+	};
+	hih.extend(hih.FinanceDPTempDoc, hih.Model);
+	hih.FinanceDPTempDoc.prototype.setContent = function(obj) {
+		this.DocID = parseInt(obj.docid);
+		this.RefDocID = parseInt(obj.refdocid);
+		this.AccountID = parseInt(obj.accountid);
+		this.TranDate = new Date(obj.trandate);
+		this.TranTypeID = parseInt(obj.trantype);
+		this.Amount = parseFloat(obj.tranamount);
+		this.ControlCenterID = parseInt(obj.ccid);
+		this.OrderID = parseInt(obj.orderid);
+	};
+	hih.FinanceDPTempDoc.prototype.buildRelationship = function(arAccount, arTranType, arCC, arOrd) {
+		
+	};
+	// 9. Balance sheet report
 	hih.FinanceReportBalanceSheet = function FinanceReportBalanceSheet() {
 		this.AccountID = -1;
 		this.DebitBalance = 0.0;

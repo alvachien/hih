@@ -2458,6 +2458,24 @@ CREATE TABLE IF NOT EXISTS `t_fin_account_dp` (
   PRIMARY KEY (`ACCOUNTID`)
 ) ENGINE=InnoDB CHARSET=utf8 COMMENT='Downpayment account';
 
+/* ======================================================
+    Delta parts on 2016.12.08
+   ====================================================== */
+
+-- Create table for temp doc for downpayment
+CREATE TABLE IF NOT EXISTS `t_fin_tmpdoc_dp` (
+  `DOCID` int(11) NOT NULL AUTO_INCREMENT,  
+  `REFDOCID` int(11) DEFAULT NULL,  
+  `ACCOUNTID` int(11) NOT NULL,
+  `TRANDATE` date NOT NULL,
+  `TRANTYPE` smallint(6) NOT NULL,
+  `TRANAMOUNT` double NOT NULL,
+  `CONTROLCENTERID` int(11) DEFAULT NULL,
+  `ORDERID` int(11) DEFAULT NULL,
+  `DESP` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`DOCID`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='Temp doc for Downpayment';
+
 
 /* ======================================================
     Delta parts on 2016.01.01+

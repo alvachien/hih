@@ -1517,14 +1517,19 @@
 		$scope.Activity = "";
 		$scope.isReadonly = false;
 		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+
 		$scope.DocumentObject = new hih.FinanceDocument();
 		$scope.DocumentObject.DocTypeID = 5; 
 		$scope.TranCurrencyIsLocal = true;
 		$scope.DownpaymentType = "1";
-		
-		$scope.cleanReportMessages = function() {
-			$scope.ReportedMessages = [];
-		};
+		$scope.AccountRepeatTypeString = "0";
+		$scope.AccountObject = new hih.FinanceAccountDownpayment();
+		$scope.DPItems = [];
+		$scope.safeItemList = [];
+		$scope.selectedDPItem = new hih.FinanceDPTempDoc();
 		
 		// Currency select control
 		$scope.currConfig = {
@@ -1626,6 +1631,10 @@
 		};
 		// Start date
 		$scope.isStartDateOpened = false;
+		$scope.startDateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
 		$scope.openStartDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
@@ -1636,12 +1645,30 @@
 		};
 		// End date
 		$scope.isEndDateOpened = false;
+		$scope.endDateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
 		$scope.openEndDate = function ($event) {
 		    $event.preventDefault();
 		    $event.stopPropagation();
 
 		    if (!$scope.isReadonly) {
 		        $scope.isEndDateOpened = true;				
+			}
+		};
+		// Item date
+		$scope.isItemDateOpened = false;
+		$scope.itemDateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openItemDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isItemDateOpened = true;				
 			}
 		};
 		
@@ -1660,9 +1687,215 @@
 
 		    $scope.Activity = "Common.Create";
 		}
-
-		$scope.submit = function() {
+		
+		$scope.genItems = function() {
+			$scope.DPItems = [];
 			
+			var nType = parseInt($scope.AccountRepeatTypeString);
+			var ndays = hih.ModelUtility.DaysBetween($scope.AccountObject.StartDate, $scope.AccountObject.EndDate);
+			var ntimes = 0;
+			var i = 0;
+			var arDays = [];
+			
+			switch(nType) {
+				case hih.Constants.DownpayRepeatType_PerMonth:
+					ntimes = Math.floor(ndays / 30);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 30 * i));
+					}
+				break;
+				
+				case hih.Constants.DownpayRepeatType_PerFortnight:
+					ntimes = Math.floor(ndays / 14);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 14 * i));
+					}
+				break;
+				
+				case hih.Constants.DownpayRepeatType_PerWeek:
+					ntimes = Math.floor(ndays / 7);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 7 * i));
+					}
+				break;
+				
+				case hih.Constants.DownpayRepeatType_PerDay:
+					ntimes = ndays;
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + i));
+					}
+				break;
+				
+				case hih.Constants.DownpayRepeatType_PerQuarter:
+					ntimes = Math.floor(ndays / 91);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 91 * i));
+					}
+				break;
+				
+				case hih.Constants.DownPayRepeatType_PerHalfYear:
+					ntimes = Math.floor(ndays / 182);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 182 * i));
+					}
+				break;
+				
+				case hih.Constants.DownPayRepeatType_PerYear:
+					ntimes = Math.floor(ndays / 365);
+					for(i = 0; i < ntimes; i ++) {
+						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 365 * i));
+					}
+				break;
+				
+				case hih.Constants.DownRayRepeatType_Manual:
+					ntimes = 0;
+				break;
+				
+				others:
+				break;
+			}
+			for(i = 0; i < ntimes; i ++) {
+				var item = new hih.FinanceDPTempDoc();
+				item.DocID = i + 1;
+				item.TranDate = arDays[i];
+				item.Amount = $scope.DocumentObject.TranAmount / ntimes;
+				$scope.DPItems.push(item);
+			}
+			
+			if (ntimes === 0) {
+				item = new hih.FinanceDPTempDoc();
+				item.DocID = 1;
+				item.TranDate = $scope.AccountObject.StartDate;
+				item.Amount = $scope.DocumentObject.TranAmount / ntimes;
+				$scope.DPItems.push(item);				
+			}
+			
+			$scope.updateNextItemID();
+			$scope.selectedDPItem = new hih.FinanceDPTempDoc();
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		
+		$scope.nextItemID = 0;
+		$scope.updateNextItemID = function () {
+			if (angular.isArray($scope.DPItems) && $scope.DPItems.length > 0) {
+				$scope.nextItemID = 0;
+				
+				$.each($scope.DPItems, function (idx, obj) {
+	                var nItemID = parseInt(obj.DocID);
+						
+					if ($scope.nextItemID < nItemID) {
+						$scope.nextItemID = nItemID;
+		            }
+		        });
+				
+				$scope.nextItemID++;
+			} else {
+				$scope.nextItemID = 1;
+			}
+		};
+		$scope.displayItem = function(itemid) {
+			$scope.cleanReportMessages();
+			var nID = parseInt(itemid);
+			for(var i = 0; i < $scope.DPItems.length; i ++) {
+				if ($scope.DPItems[i].DocID === nID) {
+					$scope.selectedDPItem = $scope.DPItems[i]; 
+					break;
+				}
+			}
+
+			$scope.ItemActivity = "Finance.DisplayItem";
+		};
+		$scope.editItem = function(itemid) {
+			$scope.cleanReportMessages();
+			var nID = parseInt(itemid);
+			for(var i = 0; i < $scope.DPItems.length; i ++) {
+				if ($scope.DPItems[i].DocID === nID) {
+					$scope.selectedDPItem = $scope.DPItems[i]; 
+					break;
+				}
+			}
+
+			$scope.ItemActivity = "Finance.MaintainItem";
+		};
+		$scope.removeItem = function(itemid) {
+			$scope.cleanReportMessages();
+			
+			// Show confirm dialog
+			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+				function() {
+					var nID = parseInt(itemid);
+					if ($scope.selectedDPItem.DocID === nID) {
+						$scope.selectedDPItem = new hih.FinanceDPTempDoc();
+						$scope.ItemActivity = "Finance.CreateItem";
+					}
+							
+					for(var i = 0; i < $scope.DPItems.length; i ++) {
+						if ($scope.DPItems[i].DocID === nID) {
+							$scope.DPItems.splice(i, 1);
+							break;
+						}
+					}
+					
+					$scope.$apply();
+			});
+		};
+
+		$scope.saveCurrentItem = function() {
+			$scope.cleanReportMessages();
+			
+// 			// Change the IDs from String to Integer
+// 			$scope.SelectedDocumentItem.AccountID = parseInt($scope.SelectedDocumentItem.AccountID);
+// 			$scope.SelectedDocumentItem.ControlCenterID = parseInt($scope.SelectedDocumentItem.ControlCenterID);
+// 			$scope.SelectedDocumentItem.OrderID = parseInt($scope.SelectedDocumentItem.OrderID);
+// 			$scope.SelectedDocumentItem.TranTypeID = parseInt($scope.SelectedDocumentItem.TranTypeID);
+// 			
+ 			// Perform the check
+// 			var rptMsgs = $scope.selectedDPItem.Verify($translate);
+// 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+// 				$q.all(rptMsgs)
+// 					.then(function(response) {
+// 						$scope.cleanReportMessages();
+// 						Array.prototype.push.apply($scope.ReportedMessages, response);
+// 					}, function(reason) {
+// 						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+// 					});
+// 				return;
+// 			}
+// 			// Amount
+// 			//$scope.SelectedDocumentItem.TranAmountInLC = $scope.SelectedDocumentItem.TranAmount_Org;
+// 			
+// 			// Build the relationship
+// 			$scope.SelectedDocumentItem.buildRelationship($rootScope.arFinanceAccount,
+// 				$rootScope.arFinanceControlCenter,
+// 				$rootScope.arFinanceOrder,
+// 				$rootScope.arFinanceTransactionType
+// 				);
+ 
+			// Next item ID
+			if ($scope.selectedDPItem.DocID === -1) {
+				$scope.updateNextItemID();
+				$scope.selectedDPItem.DocID = $scope.nextItemID;				
+				$scope.DPItems.push($scope.selectedDPItem);
+			} else {
+				// Update the selected one
+				// It is updated automatically? Yes, it is!
+			}
+ 			
+ 			// New item
+			$scope.selectedDPItem = new hih.FinanceDPTempDoc();
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		$scope.cancelCurrentItem = function() {
+			$scope.cleanReportMessages();
+			
+			$scope.selectedDPItem = new hih.FinanceDPTempDoc();
+			$scope.ItemActivity = "Finance.CreateItem";
+		};
+		$scope.submit = function() {
+			$scope.cleanReportMessages();
+			
+			// Account
+			// Documents
 		};
 		$scope.backToList = function() {
 			
