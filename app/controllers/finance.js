@@ -1894,8 +1894,11 @@
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
 			
+			// Origianl documents
 			// Account
-			// Documents
+			// Account additional for downpayment
+			// Deducted document for the first posting, really need? 
+			// Temp Documents
 		};
 		$scope.backToList = function() {
 			

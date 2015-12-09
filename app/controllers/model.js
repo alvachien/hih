@@ -1060,18 +1060,23 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);		
 	};
+	// 4a. Account additional data for down payment
 	hih.FinanceAccountDownpayment = function() {
 		this.StartDate = new Date();
 		this.EndDate = new Date();
-    	this.EndDate.setDate(this.EndDate.getDate() + 30);
-		
+    	this.EndDate.setDate(this.EndDate.getDate() + 30);		
 		this.RepeatType = 1;
-		this.RepeatTimes = 1;
-		this.DeferredDays = [];
 		this.RefDocID = -1;
 		this.Others = "";
 	};
 	hih.extend(hih.FinanceAccountDownpayment, hih.FinanceAccount);
+	hih.FinanceAccountDownpayment.prototype.setContent = function(obj) {
+		this.StartDate = new Date(obj.startdate);
+		this.EndDate = new Date(obj.enddate);
+		this.RepeatType = parseInt(obj.repeattype);
+		this.RefDocID = parseInt(obj.refdocid);
+		this.Others = obj.others;
+	};
 	// 5. Controlling Center
 	hih.FinanceControlCenter = function FinanceControlCenter() {
 		this.ID = -1;
