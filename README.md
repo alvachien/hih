@@ -12,29 +12,29 @@ As it name indicates, HIH shall be used inside the family network. So, ideally, 
 For version 0.5, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
 ### General part
-- [x]Multiple languages supported: English and Simplified Chinese
-- [x]Dynamic Themes supported
+- [x] Multiple languages supported: English and Simplified Chinese
+- [x] Dynamic Themes supported
 
 ### Finance trace
 - [x] Accounts, like Cash, Creditcard, etc;
-- [x]Documents, the finance activities go by the document;
+- [x] Documents, the finance activities go by the document;
 - [x] **Multiple Currencies Enablement**;
-- [x]**Reporting**, like the Balance Sheet, etc;
-- [x]**Controlling perspective**: Control Center and Order, the reporting also available here;
-- [x]**Downpayment**;
-- [ ]Installment;
-- [ ]Asset
+- [x] **Reporting**, like the Balance Sheet, etc;
+- [x] **Controlling perspective**: Control Center and Order, the reporting also available here;
+- [x] **Downpayment**;
+- [ ] Installment;
+- [ ] Asset
 
 ### Learing trace
-- [x]Learn Object, identify the detail to learn;
-- [x]Learn History, histories information for the learning;
-- [x]Learn Award;
-- [x]**Learn Plan (with Comparison to real learn history)**, setup a plan, and execute it with comparison;
+- [x] Learn Object, identify the detail to learn;
+- [x] Learn History, histories information for the learning;
+- [x] Learn Award;
+- [x] **Learn Plan (with Comparison to real learn history)**, setup a plan, and execute it with comparison;
 
 ### Library trace (to do)
-- [ ]Books, stores books information, including the paper book edition, Kindle edition, or other e-book part;
-- [ ]Videos, stores the video part;
-- [ ]Software, stores the available software information;
+- [ ] Books, stores books information, including the paper book edition, Kindle edition, or other e-book part;
+- [ ] Videos, stores the video part;
+- [ ] Software, stores the available software information;
 
 ## Who needs HIH
 If you have more than two computers, no doubtly that you will feel it's hard to synchronze the data between them. Now days, it becomes more and more critical when the mobile devices are used widely to store the pieces of information. 
@@ -92,7 +92,7 @@ A programmer, and a certificated Advanced Photographer.
  
 Contact me via mail: alvachien@163.com. Or,
 
-[Check my flickr] (www.flickr.com/photos/alvachien). Or,
+[Check my flickr] (http://www.flickr.com/photos/alvachien). Or,
  
-[Visit my website] (www.alvachien.com)
+[Visit my website] (http://www.alvachien.com)
  
