@@ -8,7 +8,7 @@
 As it name indicates, HIH shall be used inside the family network. So, ideally, it runs on a NAS or Family Server with HTTP/PHP enabling.  
 
 ## What's HIH
-**HIH**, the abbreviation of **Home Info. Hub**, is a warehouse storing the necessary information among all family memebers.
+**HIH**, the abbreviation of **Home Information Hub**, is a warehouse storing the necessary information among all family memebers.
 For version 0.5, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
 ### General part
@@ -38,13 +38,15 @@ For version 0.5, it supports the Finance Traces and Learning Traces. The detail 
 
 ## Who needs HIH
 If you have more than two computers, no doubtly that you will feel it's hard to synchronze the data between them. Now days, it becomes more and more critical when the mobile devices are used widely to store the pieces of information. 
+ 
 It's quite ture that the cloud solution, like Apple iCloud, Microsoft OneDrive gets popular recent days for the storage purpose, but it still cannot solve the issues for the structured data - overwritting files always be the last approach.
 
 In that case, HIH provides the opportunity to share the information among the intranet (though it's quite easy to convert it into Internet part).  And, for the family usage, the finance part the learning part coming as the first part.
 
 ## Development History
 Current Version: Web 0.5.*;
-Built with JavaScript Frontend(AngularJS, Bootstrap, Angular UI, TinyMCE, etc) and PHP Backend. See more in About menu.
+
+Built with JavaScript Frontend(AngularJS, Bootstrap, Angular UI, TinyMCE, etc) and PHP Backend.
 
 ### Key Directions/Decisions in Scope/Design/Development phrase
 - 2015.7.1, Switch from native BootStrap CSS to component UI Bootstrap;
@@ -90,9 +92,8 @@ See more in the About menu;
 
 A programmer, and a certificated Advanced Photographer.  
  
-Contact me via mail: alvachien@163.com. Or,
-
-[Check my flickr] (http://www.flickr.com/photos/alvachien). Or,
- 
-[Visit my website] (http://www.alvachien.com)
+Contact me:
+1. Via mail: alvachien@163.com. Or,
+2. [Check my flickr] (http://www.flickr.com/photos/alvachien). Or,
+3. [Visit my website] (http://www.alvachien.com)
  
