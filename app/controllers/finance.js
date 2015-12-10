@@ -1895,9 +1895,10 @@
 			$scope.cleanReportMessages();
 			
 			// Origianl documents
+			
 			// Account
 			// Account additional for downpayment
-			// Deducted document for the first posting, really need? 
+			// Deducted document for the first posting, really need? Maybe not
 			// Temp Documents
 		};
 		$scope.backToList = function() {
