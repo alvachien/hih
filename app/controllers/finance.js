@@ -1895,9 +1895,20 @@
 			$scope.cleanReportMessages();
 			
 			// Origianl documents
+			// $scope.DocumentObject;
 			
 			// Account
+			var objAccount = new hih.FinanceAccount();
+			objAccount.Name = $scope.DocumentObject.Desp;
+			objAccount.Comment = objAccount.Name;
+			if ($scope.direction === 0)
+				objAccount.CategoryID = 8; // Outgoing
+			else 
+				objAccount.CategoryID = 9;
+			
 			// Account additional for downpayment
+			//$scope.AccountObject
+			
 			// Deducted document for the first posting, really need? Maybe not
 			// Temp Documents
 		};

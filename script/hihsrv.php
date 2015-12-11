@@ -567,6 +567,16 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
+		case "CREATEFINANCEDOCUMENT_DP": {
+			// For JSON-based parameter, cannot escape.
+			$docdata = json_decode( $realParamArr ['docdata'] );
+			$acntdata = json_decode( $realParamArr [ 'accountdata' ]);
+			$dpitems = json_decode( $realParamArr [ 'dpitems' ]);
+			
+			HIHSrv_Function_3Param( 'finance_dpdoc_post', $docdata, $acntdata, $dpitems );
+		}
+		break;
+		
 		case "DELETEFINANCEDOCUMENT": {
 			$docid = escape ( $realParamArr ['docid'] );
 			HIHSrv_Function_1Param( 'finance_document_delete', $docid);

@@ -2952,6 +2952,24 @@ function finance_document_curexg_listread() {
 			$rsttable 
 	);	
 }
+function finance_dpdoc_post($docdata, $accountdata, $dpitems) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$mysqli->autocommit ( false );
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	$objDoc = new FinanceDocument($docdata);
+}
 function finance_document_post($docobj) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	/* check connection */
