@@ -531,7 +531,30 @@ class HIHAccount {
 		return $errCodes;
 	}
 }
-
+class HIHFinanceAccountDP {
+	// Properties
+	public $AccountID;
+	public $StartDate;
+	public $EndDate;
+	public $RepeatType;
+	public $RefDocID;
+	public $Others;
+	
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function fromJSON($jsonData) {
+		// jsonData contains ItemID, AccountID, TranTypeID, TranAmount, ControlCenterID, OrderID, Desp
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+		
+		if ($this->RefDocID == -1) {
+			$this->RefDocID = NULL;
+		}
+	}
+}
 class HIHDocumentItem {
 	// Properties
 	public $ItemID;
@@ -604,6 +627,37 @@ class HIHDocumentItem {
 		}
 		if ($this->UseCurrency2 != 1) {
 			$this->UseCurrency2 = NULL;
+		}
+	}
+}
+class FinanceDPTempDoc{
+	public $DocID;
+	public $RefDocID;
+	public $AccountID;
+	public $TranDate;
+	public $TranTypeID;
+	public $Amount;
+	public $ControlCenterID;
+	public $OrderID;
+	public $Desp;
+
+	// Constructor
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function fromJSON($jsonData) {
+		// jsonData contains ItemID, AccountID, TranTypeID, TranAmount, ControlCenterID, OrderID, Desp
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+		if ($this->RefDocID == -1) {
+			$this->RefDocID = NULL;
+		}
+		if ($this->ControlCenterID == -1) {
+			$this->ControlCenterID = NULL;
+		}
+		if ($this->OrderID === -1) {
+			$this->OrderID = NULL;
 		}
 	}
 }

@@ -1062,6 +1062,7 @@
 	};
 	// 4a. Account additional data for down payment
 	hih.FinanceAccountDownpayment = function() {
+		this.AccountID = -1;
 		this.StartDate = new Date();
 		this.EndDate = new Date();
     	this.EndDate.setDate(this.EndDate.getDate() + 30);		
@@ -1071,6 +1072,7 @@
 	};
 	hih.extend(hih.FinanceAccountDownpayment, hih.FinanceAccount);
 	hih.FinanceAccountDownpayment.prototype.setContent = function(obj) {
+		this.AccountID = parseInt(obj.accountid);
 		this.StartDate = new Date(obj.startdate);
 		this.EndDate = new Date(obj.enddate);
 		this.RepeatType = parseInt(obj.repeattype);
