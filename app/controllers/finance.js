@@ -1516,13 +1516,13 @@
 		// This class serviced for the creation/display/maintenance of Down payment document
 		$scope.Activity = "";
 		$scope.isReadonly = false;
+		
 		$scope.ReportedMessages = [];
 		$scope.cleanReportMessages = function() {
 			$scope.ReportedMessages = [];
 		};
 
 		$scope.DocumentObject = new hih.FinanceDocument();
-		$scope.DocumentObject.DocTypeID = 5; // Fixed
 		$scope.TranCurrencyIsLocal = true;
 		$scope.DownpaymentType = "1";
 		$scope.SourceAccountID = -1;
@@ -1900,13 +1900,14 @@
 			$scope.cleanReportMessages();
 			
 			// Origianl documents & its items
+			$scope.DocumentObject.DocTypeID = 5; // Fixed
 			$scope.DocumentObject.Items = [];
 			var docItem = new hih.FinanceDocumentItem();
 			docItem.ItemID = 1;
 			docItem.AccountID = $scope.SourceAccountID;
 			docItem.TranTypeID = $scope.SourceTranTypeID;
-			docItem.TranAmount_Org = 0.0;
-			docItem.TranAMount = $scope.DocumentObject.TranAMount;
+			docItem.TranAmount_Org = $scope.DocumentObject.TranAMount;
+			//docItem.TranAMount = $scope.DocumentObject.TranAMount;
 			docItem.ControlCenterID = $scope.SourceCCID;
 			docItem.OrderID = $scope.SourceOrderID;
 			docItem.Desp = $scope.DocumentObject.Desp;
@@ -1924,7 +1925,7 @@
 			
 			// Account additional for downpayment
 			$scope.AccountObject.RepeatType = parseInt($scope.AccountRepeatTypeString);
-			
+			$scope.AccountObject.Direct = parseInt($scope.DownpaymentType);
 			// Deducted document for the first posting, really need? Maybe not
 			
 			// Temp Documents
@@ -1933,7 +1934,7 @@
 			var json1 = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
 			var json2 = objAccount.toJSON();
 			var json3 = $scope.AccountObject.ToJSON();
-			var json4 = JSON.stringify($scope.DPItems);
+			var json4 = JSON && JSON.stringify($scope.DPItems) || $.toJSON($scope.DPItems);
 			
 			utils.createFinanceDPDocumentQ(json1, json2, json3, json4)
 				.then(function(response) {

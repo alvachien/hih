@@ -1063,6 +1063,7 @@
 	// 4a. Account additional data for down payment
 	hih.FinanceAccountDownpayment = function() {
 		this.AccountID = -1;
+		this.Direct = "";
 		this.StartDate = new Date();
 		this.EndDate = new Date();
     	this.EndDate.setDate(this.EndDate.getDate() + 30);		
@@ -1855,7 +1856,7 @@
 		
 		return forJSON;
 	};
-	hih.FinanceDPTempDoc.prototype.ToJSON = function() {
+	hih.FinanceDPTempDoc.prototype.toJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);

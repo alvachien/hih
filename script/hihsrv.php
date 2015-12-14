@@ -572,25 +572,30 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			$docdata = json_decode( $realParamArr ['docdata'] );
 			var_dump($docdata);
 			$docObj = new HIHDocument($docdata);
+			var_dump($docObj);
 			
 			$acntdata = json_decode( $realParamArr [ 'accountdata' ]);
 			var_dump($acntdata);
 			$acntObj = new HIHAccount($acntdata);
+			var_dump($acntObj);
 			
 			$acntdp = json_decode( $realParamArr [ 'accountdp' ]);
 			var_dump($acntdp);
 			$acntDPObj = new HIHAccountDP($acntdp);
+			var_dump($acntDPObj);
 			
 			$dpitems = json_decode( $realParamArr [ 'dpitems' ]);
-			$doObjs = [];
-			foreach ($dpitems as $value) {
-				$docObjs[] = new HIHDPTempDoc($value);
+			var_dump($dpitems);
+			$docObjs = [];
+			if (is_array($dpitems)) {
+				$count = count($dpitems);
+				for ($i = 0; $i < $count; $i++) {
+					var_dump($dpitems[ $i ]);
+					$docObjs[] = new HIHDPTempDoc($dpitems[ $i ]);
+				}
 			}
-			var_dump($docObj);
-			var_dump($acntObj);
-			var_dump($acntDPObj);
 			var_dump($docObjs);
-			//HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $doObjs);
+			//HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $docObjs);
 		}
 		break;
 		

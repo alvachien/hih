@@ -647,7 +647,8 @@ class HIHDPTempDoc{
         if ($json) $this->fromJSON($json);
     }
 	public function fromJSON($jsonData) {
-		// jsonData contains ItemID, AccountID, TranTypeID, TranAmount, ControlCenterID, OrderID, Desp
+		var_dump($jsonData);
+		
 		foreach ($jsonData AS $key => $value) {
 			$this->{$key} = $value;
 		}
