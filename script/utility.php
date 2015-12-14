@@ -2952,7 +2952,7 @@ function finance_document_curexg_listread() {
 			$rsttable 
 	);	
 }
-function finance_dpdoc_post($docobj, $acntObj, $dpitems) {
+function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -3035,24 +3035,24 @@ function finance_dpdoc_post($docobj, $acntObj, $dpitems) {
 	/* Prepare an insert statement on account downpayment part */
 	if (empty ( $sError )) {
 		$query = "INSERT INTO t_fin_account_dp (`ACCOUNTID`, `DIRECT`, `STARTDATE`, `ENDDATE`, `RTTYPE`, `REFDOCID`, `COMMENT`) VALUES (?, ?, ?, ?, ?, ?, ?);";	
-		
+		if ($stmt = $mysqli->prepare ( $query )) {
+			$stmt->bind_param ( "iissiis", $nAccountID,  $dpacntObj->Direct, $dpacntObj->StartDate, $dpacntObj->EndDate, $dpacntObj->RepeatType,
+				$nDocID, $dpacntObj->Comment );
+			/* Execute the statement */
+			if ($stmt->execute ()) {
+			} else {
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+			}
+		}		
 	}
 
 	/* Prepare an insert statement on DP temp Docs */
 	if (empty ( $sError )) {
-	// public $DocID;
-	// public $RefDocID;
-	// public $AccountID;
-	// public $TranDate;
-	// public $TranTypeID;
-	// public $Amount;
-	// public $ControlCenterID;
-	// public $OrderID;
-	// public $Desp;
-		$query = "INSERT INTO t_fin_tmpdoc_dp (`REFDOCID`, `ACCOUNTID`, `TRANDATE`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) VALUES (?, ?, ?, ?, ?, ?, ?);";	
-		foreach ( $dpitems as $dpdoc ) {
+		$query = "INSERT INTO t_fin_tmpdoc_dp (`REFDOCID`, `ACCOUNTID`, `TRANDATE`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";	
+		foreach ( $dpObjs as $dpdoc ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->Desp );
+				$newstmt->bind_param ( "iisidiis", $dpdoc->RefDocID, $dpdoc->AccountID, $dpdoc->TranDate, $dpdoc->TranTypeID, $dpdoc->Amount, 
+					$dpdoc->ControlCenterID, $dpdoc->OrderID, $dpdoc->Desp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
@@ -3062,7 +3062,6 @@ function finance_dpdoc_post($docobj, $acntObj, $dpitems) {
 				}
 			}
 		}
-		
 	}
 	
 	if (empty ( $sError )) {
@@ -4394,6 +4393,27 @@ function HIHSrv_Function_4Param( $func_name, $func_para1, $func_para2, $func_par
 		if (function_exists($func_name))
 		{
 			$arRst = $func_name ( $func_para1, $func_para2, $func_para3, $func_para4 );
+			
+			if (! IsNullOrEmptyString ( $arRst [0] )) {
+				export_error ( $arRst [0] );
+			} else {
+				echo json_encode ( $arRst [1] );
+			}
+		} else {
+			$sErrors = "Function does not available: ". $func_name;
+			export_error ( sErrors );				
+		}
+	} else {
+		$sErrors = "User not login yet";
+		export_error ( sErrors );
+	}
+}
+
+function HIHSrv_Function_5Param( $func_name, $func_para1, $func_para2, $func_para3, $func_para4, $func_para5 ) {
+	if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+		if (function_exists($func_name))
+		{
+			$arRst = $func_name ( $func_para1, $func_para2, $func_para3, $func_para4, $func_para5 );
 			
 			if (! IsNullOrEmptyString ( $arRst [0] )) {
 				export_error ( $arRst [0] );

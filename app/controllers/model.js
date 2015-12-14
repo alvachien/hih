@@ -1079,6 +1079,37 @@
 		this.RefDocID = parseInt(obj.refdocid);
 		this.Others = obj.others;
 	};
+	hih.FinanceAccountDownpayment.prototype.Verify = function($translate) {
+		var errMsgs = [];
+		
+		// Call to the super class's verify
+		//if (this._super) {
+		//	errMsgs = this._super.Verify.call(this);
+		//}
+		
+		return errMsgs;
+	};
+	hih.FinanceAccountDownpayment.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "StartDate" || i === "EndDate")
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		forJSON.StartDate = hih.ModelUtility.DateFormatter(this.StartDate);
+		forJSON.EndDate = hih.ModelUtility.DateFormatter(this.EndDate);
+		
+		return forJSON;
+	};
+	hih.FinanceAccountDownpayment.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);		
+	};
 	// 5. Controlling Center
 	hih.FinanceControlCenter = function FinanceControlCenter() {
 		this.ID = -1;
@@ -1809,6 +1840,27 @@
 	};
 	hih.FinanceDPTempDoc.prototype.buildRelationship = function(arAccount, arTranType, arCC, arOrd) {
 		
+	};
+	hih.FinanceDPTempDoc.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "AccountObject" || i === "RefDocObject" || i === "TranTypeObject"
+				|| i === "TranDate" || i === "ControlCenterObject" || i === "OrderObject") 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		// Tran Date
+		forJSON.TranDate = hih.ModelUtility.DatabaseDateFormatter(this.TranDate);
+		
+		return forJSON;
+	};
+	hih.FinanceDPTempDoc.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
 	// 9. Balance sheet report
 	hih.FinanceReportBalanceSheet = function FinanceReportBalanceSheet() {

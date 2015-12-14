@@ -1522,10 +1522,15 @@
 		};
 
 		$scope.DocumentObject = new hih.FinanceDocument();
-		$scope.DocumentObject.DocTypeID = 5; 
+		$scope.DocumentObject.DocTypeID = 5; // Fixed
 		$scope.TranCurrencyIsLocal = true;
 		$scope.DownpaymentType = "1";
+		$scope.SourceAccountID = -1;
+		$scope.SourceCCID = -1;
+		$scope.SourceOrderID = -1;
+		$scope.SourceTranTypeID = -1;
 		$scope.AccountRepeatTypeString = "0";
+		
 		$scope.AccountObject = new hih.FinanceAccountDownpayment();
 		$scope.DPItems = [];
 		$scope.safeItemList = [];
@@ -1894,23 +1899,48 @@
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
 			
-			// Origianl documents
-			// $scope.DocumentObject;
+			// Origianl documents & its items
+			$scope.DocumentObject.Items = [];
+			var docItem = new hih.FinanceDocumentItem();
+			docItem.ItemID = 1;
+			docItem.AccountID = $scope.SourceAccountID;
+			docItem.TranTypeID = $scope.SourceTranTypeID;
+			docItem.TranAmount_Org = 0.0;
+			docItem.TranAMount = $scope.DocumentObject.TranAMount;
+			docItem.ControlCenterID = $scope.SourceCCID;
+			docItem.OrderID = $scope.SourceOrderID;
+			docItem.Desp = $scope.DocumentObject.Desp;
+			docItem.UseCurrency2 = false;
+			$scope.DocumentObject.Items.push(docItem);
 			
 			// Account
 			var objAccount = new hih.FinanceAccount();
 			objAccount.Name = $scope.DocumentObject.Desp;
 			objAccount.Comment = objAccount.Name;
-			if ($scope.direction === 0)
+			if (parseInt($scope.DownpaymentType) === 1)
 				objAccount.CategoryID = 8; // Outgoing
 			else 
 				objAccount.CategoryID = 9;
 			
 			// Account additional for downpayment
-			//$scope.AccountObject
+			$scope.AccountObject.RepeatType = parseInt($scope.AccountRepeatTypeString);
 			
 			// Deducted document for the first posting, really need? Maybe not
+			
 			// Temp Documents
+			// $scope.DPItems
+			
+			var json1 = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var json2 = objAccount.toJSON();
+			var json3 = $scope.AccountObject.ToJSON();
+			var json4 = JSON.stringify($scope.DPItems);
+			
+			utils.createFinanceDPDocumentQ(json1, json2, json3, json4)
+				.then(function(response) {
+					
+				}, function(reason) {
+					
+				});
 		};
 		$scope.backToList = function() {
 			

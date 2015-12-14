@@ -1536,6 +1536,19 @@
 							});
 							return deferred.promise;
 						};
+						rtnObj.createFinanceDPDocumentQ = function(jsonDocData, jsonAcntData, jsonAcntDPData, jsonDPItems) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCEDOCUMENT_DP', docdata: jsonDocData, accountdata: jsonAcntData, accountdp: jsonAcntDPData, dpitems: jsonDPItems})
+							.then(function(response) {
+								// It returns the new document id
+								deferred.resolve(parseInt(response.data));
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
+						};
 						rtnObj.deleteFinanceDocumentQ = function(docid) {
 							var deferred = $q.defer();
 							$http.post(

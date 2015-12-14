@@ -531,11 +531,12 @@ class HIHAccount {
 		return $errCodes;
 	}
 }
-class HIHFinanceAccountDP {
+class HIHAccountDP {
 	// Properties
 	public $AccountID;
 	public $StartDate;
 	public $EndDate;
+	public $Direct;
 	public $RepeatType;
 	public $RefDocID;
 	public $Others;
@@ -630,7 +631,7 @@ class HIHDocumentItem {
 		}
 	}
 }
-class FinanceDPTempDoc{
+class HIHDPTempDoc{
 	public $DocID;
 	public $RefDocID;
 	public $AccountID;

@@ -570,10 +570,27 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "CREATEFINANCEDOCUMENT_DP": {
 			// For JSON-based parameter, cannot escape.
 			$docdata = json_decode( $realParamArr ['docdata'] );
-			$acntdata = json_decode( $realParamArr [ 'accountdata' ]);
-			$dpitems = json_decode( $realParamArr [ 'dpitems' ]);
+			var_dump($docdata);
+			$docObj = new HIHDocument($docdata);
 			
-			HIHSrv_Function_3Param( 'finance_dpdoc_post', $docdata, $acntdata, $dpitems );
+			$acntdata = json_decode( $realParamArr [ 'accountdata' ]);
+			var_dump($acntdata);
+			$acntObj = new HIHAccount($acntdata);
+			
+			$acntdp = json_decode( $realParamArr [ 'accountdp' ]);
+			var_dump($acntdp);
+			$acntDPObj = new HIHAccountDP($acntdp);
+			
+			$dpitems = json_decode( $realParamArr [ 'dpitems' ]);
+			$doObjs = [];
+			foreach ($dpitems as $value) {
+				$docObjs[] = new HIHDPTempDoc($value);
+			}
+			var_dump($docObj);
+			var_dump($acntObj);
+			var_dump($acntDPObj);
+			var_dump($docObjs);
+			//HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $doObjs);
 		}
 		break;
 		
