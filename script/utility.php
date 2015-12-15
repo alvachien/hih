@@ -411,8 +411,8 @@ function learn_category_read() {
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			$ctgytable 
+		$sError,
+		$ctgytable 
 	);
 }
 function learn_category_readex() {
@@ -1446,11 +1446,11 @@ function learn_plan_create($objPlan) {
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
-					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
+				$newstmt->close();
 			}
 		}		
 	} else {
@@ -1467,11 +1467,11 @@ function learn_plan_create($objPlan) {
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
-					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
+				$newstmt->close();
 			}
 		}		
 	}
@@ -1568,11 +1568,11 @@ function learn_plan_change($objPlan) {
 					
 					/* Execute the statement */
 					if ($newstmt->execute ()) {
-						$newstmt->close();
 					} else {
 						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 						break;
 					}
+					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
@@ -1610,11 +1610,11 @@ function learn_plan_change($objPlan) {
 					
 					/* Execute the statement */
 					if ($newstmt->execute ()) {
-						$newstmt->close();
 					} else {
 						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 						break;
 					}
+					$newstmt->close();
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
@@ -1837,12 +1837,12 @@ function learn_award_listread_byuser($username) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"id" => $row [0],
-					"userid" => $row [1],
-					"displayas" => $row [2],
-					"adate" => $row [3],
-					"score" => $row [4],
-					"reason" => $row [5] 
+				"id" => $row [0],
+				"userid" => $row [1],
+				"displayas" => $row [2],
+				"adate" => $row [3],
+				"score" => $row [4],
+				"reason" => $row [5] 
 			);
 		}
 		
@@ -1861,8 +1861,8 @@ function learn_award_listread_byuser($username) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$footer [] = array (
-						"avg" => $row [1],
-						"total" => $row [2] 
+					"avg" => $row [1],
+					"total" => $row [2] 
 				);
 			}
 			
@@ -1873,8 +1873,8 @@ function learn_award_listread_byuser($username) {
 		}
 	} else {
 		$footer [] = array (
-				"avg" => 0,
-				"total" => 0 
+			"avg" => 0,
+			"total" => 0 
 		);
 	}
 	
@@ -2589,6 +2589,8 @@ function finance_account_delete($acntid) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	/* Commit or rollback */
@@ -2972,6 +2974,9 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 	$sError = "";
 	$nDocID = 0;
 	$nAccountID = 0;
+	$nCode = 0;
+	$nNewid = 0;
+	$sMsg = "";
 	
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
@@ -2984,8 +2989,13 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 		if ($stmt->execute ()) {
 			$nDocID = $mysqli->insert_id;
 		} else {
-			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Prepare an insert statement on item */
@@ -2994,7 +3004,8 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 		
 		foreach ( $docobj->ItemsArray as $value ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->Desp );
+				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, 
+					$value->ControlCenterID, $value->OrderID, $value->Desp );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
@@ -3002,25 +3013,23 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 					break;
 				}
+		
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 		}
 	}
 
 	/* Prepare an insert statement on account header */
 	if (empty ( $sError )) {
-		$query = "CALL " . HIHConstants::DP_CreateFinAccount . " (?,?,?);";
-		
+		$query = "INSERT INTO `t_fin_account`(`CTGYID`, `NAME`, `COMMENT`) VALUES(?, ?, ?);";
 		if ($stmt = $mysqli->prepare ( $query )) {
 			$stmt->bind_param ( "iss", $acntObj->CategoryID, $acntObj->Name, $acntObj->Comment );
 			/* Execute the statement */
 			if ($stmt->execute ()) {
-				/* bind variables to prepared statement */
-				$stmt->bind_result ( $code, $msg, $nAccountID );
-				
-				/* fetch values */
-				while ( $stmt->fetch () ) {
-					$sError = $msg;
-				}
+				$nAccountID = $mysqli->insert_id;
 			} else {
 				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
@@ -3034,7 +3043,7 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 	
 	/* Prepare an insert statement on account downpayment part */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO t_fin_account_dp (`ACCOUNTID`, `DIRECT`, `STARTDATE`, `ENDDATE`, `RTTYPE`, `REFDOCID`, `COMMENT`) VALUES (?, ?, ?, ?, ?, ?, ?);";	
+		$query = "INSERT INTO t_fin_account_dp (`ACCOUNTID`, `DIRECT`, `STARTDATE`, `ENDDATE`, `RPTTYPE`, `REFDOCID`, `COMMENT`) VALUES (?, ?, ?, ?, ?, ?, ?);";	
 		if ($stmt = $mysqli->prepare ( $query )) {
 			$stmt->bind_param ( "iissiis", $nAccountID,  $dpacntObj->Direct, $dpacntObj->StartDate, $dpacntObj->EndDate, $dpacntObj->RepeatType,
 				$nDocID, $dpacntObj->Comment );
@@ -3043,7 +3052,12 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 			} else {
 				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 			}
-		}		
+			
+			/* close statement */
+			$stmt->close ();
+		} else {
+			$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+		}
 	}
 
 	/* Prepare an insert statement on DP temp Docs */
@@ -3051,7 +3065,7 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 		$query = "INSERT INTO t_fin_tmpdoc_dp (`REFDOCID`, `ACCOUNTID`, `TRANDATE`, `TRANTYPE`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";	
 		foreach ( $dpObjs as $dpdoc ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iisidiis", $dpdoc->RefDocID, $dpdoc->AccountID, $dpdoc->TranDate, $dpdoc->TranTypeID, $dpdoc->Amount, 
+				$newstmt->bind_param ( "iisidiis", $dpdoc->RefDocID, $nAccountID, $dpdoc->TranDate, $dpdoc->TranTypeID, $dpdoc->Amount, 
 					$dpdoc->ControlCenterID, $dpdoc->OrderID, $dpdoc->Desp );
 				
 				/* Execute the statement */
@@ -3060,6 +3074,11 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 					break;
 				}
+
+				/* close statement */
+				$stmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 		}
 	}
@@ -3114,6 +3133,9 @@ function finance_document_post($docobj) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 		}
+		
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	/* Prepare an insert statement on item */
@@ -3130,6 +3152,11 @@ function finance_document_post($docobj) {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 					break;
 				}
+				
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 		}
 	}
@@ -3146,6 +3173,11 @@ function finance_document_post($docobj) {
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 				}
+				
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 		}		
 		if (isset($docobj->ExchangeRate2) and $docobj->ExchangeRate2 != 1.0 and (!isset($docobj->ProposedExchangeRate2) or $docobj->ProposedExchangeRate2 != 1.0)) {
@@ -3159,6 +3191,11 @@ function finance_document_post($docobj) {
 				} else {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
 				}
+				
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}			
 		}		
 	}
@@ -3209,6 +3246,9 @@ function finance_document_delete($docid) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	/* Prepare an delete statement on items */
@@ -3224,6 +3264,8 @@ function finance_document_delete($docid) {
 				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
+			/* close statement */
+			$newstmt->close ();
 		}
 	}
 
@@ -3240,6 +3282,8 @@ function finance_document_delete($docid) {
 				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
+			/* close statement */
+			$newstmt->close ();
 		}
 	}
 	
@@ -3541,6 +3585,9 @@ function finance_internalorder_create($objIO) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	/* Prepare an insert statement on srules */
@@ -3557,6 +3604,8 @@ function finance_internalorder_create($objIO) {
 					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
+				/* close statement */
+				$newstmt->close ();
 			}
 		}
 	}
@@ -3608,6 +3657,8 @@ function finance_internalorder_delete($ordid) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	/* Prepare an delete statement on items */
@@ -3623,6 +3674,8 @@ function finance_internalorder_delete($ordid) {
 				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				break;
 			}
+			/* close statement */
+			$newstmt->close ();
 		}
 	}
 	
@@ -3810,6 +3863,8 @@ function finance_controlcenter_delete($ccid) {
 		} else {
 			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
+		/* close statement */
+		$stmt->close ();
 	}
 	
 	if (empty ( $sError )) {

@@ -498,7 +498,7 @@ class HIHAccount {
 	
 	// Constructor
 	public function __construct($json = false) {
-        if ($json) $this->fromJSON(json_decode($json, true));
+        if ($json) $this->fromJSON($json);
     }
 
 	public function fromJSON($jsonData) {
@@ -647,8 +647,6 @@ class HIHDPTempDoc{
         if ($json) $this->fromJSON($json);
     }
 	public function fromJSON($jsonData) {
-		var_dump($jsonData);
-		
 		foreach ($jsonData AS $key => $value) {
 			$this->{$key} = $value;
 		}

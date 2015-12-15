@@ -358,7 +358,31 @@
 									});
 							}
 						};
-						
+						rtnObj.loadWelcomeInfoQ = function() {
+							var deferred = $q.defer();
+							if ($rootScope.isUserLogListLoad) {
+								deferred.resolve(true);
+							} else {
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETUSERLOGHIST' })
+									.then(function(response) {
+										// The response object has these properties:
+										$rootScope.arUserLogList = [];
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var objUsrLog = new hih.UserLog();
+												objUsrLog.setContent(obj);
+												$rootScope.arUserLogList.push(objUsr);
+											});
+										}
+										$rootScope.isUserLogListLoad = true;
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+						};					
 ////////////////////////////////////////////////////////////////////						
 // Learn part
 ////////////////////////////////////////////////////////////////////

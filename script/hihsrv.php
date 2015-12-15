@@ -569,33 +569,25 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		
 		case "CREATEFINANCEDOCUMENT_DP": {
 			// For JSON-based parameter, cannot escape.
-			$docdata = json_decode( $realParamArr ['docdata'] );
-			var_dump($docdata);
+			$docdata = json_decode($realParamArr ['docdata'] );
 			$docObj = new HIHDocument($docdata);
-			var_dump($docObj);
 			
-			$acntdata = json_decode( $realParamArr [ 'accountdata' ]);
-			var_dump($acntdata);
+			$acntdata = json_decode($realParamArr [ 'accountdata' ]);
 			$acntObj = new HIHAccount($acntdata);
-			var_dump($acntObj);
 			
-			$acntdp = json_decode( $realParamArr [ 'accountdp' ]);
-			var_dump($acntdp);
+			$acntdp =  json_decode($realParamArr [ 'accountdp' ]);
 			$acntDPObj = new HIHAccountDP($acntdp);
-			var_dump($acntDPObj);
 			
-			$dpitems = json_decode( $realParamArr [ 'dpitems' ]);
-			var_dump($dpitems);
+			$dpitems = json_decode($realParamArr [ 'dpitems' ], true);
 			$docObjs = [];
 			if (is_array($dpitems)) {
 				$count = count($dpitems);
 				for ($i = 0; $i < $count; $i++) {
-					var_dump($dpitems[ $i ]);
-					$docObjs[] = new HIHDPTempDoc($dpitems[ $i ]);
+					$docObjs[] = new HIHDPTempDoc(json_decode($dpitems[ $i ]));
 				}
 			}
-			var_dump($docObjs);
-			//HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $docObjs);
+			
+			HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $docObjs);
 		}
 		break;
 		

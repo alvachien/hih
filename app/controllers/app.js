@@ -203,6 +203,22 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
+		utils.loadWelcomeInfoQ()
+			.then(function(response) {
+			$scope.listUsrAct = [
+				{ Activity: 'Count of logins in last week', Detail: 0 },
+				{ Activity: 'Count of logins in last month', Detail: 0 },
+				{ Activity: 'Last login time', Detail: 0 }
+			];
+			
+			$scope.listModInfo = [
+				{ Module: 'Learn Plan Items', Detail: 0 },
+				{ Module: 'Downpayment Temp Docs', Detail: 0 },
+			];
+				
+			}, function(reason) {
+				
+			});
 		
 		$scope.displayedCollection = [
 			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},

@@ -1706,49 +1706,63 @@
 				case hih.Constants.DownpayRepeatType_PerMonth:
 					ntimes = Math.floor(ndays / 30);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 30 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 30 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownpayRepeatType_PerFortnight:
 					ntimes = Math.floor(ndays / 14);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 14 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 14 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownpayRepeatType_PerWeek:
 					ntimes = Math.floor(ndays / 7);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 7 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 7 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownpayRepeatType_PerDay:
 					ntimes = ndays;
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownpayRepeatType_PerQuarter:
 					ntimes = Math.floor(ndays / 91);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 91 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 91 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownPayRepeatType_PerHalfYear:
 					ntimes = Math.floor(ndays / 182);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 182 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 182 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
 				case hih.Constants.DownPayRepeatType_PerYear:
 					ntimes = Math.floor(ndays / 365);
 					for(i = 0; i < ntimes; i ++) {
-						arDays.push(new Date().setDate($scope.AccountObject.StartDate.getDate() + 365 * i));
+						var nDate = new Date();
+						nDate.setDate($scope.AccountObject.StartDate.getDate() + 365 * i);
+						arDays.push(nDate);
 					}
 				break;
 				
@@ -1898,6 +1912,7 @@
 		};
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
+			$scope.genItems();
 			
 			// Origianl documents & its items
 			$scope.DocumentObject.DocTypeID = 5; // Fixed
@@ -1906,8 +1921,8 @@
 			docItem.ItemID = 1;
 			docItem.AccountID = $scope.SourceAccountID;
 			docItem.TranTypeID = $scope.SourceTranTypeID;
-			docItem.TranAmount_Org = $scope.DocumentObject.TranAMount;
-			//docItem.TranAMount = $scope.DocumentObject.TranAMount;
+			docItem.TranAmount_Org = $scope.DocumentObject.TranAmount;
+			docItem.TranAmount = $scope.DocumentObject.TranAmount;
 			docItem.ControlCenterID = $scope.SourceCCID;
 			docItem.OrderID = $scope.SourceOrderID;
 			docItem.Desp = $scope.DocumentObject.Desp;
@@ -1929,7 +1944,12 @@
 			// Deducted document for the first posting, really need? Maybe not
 			
 			// Temp Documents
-			// $scope.DPItems
+			$.each($scope.DPItems, function(idx, obj) {
+				obj.TranTypeID = $scope.SourceTranTypeID;
+				obj.ControlCenterID = $scope.SourceCCID;
+				obj.OrderID = $scope.SourceOrderID;
+				obj.Desp = $scope.DocumentObject.Desp;
+			});
 			
 			var json1 = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
 			var json2 = objAccount.toJSON();
@@ -1940,11 +1960,12 @@
 				.then(function(response) {
 					
 				}, function(reason) {
-					
+					// Errors
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
 				});
 		};
 		$scope.backToList = function() {
-			
+		    $state.go("home.finance.document.list");
 		};
 	}])
 		
