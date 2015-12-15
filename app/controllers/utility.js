@@ -348,7 +348,7 @@
 											$.each(response.data, function(idx, obj) {
 												var objUsrLog = new hih.UserLog();
 												objUsrLog.setContent(obj);
-												$rootScope.arUserLogList.push(objUsr);
+												$rootScope.arUserLogList.push(objUsrLog);
 											});
 										}
 										$rootScope.isUserLogListLoad = true;
@@ -357,6 +357,7 @@
 										deferred.reject(response.data.Message);
 									});
 							}
+							return deferred.promise;
 						};
 						rtnObj.loadWelcomeInfoQ = function() {
 							var deferred = $q.defer();
@@ -1572,6 +1573,22 @@
 								deferred.reject(response.data.Message);
 							});
 							return deferred.promise;
+						};
+						rtnObj.getAccountListForDownPaymentQ = function() {
+							var todate = new Date();
+							todate.setDate(todate.getDate() + 15);
+							var todate2 = hih.ModelUtility.DatabaseDateFormatter(todate);
+							
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'GETFINANCEACCOUNTLIST_DP_TBP', tdate: todate2})
+							.then(function(response) {
+								deferred.resolve(response.data);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
 						};
 						rtnObj.deleteFinanceDocumentQ = function(docid) {
 							var deferred = $q.defer();

@@ -73,6 +73,7 @@ class HIHConstants {
 	const DT_FinAccount = 't_fin_account';
 	const DT_FinExchangeRate = 't_fin_exrate';
 	const DT_FinControlCenter = 't_fin_controlcenter';
+	const DT_FinTempDocDP = 't_fin_tmpdoc_dp';
 	// Views
 	const DV_LearnObjectList = 'v_learn_obj';
 	const DV_LearnObjectHierarchy = 'v_learn_obj2';

@@ -203,22 +203,73 @@
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
-		utils.loadWelcomeInfoQ()
-			.then(function(response) {
-			$scope.listUsrAct = [
-				{ Activity: 'Count of logins in last week', Detail: 0 },
-				{ Activity: 'Count of logins in last month', Detail: 0 },
-				{ Activity: 'Last login time', Detail: 0 }
-			];
 			
-			$scope.listModInfo = [
-				{ Module: 'Learn Plan Items', Detail: 0 },
-				{ Module: 'Downpayment Temp Docs', Detail: 0 },
-			];
+		// Welcome page
+		$scope.listUsrAct = [];	
+		utils.loadUserLogListQ()
+			.then(function(response) {
+				// Do nothing
+				var nCount1 = 0;
+				var nCount2 = 0;
+				var dtLast = null;
+				var dtLastWeek = new Date();
+				dtLastWeek.setDate(dtLastWeek.getDate() - 7);
+				var dtLastMonth = new Date();
+				dtLastMonth.setDate(dtLastMonth.getDate() - 30);
 				
+				$.each($rootScope.arUserLogList, function(idx, obj) {
+					if (!dtLast) {
+						dtLast = obj.TimePoint;
+					} else {
+						if (dtLast < obj.TimePoint) {
+							dtLast = obj.TimePoint;
+						}
+					}
+					
+					if (obj.LogType === hih.Constants.UserHistType_Login) {
+						if (obj.TimePoint > dtLastWeek) nCount1 ++;
+						if (obj.TimePoint > dtLastMonth) nCount2 ++;						
+					}					
+				});
+				$scope.listUsrAct = [
+					{ Activity: 'Count of logins in last week', Detail: nCount1 },
+					{ Activity: 'Count of logins in last month', Detail: nCount2 },
+					{ Activity: 'Last login time', Detail: dtLast }
+				];
+			}, function(reason) {
+				// Do nothing either!
+			});
+		$scope.listModInfo = [];
+		utils.getAccountListForDownPaymentQ()
+			.then(function(response) {
+				for(var i = 0; i <= response.length; i++) {
+					var modinfo = {
+						Module: 'FI Downpayment',
+						Date: response[i].trandate,
+						Detail: "Account: " + response[i].accountname + "; Amount: " + response[i].tranamount ,
+						AccountID: response[i].accountid,
+						DPTempID: response[i].tempdocid
+					};
+					$scope.listModInfo.push(modinfo);
+				}
+				// $scope.listModInfo = [
+				// 	{ Module: 'Learn Plan Items', Detail: 0 },
+				// 	{ Module: 'Downpayment Temp Docs', Detail: 0 },
+				// ];
 			}, function(reason) {
 				
 			});
+		$scope.goDetail = function(row) {
+			if (row.AccountID) {
+				// Go to the downpayment relevant doc
+			}
+		};
+		$scope.refreshTodo = function() {
+			
+		};
+		
+		// User detail page
+		$scope.listCurUserLogList = [];
 		
 		$scope.displayedCollection = [
 			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},

@@ -241,11 +241,31 @@
 	hih.UserLog = function() {
 		this.UserID = "";
 		this.LogType = 0;
+		this.LogTypeString = "";
 		this.TimePoint = new Date();
 		this.Others = "";
+		this.SeqNo = 0;
 	};
 	hih.UserLog.prototype.setContent = function(obj) {
 		this.UserID = obj.userid;
+		this.LogType = parseInt(obj.histtype);
+		
+		if (this.LogType === hih.Constants.UserHistType_Login) {
+			this.LogTypeString = "Login.Login";
+		} else if (this.LogType === hih.Constants.UserHistType_Logout) {
+			this.LogTypeString = "Login.Logout";
+		} else if (this.LogType === hih.Constants.UserHistType_Delete) {
+			this.LogTypeString = "Common.Delete";
+		} else if (this.LogType === hih.Constants.UserHistType_Create) {
+			this.LogTypeString = "Login.Register";
+		} else if (this.LogType === hih.Constants.UserHistType_ChangePassword) {
+			this.LogTypeString = "Change Password"; // TODO
+		} else if (this.LogType === hih.Constants.UserHistType_ResetPassword) {
+			this.LogTypeString = "Reset Password"; // TODO
+		}
+		this.TimePoint = new Date(obj.timepoint);
+		this.Others = obj.others;
+		this.SeqNo = parseInt(obj.seqno);
 	};
 	hih.UserRegistration = function() {
 		hih.Model.apply(this, arguments);

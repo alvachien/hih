@@ -293,7 +293,7 @@ function user_hist_getlist($userid) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "select * from ". HIHConstants::DT_UserHist . " WHERE userid = '". $userid. "';";
+	$query = "select * from ". HIHConstants::DT_UserHist . " WHERE userid = '". $userid. "' ORDER by seqno DESC;";
 	$sError = "";
 	
 	if ($result = $mysqli->query ( $query )) {
@@ -2953,6 +2953,105 @@ function finance_document_curexg_listread() {
 			$sError,
 			$rsttable 
 	);	
+}
+function finance_dpaccount_listread_tdate($tdate) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	
+	// Read category
+	$rsttable = array ();
+	$query = "select tabb.id, tabb.name, taba.trandate, taba.tranamount, taba.tmpdocid from (select docid as tmpdocid, accountid, trandate, tranamount from ". HIHConstants::DT_FinTempDocDP 
+		." where refdocid is null AND DATEDIFF(trandate, '". $tdate ."') <= -14) " 
+		. " as taba left outer join "
+		. HIHConstants::DT_FinAccount . " as tabb on taba.accountid = tabb.id ";
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+			$rsttable [] = array (
+				"accountid" => $row [0],
+				"accountname" => $row [1],
+				"trandate" => $row[2],
+				"tranamount" => $row[3],
+				"tmpdocid" => $row[4]
+			);
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$rsttable 
+	);
+}
+function finance_dpdoc_listread($accountid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	
+	// Read category
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DT_FinTempDocDP . " WHERE accountid = " . $accountid . " ORDER BY trandate DESC";
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+			$rsttable [] = array (
+				"docid" => $row [0],
+				"refdocid" => $row [1],
+				"accountid" => $row [2],
+				"trandate" => $row [3],
+				"trantype" => $row [4],
+				"tranamount" => $row [5],
+				"ccid" => $row [6],
+				"orderid" => $row[7],
+				"desp" => $row[8] 
+			);
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$rsttable 
+	);
 }
 function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

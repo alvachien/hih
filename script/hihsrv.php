@@ -579,7 +579,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			$acntDPObj = new HIHAccountDP($acntdp);
 			
 			$dpitems = json_decode($realParamArr [ 'dpitems' ], true);
-			$docObjs = [];
+			$docObjs = array ();
 			if (is_array($dpitems)) {
 				$count = count($dpitems);
 				for ($i = 0; $i < $count; $i++) {
@@ -588,6 +588,18 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			}
 			
 			HIHSrv_Function_4Param( 'finance_dpdoc_post', $docObj, $acntObj, $acntDPObj, $docObjs);
+		}
+		break;
+		
+		case "GETFINANCEDOCUMENTLIST_DP": {
+			$acntid = escape ( $realParamArr ['accountid'] );
+			HIHSrv_Function_1Param( 'finance_dpdoc_listread', $acntid);
+		}
+		break;
+
+		case "GETFINANCEACCOUNTLIST_DP_TBP": {
+			$tdate = escape ( $realParamArr ['tdate'] );
+			HIHSrv_Function_1Param( 'finance_dpaccount_listread_tdate', $tdate);
 		}
 		break;
 		

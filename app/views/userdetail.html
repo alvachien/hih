@@ -17,16 +17,18 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
+				<th>Seq No</th>
 				<th translate="Common.Date">Date</th>
-				<th>Activity</th>
-				<th>Comment</th>
+				<th>Log Type</th>
+				<th>Others</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="row in arUserLog">
-				<td>{{row.Date}}</td>
-				<td>{{row.Activity}}</td>
-				<td>{{row.Comment}}</td>
+			<tr ng-repeat="row in arUserLogList">
+				<td>{{row.SeqNo}}</td>
+				<td>{{row.TimePoint | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+				<td>{{row.LogTypeString | translate}}</td>
+				<td>{{row.Others}}</td>
 			</tr>
 		</tbody>
 	</table>
