@@ -1712,7 +1712,8 @@
 					ntimes = Math.floor(ndays / 30);
 					for(i = 0; i < ntimes; i ++) {
 						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 30 * i);
+						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						nDate.setMonth(nDate.getMonth() + i);
 						arDays.push(nDate);
 					}
 				break;
@@ -1748,7 +1749,8 @@
 					ntimes = Math.floor(ndays / 91);
 					for(i = 0; i < ntimes; i ++) {
 						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 91 * i);
+						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						nDate.setMonth(nDate.getMonth() + 3 * (i + 1));
 						arDays.push(nDate);
 					}
 				break;
@@ -1757,7 +1759,8 @@
 					ntimes = Math.floor(ndays / 182);
 					for(i = 0; i < ntimes; i ++) {
 						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 182 * i);
+						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						nDate.setMonth(nDate.getMonth() + 6 * (i + 1));
 						arDays.push(nDate);
 					}
 				break;
@@ -1766,7 +1769,8 @@
 					ntimes = Math.floor(ndays / 365);
 					for(i = 0; i < ntimes; i ++) {
 						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 365 * i);
+						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						nDate.setYear(nDate.getYear() + i);
 						arDays.push(nDate);
 					}
 				break;

@@ -179,20 +179,17 @@
 				<table st-table="DPItems" st-safe-src="safeItemList" class="table table-striped table-hover">
 					<thead>
 						<tr>
-							<th st-sort="sts" translate="Common.Status">Status</th>
+							<th st-sort="sts" translate="Common.ID">ID</th>
 							<th st-sort="tdate" translate="Common.Date">Date</th>
 							<th st-sort="amt" translate="Finance.Amount">Amount</th>
 							<th translate="Common.Operations">Operations</th>
 						</tr>
-						<tr>
-							<th colspan="4"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
-						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="row in DPItems">
-							<td>{{row.RefDocID}}</td>
+							<td>{{row.DocID}}</td>
 							<td>{{row.TranDate | date: 'yyyy.MM.dd'}}</td>
-							<td>{{row.Amount}}</td>
+							<td>{{row.Amount | currency:'￥':2}}</td>
 							<td>
 								<button type="button" class="btn btn-sm" ng-click="displayItem(row.DocID)" tooltip="{{'Common.Display' | translate}}">
 									<i class="glyphicon glyphicon-share">
