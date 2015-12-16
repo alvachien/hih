@@ -7,6 +7,7 @@
  * This file targets to contain the full SQL statement for HIH;
  *	While the DBPrepation.sql contains the delta part.
  *
+ * Last sync date: 2015.12.16
  */
 
 /*======================================================
@@ -106,6 +107,19 @@ CREATE TABLE IF NOT EXISTS `t_fin_document_item` (
   `DESP` varchar(45) NOT NULL,
   PRIMARY KEY (`DOCID`,`ITEMID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Document Item';
+
+CREATE TABLE IF NOT EXISTS `t_fin_tmpdoc_dp` (
+  `DOCID` int(11) NOT NULL AUTO_INCREMENT,  
+  `REFDOCID` int(11) DEFAULT NULL,  
+  `ACCOUNTID` int(11) NOT NULL,
+  `TRANDATE` date NOT NULL,
+  `TRANTYPE` smallint(6) NOT NULL,
+  `TRANAMOUNT` double NOT NULL,
+  `CONTROLCENTERID` int(11) DEFAULT NULL,
+  `ORDERID` int(11) DEFAULT NULL,
+  `DESP` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`DOCID`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='Temp doc for Downpayment';
 
 CREATE TABLE IF NOT EXISTS `t_fin_intorder` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -641,6 +655,20 @@ VIEW `v_fin_report_io2` AS
     from `v_fin_report_io2_1` tab_a
     join `v_fin_report_io2_2` tab_b
         on tab_a.`id` = tab_b.`id`;
+
+CREATE OR REPLACE VIEW `v_fin_dpdoc` 
+    AS
+SELECT taba.DOCID, taba.REFDOCID, taba.ACCOUNTID, tabe.NAME AS accountname, taba.TRANDATE, 
+	taba.TRANTYPE, tabd.NAME AS trantypename, taba.TRANAMOUNT, taba.CONTROLCENTERID, tabb.NAME AS ccname, 
+	taba.ORDERID, tabc.NAME AS ordername, taba.DESP, 
+    tabg.trancurr, tabg.refcurexgdoc, tabg.exgrate, tabg.exgrate_plan
+FROM t_fin_tmpdoc_dp AS taba
+    LEFT OUTER JOIN t_fin_controlcenter AS tabb ON taba.CONTROLCENTERID = tabb.id
+    LEFT OUTER JOIN t_fin_intorder AS tabc ON taba.ORDERID = tabc.ID
+    LEFT OUTER JOIN t_fin_tran_type AS tabd ON taba.TRANTYPE = tabd.id
+    INNER JOIN t_fin_account AS tabe ON taba.ACCOUNTID = tabe.ID
+    INNER JOIN t_fin_account_dp AS tabf ON tabe.ID = tabf.ACCOUNTID
+    INNER JOIN t_fin_document AS tabg ON tabf.REFDOCID = tabg.ID;
 
 -- Learing part
 CREATE OR REPLACE

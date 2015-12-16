@@ -1,0 +1,115 @@
+<div id="viewFinanceDocument_DownPayPost">
+	<div class="page-header">
+		<h2>
+			<span translate="Finance.DownPaymentDocument">Finance Downpayment Document</span><small> {{Activity | translate}}</small>
+		</h2>
+	</div>
+	
+    <!-- Messages -->
+    <div ng-if="ReportedMessages.length > 0">
+        <div class="alert alert-danger" role="alert" ng-repeat="rptmsg in ReportedMessages">
+            {{ rptmsg  }}
+        </div>
+    </div>
+    
+	<form class="form-horizontal" role="form" name="frmObj">
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptDocID" translate="Common.ID">ID:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptDocID"
+						readonly="readonly" placeholder="{{'Common.ID' | translate }}" ng-model="DocumentObject.DocID">
+			</div>
+		</div>
+		
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Common.Date">Date</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{DateFormat}}" ng-model="DocumentObject.TranDate" is-open="isDateOpened"
+                            datepicker-options="dateOptions" ng-required="true" ng-readonly="isReadonly" close-text="{{'Common.Close' | translate }}" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptDesp" translate="Common.Description">Description</label>
+			<div class="col-sm-10">
+				<input type="text" ng-readonly="isReadonly" id="iptDesp" required class="form-control"
+						ng-model="DocumentObject.Desp"></input>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Finance.Account">Account:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" 
+						readonly="readonly" placeholder="{{'Finance.Account' | translate }}" ng-model="AccountIDAndName">
+			</div>
+		</div>
+		
+        <div class="form-group">
+        	<label class="control-label col-sm-2" translate="Finance.TransactionType">Transaction Type:</label>
+            <div class="col-sm-10">
+				<input type="text" class="form-control" 
+						readonly="readonly" ng-model="TranTypeIDAndName">
+            </div>
+        </div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Finance.Currency">Currency:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" 
+						readonly="readonly" ng-model="DocumentObject.TranCurrency">
+			</div>
+		</div>
+		
+		<div class="form-group animate-show" data-ng-hide="DocumentObject.TranCurrency != $rootScope.objFinanceSetting.LocalCurrency">
+			<label class="control-label col-sm-2" for="iptExgRate" translate="Finance.ExchangeRate">Exg. rate</label>
+			<div class="col-sm-10">
+				<div class="input-group">
+					<input type="text" id="iptExgRate" required class="form-control"
+							ng-model="DocumentObject.ExchangeRate"></input>
+					<span class="input-group-addon">
+						<input type="checkbox" ng-model="DocumentObject.ProposedExchangeRate">
+					</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group" ng-if="!isReadonly">
+			<label class="control-label col-sm-2" for="iptDocAmount" translate="Finance.Amount">Amount</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptDocAmount" 
+						placeholder="{{'Finance.Amount' | translate}}" ng-model="DocumentObject.TranAmount" required>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Finance.ControlCenter">Control Center</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" 
+						readonly="readonly" ng-model="CCIDAndName">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Finance.Order">Order:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" 
+						readonly="readonly" ng-model="OrderIDAndName">
+			</div>
+		</div>
+
+		<!-- Button row -->
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+					translate="Common.Submit">Submit</button>
+				<button class="btn btn-danger" ng-click="backtoList()" translate="Common.Cancel">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>

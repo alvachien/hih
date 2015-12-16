@@ -603,6 +603,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
+		case "GETFINANCEDOCUMENT_DP": {
+			$docid = escape ( $realParamArr ['docid'] );
+			HIHSrv_Function_1Param( 'finance_dpdoc_get', $docid);
+		}
+		break;
+		
 		case "DELETEFINANCEDOCUMENT": {
 			$docid = escape ( $realParamArr ['docid'] );
 			HIHSrv_Function_1Param( 'finance_document_delete', $docid);

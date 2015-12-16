@@ -359,31 +359,6 @@
 							}
 							return deferred.promise;
 						};
-						rtnObj.loadWelcomeInfoQ = function() {
-							var deferred = $q.defer();
-							if ($rootScope.isUserLogListLoad) {
-								deferred.resolve(true);
-							} else {
-								$http.post(
-									'script/hihsrv.php',
-									{ objecttype : 'GETUSERLOGHIST' })
-									.then(function(response) {
-										// The response object has these properties:
-										$rootScope.arUserLogList = [];
-										if ($.isArray(response.data) && response.data.length > 0) {
-											$.each(response.data, function(idx, obj) {
-												var objUsrLog = new hih.UserLog();
-												objUsrLog.setContent(obj);
-												$rootScope.arUserLogList.push(objUsr);
-											});
-										}
-										$rootScope.isUserLogListLoad = true;
-										deferred.resolve(true);
-									}, function(response) {
-										deferred.reject(response.data.Message);
-									});
-							}
-						};					
 ////////////////////////////////////////////////////////////////////						
 // Learn part
 ////////////////////////////////////////////////////////////////////
@@ -1589,6 +1564,18 @@
 								deferred.reject(response.data.Message);
 							});
 							return deferred.promise;							
+						};
+						rtnObj.getFinanceDPDocumentQ = function(docid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'GETFINANCEDOCUMENT_DP', docid: docid})
+							.then(function(response) {
+								deferred.resolve(response.data);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
 						};
 						rtnObj.deleteFinanceDocumentQ = function(docid) {
 							var deferred = $q.defer();

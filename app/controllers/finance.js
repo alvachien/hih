@@ -4,8 +4,8 @@
 (function() {
 	'use strict';
 
-	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 'ngSanitize',
-	 	'ngTouch', 'selectize', 'chart.js', 'smart-table'])
+	angular.module('hihApp.Finance', ["ui.router", "ngAnimate", "hihApp.Utility", "ui.tinymce", 'ui.bootstrap', 
+		'ngSanitize', 'ngTouch', 'selectize', 'chart.js', 'smart-table'])
 	    
 	.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider,   $urlRouterProvider) {
       $stateProvider
@@ -92,7 +92,12 @@
 		.state("home.finance.document.create_downpay", {
         	url: '/create_downpay',
         	templateUrl: 'app/views/finance/financedocument_downpay.html',
-        	controller: 'FinanceDocumentDownPayController'			
+        	controller: 'FinanceDocumentDownPayController'
+		})
+		.state("home.finance.document.dptmpdoc_post", {
+			url: '/downpaytmpdoc_post/:docid',
+			templateUrl: 'app/views/finance/financedpdoc_post.html',
+			controller: 'FinanceDocumentDownPayTmpPostController'
 		})
         .state("home.finance.document.display", {
         	url: '/display/:docid',
@@ -1968,7 +1973,127 @@
 		    $state.go("home.finance.document.list");
 		};
 	}])
+	
+	.controller('FinanceDocumentDownPayTmpPostController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+			
+		// Error messges
+		$scope.ReportedMessages = [];
+		$scope.cleanReportMessages = function() {
+			$scope.ReportedMessages = [];
+		};
+
+		$scope.DocumentObject = new hih.FinanceDocument();
+		$scope.DocumentItemObject = new hih.FinanceDocumentItem();
+		$scope.AccountIDAndName = "";
+		$scope.TranTypeIDAndName = "";
+		$scope.CCIDAndName = "";
+		$scope.OrderIDAndName = "";
 		
+        // For date control
+		$scope.isDateOpened = false;
+		$scope.DateFormat = hih.Constants.UI_DateFormat;
+		$scope.dateOptions = {
+		    formatYear: 'yyyy',
+		    startingDay: 1
+		};
+		$scope.openDate = function ($event) {
+		    $event.preventDefault();
+		    $event.stopPropagation();
+
+		    if (!$scope.isReadonly) {
+		        $scope.isDateOpened = true;				
+			}
+		};
+		
+		if (angular.isDefined($stateParams.docid)) {
+		    utils.getFinanceDPDocumentQ($stateParams.docid)
+				.then(function(response) {
+					if ($.isArray(response) && response.length === 1) {
+						$scope.DocumentObject.TranDate = new Date(response[0].trandate);
+						$scope.DocumentObject.TranAmount = parseFloat(response[0].tranamount);
+						$scope.DocumentObject.Desp = response[0].desp;
+						$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Normal;
+						$scope.DocumentObject.TranCurrency = response[0].trancurr;
+						$scope.DocumentObject.ExchangeRate = parseFloat(response[0].exgrate);
+						$scope.DocumentObject.ProposedExchangeRate = response[0].exgrate_plan;
+						
+						$scope.DocumentItemObject.ItemID = 1;
+						$scope.AccountIDAndName = response[0].accountid + " | " + response[0].accountname;
+						$scope.DocumentItemObject.AccountID = parseInt(response[0].AccountID);
+						if (response[0].ccid) {
+							$scope.DocumentItemObject.ControlCenterID = parseInt(response[0].ccid);
+							$scope.CCIDAndName = response[0].ccid + " | " + response[0].ccname;
+						}
+						$scope.TranTypeIDAndName = response[0].trantype + " | " + response[0].trantypename;
+						$scope.DocumentItemObject.TranTypeID = parseInt(response[0].trantype);
+						if (response[0].orderid) {
+							$scope.DocumentItemObject.OrderID = parseInt(response[0].orderid);
+							$scope.OrderIDAndName = response[0].orderid + " | " + response[0].ordername;
+						}
+						$scope.DocumentItemObject.UseCurrency2 = false;
+					}					
+				}, function(reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
+		}
+		
+		$scope.submit = function() {
+			// Submit the items
+			$scope.DocumentObject.Items = [];
+			$scope.DocumentItemObject.TranAmount_Org = $scope.DocumentObject.TranAmount;
+			$scope.DocumentItemObject.TranAmount = $scope.DocumentObject.TranAmount;
+			$scope.DocumentItemObject.Desp = $scope.DocumentObject.Desp;			
+			$scope.DocumentObject.Items.push($scope.DocumentItemObject);
+			
+			var rptMsgs = $scope.DocumentObject.Verify($translate, $rootScope.objFinanceSetting.LocalCurrency);
+			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+				// Show all the errors?
+				$q.all(rptMsgs).then(
+					function(response) {
+						$scope.cleanReportMessages();
+						Array.prototype.push.apply($scope.ReportedMessages, response);
+					},
+					function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+					}
+				);
+				return;
+			}
+			
+			// Now, ready for submit!
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			if (strJSON) {
+				if ($scope.DocumentObject.DocID === -1) {
+					utils.createFinanceDocumentQ(strJSON)
+						.then(function(response) {
+							// Take a look at the response
+							if (response) {
+								$scope.DocumentObject.buildRelationship(
+									$rootScope.arFinanceDocumentType,
+									$rootScope.arCurrency
+								);
+								// Document ID
+								$scope.DocumentObject.DocID = parseInt(response);
+								$rootScope.arFinanceDocument.push($scope.DocumentObject);
+								
+								// Now navigate to display
+								$state.go("home.finance.document.display",  { docid : response });
+							}
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
+				}
+			} else {
+				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+			}
+		};
+		
+		$scope.close = function() {
+		    $state.go("home.finance.document.list");
+		};
+	}])
+	
 	.controller('FinanceDocumentController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
 		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
 		$scope.Activity = "";
@@ -2082,7 +2207,7 @@
 			labelField: 'Name',
 		    maxItems: 1,
     		required: true
-  		};		  
+  		};
         // For date control
 		$scope.isDateOpened = false;
 		$scope.DateFormat = hih.Constants.UI_DateFormat;

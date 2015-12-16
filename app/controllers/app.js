@@ -186,8 +186,8 @@
 		});
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$http', '$log', '$translate', 'utils', 
-		function($scope, $rootScope, $state, $http, $log, $translate, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams','$http', '$log', '$translate', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, utils) {		
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		
 		// Load the finance setting out
@@ -239,16 +239,17 @@
 			}, function(reason) {
 				// Do nothing either!
 			});
+			
 		$scope.listModInfo = [];
 		utils.getAccountListForDownPaymentQ()
 			.then(function(response) {
-				for(var i = 0; i <= response.length; i++) {
+				for(var i = 0; i < response.length; i++) {
 					var modinfo = {
 						Module: 'FI Downpayment',
 						Date: response[i].trandate,
 						Detail: "Account: " + response[i].accountname + "; Amount: " + response[i].tranamount ,
 						AccountID: response[i].accountid,
-						DPTempID: response[i].tempdocid
+						DPTempID: response[i].tmpdocid
 					};
 					$scope.listModInfo.push(modinfo);
 				}
@@ -259,13 +260,37 @@
 			}, function(reason) {
 				
 			});
+			
 		$scope.goDetail = function(row) {
 			if (row.AccountID) {
 				// Go to the downpayment relevant doc
+				$state.go('home.finance.document.dptmpdoc_post', { docid: row.DPTempID });
 			}
 		};
 		$scope.refreshTodo = function() {
+			$scope.listModInfo = [];
 			
+			utils.getAccountListForDownPaymentQ()
+				.then(function(response) {
+					
+					for(var i = 0; i < response.length; i++) {
+						var modinfo = {
+							Module: 'FI Downpayment',
+							Date: response[i].trandate,
+							Detail: "Account: " + response[i].accountname + "; Amount: " + response[i].tranamount ,
+							AccountID: response[i].accountid,
+							DPTempID: response[i].tmpdocid
+						};
+						$scope.listModInfo.push(modinfo);
+					}
+					// $scope.listModInfo = [
+					// 	{ Module: 'Learn Plan Items', Detail: 0 },
+					// 	{ Module: 'Downpayment Temp Docs', Detail: 0 },
+					// ];
+				}, function(reason) {
+					// Error dialog?
+					// ToDo
+				});
 		};
 		
 		// User detail page

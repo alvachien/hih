@@ -2974,7 +2974,7 @@ function finance_dpaccount_listread_tdate($tdate) {
 	// Read category
 	$rsttable = array ();
 	$query = "select tabb.id, tabb.name, taba.trandate, taba.tranamount, taba.tmpdocid from (select docid as tmpdocid, accountid, trandate, tranamount from ". HIHConstants::DT_FinTempDocDP 
-		." where refdocid is null AND DATEDIFF(trandate, '". $tdate ."') <= -14) " 
+		." where refdocid is null AND DATEDIFF(trandate, '". $tdate ."') <= -1) " 
 		. " as taba left outer join "
 		. HIHConstants::DT_FinAccount . " as tabb on taba.accountid = tabb.id ";
 	
@@ -3002,6 +3002,64 @@ function finance_dpaccount_listread_tdate($tdate) {
 		$sError,
 		$rsttable 
 	);
+}
+function finance_dpdoc_get($docid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	
+	// Read category
+	$rsttable = array ();
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDPTmpDoc . " WHERE docid = " . $docid . ";";
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+			$rsttable [] = array (
+				"docid" => $row [0],
+				"refdocid" => $row [1],
+				"accountid" => $row [2],
+				"accountname" => $row[3],
+				"trandate" => $row [4],
+				"trantype" => $row [5],
+				"trantypename" => $row [6],
+				"tranamount" => $row [7],
+				"ccid" => $row [8],
+				"ccname" => $row [9],
+				"orderid" => $row[10],
+				"ordername" => $row[11],
+				"desp" => $row[12],
+				"trancurr" => $row[13],
+				"refcurexgdoc" => $row[14],
+				"exgrate" => $row[15],
+				"exgrate_plan" => $row[16] 
+			);
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array (
+		$sError,
+		$rsttable 
+	);	
 }
 function finance_dpdoc_listread($accountid) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -3053,32 +3111,8 @@ function finance_dpdoc_listread($accountid) {
 		$rsttable 
 	);
 }
-function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
-	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+function finance_docpost_core($docobj, $mysqli, $nDocID, $sError) {
 	
-	/* check connection */
-	if (mysqli_connect_errno ()) {
-		return array (
-			"Connect failed: %s\n" . mysqli_connect_error (),
-			null 
-		);
-	}
-	$mysqli->autocommit ( false );
-	
-	// Set language
-	$mysqli->query("SET NAMES 'UTF8'");
-	$mysqli->query("SET CHARACTER SET UTF8");
-	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
-
-	$sError = "";
-	$nDocID = 0;
-	$nAccountID = 0;
-	$nCode = 0;
-	$nNewid = 0;
-	$sMsg = "";
-	
-	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
-
 	/* Prepare an insert statement on header */
 	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE2`, `EXGRATE_PLAN2`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	
 	if ($stmt = $mysqli->prepare ( $query )) {
@@ -3119,7 +3153,35 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
 			}
 		}
+	}	
+}
+function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
 	}
+	$mysqli->autocommit ( false );
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+
+	$sError = "";
+	$nDocID = 0;
+	$nAccountID = 0;
+	$nCode = 0;
+	$nNewid = 0;
+	$sMsg = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+
+	finance_docpost_core($docobj, $mysqli, $nDocID, $sError);
 
 	/* Prepare an insert statement on account header */
 	if (empty ( $sError )) {
@@ -3221,44 +3283,7 @@ function finance_document_post($docobj) {
 	
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
-	/* Prepare an insert statement on header */
-	$query = "INSERT INTO " . HIHConstants::DT_FinDocument . "(`DOCTYPE`, `TRANDATE`, `TRANCURR`, `DESP`, `EXGRATE`, `EXGRATE_PLAN`, `TRANCURR2`, `EXGRATE2`, `EXGRATE_PLAN2`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";	
-	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "isssddsdd", $docobj->DocTypeID, $docobj->DocDate, $docobj->DocCurrency, $docobj->DocDesp,
-			$docobj->ExchangeRate, $docobj->ProposedExchangeRate, $docobj->DocCurrency2, $docobj->ExchangeRate2, $docobj->ProposedExchangeRate2 );
-		/* Execute the statement */
-		if ($stmt->execute ()) {
-			$nDocID = $mysqli->insert_id;
-		} else {
-			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
-		}
-		
-		/* close statement */
-		$stmt->close ();
-	}
-	
-	/* Prepare an insert statement on item */
-	if (empty ( $sError )) {
-		$query = "INSERT INTO " . HIHConstants::DT_FinDocumentItem . "(`DOCID`, `ITEMID`, `ACCOUNTID`, `TRANTYPE`, `USECURR2`, `TRANAMOUNT`, `CONTROLCENTERID`, `ORDERID`, `DESP`) " . " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-		
-		foreach ( $docobj->ItemsArray as $value ) {
-			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiiiidiis", $nDocID, $value->ItemID, $value->AccountID, $value->TranTypeID, $value->UseCurrency2, $value->TranAmount, $value->ControlCenterID, $value->OrderID, $value->Desp );
-				
-				/* Execute the statement */
-				if ($newstmt->execute ()) {
-				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
-					break;
-				}
-				
-				/* close statement */
-				$newstmt->close ();
-			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
-			}
-		}
-	}
+	finance_docpost_core($docobj, $mysqli, $nDocID, $sError);
 	
 	/* Prepare an insert into currency exchange */
 	if (empty ( $sError ) && $docobj->DocTypeID == 3) {

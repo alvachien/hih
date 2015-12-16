@@ -85,6 +85,7 @@ class HIHConstants {
 	const DV_FinReportBS = 'v_fin_report_bs4'; // changed from v_fin_report_bs3 on 2015.10.07 
 	const DV_FinDocumentItem = 'v_fin_document_item1';
 	const DV_FinDocumentItem3 = 'v_fin_document_item3';
+	const DV_FinDPTmpDoc = 'v_fin_dpdoc';
 	const DV_FinReportOrder = 'v_fin_report_io2'; // changed from v_fin_report_io1 on 2015.10.8
 	// Procedures
 	const DP_CreateLearnObject = 'CREATE_LEARNOBJECT';
