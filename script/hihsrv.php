@@ -591,6 +591,15 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 		
+		case "CREATEFINANCEDOCUMENT_FOR_DPTMP": {
+			$docdata = json_decode($realParamArr ['docdata'] );
+			$docObj = new HIHDocument($docdata);
+			$dptmpid = escape ( $realParamArr ['dptmpid'] );
+			
+			HIHSrv_Function_2Param( 'finance_dptmpdoc_post', $docObj, $dptmpid);			
+		}
+		break;
+		
 		case "GETFINANCEDOCUMENTLIST_DP": {
 			$acntid = escape ( $realParamArr ['accountid'] );
 			HIHSrv_Function_1Param( 'finance_dpdoc_listread', $acntid);

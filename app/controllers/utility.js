@@ -1549,6 +1549,19 @@
 							});
 							return deferred.promise;
 						};
+						rtnObj.createFinanceDocumentFromDPTmpQ = function(jsonDocData, nDPTmpDoc) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'CREATEFINANCEDOCUMENT_FOR_DPTMP', docdata: jsonDocData, dptmpid: nDPTmpDoc })
+							.then(function(response) {
+								// It returns the new document id
+								deferred.resolve(parseInt(response.data));
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;							
+						};
 						rtnObj.getAccountListForDownPaymentQ = function() {
 							var todate = new Date();
 							todate.setDate(todate.getDate() + 15);

@@ -1989,6 +1989,7 @@
 		$scope.TranTypeIDAndName = "";
 		$scope.CCIDAndName = "";
 		$scope.OrderIDAndName = "";
+		$scope.DPTmpDocID = -1;
 		
         // For date control
 		$scope.isDateOpened = false;
@@ -2010,17 +2011,27 @@
 		    utils.getFinanceDPDocumentQ($stateParams.docid)
 				.then(function(response) {
 					if ($.isArray(response) && response.length === 1) {
+						$scope.DPTmpDocID = parseInt(response[0].docid);
+						
 						$scope.DocumentObject.TranDate = new Date(response[0].trandate);
 						$scope.DocumentObject.TranAmount = parseFloat(response[0].tranamount);
 						$scope.DocumentObject.Desp = response[0].desp;
 						$scope.DocumentObject.DocTypeID = hih.Constants.FinDocType_Normal;
 						$scope.DocumentObject.TranCurrency = response[0].trancurr;
-						$scope.DocumentObject.ExchangeRate = parseFloat(response[0].exgrate);
-						$scope.DocumentObject.ProposedExchangeRate = response[0].exgrate_plan;
+						if (response[0].exgrate) {
+							$scope.DocumentObject.ExchangeRate = parseFloat(response[0].exgrate);
+						} else {
+							$scope.DocumentObject.ExchangeRate = null;
+						}
+						if (response[0].exgrate_plan) {
+							$scope.DocumentObject.ProposedExchangeRate = response[0].exgrate_plan;
+						} else {
+							$scope.DocumentObject.ProposedExchangeRate = null;
+						}
 						
 						$scope.DocumentItemObject.ItemID = 1;
 						$scope.AccountIDAndName = response[0].accountid + " | " + response[0].accountname;
-						$scope.DocumentItemObject.AccountID = parseInt(response[0].AccountID);
+						$scope.DocumentItemObject.AccountID = parseInt(response[0].accountid);
 						if (response[0].ccid) {
 							$scope.DocumentItemObject.ControlCenterID = parseInt(response[0].ccid);
 							$scope.CCIDAndName = response[0].ccid + " | " + response[0].ccname;
@@ -2064,26 +2075,28 @@
 			// Now, ready for submit!
 			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
 			if (strJSON) {
-				if ($scope.DocumentObject.DocID === -1) {
-					utils.createFinanceDocumentQ(strJSON)
-						.then(function(response) {
-							// Take a look at the response
-							if (response) {
-								$scope.DocumentObject.buildRelationship(
-									$rootScope.arFinanceDocumentType,
-									$rootScope.arCurrency
-								);
-								// Document ID
-								$scope.DocumentObject.DocID = parseInt(response);
-								$rootScope.arFinanceDocument.push($scope.DocumentObject);
-								
-								// Now navigate to display
-								$state.go("home.finance.document.display",  { docid : response });
+				utils.createFinanceDocumentFromDPTmpQ(strJSON, $scope.DPTmpDocID)
+					.then(function(response) {
+						// Take a look at the response
+						if (response) {
+							$scope.DocumentObject.buildRelationship(
+								$rootScope.arFinanceDocumentType,
+								$rootScope.arCurrency
+							);
+							// Document ID
+							$scope.DocumentObject.DocID = parseInt(response);
+							if ($rootScope.arFinanceDocument) {								
+							} else {
+								$rootScope.arFinanceDocument = [];
 							}
-						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
-						});
-				}
+							$rootScope.arFinanceDocument.push($scope.DocumentObject);
+							
+							// Now navigate to display
+							$state.go("home.finance.document.display",  { docid : response });
+						}
+					}, function(reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
 			} else {
 				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
 			}
