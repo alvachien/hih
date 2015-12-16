@@ -86,10 +86,9 @@ CREATE TABLE IF NOT EXISTS `t_fin_document` (
   `TRANDATE` date NOT NULL,
   `TRANCURR` varchar(5) NOT NULL,
   `DESP` varchar(45) NOT NULL,
-  `REFCUREXGDOC` INT(11) NULL,
   `EXGRATE` TINYINT NULL DEFAULT NULL,
   `EXGRATE_PLAN` TINYINT NULL DEFAULT NULL,
-  `TRANCURR2` VARCHAR(5) NULL DEFAULT NULL,
+  `TRANCURR2` varchar(5) NULL DEFAULT NULL,
   `EXGRATE2` DOUBLE NULL DEFAULT NULL,
   `EXGRATE_PLAN2` TINYINT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`)
@@ -480,7 +479,7 @@ VIEW `v_fin_report_bs1` AS
         `v_fin_document_item1`
         join `t_fin_account` `accounttab` ON ((`v_fin_document_item1`.`ACCOUNTID` = `accounttab`.`ID`))
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
-    where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1
+    where `ctgytab`.`ASSETFLAG` = 0 or `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`;
 
 CREATE OR REPLACE
@@ -519,7 +518,7 @@ VIEW `v_fin_report_bs2` AS
         `v_fin_document_item2`
         join `t_fin_account` `accounttab` ON ((`v_fin_document_item2`.`ACCOUNTID` = `accounttab`.`ID`))
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
-    where `ctgytab`.`ASSETFLAG` = 0 and `ctgytab`.`ASSETFLAG` = 1
+    where `ctgytab`.`ASSETFLAG` = 0 or `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`, `trantype_EXPENSE`;
 
 CREATE OR REPLACE
@@ -661,7 +660,7 @@ CREATE OR REPLACE VIEW `v_fin_dpdoc`
 SELECT taba.DOCID, taba.REFDOCID, taba.ACCOUNTID, tabe.NAME AS accountname, taba.TRANDATE, 
 	taba.TRANTYPE, tabd.NAME AS trantypename, taba.TRANAMOUNT, taba.CONTROLCENTERID, tabb.NAME AS ccname, 
 	taba.ORDERID, tabc.NAME AS ordername, taba.DESP, 
-    tabg.trancurr, tabg.refcurexgdoc, tabg.exgrate, tabg.exgrate_plan
+    tabg.trancurr, tabg.exgrate, tabg.exgrate_plan
 FROM t_fin_tmpdoc_dp AS taba
     LEFT OUTER JOIN t_fin_controlcenter AS tabb ON taba.CONTROLCENTERID = tabb.id
     LEFT OUTER JOIN t_fin_intorder AS tabc ON taba.ORDERID = tabc.ID

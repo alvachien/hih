@@ -1867,34 +1867,6 @@
 		$scope.saveCurrentItem = function() {
 			$scope.cleanReportMessages();
 			
-// 			// Change the IDs from String to Integer
-// 			$scope.SelectedDocumentItem.AccountID = parseInt($scope.SelectedDocumentItem.AccountID);
-// 			$scope.SelectedDocumentItem.ControlCenterID = parseInt($scope.SelectedDocumentItem.ControlCenterID);
-// 			$scope.SelectedDocumentItem.OrderID = parseInt($scope.SelectedDocumentItem.OrderID);
-// 			$scope.SelectedDocumentItem.TranTypeID = parseInt($scope.SelectedDocumentItem.TranTypeID);
-// 			
- 			// Perform the check
-// 			var rptMsgs = $scope.selectedDPItem.Verify($translate);
-// 			if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
-// 				$q.all(rptMsgs)
-// 					.then(function(response) {
-// 						$scope.cleanReportMessages();
-// 						Array.prototype.push.apply($scope.ReportedMessages, response);
-// 					}, function(reason) {
-// 						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
-// 					});
-// 				return;
-// 			}
-// 			// Amount
-// 			//$scope.SelectedDocumentItem.TranAmountInLC = $scope.SelectedDocumentItem.TranAmount_Org;
-// 			
-// 			// Build the relationship
-// 			$scope.SelectedDocumentItem.buildRelationship($rootScope.arFinanceAccount,
-// 				$rootScope.arFinanceControlCenter,
-// 				$rootScope.arFinanceOrder,
-// 				$rootScope.arFinanceTransactionType
-// 				);
- 
 			// Next item ID
 			if ($scope.selectedDPItem.DocID === -1) {
 				$scope.updateNextItemID();
@@ -1953,7 +1925,8 @@
 				obj.TranTypeID = $scope.SourceTranTypeID;
 				obj.ControlCenterID = $scope.SourceCCID;
 				obj.OrderID = $scope.SourceOrderID;
-				obj.Desp = $scope.DocumentObject.Desp;
+				
+				obj.Desp = $scope.DocumentObject.Desp + " | " + (idx + 1).toString() + " / " + $scope.DPItems.length.toString() + " | " + hih.ModelUtility.DateFormatter(obj.TranDate);
 			});
 			
 			var json1 = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
@@ -1963,7 +1936,23 @@
 			
 			utils.createFinanceDPDocumentQ(json1, json2, json3, json4)
 				.then(function(response) {
-					
+					// Take a look at the response
+					if (response) {
+						$scope.DocumentObject.buildRelationship(
+							$rootScope.arFinanceDocumentType,
+							$rootScope.arCurrency
+						);
+						// Document ID
+						$scope.DocumentObject.DocID = parseInt(response);
+						if ($rootScope.arFinanceDocument) {								
+						} else {
+							$rootScope.arFinanceDocument = [];
+						}
+						$rootScope.arFinanceDocument.push($scope.DocumentObject);
+						
+						// Now navigate to display
+						$state.go("home.finance.document.display",  { docid : response });
+					}
 				}, function(reason) {
 					// Errors
 					$rootScope.$broadcast("ShowMessage", "Error", reason);

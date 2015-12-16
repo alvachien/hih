@@ -1,4 +1,5 @@
 /* global $ */
+/* global hih */
 /* global angular */
 (function() {
 	"use strict";	
