@@ -133,7 +133,11 @@ class HIHConstants {
 	const GC_AccountCategoryAssetFlag_Asset 		= 1;
 	const GC_AccountCategoryAssetFlag_Liability 	= 0;
 	const GC_AccountCategoryAssetFlag_DownpayOut 	= 2;
-	const GC_AccountCategoryAssetFlag_DownpayIn 	= 3;	
+	const GC_AccountCategoryAssetFlag_DownpayIn 	= 3;
+	
+	// Document type 
+	const GC_FinDocType_DownpayOut = 5;
+	const GC_FinDocType_DownpayIn = 6;
 }
 
 ///

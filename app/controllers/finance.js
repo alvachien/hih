@@ -2622,7 +2622,7 @@
 			var nCCID = 0;
 			if (row) {
 				nCCID = row.ID;
-			} else {				
+			} else {
 				for(var i = 0; i < $scope.ccList.length; i ++) {
 					if ($scope.ccList[i].isSelected) {
 						nCCID = $scope.ccList[i].ID;

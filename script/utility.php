@@ -3334,7 +3334,6 @@ function finance_dptmpdoc_post($docobj, $dpdocid) {
 		$nDocID 
 	);
 }
-
 function finance_document_post($docobj) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	/* check connection */
@@ -3427,7 +3426,9 @@ function finance_document_delete($docid) {
 			null 
 		);
 	}
+
 	$mysqli->autocommit ( false );
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	// Set language
 	$mysqli->query("SET NAMES 'UTF8'");
@@ -3486,6 +3487,123 @@ function finance_document_delete($docid) {
 		}
 	}
 	
+	/* Search for the account which built with that document - for downpayment case! */ 
+	if (empty($sError)) {
+		$query = "SELECT accountid FROM t_fin_account_dp WHERE REFDOCID = " . $docid;
+		$nAccountID = 0;
+		
+		if ($result = $mysqli->query ( $query )) {
+			/* fetch associative array */
+			while ( $row = $result->fetch_row () ) {
+				$nAccountID = $row[0];
+			}
+			/* free result set */
+			$result->close ();
+		} else {
+			$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+		}
+		
+		if (empty($sError) && $nAccountID != 0) {
+			// Delete Accounts
+			$query = "DELETE FROM t_fin_account WHERE ID=?;";
+			
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "i", $nAccountID );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+				/* close statement */
+				$newstmt->close ();
+			}
+			
+			if (empty($sError)) {
+				$query = "DELETE FROM t_fin_account_dp WHERE ACCOUNTID=?;";
+				
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "i", $nAccountID );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+						break;
+					}
+					/* close statement */
+					$newstmt->close ();
+				}
+			} 
+			
+			if (empty($sError)) {
+				$query = "DELETE FROM t_fin_tmpdoc_dp WHERE ACCOUNTID=?;";
+				
+				if ($newstmt = $mysqli->prepare ( $query )) {
+					$newstmt->bind_param ( "i", $nAccountID );
+					
+					/* Execute the statement */
+					if ($newstmt->execute ()) {
+					} else {
+						$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+						break;
+					}
+					/* close statement */
+					$newstmt->close ();
+				}
+			} 
+
+			if (empty($sError)) {
+				// Workout the additional docids
+				$query = "SELECT distinct(DOCID) as DOCID FROM t_fin_document_item WHERE ACCOUNTID = " . $nAccountID;
+				$ids = array();
+		
+				if ($result = $mysqli->query ( $query )) {
+					/* fetch associative array */
+					while ( $row = $result->fetch_row () ) {
+						$ids[] = $row[0];
+					}
+					/* free result set */
+					$result->close ();
+				} else {
+					$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+				}
+
+				if (count($ids) > 0) {
+					$idarray = implode("','",$ids);	
+				
+					$query = "DELETE FROM t_fin_document WHERE WHERE ID IN ('" . $idarray ."')";
+					if ($newstmt = $mysqli->prepare ( $query )) {
+						/* Execute the statement */
+						if ($newstmt->execute ()) {
+						} else {
+							$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+							break;
+						}
+						/* close statement */
+						$newstmt->close ();
+					}
+					
+					if (empty($sError)) {
+						$query = "DELETE FROM t_fin_document_item WHERE WHERE DOCID IN ('" . $idarray ."')";
+						if ($newstmt = $mysqli->prepare ( $query )) {
+							/* Execute the statement */
+							if ($newstmt->execute ()) {
+							} else {
+								$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+								break;
+							}
+							/* close statement */
+							$newstmt->close ();
+						}
+					}
+				}				
+			}
+		}
+	}
+	
+	/* Commit work */ 
 	if (empty ( $sError )) {
 		if (! $mysqli->errno) {
 			$mysqli->commit ();
