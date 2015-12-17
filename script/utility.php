@@ -3369,13 +3369,13 @@ function finance_document_post($docobj) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				}
 				
 				/* close statement */
 				$newstmt->close ();
 			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
 		}		
 		if (isset($docobj->ExchangeRate2) and $docobj->ExchangeRate2 != 1.0 and (!isset($docobj->ProposedExchangeRate2) or $docobj->ProposedExchangeRate2 != 1.0)) {
@@ -3387,13 +3387,13 @@ function finance_document_post($docobj) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 				}
 				
 				/* close statement */
 				$newstmt->close ();
 			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}			
 		}		
 	}
@@ -3449,6 +3449,8 @@ function finance_document_delete($docid) {
 
 		/* close statement */
 		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	/* Prepare an delete statement on items */
@@ -3466,6 +3468,8 @@ function finance_document_delete($docid) {
 			}
 			/* close statement */
 			$newstmt->close ();
+		} else {
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 
@@ -3484,6 +3488,8 @@ function finance_document_delete($docid) {
 			}
 			/* close statement */
 			$newstmt->close ();
+		} else {
+			$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -3518,8 +3524,10 @@ function finance_document_delete($docid) {
 				}
 				/* close statement */
 				$newstmt->close ();
+			} else {
+				$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
-			
+
 			if (empty($sError)) {
 				$query = "DELETE FROM t_fin_account_dp WHERE ACCOUNTID=?;";
 				
@@ -3534,6 +3542,8 @@ function finance_document_delete($docid) {
 					}
 					/* close statement */
 					$newstmt->close ();
+				} else {
+					$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 				}
 			} 
 			
@@ -3551,6 +3561,8 @@ function finance_document_delete($docid) {
 					}
 					/* close statement */
 					$newstmt->close ();
+				} else {
+					$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 				}
 			} 
 
@@ -3570,10 +3582,11 @@ function finance_document_delete($docid) {
 					$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
 				}
 
-				if (count($ids) > 0) {
+				$countids = count($ids);
+				if ($countids > 0) {
 					$idarray = implode("','",$ids);	
-				
-					$query = "DELETE FROM t_fin_document WHERE WHERE ID IN ('" . $idarray ."')";
+					$query = "DELETE FROM t_fin_document WHERE ID IN ('" . $idarray ."')";
+					
 					if ($newstmt = $mysqli->prepare ( $query )) {
 						/* Execute the statement */
 						if ($newstmt->execute ()) {
@@ -3583,10 +3596,12 @@ function finance_document_delete($docid) {
 						}
 						/* close statement */
 						$newstmt->close ();
+					} else {
+						$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 					}
 					
 					if (empty($sError)) {
-						$query = "DELETE FROM t_fin_document_item WHERE WHERE DOCID IN ('" . $idarray ."')";
+						$query = "DELETE FROM t_fin_document_item WHERE DOCID IN ('" . $idarray ."')";
 						if ($newstmt = $mysqli->prepare ( $query )) {
 							/* Execute the statement */
 							if ($newstmt->execute ()) {
@@ -3596,6 +3611,8 @@ function finance_document_delete($docid) {
 							}
 							/* close statement */
 							$newstmt->close ();
+						} else {
+							$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 						}
 					}
 				}				

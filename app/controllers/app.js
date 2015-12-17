@@ -314,8 +314,12 @@
 				$scope.CurrentUser = {};
 				
 				for(var prop in $rootScope) {
-				    if($rootScope.hasOwnProperty(prop))
-						delete $rootScope[prop];
+				    if($rootScope.hasOwnProperty(prop)) {
+						console.log("Logout:" + prop);
+						if (prop.charAt(0) !== "$" ){
+							delete $rootScope[prop];
+						}			
+					}						
 				}
 				
 				// Redirect to login page
