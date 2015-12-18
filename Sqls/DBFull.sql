@@ -637,7 +637,6 @@ VIEW `v_fin_report_io2_2` AS
         and tab_b.`trantype_EXPENSE` = 1
     group by tab_a.`id`;
  
- -- View: v_fin_report_io2
 CREATE OR REPLACE
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
@@ -655,7 +654,11 @@ VIEW `v_fin_report_io2` AS
     join `v_fin_report_io2_2` tab_b
         on tab_a.`id` = tab_b.`id`;
 
-CREATE OR REPLACE VIEW `v_fin_dpdoc` 
+CREATE OR REPLACE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_fin_dpdoc` 
     AS
 SELECT taba.DOCID, taba.REFDOCID, taba.ACCOUNTID, tabe.NAME AS accountname, taba.TRANDATE, 
 	taba.TRANTYPE, tabd.NAME AS trantypename, taba.TRANAMOUNT, taba.CONTROLCENTERID, tabb.NAME AS ccname, 

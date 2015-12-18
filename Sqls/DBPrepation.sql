@@ -2539,6 +2539,7 @@ VIEW `v_fin_report_bs2` AS
         join `t_fin_account_ctgy` `ctgytab` ON ((`accounttab`.`CTGYID` = `ctgytab`.`ID`))
     where `ctgytab`.`ASSETFLAG` = 0 or `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`, `trantype_EXPENSE`;
+
     
 /* ======================================================
     Delta parts on 2016.01.01+

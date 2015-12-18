@@ -2446,11 +2446,11 @@ function finance_dpaccount_getdetail($acntid) {
 		/* free result set */
 		$result->close ();
 	} else {
-		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+		$sError = "Failed to execute query: " . $query . "; Error: " . $mysqli->error;
 	}
 	
 	if (empty($sError)) {
-		$query = "SELECT * FROM t_fin_tmpdoc_dp WHERE accountid = " . $acntid;
+		$query = "SELECT docid, refdocid, accountid, trandate, trantype, trantypename, tranamount, CONTROLCENTERID, ccname, orderid, ordername, desp FROM v_fin_dpdoc WHERE accountid = " . $acntid;
 		
 		if ($result = $mysqli->query ( $query )) {
 			/* fetch associative array */
@@ -2461,16 +2461,19 @@ function finance_dpaccount_getdetail($acntid) {
 					"accountid" => $row [2],
 					"trandate" => $row [3],
 					"trantype" => $row [4],
-					"tranamount" => $row [5],
-					"ccid" => $row[6],
-					"orderid" => $row[7],
-					"desp" => $row[8] 
+					"trantypename" => $row [5],
+					"tranamount" => $row [6],
+					"ccid" => $row[7],
+					"ccname" => $row[8],
+					"orderid" => $row[9],
+					"ordername" => $row[10],
+					"desp" => $row[11] 
 				);
 			}
 			/* free result set */
 			$result->close ();
 		} else {
-			$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+			$sError = "Failed to execute query: " . $query . "; Error: " . $mysqli->error;
 		}
 	}
 	
@@ -2542,12 +2545,12 @@ function finance_account_create($acntObj) {
 			/* fetch associative array */
 			while ( $row = $result->fetch_row () ) {
 				$rsttable [] = array (
-						"id" => $row [0],
-						"ctgyid" => $row [1],
-						"name" => $row [2],
-						"comment" => $row [3],
-						"ctgyname" => $row [4],
-						"assetflag" => $row [5] 
+					"id" => $row [0],
+					"ctgyid" => $row [1],
+					"name" => $row [2],
+					"comment" => $row [3],
+					"ctgyname" => $row [4],
+					"assetflag" => $row [5] 
 				);
 			}
 			/* free result set */
