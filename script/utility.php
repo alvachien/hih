@@ -2408,6 +2408,80 @@ function finance_account_hierread() {
 			$rsttable 
 	);
 }
+function finance_dpaccount_getdetail($acntid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$acntable = array();
+	$tmpdoctab = array();
+	
+	/* Prepare a select statement */
+	$query = "SELECT * FROM t_fin_account_dp WHERE ACCOUNTID = " . $acntid;
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+			$acntable [] = array (
+				"accountid" => $row [0],
+				"direct" => $row [1],
+				"startdate" => $row [2],
+				"enddate" => $row [3],
+				"rpttype" => $row [4],
+				"refdocid" => $row [5],
+				"comment" => $row [6] 
+			);
+		}
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+	}
+	
+	if (empty($sError)) {
+		$query = "SELECT * FROM t_fin_tmpdoc_dp WHERE accountid = " . $acntid;
+		
+		if ($result = $mysqli->query ( $query )) {
+			/* fetch associative array */
+			while ( $row = $result->fetch_row () ) {
+				$tmpdoctab [] = array (
+					"docid" => $row [0],
+					"refdocid" => $row [1],
+					"accountid" => $row [2],
+					"trandate" => $row [3],
+					"trantype" => $row [4],
+					"tranamount" => $row [5],
+					"ccid" => $row[6],
+					"orderid" => $row[7],
+					"desp" => $row[8] 
+				);
+			}
+			/* free result set */
+			$result->close ();
+		} else {
+			$sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+		}
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		array($acntable, $tmpdoctab) 
+	);
+}
 function finance_account_create($acntObj) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

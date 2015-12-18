@@ -1256,6 +1256,45 @@
 							}
 							return deferred.promise;
 						};
+						rtnObj.loadFinanceAccountDPInfoQ = function(accountid) {
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETFINANCEDPACCOUNTDETAIL', acntid: accountid })
+								.then(function(response) {
+									var rst = [];
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											if (idx === 0) {
+												// Accounts
+												if ($.isArray(obj) && obj.length > 0) {
+													var dpAcnt = new hih.FinanceAccountDownpayment();
+													dpAcnt.setContent(obj[0]);
+													rst.push(dpAcnt);
+												}
+											} else if (idx === 1) {
+												// Tmp docs
+												var tmpDocs = [];
+												$.each(obj, function(idx2, obj2) {
+													var tmpdoc = new hih.FinanceDPTempDoc();
+													tmpdoc.setContent(obj2);
+													tmpDocs.push(tmpdoc);
+												});
+												
+												rst.push(tmpDocs);
+											} else {
+												console.log("Error occurs: ");
+												console.log(response.data);
+											}
+										});
+									}
+									deferred.resolve(rst);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+								
+							return deferred.promise;
+						};
 						rtnObj.loadFinanceAccounts = function() {
 							if (!$rootScope.isFinanceAccountLoaded) {
 							    // Example JSON response

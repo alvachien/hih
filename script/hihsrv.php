@@ -520,6 +520,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function( 'finance_currency_listread' );
 		}
 		break;
+		
+		case "GETFINANCEDPACCOUNTDETAIL": {
+			$acntid = escape ( $realParamArr ['acntid'] );
+			HIHSrv_Function_1Param( 'finance_dpaccount_getdetail', $acntid);
+		}
+		break;
 			
 		case "GETFINANCEACCOUNTCATEGORYLIST": { 
 			HIHSrv_Function( 'finance_account_category_listread' );			

@@ -1094,11 +1094,12 @@
 	hih.extend(hih.FinanceAccountDownpayment, hih.FinanceAccount);
 	hih.FinanceAccountDownpayment.prototype.setContent = function(obj) {
 		this.AccountID = parseInt(obj.accountid);
+		this.Direct = parseInt(obj.direct);
 		this.StartDate = new Date(obj.startdate);
 		this.EndDate = new Date(obj.enddate);
-		this.RepeatType = parseInt(obj.repeattype);
+		this.RepeatType = parseInt(obj.rpttype);
 		this.RefDocID = parseInt(obj.refdocid);
-		this.Others = obj.others;
+		this.Others = obj.comment;
 	};
 	hih.FinanceAccountDownpayment.prototype.Verify = function($translate) {
 		var errMsgs = [];

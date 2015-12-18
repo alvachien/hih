@@ -493,6 +493,10 @@
 		$scope.ActivityID = hih.Constants.UIMode_Create;
 		
 		$scope.AccountObject = new hih.FinanceAccount();
+		$scope.ShowDownpaymentInfo = false;
+		$scope.DPAccountInfo = null;
+		$scope.DPTmpDoc = [];
+		$scope.SafeDPTmpDoc = [];
 		
 		// Messages
 		$scope.ReportedMessages = [];
@@ -513,6 +517,26 @@
 			$.each($rootScope.arFinanceAccount, function (idx, obj) {				
 				if (obj.ID === nAcntID) {
 					$scope.AccountObject = angular.copy(obj);
+					
+					if ($scope.AccountObject && $scope.AccountObject.CategoryObject
+						&& ( $scope.AccountObject.CategoryObject.AssetFlag === hih.Constants.AccountCategoryAssetFlag_DownpayOut
+						|| $scope.AccountObject.CategoryObject.AssetFlag === hih.Constants.AccountCategoryAssetFlag_DownpayIn) ) {
+						// Read the info out
+						utils.loadFinanceAccountDPInfoQ(nAcntID)
+							.then(function(response){								
+								$scope.ShowDownpaymentInfo = true;
+								
+								// Downpayment info
+								$scope.DPAccountInfo = response[0];
+								if ($.isArray(response[1]) && response[1].length > 0) {
+									$.each(response[1], function(idx3, obj3) {
+										$scope.DPTmpDoc.push(obj3);
+									})
+								}								
+							}, function(reason){
+								$rootScope.$broadcast("ShowMessage", "Error", reason);
+							})
+					}
 					return false;
 				}
 			});
