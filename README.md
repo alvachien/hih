@@ -1,5 +1,5 @@
 # Home Info. Hub (Website Version)
-**HIH** is an abbreviation, which stands for **Home Information Hub**. **HIH** targets to build the warehouse for all necessary information among all family members. Key components are:
+**Home Information Hub**, have two abbreviation terms: **HIH** or **Home Info. Hub**. **HIH** targets to build the warehouse for all necessary information among all family members. Key components are:
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase). 
@@ -12,7 +12,7 @@ As it name indicates, HIH shall be used inside the family network. So, ideally, 
 For version 0.5, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
 ### General part
-- [x] Multiple languages supported: English and Simplified Chinese
+- [x] Multiple languages supported. Embedded languages are:	English and Simplified Chinese
 - [x] Dynamic Themes supported
 
 ### Finance trace
@@ -42,6 +42,10 @@ If you have more than two computers, no doubtly that you will feel it's hard to 
 It's quite ture that the cloud solution, like Apple iCloud, Microsoft OneDrive gets popular recent days for the storage purpose, but it still cannot solve the issues for the structured data - overwritting files always be the last approach.
 
 In that case, HIH provides the opportunity to share the information among the intranet (though it's quite easy to convert it into Internet part).  And, for the family usage, the finance part the learning part coming as the first part.
+
+## How to Install
+Please check out the following link detail:
+[Installation] (https://github.com/alvachien/hih/wiki/Installation)
 
 ## Development History
 Current Version: Web 0.5.*;
@@ -75,8 +79,12 @@ Built with JavaScript Frontend(AngularJS, Bootstrap, Angular UI, TinyMCE, etc) a
 - To be continued.
 
 ### HIH, Website Version 
-1. Version 0.1 to web 0.3, Using: jQuery, jEasyUI;
-2. Version 0.4 to now, using Angular JS, Boostrap, ...
+1. Version 0.1 to web 0.3, Using: jQuery, jEasyUI, no public release;
+2. Version 0.4, switch to Angular JS, Boostrap, no public release;
+3. Version 0.5 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5), initial version, released on Sep 11 2015;
+4. Version 0.5.2 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5.2), with Finance Report ready, released on Oct 10 2015;
+5. Version 0.5.3 [Link] (https://github.com/alvachien/hih/releases/tag/0.5.3), with Learn Plan ready, released on Nov 3 2015;
+6. Version 0.5.4 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5.4), with Down Payment ready, released on Dec 18 2015;
 
 ### HIH, Desktop Version
 1. Version 1.0, named as PIH, built with MFC, Visual C++;
