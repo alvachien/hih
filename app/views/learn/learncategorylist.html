@@ -46,7 +46,7 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td>{{row.ID}}</td>
-				<td>{{row.ParentID}}</td>
+				<td>{{row.ParentID | idTostring}}</td>
 				<td>{{row.Text}}</td>
 				<td>{{row.FullDisplayText}}</td>
 				<td>{{row.Comment}}</td>

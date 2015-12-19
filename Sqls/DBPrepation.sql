@@ -2545,7 +2545,16 @@ VIEW `v_fin_report_bs2` AS
     Delta parts on 2016.01.01+
    ====================================================== */
 
-
+-- Table Creation: Asset account
+CREATE TABLE IF NOT EXISTS `t_fin_account_asset` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `STARTDATE` date NOT NULL,
+  `ENDDATE` date NOT NULL,
+  `INDOCID` int(11) NULL,
+  `OUTDOCID` int(11) NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset';
 
 -- Table Creation: Asset value change
 CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
@@ -2555,7 +2564,7 @@ CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
   `REFDOCID` int(11) NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Asset Change';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset Change';
 
 
 -- Table Create, t_lib_loc
