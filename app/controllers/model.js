@@ -1852,13 +1852,25 @@
 	hih.extend(hih.FinanceDPTempDoc, hih.Model);
 	hih.FinanceDPTempDoc.prototype.setContent = function(obj) {
 		this.DocID = parseInt(obj.docid);
-		this.RefDocID = parseInt(obj.refdocid);
+        if (obj.refdocid) {
+            this.RefDocID = parseInt(obj.refdocid);
+        } else {
+            this.RefDocID = -1;
+        }		
 		this.AccountID = parseInt(obj.accountid);
 		this.TranDate = new Date(obj.trandate);
 		this.TranTypeID = parseInt(obj.trantype);
 		this.Amount = parseFloat(obj.tranamount);
-		this.ControlCenterID = parseInt(obj.ccid);
-		this.OrderID = parseInt(obj.orderid);
+        if (obj.ccid) {
+            this.ControlCenterID = parseInt(obj.ccid);    
+        } else {
+            this.ControlCenterID = -1;
+        }
+		if (obj.orderid) {
+            this.OrderID = parseInt(obj.orderid);
+        } else {
+            this.OrderID = -1;
+        }		
 	};
 	hih.FinanceDPTempDoc.prototype.buildRelationship = function(arAccount, arTranType, arCC, arOrd) {
 		

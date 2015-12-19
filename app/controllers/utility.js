@@ -32,6 +32,14 @@
 				}
 			};
 		})
+
+		.filter('idTostring', function() {
+			return function(inputval) {
+                console.log(inputval);
+                if (inputval === -1) return "";
+                return inputval; 
+			};
+		})
 		
 		.directive('csSelect', function () {
 			return {

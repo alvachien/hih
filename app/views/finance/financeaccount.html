@@ -56,23 +56,23 @@
 			
 			<div class="panel-body">
 				<div class="form-group">
-					<label class="control-label col-sm-2">Direction</label>
+					<label class="control-label col-sm-2" translate="Finance.Direction">Direction</label>
 					<div class="col-sm-10">
 						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.Direct" />
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<label class="control-label col-sm-2" translate="Finance.BeginDate">Start Date</label>
+					<label class="control-label col-sm-2" translate="Finance.BeginDate">Begin Date</label>
 					<div class="col-sm-10">
-						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.StartDate" />
+						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.StartDate | date: 'yyyy.MM.dd'" />
 					</div>
 				</div>
 	
 				<div class="form-group">
 					<label class="control-label col-sm-2" translate="Finance.EndDate">End Date</label>
 					<div class="col-sm-10">
-						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.EndDate" />
+						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.EndDate | date: 'yyyy.MM.dd'" />
 					</div>
 				</div>
 
@@ -84,7 +84,7 @@
 				</div>
 
 				<div class="form-group">
-					<label class="control-label col-sm-2">Ref. Doc</label>
+					<label class="control-label col-sm-2" translate="Finance.RefDoc">Ref. Doc</label>
 					<div class="col-sm-10">
 						<input class="form-control" readonly="readonly" ng-model="DPAccountInfo.RefDocID" />
 					</div>
@@ -94,8 +94,8 @@
 					<thead>
 						<tr>
 							<th st-sort="did" translate="Common.ID">ID</th>
-							<th st-sort="refid">Ref Doc ID</th>
-							<th st-sort="ttyp" >Tran Type</th>
+							<th st-sort="refid" translate="Finance.RefDoc">Ref Doc ID</th>
+							<th st-sort="ttyp" translate="Finance.TransactionType">Tran Type</th>
 							<th st-sort="tdate" translate="Common.Date">Date</th>
 							<th st-sort="amt" translate="Finance.Amount">Amount</th>
 							<th translate="Common.Operations">Operations</th>
@@ -103,14 +103,14 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="row in DPTmpDoc">
-							<td>{{row.DocID}}</td>
-							<td>{{row.RefDocID}}</td>
-							<td>{{row.TranTypeID}}</td>
+							<td>{{row.DocID | idTostring}}</td>
+							<td>{{row.RefDocID | idTostring}}</td>
+							<td>{{row.TranTypeID | idTostring}}</td>
 							<td>{{row.TranDate | date: 'yyyy.MM.dd'}}</td>
 							<td>{{row.Amount | currency:'￥':2}}</td>
 							<td>
-								<button type="button" class="btn btn-sm" ng-click="displayItem(row.DocID)" tooltip="{{'Common.Display' | translate}}">
-									<i class="glyphicon glyphicon-share">
+								<button type="button" class="btn btn-sm" ng-click="goDPDoc(row)" tooltip="{{'Common.Create' | translate}}">
+									<i class="glyphicon glyphicon-saved">
 									</i>
 								</button>
 							</td>

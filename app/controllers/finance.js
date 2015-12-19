@@ -544,6 +544,10 @@
 			$scope.Activity = "Common.Create";
 			$scope.ActivityID = hih.Constants.UIMode_Create;
 		}
+        
+        $scope.goDPDoc = function(row) {
+            $state.go('home.finance.document.dptmpdoc_post', { docid: row.DocID });
+        };
 		 
 		$scope.submit = function() {
 			$scope.cleanReportMessages();
@@ -1991,8 +1995,8 @@
 		};
 	}])
 	
-	.controller('FinanceDocumentDownPayTmpPostController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', 'utils', 
-		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, utils) {
+	.controller('FinanceDocumentDownPayTmpPostController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', '$translate', '$window', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $q, $translate, $window, utils) {
 			
 		// Error messges
 		$scope.ReportedMessages = [];
@@ -2119,8 +2123,9 @@
 			}
 		};
 		
-		$scope.close = function() {
-		    $state.go("home.finance.document.list");
+		$scope.backtoList = function() {
+		    //$state.go("home.finance.document.list");
+            $window.history.back();
 		};
 	}])
 	
