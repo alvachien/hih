@@ -207,6 +207,13 @@
 	    return pass_level;
 	};
 
+
+
+
+
+
+
+
 	// =========================================================
 	// Root model
 	// =========================================================
@@ -220,7 +227,14 @@
 		// Verify the data, returns the error messages!
 		return [];	
 	};
-	
+
+
+
+
+
+
+
+
 	// =========================================================
 	// Learn part and OO concept adopt in JavaScript
 	// =========================================================
@@ -920,7 +934,12 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};	
-	
+
+
+
+
+
+
 	// =========================================================
 	// Finance part
 	// =========================================================
@@ -2006,5 +2025,40 @@
 		}
 	};	
 	// 14. What's the Next?
+
+
+
+
+
+
+
+    
+
+	// =========================================================
+	// Library part
+	// =========================================================
+    // 1. Lib Language
+    hih.LibLanguage = function LibLanguage () {
+        this.Language = "";
+        this.Name = "";
+        this.NativeName = "";
+    };
+    hih.extend(hih.LibLanguage, hih.Model);
+    hih.LibLanguage.prototype.setContent = function(obj) {
+        this.Language = obj.lang;
+        this.Name = obj.name;
+        this.NativeName = obj.navname;
+    } ;
+    // 2. Lib Person
+    hih.LibPerson = function LibPerson() {
+        
+    };
+    hih.extend(hih.LibPerson, hih.Model);
+    // 3. Lib Organization
+    
+    // 4. Lib Location
+    
+    // 11. Lib Books
+    
 }());
 

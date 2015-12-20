@@ -214,6 +214,16 @@
 		"ChooseAnOrder": "选择一个定单",
 		"ChooseACurrency": "选择一种货币"
   	},
+      
+    "Lib": {
+        "Locations": "位置",
+        "Location": "位置",
+        "Books": "图书",
+        "Book": "图书",
+        "Person": "个人",
+        "Organization": "组织",
+        "NativeName": "本土名称"
+    },
 	  
 	"Message": {
 		"InvalidCategory": "不合法的类别",

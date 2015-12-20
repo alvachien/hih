@@ -2624,7 +2624,13 @@ CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`BOOKID`, `LOCID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book location';
-    
+
+-- Pre-deliver content
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('EN','English', 'English');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('ZH','Simp. Chinese', '简体中文');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese', '繁體中文');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日文');
+
 /* ======================================================
     Delta parts on 2016.01.01+
    ====================================================== */

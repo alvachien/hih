@@ -18,7 +18,7 @@
 	            abstract: true,
 	            template: '<div ui-view></div>'
 	        })
-	        .state("home.learn.language.list", {
+	        .state("home.lib.language.list", {
 	        	url: "",
 	        	templateUrl: 'app/views/lib/languagelist.html',
 	        	controller: 'LibLanguageListController'
@@ -28,7 +28,7 @@
 	            abstract: true,
 	            template: '<div ui-view></div>'
 	        })
-	        .state("home.learn.person.list", {
+	        .state("home.lib.person.list", {
 	        	url: "",
 	        	templateUrl: 'app/views/lib/personlist.html',
 	        	controller: 'LibPersonListController'
@@ -38,7 +38,7 @@
 	            abstract: true,
 	            template: '<div ui-view></div>'
 	        })
-	        .state("home.learn.org.list", {
+	        .state("home.lib.org.list", {
 	        	url: "",
 	        	templateUrl: 'app/views/lib/orglist.html',
 	        	controller: 'LibOrgListController'
@@ -48,6 +48,12 @@
 		
 	   .controller('LibLanguageListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
 		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+              utils.loadLibLanguageQ()
+                .then(function(response) {
+                    // Do nothing....
+                }, function(reason) {
+                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                });
 	   }])
        
 	   .controller('LibPersonListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 

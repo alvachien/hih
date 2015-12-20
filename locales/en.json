@@ -215,6 +215,16 @@
 		"ChooseAnOrder": "Choose an Order",
 		"ChooseACurrency": "Choose a currency"
   	},
+      
+    "Lib": {
+        "Locations": "Locations",
+        "Location": "Location",
+        "Books": "Books",
+        "Book": "Book",
+        "Person": "Person",
+        "Organization": "Organization",
+        "NativeName": "Native Name"
+    },
 	
 	"Message": {
 		"InvalidCategory": "Category is invalid",
