@@ -2540,47 +2540,81 @@ VIEW `v_fin_report_bs2` AS
     where `ctgytab`.`ASSETFLAG` = 0 or `ctgytab`.`ASSETFLAG` = 1
 	group by `accountid`, `trantype_EXPENSE`;
 
-    
 /* ======================================================
-    Delta parts on 2016.01.01+
+    Delta parts on 2015.12.20
    ====================================================== */
-
--- Table Creation: Asset account
-CREATE TABLE IF NOT EXISTS `t_fin_account_asset` (
-  `ACCOUNTID` int(11) NOT NULL,
-  `STARTDATE` date NOT NULL,
-  `ENDDATE` date NOT NULL,
-  `INDOCID` int(11) NULL,
-  `OUTDOCID` int(11) NULL,
-  `COMMENT` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset';
-
--- Table Creation: Asset value change
-CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
-  `ACCOUNTID` int(11) NOT NULL,
-  `TRANDATE` date NOT NULL,
-  `NEWVALUE` double NOT NULL,
-  `REFDOCID` int(11) NULL,
-  `COMMENT` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset Change';
-
 
 -- Table Create, t_lib_loc
 CREATE TABLE IF NOT EXISTS `t_lib_loc` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
+  `DETAILS` varchar(200) NULL,
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lib location';
 
+-- Table Create, t_language
+CREATE TABLE IF NOT EXISTS `t_language` (
+  `LANG` varchar(3) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `NAVNAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`LANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Language';
+
 -- Table Create, t_lib_book, book
 CREATE TABLE IF NOT EXISTS `t_lib_book` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(25) NOT NULL,
+  `ISBN` varchar(25) DEFAULT NULL,
+  `OTHERS` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book';
+
+-- Table create, t_lib_booklang
+CREATE TABLE IF NOT EXISTS `t_lib_booklang` (
+  `BOOKID` int(11) NOT NULL,
+  `LANG` varchar(3) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `LANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book language';
+
+-- Table create, t_lib_bookname
+CREATE TABLE IF NOT EXISTS `t_lib_bookname` (
+  `BOOKID` int(11) NOT NULL,
+  `NAMEID` int(11) NOT NULL,
+  `LANG` varchar(3) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `NAMEID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book name';
+
+-- Table create, t_lib_person
+CREATE TABLE IF NOT EXISTS `t_lib_person` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Person';
+
+-- Table create, t_lib_bookauthor
+CREATE TABLE IF NOT EXISTS `t_lib_bookauthor` (
+  `BOOKID` int(11) NOT NULL,
+  `PERSONID` int(11) NOT NULL,
+  `TRANFLAG` tinyint DEFAULT NULL,
+  PRIMARY KEY (`BOOKID`, `PERSONID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book author';
+
+-- Table create, t_lib_org
+CREATE TABLE IF NOT EXISTS `t_lib_org` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Organization';
+
+-- Table create, t_lib_bookpress
+CREATE TABLE IF NOT EXISTS `t_lib_bookpress` (
+  `BOOKID` int(11) NOT NULL,
+  `PRESSID` int(11) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `PRESSID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book press';
 
 -- Table Create, t_lib_bookloc, location of book
 CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
@@ -2590,6 +2624,40 @@ CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
   `COMMENT` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`BOOKID`, `LOCID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book location';
+    
+/* ======================================================
+    Delta parts on 2016.01.01+
+   ====================================================== */
+
+-- Table Creation: Asset account
+CREATE TABLE IF NOT EXISTS `t_fin_account_asset` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `STARTDATE` date DEFAULT NULL,
+  `ENDDATE` date DEFAULT  NULL,
+  `AMOUNT` double NOT NULL,
+  `TRANCURR` varchar(5) NOT NULL,
+  `EXGRATE` TINYINT NULL DEFAULT NULL,
+  `EXGRATE_PLAN` TINYINT NULL DEFAULT NULL,
+  `INDOCID` int(11) NULL,
+  `OUTDOCID` int(11) NULL,
+  `DETAILS` varchar(200) NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset';
+
+-- Table Creation: Asset value change
+CREATE TABLE IF NOT EXISTS `t_fin_assetchange` (
+  `ACCOUNTID` int(11) NOT NULL,
+  `TRANDATE` date NOT NULL,
+  `AMOUNT` double NOT NULL,
+  `TRANCURR` varchar(5) NOT NULL,
+  `EXGRATE` TINYINT NULL DEFAULT NULL,
+  `EXGRATE_PLAN` TINYINT NULL DEFAULT NULL,
+  `REFDOCID` int(11) NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ACCOUNTID`, `TRANDATE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Asset Change';
+
 
 -- Table Create, t_lib_movie
 CREATE TABLE IF NOT EXISTS `t_lib_movie` (

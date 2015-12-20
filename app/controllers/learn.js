@@ -1526,8 +1526,8 @@
 				// Re-create the hierarchy
 				$scope.treeConfig.version++;
 			}			
-		 }); 		 
-	}])			
+		 });
+	}])
 	;
 })();
 
