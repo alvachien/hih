@@ -2051,13 +2051,93 @@
     } ;
     // 2. Lib Person
     hih.LibPerson = function LibPerson() {
-        
+		this.ID = -1;
+		this.Name = "";
+		this.Others = "";
     };
     hih.extend(hih.LibPerson, hih.Model);
+    hih.LibPerson.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.Others = obj.others;
+	};
+	hih.LibPerson.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};
+	hih.LibPerson.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
     // 3. Lib Organization
-    
+    hih.LibOrganization = function LibOrganization() {
+		this.ID = -1;
+		this.Name = "";
+		this.Others = "";
+    };
+    hih.extend(hih.LibOrganization, hih.Model);
+    hih.LibOrganization.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.Others = obj.others;
+	};
+	hih.LibOrganization.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};
+	hih.LibOrganization.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
     // 4. Lib Location
-    
+	hih.LibLocation = function LibLocation() {
+		this.ID = -1;
+		this.Name = "";
+		this.Detail = "";
+		this.Comment = "";
+	};
+	hih.extend(hih.LibLocation, hih.Model);
+    hih.LibLocation.prototype.setContent = function(obj) {
+		this.ID = parseInt(obj.id);
+		this.Name = obj.name;
+		this.Detail = obj.detail;
+		this.Comment = obj.comment;
+	};
+	hih.LibLocation.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+	};
+	hih.LibLocation.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
     // 11. Lib Books
     
 }());

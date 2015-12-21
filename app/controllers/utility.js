@@ -2062,8 +2062,311 @@
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
-							return deferred.promise;                            
+							return deferred.promise;
                         };
+						// Locations
+						rtnObj.loadLibLocationQ = function() {
+							var deferred = $q.defer();
+							$rootScope.arLibLoc = [];
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBLOCLIST' })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibLocation();
+											bs.setContent(obj);
+											$rootScope.arLibLoc.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.readLibLocationQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBLOCDETAIL', id: nID })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibLocation();
+											bs.setContent(obj);
+											
+											// Find out the elder one and replace it.
+											if ( !$rootScope.arLibLoc) {
+												$rootScope.arLibLoc = [];
+												$rootScope.arLibLoc.push(bs);
+											} else {
+												var realidx = -1;
+												for(var i = 0; i < $rootScope.arLibLoc.length; i ++ ) {
+													if ($rootScope.arLibLoc[i].ID === nID) {
+														realidx = i;
+														break;
+													}
+												}
+												if (realidx !== -1) {
+													$rootScope.arLibLoc[realidx] = bs;
+												} else {
+													$rootScope.arLibLoc.push(bs);
+												}																								
+											}
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.createLibLocatoinQ = function(objLibLoc) {
+							var deferred = $q.defer();
+							var jsonLoc = objLibLoc.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'CREATELIBLOC', data: jsonLoc })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.updateLibLocationQ = function(objLibLoc) {
+							var deferred = $q.defer();
+							var jsonLoc = objLibLoc.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'UPDATELIBLOC', data: jsonLoc })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.deleteLibLocationQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'DELETELIBLOC', id: nID })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						// Person
+						rtnObj.loadLibPersonQ = function() {
+							var deferred = $q.defer();
+							$rootScope.arLibPerson = [];
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBPERSONLIST' })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibPerson();
+											bs.setContent(obj);
+											$rootScope.arLibPerson.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.readLibPersonQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBPERSONDETAIL', id: nID })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibPerson();
+											bs.setContent(obj);
+											
+											// Find out the elder one and replace it.
+											if ( !$rootScope.arLibPerson) {
+												$rootScope.arLibPerson = [];
+												$rootScope.arLibPerson.push(bs);
+											} else {
+												var realidx = -1;
+												for(var i = 0; i < $rootScope.arLibPerson.length; i ++ ) {
+													if ($rootScope.arLibPerson[i].ID === nID) {
+														realidx = i;
+														break;
+													}
+												}
+												if (realidx !== -1) {
+													$rootScope.arLibPerson[realidx] = bs;
+												} else {
+													$rootScope.arLibPerson.push(bs);
+												}																								
+											}
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.createLibPersonQ = function(objLibPerson) {
+							var deferred = $q.defer();
+							var jsonPerson = objLibPerson.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'CREATELIBPERSON', data: jsonPerson })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.updateLibPersonQ = function(objLibPerson) {
+							var deferred = $q.defer();
+							var jsonPerson = objLibPerson.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'UPDATELIBPERSON', data: jsonPerson })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.deleteLibPersonQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'DELETELIBPERSON', id: nID })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						// Organization
+						rtnObj.loadLibOrganizationQ = function() {
+							var deferred = $q.defer();
+							$rootScope.arLibOrganization = [];
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBORGLIST' })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibOrganization();
+											bs.setContent(obj);
+											$rootScope.arLibOrganization.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.readLibOrganizationQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBORGDETAIL', id: nID })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibOrganization();
+											bs.setContent(obj);
+											
+											// Find out the elder one and replace it.
+											if ( !$rootScope.arLibOrganization) {
+												$rootScope.arLibOrganization = [];
+												$rootScope.arLibOrganization.push(bs);
+											} else {
+												var realidx = -1;
+												for(var i = 0; i < $rootScope.arLibOrganization.length; i ++ ) {
+													if ($rootScope.arLibOrganization[i].ID === nID) {
+														realidx = i;
+														break;
+													}
+												}
+												if (realidx !== -1) {
+													$rootScope.arLibOrganization[realidx] = bs;
+												} else {
+													$rootScope.arLibOrganization.push(bs);
+												}																								
+											}
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.createLibOrganizationQ = function(objLibOrganization) {
+							var deferred = $q.defer();
+							var jsonOrganization = objLibOrganization.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'CREATELIBORG', data: jsonOrganization })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.updateLibOrganizationQ = function(objLibOrganization) {
+							var deferred = $q.defer();
+							var jsonOrganization = objLibOrganization.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'UPDATELIBORG', data: jsonOrganization })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
+						rtnObj.deleteLibOrganizationQ = function(nID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'DELETELIBOORG', id: nID })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
 
 ////////////////////////////////////////////////////////////////////
 // Others

@@ -1,0 +1,24 @@
+<div id="viewLibLocationList">
+	<div class="page-header">
+		<h2>
+			<span translate="Lib.Locations">Locations</span> <small translate="Common.ListView"> List View </small>
+		</h2>
+	</div>
+
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th translate="Lib.Location">Location</th>
+				<th translate="Common.Name">Name</th>
+				<th translate="Lib.NativeName">Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in arLibLang">
+				<td>{{row.Language}}</td>
+				<td>{{row.Name}}</td>
+				<td>{{row.NativeName}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

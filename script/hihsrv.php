@@ -730,10 +730,86 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		// Libraries
 		// ===========================================================================================
+		
         case "GETLIBLANG": {
             HIHSrv_Function( 'lib_lang_listread' );
         }
         break;
+		
+		case "GETLIBLOCLIST": {
+			HIHSrv_Function( 'lib_loc_listread' );
+		}
+		break;
+		
+		case "GETLIBLOCDETAIL": {
+			
+		}
+		break;
+		
+		case "CREATELIBLOC": {
+			
+		}
+		break;
+		
+		case "UPDATELIBLOC": {
+			
+		}
+		break;
+		
+		case "DELETELIBLOC": {
+			
+		}
+		break;
+
+		case "GETLIBPERSONLIST": {
+			HIHSrv_Function( 'lib_person_listread' );
+		}
+		break;
+		
+		case "GETLIBPERSONDETAIL": {
+			
+		}
+		break;
+		
+		case "CREATELIBPERSON": {
+			
+		}
+		break;
+		
+		case "UPDATELIBPERSON": {
+			
+		}
+		break;
+		
+		case "DELETELIBPERSON": {
+			
+		}
+		break;
+
+		case "GETLIBORGLIST": {
+			HIHSrv_Function( 'lib_org_listread' );
+		}
+		break;
+		
+		case "GETLIBORGDETAIL": {
+			
+		}
+		break;
+		
+		case "CREATELIBORG": {
+			
+		}
+		break;
+		
+		case "UPDATELIBORG": {
+			
+		}
+		break;
+		
+		case "DELETELIBORG": {
+			
+		}
+		break;
         
 		// ===========================================================================================
 		// Others
