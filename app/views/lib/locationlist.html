@@ -10,14 +10,16 @@
 			<tr>
 				<th translate="Lib.Location">Location</th>
 				<th translate="Common.Name">Name</th>
-				<th translate="Lib.NativeName">Name</th>
+				<th translate="Common.Detail">Detail</th>
+				<th translate="Common.Comment">Comment</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="row in arLibLang">
-				<td>{{row.Language}}</td>
+			<tr ng-repeat="row in arLibLoc">
+				<td>{{row.ID}}</td>
 				<td>{{row.Name}}</td>
-				<td>{{row.NativeName}}</td>
+				<td>{{row.Details}}</td>
+				<td>{{row.Comment}}</td>
 			</tr>
 		</tbody>
 	</table>

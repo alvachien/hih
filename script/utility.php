@@ -4773,7 +4773,7 @@ function lib_lang_listread() {
 	);   
 }
 
-function lib_loc_listread() {
+function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -4793,6 +4793,9 @@ function lib_loc_listread() {
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM t_lib_loc";
+	if ($nlocid) {
+		$query = $query . " WHERE ID = ". $nlocid;
+	}
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -4818,8 +4821,53 @@ function lib_loc_listread() {
 		$rsttable 
 	);   
 }
-
-function lib_person_listread() {
+function lib_loc_create($objLoc) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = -1;
+	
+	// Create account: return code, message and last insert id
+	/* Prepare an insert statement */
+	$query = "INSERT INTO t_lib_loc(ID, NAME, DETAILS, COMMENT) VALUES(?, ?, ?, ?)";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "isss", $objLoc->ID, $objLoc->Name, $objLoc->Details, $objLoc->Comment );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			$nNewID = $mysqli->insert_id;
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nNewID 
+	);
+}
+function lib_person_listread($npersonid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -4839,6 +4887,9 @@ function lib_person_listread() {
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM t_lib_person";
+	if ($npersonid) {
+		$query = $query . " WHERE ID = ". $npersonid;
+	}
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -4863,8 +4914,54 @@ function lib_person_listread() {
 		$rsttable 
 	);   
 }
+function lib_person_create($objPerson) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = -1;
+	
+	/* Prepare an insert statement */
+	$query = "INSERT INTO t_lib_person(ID, NAME, OTHERS) VALUES(?, ?, ?)";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "iss", $objPerson->ID, $objPerson->Name, $objPerson->Others );
 
-function lib_org_listread() {
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			$nNewID = $mysqli->insert_id;
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nNewID 
+	);
+}
+
+function lib_org_listread($norgid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -4884,6 +4981,9 @@ function lib_org_listread() {
 	// Perform the query
 	$rsttable = array ();
 	$query = "SELECT * FROM t_lib_org";
+	if ($norgid) {
+		$query = $query . " WHERE ID = ". $norgid;
+	}
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -4907,6 +5007,51 @@ function lib_org_listread() {
 		$sError,
 		$rsttable 
 	);   
+}
+function lib_org_create($objOrg) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = -1;
+	
+	/* Prepare an insert statement */
+	$query = "INSERT INTO t_lib_org(ID, NAME, OTHERS) VALUES(?, ?, ?)";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "iss", $objOrg->ID, $objOrg->Name, $objOrg->Others );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			$nNewID = $mysqli->insert_id;
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nNewID 
+	);
 }
 
 /* Following function For testing purpose only */

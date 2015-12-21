@@ -1067,4 +1067,89 @@ class HIHInternalOrder {
         }
 	}
 }
+
+///
+/// Libraries part
+///
+
+class HIHLibLocation {
+	// Properties
+	public $ID;
+	public $Name;
+	public $Details;
+	public $Comment;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Name )) {
+				return "Name is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+}
+
+class HIHLibPerson {
+	// Properties
+	public $ID;
+	public $Name;
+	public $Others;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Name )) {
+				return "Name is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+}
+
+class HIHLibOrganization {
+	// Properties
+	public $ID;
+	public $Name;
+	public $Others;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Name )) {
+				return "Name is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+}
+
+
 ?>

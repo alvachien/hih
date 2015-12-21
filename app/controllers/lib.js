@@ -43,6 +43,16 @@
 	        	templateUrl: 'app/views/lib/orglist.html',
 	        	controller: 'LibOrgListController'
 	        })
+	        .state("home.lib.loc", {
+	            url: "/loc",
+	            abstract: true,
+	            template: '<div ui-view></div>'
+	        })
+	        .state("home.lib.loc.list", {
+	        	url: "",
+	        	templateUrl: 'app/views/lib/locationlist.html',
+	        	controller: 'LibLocationListController'
+	        })
 			;
 		}])
 		
@@ -56,6 +66,16 @@
                 });
 	   }])
        
+	   .controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
+		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+			  utils.loadLibLocationQ()
+			  	.then(function(response) {
+					  // Do nothing...
+				  }, function(reason){
+					  $rootScope.$broadcast("ShowMessage", "Error", reason);
+				  });
+	   }])
+	   
 	   .controller('LibPersonListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
 		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
 	   }])

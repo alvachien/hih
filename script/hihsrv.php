@@ -742,17 +742,32 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "GETLIBLOCDETAIL": {
-			
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_loc_listread', $nid );
 		}
 		break;
 		
 		case "CREATELIBLOC": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objLoc = new HIHLibLocation($jsondata);
+			$errMsg = $objLoc>CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_loc_create', $objLoc);
+			}
 		}
 		break;
 		
 		case "UPDATELIBLOC": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objLoc = new HIHLibLocation($jsondata);
+			$errMsg = $objLoc>CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_loc_update', $objLoc);
+			}			
 		}
 		break;
 		
@@ -767,7 +782,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "GETLIBPERSONDETAIL": {
-			
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_person_listread', $nid );
 		}
 		break;
 		
@@ -792,7 +808,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "GETLIBORGDETAIL": {
-			
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_org_listread', $nid );
 		}
 		break;
 		
