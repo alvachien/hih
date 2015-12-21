@@ -52,32 +52,6 @@ Current Version: Web 0.5.*;
 
 Built with JavaScript Frontend(AngularJS, Bootstrap, Angular UI, TinyMCE, etc) and PHP Backend.
 
-### Key Directions/Decisions in Scope/Design/Development phrase
-- 2015.7.1, Switch from native BootStrap CSS to component UI Bootstrap;
-- 2015.7.2, Switch from Baidu CDN to Bootcss CDN, because of the number of the components included;
-- 2015.7.15, Switch from Modal dialog to Sweet Alert. The dialog in HIH only for Message/Warn/Error; 
-- 2015.7.22, Switch from Smart-Table to UI-Grid, because of the amazing column footer feature;
-- 2015.7.29, Switch for ng-i18next to Angular Translate because UI-Grid integer it;
-- 2015.8.2, It's **DECIDED** that the switch from ngJstree to UI-Grid tree mode suspended;
-- 2015.8.4. It's **DECIDED** that all non-operatable (search, edit) using the native table not the UI-grid. First batch: User Detail, User List, Document Type List, Transaction Type List, Currency List, Account Category List;
-- 2015.8.22, It's **DECIDED** that using promise concept($q) for asynchronously data loading;
-- 2015.9.3， It's **DECIDED** that displaying all error messages during the input validation;
-- 2015.9.15, It's **DECIDED** that exchange rate stands for the rate between the currency in use and the local currency; and the value is:
-	- Formula for Rate: **1 Foreign Currency in use = 1 Local Currency * Rate**;
-	- Formula for calculating local currency: **Local Currency = Foreign Currency / Rate**;
-- 2015.9.17, It's **DECIDED** that using auglar-selectize instead of ui-select, because its requires .selected on the attribute which causes it is not easy to use ng-model directly on other controls;
-- 2015.10.20, It's **DECIDED** that the stored procedure in DB layer only conver simple CREATE/UPDATE/DELETE operation no others. The reason we need stored procedure is  that
-	- We need LAST_INSERT_ID() in Creation case; [?] <= However, via mysqli->insert_id can anyway get the new insert ID out!
-	- We need transaction in any case; [?] <= It can also achieve in PHP layer!
-- 2015.11.3, It's **DECIDED** that the HIH using 'yyyy.MM.dd' as the default UI format for date for now. The customizing the date formatting waiting for next version. The ISO format 'yyyy-MM-dd' for database storage is no change.
-- 2015.11.4, Switch from UI-Grid to Smart-Table, because the unstable of UI-Grid as well as the performance. Customer plugin (directrive) created for Smart-Table to simulate the column footer.
-- 2015.12.7, It's **DECIDED** that using Asset Flag in Account Category to distinguish between the accounts. The allowed the value of Asset Flag as following:
-	- 1: For Asset;
-	- 0: For Liability;
-	- 2: For Outgoing Downpayment;
-	- 3: For Incoming Downpayment;  
-- To be continued.
-
 ### HIH, Website Version 
 1. Version 0.1 to web 0.3, Using: jQuery, jEasyUI, no public release;
 2. Version 0.4, switch to Angular JS, Boostrap, no public release;
