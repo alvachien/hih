@@ -1,2 +1,41 @@
 <div id="viewLibPerson">
+	<div class="page-header">
+		<h2>
+            <span translate="Lib.Person">Person</span><small> {{Activity | translate}}</small>
+		</h2>
+	</div>
+
+	<div class="form-horizontal" role="form" name="frmObj">
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptID"
+					readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="PersonObject.ID">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Name' | translate}}" ng-model="PersonObject.Name" required>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptOthers" translate="Common.Others">Others</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptOthers" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Others' | translate}}" ng-model="PersonObject.Others" required>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"
+					translate="Common.Submit">Submit</button>
+				<button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>
