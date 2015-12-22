@@ -2139,6 +2139,37 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
     // 11. Lib Books
-    
+    // 11a. Name
+    hih.LibBookName = function() {
+        this.NameID = -1;
+        this.Lang = "";
+        this.Name = "";
+    };
+    hih.extend(hih.LibBookName, hih.Model);
+    // 11b. Languages
+    hih.LibBookLang = function() {
+    };
+    hih.extend(hih.LibBookLang, hih.LibLanguage);
+    // 11c. Authors
+    hih.LibBookAuthor = function() {
+        this.TranslatorFlag = false;
+    };
+    hih.extend(hih.LibBookAuthor, hih.LibPerson);
+    // 11d. Presses
+    hih.LibBookPress = function() {        
+    };
+    hih.extend(hih.LibBookPress, hih.LibOrganization);
+    // 11e. Location
+    hih.LibBook = function() {
+        this.ID = -1;
+        this.ISBN = "";
+        this.Others = "";
+        
+        this.Authors = []; // Authors
+        this.Languages = []; // Languages
+        this.Presses = []; // Presses
+        this.Names = []; // Names
+    };
+    hih.extend(hih.LibBook, hih.Model);
 }());
 
