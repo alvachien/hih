@@ -788,7 +788,14 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "CREATELIBPERSON": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objPerson = new HIHLibPerson($jsondata);
+			$errMsg = $objPerson->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_person_create', $objPerson);
+			}
 		}
 		break;
 		
@@ -814,7 +821,14 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "CREATELIBORG": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objOrg = new HIHLibOrganization($jsondata);
+			$errMsg = $objOrg->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_org_create', $objOrg);
+			}
 		}
 		break;
 		

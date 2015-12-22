@@ -2233,7 +2233,7 @@
 								'script/hihsrv.php',
 								{ objecttype : 'CREATELIBPERSON', data: jsonPerson })
 								.then(function(response) {
-									deferred.resolve(true);
+									deferred.resolve(response.data);
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
@@ -2334,7 +2334,7 @@
 								'script/hihsrv.php',
 								{ objecttype : 'CREATELIBORG', data: jsonOrganization })
 								.then(function(response) {
-									deferred.resolve(true);
+									deferred.resolve(response.data);
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});

@@ -101,6 +101,17 @@
 					templateUrl: 'app/views/lib/location.html',
 					controller: 'LibLocationController'
 				})
+
+				.state("home.lib.book", {
+					url: "/book",
+					abstract: true,
+					template: '<div ui-view></div>'
+				})
+				.state("home.lib.book.list", {
+					url: "",
+					templateUrl: 'app/views/lib/booklist.html',
+					controller: 'LibBookListController'
+				})
 			;
 		}])
 
@@ -256,7 +267,7 @@
 						}
 					}
 
-					$state.go("home.lib.loc.display", { id: nid });
+					$state.go("home.lib.person.display", { id: nid });
 				};
 				$scope.editItem = function (row) {
 					var nid = null;
@@ -363,7 +374,7 @@
 				$scope.dispList = [];
 
 				$scope.newItem = function () {
-					$state.go("home.lib.person.create");
+					$state.go("home.lib.org.create");
 				};
 				$scope.displayItem = function (row) {
 					var nid = null;
@@ -378,7 +389,7 @@
 						}
 					}
 
-					$state.go("home.lib.loc.display", { id: nid });
+					$state.go("home.lib.org.display", { id: nid });
 				};
 				$scope.editItem = function (row) {
 					var nid = null;
@@ -392,16 +403,16 @@
 							}
 						}
 					}
-					$state.go("home.lib.person.maintain", { id: nid });
+					$state.go("home.lib.org.maintain", { id: nid });
 				};
 				$scope.removeItem = function () {
 					// ToDo					
 				};
 
 				$scope.refreshList = function () {
-					utils.loadLibOrganizatioinQ()
+					utils.loadLibOrganizationQ()
 						.then(function (response) {
-							$scope.dispList = [].concat($rootScope.arLibPerson);
+							$scope.dispList = [].concat($rootScope.arLibOrganization);
 						}, function (reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
