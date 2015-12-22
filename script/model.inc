@@ -1076,7 +1076,7 @@ class HIHLibLocation {
 	// Properties
 	public $ID;
 	public $Name;
-	public $Details;
+	public $Detail;
 	public $Comment;
 
 	// Function

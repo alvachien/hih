@@ -2118,7 +2118,7 @@
     hih.LibLocation.prototype.setContent = function(obj) {
 		this.ID = parseInt(obj.id);
 		this.Name = obj.name;
-		this.Detail = obj.detail;
+		this.Detail = obj.details;
 		this.Comment = obj.comment;
 	};
 	hih.LibLocation.prototype.ToJSONObject = function() {

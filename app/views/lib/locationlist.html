@@ -3,31 +3,21 @@
 		<h2>
 			<span translate="Lib.Locations">Locations</span> <small translate="Common.ListView"> List View </small>
 		</h2>
-        
+
 		<div class="btn-toolbar" role="toolbar" aria-label="...">
-		  <div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn-group btn-primary"
-				tooltip="{{'Common.New' | translate}}" 
-				ng-click="newItem()" translate="Common.New">New</button>
-			<button type="button" class="btn-group btn-primary" 
-				tooltip="{{'Common.Refresh' | translate}}"
-				ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
-		  </div>
-		  
-		  <div class="btn-group" role="group" aria-label="...">
-  			<button type="button" ng-click="displayItem()"
-					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
-					translate="Common.Display">					
-			</button>
-			<button type="button" ng-click="editItem()"
-					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
-					translate="Common.Edit">
-			</button>
-			<button type="button" ng-click="removeItem()"
-					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
-					translate="Common.Delete">
-			</button>
-		  </div>
+			<div class="btn-group" role="group" aria-label="...">
+				<button type="button" class="btn-group btn-primary" tooltip="{{'Common.New' | translate}}" ng-click="newItem()" translate="Common.New">New</button>
+				<button type="button" class="btn-group btn-primary" tooltip="{{'Common.Refresh' | translate}}" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+			</div>
+
+			<div class="btn-group" role="group" aria-label="...">
+				<button type="button" ng-click="displayItem()" class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}" translate="Common.Display">
+				</button>
+				<button type="button" ng-click="editItem()" class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}" translate="Common.Edit">
+				</button>
+				<button type="button" ng-click="removeItem()" class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}" translate="Common.Delete">
+				</button>
+			</div>
 		</div>
 	</div>
 
@@ -42,15 +32,17 @@
 				<th translate="Common.Operations">Operations</th>
 			</tr>
 			<tr>
-				<th colspan="6"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
+				<th colspan="6">
+					<input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" />
+				</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/lib/loc/display/{{row.ID}}"> {{row.ID}} </a></td>
 				<td>{{row.Name}}</td>
-				<td>{{row.Details | limitTo: 20}}</td>
+				<td>{{row.Detail | limitTo: 20}}</td>
 				<td>{{row.Comment}}</td>
 				<td>
 					<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">

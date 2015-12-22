@@ -4842,10 +4842,10 @@ function lib_loc_create($objLoc) {
 	
 	// Create account: return code, message and last insert id
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_loc(ID, NAME, DETAILS, COMMENT) VALUES(?, ?, ?, ?)";
+	$query = "INSERT INTO t_lib_loc(NAME, DETAILS, COMMENT) VALUES(?, ?, ?)";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "isss", $objLoc->ID, $objLoc->Name, $objLoc->Details, $objLoc->Comment );
+		$stmt->bind_param ( "sss", $objLoc->Name, $objLoc->Detail, $objLoc->Comment );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nNewID = $mysqli->insert_id;
@@ -4934,10 +4934,10 @@ function lib_person_create($objPerson) {
 	$nNewID = -1;
 	
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_person(ID, NAME, OTHERS) VALUES(?, ?, ?)";
+	$query = "INSERT INTO t_lib_person(NAME, OTHERS) VALUES(?, ?)";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "iss", $objPerson->ID, $objPerson->Name, $objPerson->Others );
+		$stmt->bind_param ( "ss", $objPerson->Name, $objPerson->Others );
 
 		/* Execute the statement */
 		if ($stmt->execute ()) {
@@ -5028,10 +5028,10 @@ function lib_org_create($objOrg) {
 	$nNewID = -1;
 	
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_org(ID, NAME, OTHERS) VALUES(?, ?, ?)";
+	$query = "INSERT INTO t_lib_org(NAME, OTHERS) VALUES(?, ?)";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "iss", $objOrg->ID, $objOrg->Name, $objOrg->Others );
+		$stmt->bind_param ( "ss", $objOrg->Name, $objOrg->Others );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nNewID = $mysqli->insert_id;

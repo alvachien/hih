@@ -1468,7 +1468,7 @@
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnCategoryQ($scope.CategoryObject)
 					 	.then(function(response) {
-							 $state.go("home.learn.award.display", { objid : $scope.CategoryObject.ID });
+							 $state.go("home.learn.category.display", { objid : $scope.CategoryObject.ID });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });

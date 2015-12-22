@@ -2067,7 +2067,7 @@
 						// Locations
 						rtnObj.loadLibLocationQ = function() {
 							var deferred = $q.defer();
-							$rootScope.arLibLoc = [];
+							$rootScope.arLibLocation = [];
 							
 							$http.post(
 								'script/hihsrv.php',
@@ -2077,7 +2077,7 @@
 										$.each(response.data, function(idx, obj) {
 											var bs = new hih.LibLocation();
 											bs.setContent(obj);
-											$rootScope.arLibLoc.push(bs);
+											$rootScope.arLibLocation.push(bs);
 										});
 									}
 									deferred.resolve(true);
@@ -2099,21 +2099,21 @@
 											bs.setContent(obj);
 											
 											// Find out the elder one and replace it.
-											if ( !$rootScope.arLibLoc) {
-												$rootScope.arLibLoc = [];
-												$rootScope.arLibLoc.push(bs);
+											if ( !$rootScope.arLibLocation) {
+												$rootScope.arLibLocation = [];
+												$rootScope.arLibLocation.push(bs);
 											} else {
 												var realidx = -1;
-												for(var i = 0; i < $rootScope.arLibLoc.length; i ++ ) {
-													if ($rootScope.arLibLoc[i].ID === nID) {
+												for(var i = 0; i < $rootScope.arLibLocation.length; i ++ ) {
+													if ($rootScope.arLibLocation[i].ID === nID) {
 														realidx = i;
 														break;
 													}
 												}
 												if (realidx !== -1) {
-													$rootScope.arLibLoc[realidx] = bs;
+													$rootScope.arLibLocation[realidx] = bs;
 												} else {
-													$rootScope.arLibLoc.push(bs);
+													$rootScope.arLibLocation.push(bs);
 												}																								
 											}
 										});
@@ -2124,7 +2124,7 @@
 								});
 							return deferred.promise;
 						};
-						rtnObj.createLibLocatoinQ = function(objLibLoc) {
+						rtnObj.createLibLocationQ = function(objLibLoc) {
 							var deferred = $q.defer();
 							var jsonLoc = objLibLoc.ToJSON();
 							
@@ -2132,7 +2132,7 @@
 								'script/hihsrv.php',
 								{ objecttype : 'CREATELIBLOC', data: jsonLoc })
 								.then(function(response) {
-									deferred.resolve(true);
+									deferred.resolve(response.data);
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});

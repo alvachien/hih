@@ -10,37 +10,37 @@
 			<label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptID"
-					readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="objLearnObject.ID">
+					readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="LocationObject.ID">
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptName" ng-readonly="isReadonly"
-						placeholder="{{'Common.Name' | translate}}" ng-model="objLearnObject.Name" required>
+				<input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Name' | translate}}" ng-model="LocationObject.Name" required>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptDetail" translate="Common.Name">Name</label>
+			<label class="control-label col-sm-2" for="iptDetail" translate="Common.Detail">Detail</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptDetail" ng-readonly="isReadonly"
-						placeholder="{{'Common.Detail' | translate}}" ng-model="objLearnObject.Name" required>
+				<input type="text" class="form-control" id="iptDetail" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Detail' | translate}}" ng-model="LocationObject.Detail" required>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptComment" translate="Common.Name">Name</label>
+			<label class="control-label col-sm-2" for="iptComment" translate="Common.Comment">Comment</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptComment" ng-readonly="isReadonly"
-						placeholder="{{'Common.Comment' | translate}}" ng-model="objLearnObject.Name" required>
+				<input type="text" class="form-control" id="iptComment" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Comment' | translate}}" ng-model="LocationObject.Comment" required>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"
 					translate="Common.Submit">Submit</button>
 				<button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
 			</div>

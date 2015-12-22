@@ -750,7 +750,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "CREATELIBLOC": {
 			$jsondata = json_decode($realParamArr ['data'] );
 			$objLoc = new HIHLibLocation($jsondata);
-			$errMsg = $objLoc>CheckValid();
+			$errMsg = $objLoc->CheckValid();
 			if (!empty($errMsg)) {
 				export_error ( $errMsg );
 			} else {
@@ -762,7 +762,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		case "UPDATELIBLOC": {
 			$jsondata = json_decode($realParamArr ['data'] );
 			$objLoc = new HIHLibLocation($jsondata);
-			$errMsg = $objLoc>CheckValid();
+			$errMsg = $objLoc->CheckValid();
 			if (!empty($errMsg)) {
 				export_error ( $errMsg );
 			} else {
