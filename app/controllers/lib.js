@@ -66,22 +66,57 @@
                 });
 	   }])
        
-	   .controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
-		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
-			  utils.loadLibLocationQ()
-			  	.then(function(response) {
-					  // Do nothing...
-				  }, function(reason){
-					  $rootScope.$broadcast("ShowMessage", "Error", reason);
-				  });
-	   }])
+		.controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+				utils.loadLibLocationQ()
+					.then(function (response) {
+						// Do nothing...
+					}, function (reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+
+				$scope.newItem = function () {
+
+				};
+				$scope.deleteItem = function() {
+					
+				};
+			}])
 	   
-	   .controller('LibPersonListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
-		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
-	   }])
-       
-	   .controller('LibOrgListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils', 
-		  function($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
-	   }])
+		.controller('LibPersonListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+				utils.loadLibPersonQ()
+					.then(function (response) {
+						// Do nothing...
+					}, function (reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+
+				$scope.newItem = function () {
+
+				};
+				$scope.deleteItem = function() {
+					
+				};
+				
+			}])
+
+		.controller('LibOrgListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+				utils.loadLibOrganizatioinQ()
+					.then(function (response) {
+						// Do nothing...
+					}, function (reason) {
+						$rootScope.$broadcast("ShowMessage", "Error", reason);
+					});
+
+				$scope.newItem = function () {
+
+				};
+				$scope.deleteItem = function() {
+					
+				};
+				
+			}])
 	   ;
 })();
