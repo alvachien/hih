@@ -57,7 +57,7 @@
 				})
 				.state("home.lib.org.list", {
 					url: "",
-					templateUrl: 'app/views/lib/orglist.html',
+					templateUrl: 'app/views/lib/organizationlist.html',
 					controller: 'LibOrgListController'
 				})
 				.state("home.lib.org.create", {
