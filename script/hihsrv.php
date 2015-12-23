@@ -842,6 +842,16 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
         
+        case "GETLIBBOOKLIST": {
+			HIHSrv_Function( 'lib_book_listread' );            
+        }
+        break;
+        
+        case "CREATELIBBOOK": {
+            
+        }
+        break;
+        
 		// ===========================================================================================
 		// Others
 		// ===========================================================================================

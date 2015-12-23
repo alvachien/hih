@@ -2367,6 +2367,42 @@
 								});
 							return deferred.promise;
 						};
+                        // Books
+                        rtnObj.loadLibBookQ = function() {
+							var deferred = $q.defer();
+							$rootScope.arLibBook = [];
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBBOOKLIST' })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibBook();
+											bs.setContent(obj);
+											$rootScope.arLibBook.push(bs);
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+                        };
+                        rtnObj.createLibBookQ = function(objBook) {
+							var deferred = $q.defer();
+							var jsonBook = objBook.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'CREATELIBBOOK', data: jsonBook })
+								.then(function(response) {
+									deferred.resolve(response.data);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+                        };
 
 ////////////////////////////////////////////////////////////////////
 // Others
