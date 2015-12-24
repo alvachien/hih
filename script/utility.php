@@ -5065,7 +5065,6 @@ function lib_book_listread($nbookid) {
 	}
 
 	$sError = "";
-	$rsttable = array ();
 	$booktable = array();
 	$booklangtable = array();
 	$booknametable = array();
@@ -5181,11 +5180,10 @@ function lib_book_listread($nbookid) {
 		if ($result = mysqli_query ( $link, $query )) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
-				$bookauthtable [] = array (
+				$bookpresstable [] = array (
 					"id" => $row [0],
-					"personid" => $row [1],
-					"tranflag" => $row [2],
-					"personname" => $row [3] 
+					"pressid" => $row [1],
+					"pressname" => $row [2] 
 				);
 			}
 			
@@ -5200,7 +5198,7 @@ function lib_book_listread($nbookid) {
 	mysqli_close ( $link );
 	return array (
 		$sError,
-		$rsttable 
+		array($booktable, $booklangtable, $booknametable, $bookauthtable, $bookpresstable) 
 	);   
 }
 

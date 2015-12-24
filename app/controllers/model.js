@@ -2141,15 +2141,27 @@
     // 11. Lib Books
     // 11a. Name
     hih.LibBookName = function() {
+        this.BookID = -1;
         this.NameID = -1;
         this.Lang = "";
         this.Name = "";
+        // Runtime info
+        this.LangName = "";
     };
     hih.extend(hih.LibBookName, hih.Model);
+    hih.LibBookName.prototype.setContent = function(obj) {
+        this.BookID = parseInt(obj.id);
+        this.NameID = parseInt(obj.nameid);
+        this.Lang = parseInt(obj.lang);
+        this.LangName = obj.langname;
+        this.Name = obj.name;
+    };
     // 11b. Languages
     hih.LibBookLang = function() {
     };
     hih.extend(hih.LibBookLang, hih.LibLanguage);
+    hih.LibBookLang.prototype.setContent = function(obj) {
+    };
     // 11c. Authors
     hih.LibBookAuthor = function() {
         this.TranslatorFlag = false;
@@ -2171,5 +2183,10 @@
         this.Names = []; // Names
     };
     hih.extend(hih.LibBook, hih.Model);
+    hih.LibBook.prototype.setContent = function(obj) {
+        this.ID = parseInt(obj.id);
+        this.ISBN = obj.isbn;
+        this.Others = obj.others;
+    };
 }());
 

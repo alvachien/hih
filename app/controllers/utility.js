@@ -2316,7 +2316,7 @@
 													$rootScope.arLibOrganization[realidx] = bs;
 												} else {
 													$rootScope.arLibOrganization.push(bs);
-												}																								
+												}
 											}
 										});
 									}
@@ -2375,8 +2375,14 @@
 							$http.post(
 								'script/hihsrv.php',
 								{ objecttype : 'GETLIBBOOKLIST' })
-								.then(function(response) {									
+								.then(function(response) {
 									if ($.isArray(response.data) && response.data.length > 0) {
+                                        // response.data[0] - Books
+                                        // response.data[1] - Book language
+                                        // response.data[2] - Book name
+                                        // response.data[3] - Book author
+                                        // response.data[4] - Book press
+                                        
 										$.each(response.data, function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
@@ -2388,6 +2394,44 @@
 									deferred.reject(response.data.Message);
 								});
 							return deferred.promise;
+                        };
+                        rtnObj.readLibBookQ = function(nBookID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLIBBOOKDETAIL', id: nBookID })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0) {
+										$.each(response.data, function(idx, obj) {
+											var bs = new hih.LibOrganization();
+											bs.setContent(obj);
+											
+											// Find out the elder one and replace it.
+											if ( !$rootScope.arLibBook) {
+												$rootScope.arLibBook = [];
+												$rootScope.arLibBook.push(bs);
+											} else {
+												var realidx = -1;
+												for(var i = 0; i < $rootScope.arLibBook.length; i ++ ) {
+													if ($rootScope.arLibBook[i].ID === nBookID) {
+														realidx = i;
+														break;
+													}
+												}
+												if (realidx !== -1) {
+													$rootScope.arLibBook[realidx] = bs;
+												} else {
+													$rootScope.arLibBook.push(bs);
+												}
+											}
+										});
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;                            
                         };
                         rtnObj.createLibBookQ = function(objBook) {
 							var deferred = $q.defer();
