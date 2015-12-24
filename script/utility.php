@@ -5124,7 +5124,7 @@ function lib_book_listread($nbookid) {
 	}
 	// Book name 
 	if (empty($sError)) {
-		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		$query = "SELECT taba.BOOKID, taba.nameid, taba.LANG, tabb.NAME as langname, taba.name FROM t_lib_bookname AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
 		if ($nbookid) {
 			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
 		}
@@ -5134,8 +5134,10 @@ function lib_book_listread($nbookid) {
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$booknametable [] = array (
 					"id" => $row [0],
-					"lang" => $row [1],
-					"langname" => $row [2] 
+					"nameid" => $row [1],
+					"lang" => $row [2],
+					"langname" => $row [3],
+					"name" => $row [4] 
 				);
 			}
 			
@@ -5147,7 +5149,7 @@ function lib_book_listread($nbookid) {
 	}
 	// Book author
 	if (empty($sError)) {
-		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		$query = "SELECT taba.BOOKID, taba.PERSONID, taba.TRANFLAG, tabb.NAME as personname FROM t_lib_bookauthor AS taba left outer join t_lib_person AS tabb ON taba.PERSONID = tabb.ID ";
 		if ($nbookid) {
 			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
 		}
@@ -5157,8 +5159,9 @@ function lib_book_listread($nbookid) {
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$bookauthtable [] = array (
 					"id" => $row [0],
-					"lang" => $row [1],
-					"langname" => $row [2] 
+					"personid" => $row [1],
+					"tranflag" => $row [2],
+					"personname" => $row [3] 
 				);
 			}
 			
@@ -5170,7 +5173,7 @@ function lib_book_listread($nbookid) {
 	}
 	// Book press
 	if (empty($sError)) {
-		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		$query = "SELECT taba.BOOKID, taba.PRESSID, tabb.NAME as pressname FROM t_lib_bookpress AS taba left outer join t_lib_org AS tabb ON taba.PRESSID = tabb.ID ";
 		if ($nbookid) {
 			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
 		}
@@ -5178,10 +5181,11 @@ function lib_book_listread($nbookid) {
 		if ($result = mysqli_query ( $link, $query )) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
-				$bookpresstable [] = array (
+				$bookauthtable [] = array (
 					"id" => $row [0],
-					"lang" => $row [1],
-					"langname" => $row [2] 
+					"personid" => $row [1],
+					"tranflag" => $row [2],
+					"personname" => $row [3] 
 				);
 			}
 			
