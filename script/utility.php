@@ -5063,15 +5063,21 @@ function lib_book_listread($nbookid) {
 			null 
 		);
 	}
+
 	$sError = "";
-	
+	$rsttable = array ();
+	$booktable = array();
+	$booklangtable = array();
+	$booknametable = array();
+	$bookauthtable = array();
+	$bookpresstable = array();
+		
 	// Set language
 	mysqli_query($link, "SET NAMES 'UTF8'");
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
 	// Perform the query
-	$rsttable = array ();
 	$query = "SELECT * FROM t_lib_book";
 	if ($nbookid) {
 		$query = $query . " WHERE ID = ". $nbookid;
@@ -5080,9 +5086,9 @@ function lib_book_listread($nbookid) {
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
-			$rsttable [] = array (
+			$booktable [] = array (
 				"id" => $row [0],
-				"name" => $row [1],
+				"isbn" => $row [1],
 				"others" => $row [2] 
 			);
 		}
@@ -5091,6 +5097,99 @@ function lib_book_listread($nbookid) {
 		mysqli_free_result ( $result );
 	} else {
 		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	// Book language
+	if (empty($sError)) {
+		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		if ($nbookid) {
+			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$booklangtable [] = array (
+					"id" => $row [0],
+					"lang" => $row [1],
+					"langname" => $row [2] 
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}
+	}
+	// Book name 
+	if (empty($sError)) {
+		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		if ($nbookid) {
+			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$booknametable [] = array (
+					"id" => $row [0],
+					"lang" => $row [1],
+					"langname" => $row [2] 
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}
+	}
+	// Book author
+	if (empty($sError)) {
+		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		if ($nbookid) {
+			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$bookauthtable [] = array (
+					"id" => $row [0],
+					"lang" => $row [1],
+					"langname" => $row [2] 
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}
+	}
+	// Book press
+	if (empty($sError)) {
+		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		if ($nbookid) {
+			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$bookpresstable [] = array (
+					"id" => $row [0],
+					"lang" => $row [1],
+					"langname" => $row [2] 
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}
 	}
 	
 	/* close connection */
