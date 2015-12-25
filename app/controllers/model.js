@@ -2158,19 +2158,36 @@
     };
     // 11b. Languages
     hih.LibBookLang = function() {
+        this.BookID = -1;
     };
     hih.extend(hih.LibBookLang, hih.LibLanguage);
     hih.LibBookLang.prototype.setContent = function(obj) {
+        hih.LibLanguage.prototype.go.call(this);
+        
+        this.BookID = parseInt(obj.bookid);
     };
     // 11c. Authors
     hih.LibBookAuthor = function() {
+        this.BookID = -1;
         this.TranslatorFlag = false;
     };
     hih.extend(hih.LibBookAuthor, hih.LibPerson);
+    hih.LibBookAuthor.prototype.setContent = function(obj) {
+        hih.LibPerson.prototype.go.call(this);
+        
+        this.TranslatorFlag = obj.tranflag;
+        this.BookID = parseInt(obj.bookid);
+    };
     // 11d. Presses
-    hih.LibBookPress = function() {        
+    hih.LibBookPress = function() {
+        this.BookID = -1;
     };
     hih.extend(hih.LibBookPress, hih.LibOrganization);
+    hih.LibBookPress.prototype.setContent = function(obj) {
+        hih.LibOrganization.prototype.go.call(this);
+        
+        this.BookID = parseInt(obj.bookid);
+    };
     // 11e. Location
     hih.LibBook = function() {
         this.ID = -1;
