@@ -2150,11 +2150,28 @@
     };
     hih.extend(hih.LibBookName, hih.Model);
     hih.LibBookName.prototype.setContent = function(obj) {
-        this.BookID = parseInt(obj.id);
+        this.BookID = parseInt(obj.bookid);
         this.NameID = parseInt(obj.nameid);
         this.Lang = parseInt(obj.lang);
         this.LangName = obj.langname;
         this.Name = obj.name;
+    };
+    hih.LibBookName.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+        return forJSON;
+    };
+    hih.LibBookName.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11b. Languages
     hih.LibBookLang = function() {
@@ -2165,6 +2182,23 @@
         hih.LibLanguage.prototype.go.call(this);
         
         this.BookID = parseInt(obj.bookid);
+    };
+    hih.LibBookLang.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+        return forJSON;        
+    };
+    hih.LibBookLang.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11c. Authors
     hih.LibBookAuthor = function() {
@@ -2178,6 +2212,23 @@
         this.TranslatorFlag = obj.tranflag;
         this.BookID = parseInt(obj.bookid);
     };
+    hih.LibBookAuthor.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+        return forJSON;        
+    };
+    hih.LibBookAuthor.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+    };
     // 11d. Presses
     hih.LibBookPress = function() {
         this.BookID = -1;
@@ -2189,6 +2240,16 @@
         this.BookID = parseInt(obj.bookid);
     };
     // 11e. Location
+    hih.LibBookLocation = function() {
+        this.BookID = -1;
+    };
+    hih.extend(hih.LibBookLocation, hih.LibLocation);
+    hih.LibBookLocation.prototype.setContent = function(obj) {
+        hih.LibLocation.prototype.go.call(this);
+        
+        this.BookID = parseInt(obj.bookid);
+    };
+    // 11f. Books
     hih.LibBook = function() {
         this.ID = -1;
         this.ISBN = "";
@@ -2198,12 +2259,32 @@
         this.Languages = []; // Languages
         this.Presses = []; // Presses
         this.Names = []; // Names
+        this.Locations = [];
     };
     hih.extend(hih.LibBook, hih.Model);
     hih.LibBook.prototype.setContent = function(obj) {
         this.ID = parseInt(obj.id);
         this.ISBN = obj.isbn;
         this.Others = obj.others;
+    };
+    hih.LibBook.prototype.ToJSONObject = function() {
+        var forJSON = {};
+        
+        // response.data[0] - Books
+        // response.data[1] - Book language
+        // response.data[2] - Book name
+        // response.data[3] - Book author
+        // response.data[4] - Book press
+        // response.data[5] - Book location
+        
+        return forJSON;
+    };
+    hih.LibBook.prototype.ToJSON = function() {
+        var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
 }());
 

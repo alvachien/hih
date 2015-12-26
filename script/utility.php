@@ -5070,6 +5070,7 @@ function lib_book_listread($nbookid) {
 	$booknametable = array();
 	$bookauthtable = array();
 	$bookpresstable = array();
+    $bookloctable = array();
 		
 	// Set language
 	mysqli_query($link, "SET NAMES 'UTF8'");
@@ -5109,7 +5110,7 @@ function lib_book_listread($nbookid) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$booklangtable [] = array (
-					"id" => $row [0],
+					"bookid" => $row [0],
 					"lang" => $row [1],
 					"langname" => $row [2] 
 				);
@@ -5132,7 +5133,7 @@ function lib_book_listread($nbookid) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$booknametable [] = array (
-					"id" => $row [0],
+					"bookid" => $row [0],
 					"nameid" => $row [1],
 					"lang" => $row [2],
 					"langname" => $row [3],
@@ -5157,7 +5158,7 @@ function lib_book_listread($nbookid) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$bookauthtable [] = array (
-					"id" => $row [0],
+					"bookid" => $row [0],
 					"personid" => $row [1],
 					"tranflag" => $row [2],
 					"personname" => $row [3] 
@@ -5181,7 +5182,7 @@ function lib_book_listread($nbookid) {
 			/* fetch associative array */
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$bookpresstable [] = array (
-					"id" => $row [0],
+					"bookid" => $row [0],
 					"pressid" => $row [1],
 					"pressname" => $row [2] 
 				);
@@ -5192,13 +5193,38 @@ function lib_book_listread($nbookid) {
 		} else {
 			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 		}
-	}
+	}    
+    // Book location 
+    if (empty($sError)) {
+		$query = "SELECT taba.BOOKID, taba.LOCID, taba.media, taba.comment, tabb.NAME as locname FROM t_lib_bookloc AS taba left outer join t_lib_loc AS tabb ON taba.LOCID = tabb.ID ";
+		if ($nbookid) {
+			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$bookloctable [] = array (
+					"bookid" => $row [0],
+					"locid" => $row [1],
+					"media" => $row [2],
+                    "comment" => $row[3],
+                    "locname" => $row[4] 
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}        
+    } 
 	
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
 		$sError,
-		array($booktable, $booklangtable, $booknametable, $bookauthtable, $bookpresstable) 
+		array($booktable, $booklangtable, $booknametable, $bookauthtable, $bookpresstable, $bookloctable) 
 	);   
 }
 

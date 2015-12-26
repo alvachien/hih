@@ -2382,8 +2382,29 @@
                                         // response.data[2] - Book name
                                         // response.data[3] - Book author
                                         // response.data[4] - Book press
+                                        // response.data[5] - Book location
                                         
-										$.each(response.data, function(idx, obj) {
+										$.each(response.data[0], function(idx, obj) {
+											var bs = new hih.LibBook();
+											bs.setContent(obj);
+											$rootScope.arLibBook.push(bs);
+										});
+										$.each(response.data[1], function(idx, obj) {
+											var bs = new hih.LibBookLang();
+											bs.setContent(obj);
+											$rootScope.arLibBook.push(bs);
+										});
+										$.each(response.data[0], function(idx, obj) {
+											var bs = new hih.LibBook();
+											bs.setContent(obj);
+											$rootScope.arLibBook.push(bs);
+										});
+										$.each(response.data[0], function(idx, obj) {
+											var bs = new hih.LibBook();
+											bs.setContent(obj);
+											$rootScope.arLibBook.push(bs);
+										});
+										$.each(response.data[0], function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
