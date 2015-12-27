@@ -2145,6 +2145,7 @@
         this.NameID = -1;
         this.Lang = "";
         this.Name = "";
+        
         // Runtime info
         this.LangName = "";
     };
@@ -2184,7 +2185,8 @@
         this.BookID = parseInt(obj.bookid);
     };
     hih.LibBookLang.prototype.ToJSONObject = function() {
-        var forJSON = {};
+        var forJSON = hih.LibLanguage.prototype.go.call(this);
+        
 		for(var i in this) {
 			if (!this.hasOwnProperty(i)) 
 				continue;
@@ -2266,6 +2268,9 @@
         this.ID = parseInt(obj.id);
         this.ISBN = obj.isbn;
         this.Others = obj.others;
+    };
+    hih.LibBook.prototype.Verify = function() {
+        
     };
     hih.LibBook.prototype.ToJSONObject = function() {
         var forJSON = {};

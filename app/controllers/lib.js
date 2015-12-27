@@ -112,6 +112,11 @@
 					templateUrl: 'app/views/lib/booklist.html',
 					controller: 'LibBookListController'
 				})
+                .state("home.lib.book.create", {
+                    url: "/create",
+                    templateUrl: 'app/views/lib/book.html',
+                    controller: 'LibBookController'
+                })
 			;
 		}])
 

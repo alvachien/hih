@@ -1151,5 +1151,29 @@ class HIHLibOrganization {
 	}
 }
 
+class HIHLibBook {
+    // Properties
+    public $ID;
+    public $ISBN;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Name )) {
+				return "Name is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData AS $key => $value) {
+			$this->{$key} = $value;
+		}
+	}
+}
 
 ?>
