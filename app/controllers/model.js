@@ -2154,13 +2154,15 @@
         this.BookID = parseInt(obj.bookid);
         this.NameID = parseInt(obj.nameid);
         this.Lang = parseInt(obj.lang);
-        this.LangName = obj.langname;
         this.Name = obj.name;
+        
+        // Runtime info
+        this.LangName = obj.langname;
     };
     hih.LibBookName.prototype.ToJSONObject = function() {
         var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i)) 
+			if (!this.hasOwnProperty(i) || i === "LangName" ) 
 				continue;
 			
 			forJSON[i] = this[i];	

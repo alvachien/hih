@@ -1151,10 +1151,43 @@ class HIHLibOrganization {
 	}
 }
 
+class HIHLibBookName {
+    // Properties
+    public $BookID;
+    public $NameID;
+    public $Lang;
+    public $Name;
+    
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Name )) {
+				return "Name is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
 class HIHLibBook {
     // Properties
     public $ID;
     public $ISBN;
+    public $Others;
+    
+    // Names 
+    public $NameArray = array();
+    // Langauges
+    public $LangArray = array();
 
 	// Function
 	public function __construct($json = false) {
@@ -1170,8 +1203,32 @@ class HIHLibBook {
 		return null;
 	}
 	public function fromJSON($jsonData) {
+		$this->NameArray = array();
+        $this->LangArray = array();
 		foreach ($jsonData AS $key => $value) {
-			$this->{$key} = $value;
+            switch ($key) {
+                case "ID":
+                case "ISBN":
+                case "Others":
+                $this->{$key} = $value; 
+                break;
+                
+                case "Names":
+                {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLibBookName( $value[ $i ] );
+							$this->NameArray [$di->NameID] = $di;
+						}
+					}
+                }
+                break;
+                
+                default:
+                break;
+            }
+			
 		}
 	}
 }

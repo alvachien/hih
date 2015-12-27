@@ -2045,23 +2045,28 @@
                         // Language
                         rtnObj.loadLibLanguageQ = function() {
 							var deferred = $q.defer();
-							$rootScope.arLibLang = [];
-							
-							$http.post(
-								'script/hihsrv.php',
-								{ objecttype : 'GETLIBLANG' })
-								.then(function(response) {									
-									if ($.isArray(response.data) && response.data.length > 0) {
-										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibLanguage();
-											bs.setContent(obj);
-											$rootScope.arLibLang.push(bs);
-										});
-									}
-									deferred.resolve(true);
-								}, function(response) {
-									deferred.reject(response.data.Message);
-								});
+                            
+                            if ($rootScope.arLibLang && $rootScope.arLibLang.length > 0) {
+                                deferred.resolve(true);
+                            } else {
+                                $rootScope.arLibLang = [];
+                                
+                                $http.post(
+                                    'script/hihsrv.php',
+                                    { objecttype : 'GETLIBLANG' })
+                                    .then(function(response) {									
+                                        if ($.isArray(response.data) && response.data.length > 0) {
+                                            $.each(response.data, function(idx, obj) {
+                                                var bs = new hih.LibLanguage();
+                                                bs.setContent(obj);
+                                                $rootScope.arLibLang.push(bs);
+                                            });
+                                        }
+                                        deferred.resolve(true);
+                                    }, function(response) {
+                                        deferred.reject(response.data.Message);
+                                    });
+                            }
 							return deferred.promise;
                         };
 						// Locations

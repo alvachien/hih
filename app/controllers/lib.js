@@ -500,7 +500,12 @@
 				$scope.dispList = [];
 
 				$scope.newItem = function () {
-					$state.go("home.lib.book.create");
+                utils.loadLibLanguageQ()
+                    .then(function(response) {
+                        $state.go("home.lib.book.create");
+                    }, function(reason) {
+                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                    });					
 				};
 				$scope.displayItem = function (row) {
 					var nid = null;
@@ -515,7 +520,12 @@
 						}
 					}
 
-					$state.go("home.lib.book.display", { id: nid });
+                    utils.loadLibLanguageQ()
+                        .then(function(response) {
+                            $state.go("home.lib.book.display", { id: nid });                            
+                        }, function(reason) {
+                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        });					
 				};
 				$scope.editItem = function (row) {
 					var nid = null;
@@ -529,11 +539,15 @@
 							}
 						}
 					}
-					$state.go("home.lib.book.maintain", { id: nid });
+                    utils.loadLibLanguageQ()
+                    .then(function(response) {
+                        $state.go("home.lib.book.maintain", { id: nid });
+                    }, function(reason) {
+                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                    });					
 				};
 				$scope.removeItem = function () {
-					// ToDo
-					
+					// ToDo					
 				};
 				$scope.refreshList = function () {
 					utils.loadLibBookQ()
@@ -547,13 +561,42 @@
 				$scope.refreshList();
 			}])
 
-		.controller('LibBookController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
-			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
+		.controller('LibBookController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', '$log', 'utils',
+			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
 				$scope.Activity = "";
 				$scope.ActivityID = hih.Constants.UIMode_Create;
+                // Error messges
+                $scope.ReportedMessages = [];
+                $scope.cleanReportMessages = function() {
+                    $scope.ReportedMessages = [];
+                };
 
 				$scope.BookObject = new hih.LibBook();
-
+                $scope.SelectedNameObject = new hih.LibBookName();
+                $scope.SelectedLangObject = new hih.LibBookLang();
+                $scope.NamesCollection = [];
+                $scope.LangsCollection = [];
+                $scope.nameLangConfig = {
+                    create: false,
+                    onChange: function(value){
+                        $log.info('LibBookController, Name Language control, event onChange, ', value);
+                    },
+                    valueField: 'Language',
+                    labelField: 'NativeName',
+                    maxItems: 1,
+                    required: true
+                };
+                $scope.langLangConfig = {
+                    create: false,
+                    onChange: function(value){
+                        $log.info('LibBookController, Lang Language control, event onChange, ', value);
+                    },
+                    valueField: 'Language',
+                    labelField: 'NativeName',
+                    maxItems: 1,
+                    required: true
+                };
+                
 				if (angular.isDefined($stateParams.id)) {
 					if ($state.current.name === "home.lib.book.maintain") {
 						$scope.Activity = "Common.Edit";
@@ -579,6 +622,136 @@
 					$scope.Activity = "Common.Create";
 					$scope.ActivityID = hih.Constants.UIMode_Create;
 				};
+                
+                // Name related methods
+                $scope.displayName = function(row) {
+                    
+                };
+                $scope.editName = function(row) {
+                    
+                };
+                $scope.removeName = function(row) {
+                    
+                };
+                $scope.NameActivity = "Common.Create";
+                $scope.NameActivityID = hih.Constants.UIMode_Create;
+                $scope.nextNameID = 0;
+                $scope.updateNextNameID = function () {
+                    if (angular.isArray($scope.NamesCollection) && $scope.NamesCollection.length > 0) {
+                        $scope.nextBookID = 0;
+                        
+                        $.each($scope.NamesCollection, function (idx, obj) {
+                            var nNameID = parseInt(obj.NameID);
+                                
+                            if ($scope.nextNameID < nNameID) {
+                                $scope.nextNameID = nNameID;
+                            }
+                        });
+                        
+                        $scope.nextNameID++;
+                    } else {
+                        $scope.nextNameID = 1;
+                    }
+                };
+                $scope.saveCurrentName = function() {
+                    $scope.cleanReportMessages();
+                    
+                    // Perform the check
+                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    //     $q.all(rptMsgs)
+                    //         .then(function(response) {
+                    //             $scope.cleanReportMessages();
+                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //         }, function(reason) {
+                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //         });
+                    //     return;
+                    // }
+                    
+                    // Next item ID
+                    if ($scope.SelectedNameObject.NameID === -1) {
+                        $scope.updateNextNameID();
+                        $scope.SelectedNameObject.NameID = $scope.nextNameID;				
+                        $scope.NamesCollection.push($scope.SelectedNameObject);
+                    } else {
+                        // Update the selected one
+                        // It is updated automatically? Yes, it is!
+                    }
+                    
+                    // Reset the selected name
+                    $scope.cancelCurrentName();
+                };
+                $scope.cancelCurrentName = function() {
+                    $scope.SelectedNameObject = new hih.LibBookName();
+                    $scope.NameActivity = "Common.Create";
+                    $scope.NameActivityID = hih.Constants.UIMode_Create;
+                };
+                
+                // Language related methods
+                $scope.displayLang = function(row) {
+                    
+                };
+                $scope.editLang = function(row) {
+                    
+                };
+                $scope.removeLang = function(row) {
+                    
+                };
+                $scope.LangActivity = "Common.Create";
+                $scope.LangActivityID = hih.Constants.UIMode_Create;
+                $scope.nextLangID = 0;
+                $scope.updateNextLangID = function () {
+                    if (angular.isArray($scope.LangsCollection) && $scope.LangsCollection.length > 0) {
+                        $scope.nextLangID = 0;
+                        
+                        $.each($scope.nameColl, function (idx, obj) {
+                            var nLangID = parseInt(obj.LangID);
+                                
+                            if ($scope.nextLangID < nLangID) {
+                                $scope.nextLangID = nLangID;
+                            }
+                        });
+                        
+                        $scope.nextLangID++;
+                    } else {
+                        $scope.nextLangID = 1;
+                    }
+                };
+                $scope.saveCurrentLang = function() {
+                    $scope.cleanReportMessages();
+                    
+                    // Perform the check
+                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    //     $q.all(rptMsgs)
+                    //         .then(function(response) {
+                    //             $scope.cleanReportMessages();
+                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //         }, function(reason) {
+                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //         });
+                    //     return;
+                    // }
+                    
+                    // Next lang ID
+                    if ($scope.SelectedLangObject.LangID === -1) {
+                        $scope.updateNextLangID();
+                        $scope.SelectedLangObject.LangID = $scope.nextLangID;				
+                        $scope.LangsCollection.push($scope.SelectedLangObject);
+                    } else {
+                        // Update the selected one
+                        // It is updated automatically? Yes, it is!
+                    }
+                    
+                    // Reset the selected lang
+                    $scope.cancelCurrentLang();
+                };
+                $scope.cancelCurrentLang = function() {
+                    $scope.SelectedLangObject = new hih.LibBookLang();
+                    $scope.LangActivity = "Common.Create";
+                    $scope.LangActivityID = hih.Constants.UIMode_Create;
+                };
 
 				$scope.submit = function () {
 					// // Verify it!
@@ -595,14 +768,14 @@
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
-						utils.createLibBookQ($scope.LocationObject)
+						utils.createLibBookQ($scope.BookObject)
 							.then(function (response) {
 								$state.go("home.lib.loc.display", { id: response });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-						utils.updateLibBookQ($scope.LocationObject)
+						utils.updateLibBookQ($scope.BookObject)
 							.then(function (response) {
 								$state.go("home.lib.loc.maintain", { id: $scope.LocationObject.ID });
 							}, function (reason) {

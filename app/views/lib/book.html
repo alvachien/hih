@@ -27,7 +27,7 @@
             <div class="panel-heading">{{'Common.Name' | translate}}</div>
             <div class="panel-body">
                 <!-- Tables -->
-                <table st-table="nameColl" st-saft-src="BookNameCollection" class="table table-striped table-hover">
+                <table st-table="NamesCollection" st-saft-src="BookObject.Names" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th st-sort="id" translate="Common.ID">ID</th>
@@ -43,25 +43,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in BookNameCollection">
-                            <td>{{row.ID}}</td>
+                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in NamesCollection">
+                            <td>{{row.NameID}}</td>
                             <td>{{row.Lang}}</td>
-                            <td>{{row.LangName }}</td>
+                            <td>{{row.LangName}}</td>
                             <td>{{row.Name}}</td>
                             <td>
-                                <button type="button" class="btn btn-sm" ng-click="displayParticipant(row)">
+                                <button type="button" class="btn btn-sm" ng-click="displayName(row)">
                                     <i class="glyphicon glyphicon-share">
                                     </i>
                                 </button>
-                                <button type="button" class="btn btn-sm" ng-click="editParticipant(row)">
+                                <button type="button" class="btn btn-sm" ng-click="editName(row)">
                                     <i class="glyphicon glyphicon-edit">
                                     </i>
                                 </button>
-                                <button type="button" class="btn btn-sm" ng-click="showComparison(row)">
-                                    <i class="glyphicon glyphicon-adjust">
-                                    </i>
-                                </button>
-                                <button type="button" ng-click="removeParticipant(row)" class="btn btn-sm btn-danger">
+                                <button type="button" ng-click="removeName(row)" class="btn btn-sm btn-danger">
                                     <i class="glyphicon glyphicon-remove-circle">
                                     </i>
                                 </button>
@@ -73,13 +69,30 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Name</div>
+                    <div class="panel-heading">Current Name | <span>{{NameActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="iptDetail" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" for="iptcurNameLang" translate="Common.Language">Language</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="iptDetail" ng-readonly="ActivityID == 3"
-                                        placeholder="{{'Common.Detail' | translate}}" ng-model="LocationObject.Detail" required>
+                                <selectize placeholder='Pick language...' options='arLibLang' config="nameLangConfig" ng-model="SelectedNameObject.Lang"
+                                        ng-disabled="ActivityID == 3" required="required"></selectize>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="iptCurName" translate="Common.Name">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="iptCurName" ng-readonly="ActivityID == 3"
+                                        placeholder="{{'Common.Name' | translate}}" ng-model="SelectedNameObject.Name" required>
+                            </div>
+                        </div>
+
+                        <!-- Button group -->
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <button class="btn btn-default btn-primary" ng-click="saveCurrentName()" ng-hide="ActivityID == 3"
+                                    translate="Finance.SaveCurrentItem">Save Item</button>
+                                <button class="btn btn-danger" ng-click="cancelCurrentName()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
