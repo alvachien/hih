@@ -128,8 +128,8 @@
                     </thead>
                     <tbody>
                         <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in LangsCollection">
-                            <td>{{row.Lang}}</td>
-                            <td>{{row.LangName}}</td>
+                            <td>{{row.Language}}</td>
+                            <td>{{row.Name}}</td>
                             <td>
                                 <button type="button" class="btn btn-sm" ng-click="displayLang(row)">
                                     <i class="glyphicon glyphicon-share">
@@ -156,7 +156,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Lang"
+                                <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Language"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -179,11 +179,11 @@
             <div class="panel-heading">{{'Lib.Author' | translate}}</div>
             <div class="panel-body">
                 <!-- Tables -->
-                <table st-table="LangsCollection" st-saft-src="BookObject.Langs" class="table table-striped table-hover">
+                <table st-table="AuthorsCollection" st-saft-src="BookObject.Authors" class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th st-sort="lang" translate="Common.Language">Lang ID</th>
-                            <th st-sort="langtxt" translate="Common.Language">Language</th>
+                            <th st-sort="pid" translate="Common.ID">ID</th>
+                            <th st-sort="pname" translate="Common.Name">Name</th>
                             <th translate="Common.Operations">Operations</th>
                         </tr>
                         <tr>
@@ -193,19 +193,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in LangsCollection">
-                            <td>{{row.Lang}}</td>
-                            <td>{{row.LangName}}</td>
+                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in AuthorsCollection">
+                            <td>{{row.ID}}</td>
+                            <td>{{row.Name}}</td>
                             <td>
-                                <button type="button" class="btn btn-sm" ng-click="displayLang(row)">
+                                <button type="button" class="btn btn-sm" ng-click="displayAuthor(row)">
                                     <i class="glyphicon glyphicon-share">
                                     </i>
                                 </button>
-                                <button type="button" class="btn btn-sm" ng-click="editLang(row)">
+                                <button type="button" class="btn btn-sm" ng-click="editAuthor(row)">
                                     <i class="glyphicon glyphicon-edit">
                                     </i>
                                 </button>
-                                <button type="button" ng-click="removeLang(row)" class="btn btn-sm btn-danger">
+                                <button type="button" ng-click="removeAuthor(row)" class="btn btn-sm btn-danger">
                                     <i class="glyphicon glyphicon-remove-circle">
                                     </i>
                                 </button>
@@ -217,12 +217,12 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Language | <span>{{LangActivity | translate}}</span></div>
+                    <div class="panel-heading">Current Author | <span>{{AuthorActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Lang"
+                                <selectize placeholder='Pick author...' options='arLibPerson' config="personConfig" ng-model="SelectedAuthorObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -230,9 +230,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentLang()" ng-hide="ActivityID == 3"
+                                <button class="btn btn-default btn-primary" ng-click="saveCurrentAuthor()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentLang()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn btn-danger" ng-click="cancelCurrentAuthor()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
@@ -241,8 +241,136 @@
         </div>
         
         <!-- Press -->
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{'Lib.Press' | translate}}</div>
+            <div class="panel-body">
+                <!-- Tables -->
+                <table st-table="PressesCollection" st-saft-src="BookObject.Presses" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th st-sort="oid" translate="Common.ID">ID</th>
+                            <th st-sort="oname" translate="Common.Name">Name</th>
+                            <th translate="Common.Operations">Operations</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">
+                                <input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PressesCollection">
+                            <td>{{row.ID}}</td>
+                            <td>{{row.Name}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm" ng-click="displayPress(row)">
+                                    <i class="glyphicon glyphicon-share">
+                                    </i>
+                                </button>
+                                <button type="button" class="btn btn-sm" ng-click="editPress(row)">
+                                    <i class="glyphicon glyphicon-edit">
+                                    </i>
+                                </button>
+                                <button type="button" ng-click="removePress(row)" class="btn btn-sm btn-danger">
+                                    <i class="glyphicon glyphicon-remove-circle">
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br />
+
+                <div class="panel panel-default" style="margin: 30px, 10px;">
+                    <div class="panel-heading">Current Press | <span>{{PressActivity | translate}}</span></div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <div class="col-sm-10">
+                                <selectize placeholder='Pick press...' options='arLibOrganization' config="orgConfig" ng-model="SelectedPressObject.ID"
+                                        ng-disabled="ActivityID == 3" required="required"></selectize>
+                            </div>
+                        </div>
+
+                        <!-- Button group -->
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <button class="btn btn-default btn-primary" ng-click="saveCurrentPress()" ng-hide="ActivityID == 3"
+                                    translate="Finance.SaveCurrentItem">Save Item</button>
+                                <button class="btn btn-danger" ng-click="cancelCurrentPress()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- Location -->
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{'Lib.Location' | translate}}</div>
+            <div class="panel-body">
+                <!-- Tables -->
+                <table st-table="LocationsCollection" st-saft-src="BookObject.Locations" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th st-sort="lid" translate="Common.ID">ID</th>
+                            <th st-sort="lname" translate="Common.Name">Name</th>
+                            <th translate="Common.Operations">Operations</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">
+                                <input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in LocationsCollection">
+                            <td>{{row.ID}}</td>
+                            <td>{{row.Name}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm" ng-click="displayLocation(row)">
+                                    <i class="glyphicon glyphicon-share">
+                                    </i>
+                                </button>
+                                <button type="button" class="btn btn-sm" ng-click="editLocation(row)">
+                                    <i class="glyphicon glyphicon-edit">
+                                    </i>
+                                </button>
+                                <button type="button" ng-click="removeLocation(row)" class="btn btn-sm btn-danger">
+                                    <i class="glyphicon glyphicon-remove-circle">
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br />
+
+                <div class="panel panel-default" style="margin: 30px, 10px;">
+                    <div class="panel-heading">Current Author | <span>{{AuthorActivity | translate}}</span></div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <div class="col-sm-10">
+                                <selectize placeholder='Pick location...' options='arLibLocation' config="locConfig" ng-model="SelectedLocationObject.ID"
+                                        ng-disabled="ActivityID == 3" required="required"></selectize>
+                            </div>
+                        </div>
+
+                        <!-- Button group -->
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <button class="btn btn-default btn-primary" ng-click="saveCurrentLocation()" ng-hide="ActivityID == 3"
+                                    translate="Finance.SaveCurrentItem">Save Item</button>
+                                <button class="btn btn-danger" ng-click="cancelCurrentLocation()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Button row -->        
 		<div class="form-group">

@@ -2170,7 +2170,7 @@
     hih.LibBookName.prototype.setContent = function(obj) {
         this.BookID = parseInt(obj.bookid);
         this.NameID = parseInt(obj.nameid);
-        this.Lang = parseInt(obj.lang);
+        this.Lang = obj.lang;
         this.Name = obj.name;
         
         // Runtime info
@@ -2201,6 +2201,7 @@
     hih.LibBookLang.prototype.setContent = function(obj) {
         hih.LibLanguage.prototype.setContent.call(this, obj);
         
+        this.Name = obj.langname;
         this.BookID = parseInt(obj.bookid);
     };
     hih.LibBookLang.prototype.ToJSONObject = function() {

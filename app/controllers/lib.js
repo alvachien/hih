@@ -584,8 +584,14 @@
 				$scope.BookObject = new hih.LibBook();
                 $scope.SelectedNameObject = new hih.LibBookName();
                 $scope.SelectedLangObject = new hih.LibBookLang();
+                $scope.SelectedAuthorObject = new hih.LibBookAuthor();
+                $scope.SelectedPressObject = new hih.LibBookPress();
+                $scope.SelectedLocationObject = new hih.LibBookLocation();
                 $scope.NamesCollection = [];
                 $scope.LangsCollection = [];
+                $scope.AuthorsCollection = [];
+                $scope.PressesCollection = [];
+                $scope.LocationsCollection = [];
                 $scope.nameLangConfig = {
                     create: false,
                     onChange: function(value){
@@ -606,6 +612,36 @@
                     maxItems: 1,
                     required: true
                 };
+                $scope.personConfig = {
+                    create: false,
+                    onChange: function(value){
+                        $log.info('LibBookController, Person control, event onChange, ', value);
+                    },
+                    valueField: 'ID',
+                    labelField: 'Name',
+                    maxItems: 1,
+                    required: true
+                };
+                $scope.orgConfig = {
+                    create: false,
+                    onChange: function(value){
+                        $log.info('LibBookController, Press control, event onChange, ', value);
+                    },
+                    valueField: 'ID',
+                    labelField: 'Name',
+                    maxItems: 1,
+                    required: true
+                };
+                $scope.locConfig = {
+                    create: false,
+                    onChange: function(value){
+                        $log.info('LibBookController, Location control, event onChange, ', value);
+                    },
+                    valueField: 'ID',
+                    labelField: 'Name',
+                    maxItems: 1,
+                    required: true
+                };
                 
 				if (angular.isDefined($stateParams.id)) {
 					if ($state.current.name === "home.lib.book.maintain") {
@@ -623,6 +659,10 @@
 									$scope.BookObject = angular.copy(obj);
                                     $scope.NamesCollection = [].concat(obj.Names);
                                     $scope.LangsCollection = [].concat(obj.Languages);
+                                    $scope.AuthorsCollection = [].concat(obj.Authors);
+                                    $scope.PressesCollection = [].concat(obj.Presses);
+                                    $scope.LocationsCollection = [].concat(obj.Locations);
+                                    
 									return false;
 								}
 							});
@@ -743,6 +783,156 @@
                     $scope.SelectedLangObject = new hih.LibBookLang();
                     $scope.LangActivity = "Common.Create";
                     $scope.LangActivityID = hih.Constants.UIMode_Create;
+                };
+                // Authors
+                $scope.displayAuthor = function(row) {
+                    
+                };
+                $scope.editAuthor = function(row) {
+                    
+                };
+                $scope.removeAuthor = function(row) {
+                    
+                };
+                $scope.AuthorActivity = "Common.Create";
+                $scope.AuthorActivityID = hih.Constants.UIMode_Create;
+                $scope.saveCurrentAuthor = function() {
+                    $scope.cleanReportMessages();
+                    
+                    // Perform the check
+                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    //     $q.all(rptMsgs)
+                    //         .then(function(response) {
+                    //             $scope.cleanReportMessages();
+                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //         }, function(reason) {
+                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //         });
+                    //     return;
+                    // }
+                    
+                    if ($scope.AuthorActivityID === hih.Constants.UIMode_Create) {
+                        $scope.AuthorsCollection.push($scope.SelectedAuthorObject);
+                    } else {
+                        // Update the selected one
+                        // It is updated automatically? Yes, it is!
+                    }
+                    
+                    // Reset the selected lang
+                    $scope.cancelCurrentAuthor();
+                };
+                $scope.cancelCurrentAuthor = function() {
+                    $scope.SelectedAuthorObject = new hih.LibBookAuthor();
+                    $scope.AuthorActivity = "Common.Create";
+                    $scope.AuthorActivityID = hih.Constants.UIMode_Create;
+                };
+                // Presses
+                $scope.displayPress = function(row) {
+                    
+                };
+                $scope.editPress = function(row) {
+                    
+                };
+                $scope.removePress = function(row) {
+                    
+                };
+                $scope.PressActivity = "Common.Create";
+                $scope.PressActivityID = hih.Constants.UIMode_Create;
+                $scope.saveCurrentPress = function() {
+                    $scope.cleanReportMessages();
+                    
+                    // Perform the check
+                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    //     $q.all(rptMsgs)
+                    //         .then(function(response) {
+                    //             $scope.cleanReportMessages();
+                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //         }, function(reason) {
+                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //         });
+                    //     return;
+                    // }
+                    
+                    if ($scope.PressActivityID === hih.Constants.UIMode_Create) {
+                        $scope.PressesCollection.push($scope.SelectedPressObject);
+                    } else {
+                        // Update the selected one
+                        // It is updated automatically? Yes, it is!
+                    }
+                    
+                    // Reset the selected press
+                    $scope.cancelCurrentPress();
+                };
+                $scope.cancelCurrentPress = function() {
+                    $scope.SelectedPressObject = new hih.LibBookPress();
+                    $scope.PressActivity = "Common.Create";
+                    $scope.PressActivityID = hih.Constants.UIMode_Create;
+                };
+                // Locations
+                $scope.displayLocation = function(row) {
+                    
+                };
+                $scope.editLocation = function(row) {
+                    
+                };
+                $scope.removeLocation = function(row) {
+                    
+                };
+                $scope.LocationActivity = "Common.Create";
+                $scope.LocationActivityID = hih.Constants.UIMode_Create;
+                $scope.nextLocationID = 0;
+                $scope.updateNextLocationID = function () {
+                    if (angular.isArray($scope.LocationsCollection) && $scope.LocationsCollection.length > 0) {
+                        $scope.nextLocationID = 0;
+                        
+                        $.each($scope.LocationsCollection, function (idx, obj) {
+                            var nLocationID = parseInt(obj.ID);
+                                
+                            if ($scope.nextLocationID < nLocationID) {
+                                $scope.nextLocationID = nLocationID;
+                            }
+                        });
+                        
+                        $scope.nextLocationID++;
+                    } else {
+                        $scope.nextLocationID = 1;
+                    }
+                };
+                $scope.saveCurrentLocation = function() {
+                    $scope.cleanReportMessages();
+                    
+                    // Perform the check
+                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    //     $q.all(rptMsgs)
+                    //         .then(function(response) {
+                    //             $scope.cleanReportMessages();
+                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //         }, function(reason) {
+                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //         });
+                    //     return;
+                    // }
+                    
+                    // Next item ID
+                    if ($scope.SelectedLocationObject.NameID === -1) {
+                        $scope.updateNextLocationID();
+                        $scope.SelectedLocationObject.ID = $scope.nextLocationID;				
+                        $scope.LocationsCollection.push($scope.SelectedLocationObject);
+                    } else {
+                        // Update the selected one
+                        // It is updated automatically? Yes, it is!
+                    }
+                    
+                    // Reset the selected location
+                    $scope.cancelCurrentLocation();
+                };
+                $scope.cancelCurrentLocation = function() {
+                    $scope.SelectedLocationObject = new hih.LibBookLocation();
+                    $scope.LocationActivity = "Common.Create";
+                    $scope.LocationActivityID = hih.Constants.UIMode_Create;
                 };
 
 				$scope.submit = function () {
