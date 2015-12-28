@@ -2399,17 +2399,17 @@
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
 										});
-										$.each(response.data[0], function(idx, obj) {
+										$.each(response.data[2], function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
 										});
-										$.each(response.data[0], function(idx, obj) {
+										$.each(response.data[3], function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
 										});
-										$.each(response.data[0], function(idx, obj) {
+										$.each(response.data[4], function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
@@ -2430,7 +2430,7 @@
 								.then(function(response) {									
 									if ($.isArray(response.data) && response.data.length > 0) {
 										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibOrganization();
+											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											
 											// Find out the elder one and replace it.
@@ -2457,7 +2457,7 @@
 								}, function(response) {
 									deferred.reject(response.data.Message);
 								});
-							return deferred.promise;                            
+							return deferred.promise;
                         };
                         rtnObj.createLibBookQ = function(objBook) {
 							var deferred = $q.defer();

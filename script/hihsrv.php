@@ -849,10 +849,10 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         
         case "CREATELIBBOOK": {			
             $jsondata = json_decode($realParamArr ['data'] );
-			var_dump($jsondata);
+			//var_dump($jsondata);
 			
 			$objBook = new HIHLibBook($jsondata);
-			var_dump($objBook);
+			//var_dump($objBook);
 			
 			$errMsg = $objBook->CheckValid();
 			if (!empty($errMsg)) {
