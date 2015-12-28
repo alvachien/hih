@@ -142,7 +142,7 @@ function user_login($userid, $userpwd) {
 				if ($mysqli->query($query2)) {
 					// Do nothing!
 				} else {
-					$sErrorString = "Failed to execute query: " .$query2 . " ; Error: " . $mysqli->error;;;
+					$sErrorString = "Failed to execute query: " .$query2 . " ; Error: " . $mysqli->error;
 				}				
 			}
 			
@@ -156,7 +156,7 @@ function user_login($userid, $userpwd) {
 		/* free result set */
 		$result->close ();
 	} else {
-		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;;;
+		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;
 	}
 	
 	/* close connection */
@@ -267,7 +267,7 @@ function user_hist_add($userid, $logtype, $other) {
 	
 	if ($mysqli->query ( $query )) {
 	} else {
-		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;;;
+		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;
 	}
 	
 	/* close connection */
@@ -501,14 +501,14 @@ function learn_category_create($parctgy, $name, $comment) {
 			}
 		} else {
 			$nCode = 1;
-			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+			$sMsg = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
 		$nCode = 1;
-		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;;;
+		$sMsg = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	$rsttable = array ();
@@ -2017,7 +2017,7 @@ function learn_award_change($objAward) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
@@ -2340,13 +2340,13 @@ function finance_account_hierread() {
 				);
 			}
 		} else {
-			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 		}
 		
 		/* close statement */
 		$stmt->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;;;
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
 	}
 	
 	if (! empty ( $sError )) {
@@ -3223,14 +3223,14 @@ function finance_docpost_core($docobj, $mysqli) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 		
 				/* close statement */
 				$newstmt->close ();
 			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
 		}
 	}
@@ -3298,13 +3298,13 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 			/* Execute the statement */
 			if ($stmt->execute ()) {
 			} else {
-				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 			}
 			
 			/* close statement */
 			$stmt->close ();
 		} else {
-			$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+			$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 		}
 	}
 
@@ -3319,14 +3319,14 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;;;
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
 					break;
 				}
 
 				/* close statement */
 				$stmt->close ();
 			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;;;
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
 		}
 	}
@@ -5226,6 +5226,108 @@ function lib_book_listread($nbookid) {
 		$sError,
 		array($booktable, $booklangtable, $booknametable, $bookauthtable, $bookpresstable, $bookloctable) 
 	);   
+}
+function lib_book_create($objBook) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = -1;
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* Prepare an insert statement */
+	$query = "INSERT INTO t_lib_book(ISBN, OTHERS) VALUES(?, ?)";
+	 
+	if ($stmt = $mysqli->prepare ( $query )) {
+	 	$stmt->bind_param ( "ss", $objBook->ISBN, $objBook->Others );
+	 	/* Execute the statement */
+	 	if ($stmt->execute ()) {
+	 		$nNewID = $mysqli->insert_id;
+	 	} else {
+	 		$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	 	}
+	 	
+	 	/* close statement */
+	 	$stmt->close ();
+	} else {
+	 	$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* Insert on names */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookname (`BOOKID`, `NAMEID`, `LANG`, `NAME`) VALUES (?, ?, ?, ?);";	
+		foreach ( $objBook->NameArray as $objname ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiss", $nNewID, $objname->NameID, $objname->Lang, $objname->Name );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$stmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Insert on languages */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookname (`BOOKID`, `LANG`) VALUES (?, ?);";	
+		foreach ( $objBook->LangArray as $objlang ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiss", $nNewID, $objlang->Lang );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$stmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+			}
+		}
+	}
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nNewID 
+	);
 }
 
 /* Following function For testing purpose only */

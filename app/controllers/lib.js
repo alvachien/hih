@@ -734,7 +734,7 @@
                 };
 
 				$scope.submit = function () {
-					// // Verify it!
+					// Verify it!
 					// var msgTab = $scope.CategoryObject.Verify();
 					// if (msgTab && msgTab.length > 0) {
 					// 	$translate(msgTab).then(function (translations) {
@@ -747,27 +747,34 @@
 					// }
 					
 					$scope.BookObject.Names = [];
-					$scope.BookObject.Langs = [];
+					$scope.BookObject.Languages = [];
 					// Names
-					
+					if ($scope.NamesCollection.length <= 0) return;
+					$.each($scope.NamesCollection, function(idx, obj) {
+						$scope.BookObject.Names.push(obj);
+					});
 					// Languages
+					if ($scope.LangsCollection.length <= 0) return;
+					$.each($scope.LangsCollection, function(idx, obj) {
+						$scope.BookObject.Languages.push(obj);
+					});
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
-						utils.createLibBookQ($scope.BookObject)
-							.then(function (response) {
-								$state.go("home.lib.loc.display", { id: response });
-							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
-							});
+					 	utils.createLibBookQ($scope.BookObject)
+					 		.then(function (response) {
+					 			$state.go("home.lib.book.display", { id: response });
+					 		}, function (reason) {
+					 			$rootScope.$broadcast("ShowMessage", "Error", reason);
+					 		});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-						utils.updateLibBookQ($scope.BookObject)
-							.then(function (response) {
-								$state.go("home.lib.loc.maintain", { id: $scope.LocationObject.ID });
-							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
-							});
-					}
+					// 	utils.updateLibBookQ($scope.BookObject)
+					// 		.then(function (response) {
+					// 			$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
+					// 		}, function (reason) {
+					// 			$rootScope.$broadcast("ShowMessage", "Error", reason);
+					// 		});
+					 }
 				};
 
 				$scope.close = function () {

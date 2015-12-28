@@ -847,8 +847,19 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         }
         break;
         
-        case "CREATELIBBOOK": {
-            
+        case "CREATELIBBOOK": {			
+            $jsondata = json_decode($realParamArr ['data'] );
+			var_dump($jsondata);
+			
+			$objBook = new HIHLibBook($jsondata);
+			var_dump($objBook);
+			
+			$errMsg = $objBook->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_book_create', $objBook);
+			}
         }
         break;
         

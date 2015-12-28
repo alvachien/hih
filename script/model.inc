@@ -1178,6 +1178,31 @@ class HIHLibBookName {
     }
 }
 
+class HIHLibBookLang {
+	// Properties
+	public $BookID;
+	public $Lang;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->Lang )) {
+				return "Lang is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
 class HIHLibBook {
     // Properties
     public $ID;
@@ -1195,9 +1220,6 @@ class HIHLibBook {
     }
 	public function CheckValid() {
 		if (isset ( $this )) {
-			if (! isset ( $this->Name )) {
-				return "Name is mandatory!";
-			}
 		}
 		
 		return null;
@@ -1224,6 +1246,17 @@ class HIHLibBook {
 					}
                 }
                 break;
+				
+				case "Languages": {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLibBookLang( $value[ $i ] );
+							$this->LangArray [$di->Lang] = $di;
+						}
+					}
+				}
+				break;
                 
                 default:
                 break;

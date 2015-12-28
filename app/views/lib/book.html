@@ -18,7 +18,15 @@
 			<label class="control-label col-sm-2" for="iptISBN" >ISBN</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptISBN"
-					placeholder="{{'Common.ID' | translate}}" ng-model="BookObject.ISBN">
+					placeholder="ISBN" ng-model="BookObject.ISBN">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptOther" translate="Common.Other">Other</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptOther" ng-readonly="ActivityID == 3"
+						placeholder="{{'Common.Other' | translate}}" ng-model="BookObject.Others" required>
 			</div>
 		</div>
         
@@ -171,17 +179,8 @@
         <!-- Press -->
         
         <!-- Location -->
-        
 
-
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptComment" translate="Common.Comment">Comment</label>
-			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptComment" ng-readonly="ActivityID == 3"
-						placeholder="{{'Common.Comment' | translate}}" ng-model="LocationObject.Comment" required>
-			</div>
-		</div>
-		
+        <!-- Button row -->        
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"

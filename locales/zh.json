@@ -53,6 +53,8 @@
 		"Count": "总计",
 		"Sum": "总和",
 		"Max": "最大值",
+		"Other": "其他",
+		"Others": "其他",
 		
 		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",

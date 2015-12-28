@@ -2270,20 +2270,45 @@
         this.ID = parseInt(obj.id);
         this.ISBN = obj.isbn;
         this.Others = obj.others;
-    };
-    hih.LibBook.prototype.Verify = function() {
-        
-    };
-    hih.LibBook.prototype.ToJSONObject = function() {
-        var forJSON = {};
-        
+
         // response.data[0] - Books
         // response.data[1] - Book language
         // response.data[2] - Book name
         // response.data[3] - Book author
         // response.data[4] - Book press
         // response.data[5] - Book location
+
+    };
+    hih.LibBook.prototype.Verify = function() {
         
+    };
+    hih.LibBook.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "Authors" || i === "Languages"
+				|| i === "Presses" || i === "Names" || i === "Locations") 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		
+		// Names
+		for(var j = 0 ; j < this.Names.length; ++j) {
+			if (!$.isArray(forJSON.Names)) forJSON.Names = [];
+			var jsonName = this.Names[j].ToJSONObject();
+			forJSON.Names.push(jsonName);
+		}
+		// Languages
+		for(var j = 0 ; j < this.Languages.length; ++j) {
+			if (!$.isArray(forJSON.Languages)) forJSON.Languages = [];
+			var jsonLang = this.Languages[j].ToJSONObject();
+			forJSON.Languages.push(jsonLang);
+		}
+		
+		// Authors
+		// Presses
+		// Locations
+		
         return forJSON;
     };
     hih.LibBook.prototype.ToJSON = function() {

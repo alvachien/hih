@@ -53,6 +53,8 @@
 		"Count": "Count",
 		"Sum": "Sum",
 		"Max": "Max",
+		"Other": "Other",
+		"Others": "Others",
 		
 		"DeleteConfirmation" : "Delete Confirmation",
 		"ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
