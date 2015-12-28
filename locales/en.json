@@ -225,7 +225,9 @@
         "Book": "Book",
         "Person": "Person",
         "Organization": "Organization",
-        "NativeName": "Native Name"
+        "NativeName": "Native Name",
+        "Author": "Author",
+        "Press": "Press"
     },
 	
 	"Message": {

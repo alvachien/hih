@@ -2381,39 +2381,72 @@
 								'script/hihsrv.php',
 								{ objecttype : 'GETLIBBOOKLIST' })
 								.then(function(response) {
-									if ($.isArray(response.data) && response.data.length > 0) {
-                                        // response.data[0] - Books
+									if ($.isArray(response.data) && response.data.length === 6) {
                                         // response.data[1] - Book language
                                         // response.data[2] - Book name
                                         // response.data[3] - Book author
                                         // response.data[4] - Book press
                                         // response.data[5] - Book location
                                         
+                                        // 0. Book
 										$.each(response.data[0], function(idx, obj) {
 											var bs = new hih.LibBook();
 											bs.setContent(obj);
 											$rootScope.arLibBook.push(bs);
 										});
+                                        var arLang = [];
+                                        var arName = [];
+                                        var arAuthor = [];
+                                        var arPress = [];
+                                        var arLocation = [];
+                                        // 1. Language
 										$.each(response.data[1], function(idx, obj) {
 											var bs = new hih.LibBookLang();
 											bs.setContent(obj);
-											$rootScope.arLibBook.push(bs);
+											arLang.push(bs);
 										});
+                                        // 2. Name
 										$.each(response.data[2], function(idx, obj) {
-											var bs = new hih.LibBook();
+											var bs = new hih.LibBookName();
 											bs.setContent(obj);
-											$rootScope.arLibBook.push(bs);
+											arName.push(bs);
 										});
+                                        // 3. Author
 										$.each(response.data[3], function(idx, obj) {
-											var bs = new hih.LibBook();
+											var bs = new hih.LibBookAuthor();
 											bs.setContent(obj);
-											$rootScope.arLibBook.push(bs);
+											arAuthor.push(bs);
 										});
+                                        // 4. Press
 										$.each(response.data[4], function(idx, obj) {
-											var bs = new hih.LibBook();
+											var bs = new hih.LibBookPress();
 											bs.setContent(obj);
-											$rootScope.arLibBook.push(bs);
+											arPress.push(bs);
 										});
+                                        // 5. Location
+										$.each(response.data[5], function(idx, obj) {
+											var bs = new hih.LibBookLocation();
+											bs.setContent(obj);
+											arLocation.push(bs);
+										});
+                                        
+                                        $.each($rootScope.arLibBook, function(idx, obj) {
+                                           if (arName.length > 0) {
+                                               for(var i = 0; i < arName.length; i ++) {
+                                                   if (arName[i].BookID === obj.ID) {
+                                                       obj.Names.push(arName[i]);
+                                                   }
+                                               }
+                                           }
+                                           
+                                           if (arLang.length > 0) {
+                                               for(var i = 0; i < arLang.length; i ++) {
+                                                   if (arLang[i].BookID === obj.ID) {
+                                                       obj.Languages.push(arLang[i]);
+                                                   }
+                                               }                                               
+                                           } 
+                                        });
 									}
 									deferred.resolve(true);
 								}, function(response) {
@@ -2428,30 +2461,61 @@
 								'script/hihsrv.php',
 								{ objecttype : 'GETLIBBOOKDETAIL', id: nBookID })
 								.then(function(response) {									
-									if ($.isArray(response.data) && response.data.length > 0) {
-										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibBook();
+									if ($.isArray(response.data) && response.data.length > 0 && response.data[0].length > 0)  {
+                                        
+                                        // 0. Book
+										var book = new hih.LibBook();
+        								book.setContent(response.data[0][0]);
+                                        
+                                        // 1. Language
+										$.each(response.data[1], function(idx, obj) {
+											var bs = new hih.LibBookLang();
 											bs.setContent(obj);
-											
-											// Find out the elder one and replace it.
-											if ( !$rootScope.arLibBook) {
-												$rootScope.arLibBook = [];
-												$rootScope.arLibBook.push(bs);
-											} else {
-												var realidx = -1;
-												for(var i = 0; i < $rootScope.arLibBook.length; i ++ ) {
-													if ($rootScope.arLibBook[i].ID === nBookID) {
-														realidx = i;
-														break;
-													}
-												}
-												if (realidx !== -1) {
-													$rootScope.arLibBook[realidx] = bs;
-												} else {
-													$rootScope.arLibBook.push(bs);
-												}
-											}
+											book.Languages.push(bs);
 										});
+                                        // 2. Name
+										$.each(response.data[2], function(idx, obj) {
+											var bs = new hih.LibBookName();
+											bs.setContent(obj);
+											book.Names.push(bs);
+										});
+                                        // 3. Author
+										$.each(response.data[3], function(idx, obj) {
+											var bs = new hih.LibBookAuthor();
+											bs.setContent(obj);
+											book.Authors.push(bs);
+										});
+                                        // 4. Press
+										$.each(response.data[4], function(idx, obj) {
+											var bs = new hih.LibBookPress();
+											bs.setContent(obj);
+											book.Presses.push(bs);
+										});
+                                        // 5. Location
+										$.each(response.data[5], function(idx, obj) {
+											var bs = new hih.LibBookLocation();
+											bs.setContent(obj);
+											book.Locations.push(bs);
+										});
+                                        
+                                        // Find out the elder one and replace it.
+                                        if ( !$rootScope.arLibBook) {
+                                            $rootScope.arLibBook = [];
+                                            $rootScope.arLibBook.push(book);
+                                        } else {
+                                            var realidx = -1;
+                                            for(var i = 0; i < $rootScope.arLibBook.length; i ++ ) {
+                                                if ($rootScope.arLibBook[i].ID === nBookID) {
+                                                    realidx = i;
+                                                    break;
+                                                }
+                                            }
+                                            if (realidx !== -1) {
+                                                $rootScope.arLibBook[realidx] = book;
+                                            } else {
+                                                $rootScope.arLibBook.push(book);
+                                            }
+                                        }
 									}
 									deferred.resolve(true);
 								}, function(response) {

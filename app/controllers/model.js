@@ -2044,11 +2044,28 @@
         this.NativeName = "";
     };
     hih.extend(hih.LibLanguage, hih.Model);
-    hih.LibLanguage.prototype.setContent = function(obj) {
+    hih.LibLanguage.prototype.setContent = function(obj) {        
         this.Language = obj.lang;
         this.Name = obj.name;
         this.NativeName = obj.navname;
-    } ;
+    };
+    hih.LibLanguage.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i)) 
+				continue;
+			
+			forJSON[i] = this[i];	
+		}
+		return forJSON;
+    };
+	hih.LibLanguage.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		}
+		return JSON && JSON.stringify(this) || $.toJSON(this);
+	};
     // 2. Lib Person
     hih.LibPerson = function LibPerson() {
 		this.ID = -1;
@@ -2182,12 +2199,12 @@
     };
     hih.extend(hih.LibBookLang, hih.LibLanguage);
     hih.LibBookLang.prototype.setContent = function(obj) {
-        hih.LibLanguage.prototype.go.call(this);
+        hih.LibLanguage.prototype.setContent.call(this, obj);
         
         this.BookID = parseInt(obj.bookid);
     };
     hih.LibBookLang.prototype.ToJSONObject = function() {
-        var forJSON = hih.LibLanguage.prototype.go.call(this);
+        var forJSON = hih.LibLanguage.prototype.ToJSONObject.call(this);
         
 		for(var i in this) {
 			if (!this.hasOwnProperty(i)) 
@@ -2211,7 +2228,7 @@
     };
     hih.extend(hih.LibBookAuthor, hih.LibPerson);
     hih.LibBookAuthor.prototype.setContent = function(obj) {
-        hih.LibPerson.prototype.go.call(this);
+        hih.LibPerson.prototype.setContent.call(this, obj);
         
         this.TranslatorFlag = obj.tranflag;
         this.BookID = parseInt(obj.bookid);
@@ -2239,7 +2256,7 @@
     };
     hih.extend(hih.LibBookPress, hih.LibOrganization);
     hih.LibBookPress.prototype.setContent = function(obj) {
-        hih.LibOrganization.prototype.go.call(this);
+        hih.LibOrganization.prototype.setContent.call(this, obj);
         
         this.BookID = parseInt(obj.bookid);
     };
@@ -2249,7 +2266,7 @@
     };
     hih.extend(hih.LibBookLocation, hih.LibLocation);
     hih.LibBookLocation.prototype.setContent = function(obj) {
-        hih.LibLocation.prototype.go.call(this);
+        hih.LibLocation.prototype.setContent.call(this, obj);
         
         this.BookID = parseInt(obj.bookid);
     };
@@ -2261,6 +2278,7 @@
         
         this.Authors = []; // Authors
         this.Languages = []; // Languages
+        this.Authors = [];
         this.Presses = []; // Presses
         this.Names = []; // Names
         this.Locations = [];
@@ -2270,14 +2288,6 @@
         this.ID = parseInt(obj.id);
         this.ISBN = obj.isbn;
         this.Others = obj.others;
-
-        // response.data[0] - Books
-        // response.data[1] - Book language
-        // response.data[2] - Book name
-        // response.data[3] - Book author
-        // response.data[4] - Book press
-        // response.data[5] - Book location
-
     };
     hih.LibBook.prototype.Verify = function() {
         

@@ -847,6 +847,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         }
         break;
         
+        case "GETLIBBOOKDETAIL": {
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_book_listread', $nid );
+        }
+        break;
+        
         case "CREATELIBBOOK": {			
             $jsondata = json_decode($realParamArr ['data'] );
 			//var_dump($jsondata);

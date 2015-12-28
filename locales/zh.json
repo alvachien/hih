@@ -224,7 +224,9 @@
         "Book": "图书",
         "Person": "个人",
         "Organization": "组织",
-        "NativeName": "本土名称"
+        "NativeName": "本土名称",
+        "Author": "作者",
+        "Press": "出版社"
     },
 	  
 	"Message": {

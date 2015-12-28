@@ -3324,7 +3324,7 @@ function finance_dpdoc_post($docobj, $acntObj, $dpacntObj, $dpObjs) {
 				}
 
 				/* close statement */
-				$stmt->close ();
+				$newstmt->close ();
 			} else {
 				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
@@ -5228,6 +5228,7 @@ function lib_book_listread($nbookid) {
 	);   
 }
 function lib_book_create($objBook) {
+    var_dump($objBook);
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -5281,7 +5282,7 @@ function lib_book_create($objBook) {
 				}
 
 				/* close statement */
-				$stmt->close ();
+				$newstmt->close ();
 			} else {
 				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
 			}
@@ -5290,22 +5291,22 @@ function lib_book_create($objBook) {
 
 	/* Insert on languages */
 	if (empty ( $sError )) {
-		$query = "INSERT INTO t_lib_bookname (`BOOKID`, `LANG`) VALUES (?, ?);";	
+		$query = "INSERT INTO t_lib_booklang (`BOOKID`, `LANG`) VALUES (?, ?);";	
 		foreach ( $objBook->LangArray as $objlang ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "iiss", $nNewID, $objlang->Lang );
+				$newstmt->bind_param ( "is", $nNewID, $objlang->Lang );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {
 				} else {
-					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
 					break;
 				}
 
 				/* close statement */
-				$stmt->close ();
+				$newstmt->close ();
 			} else {
-				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
 			}
 		}
 	}

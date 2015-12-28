@@ -26,7 +26,7 @@
 			<tr>
 				<th></th>
 				<th st-sort="id" translate="Common.ID">ID</th>
-				<th st-sort="name" translate="Common.Name">Name</th>
+				<th st-sort="name">ISBN</th>
 				<th st-sort="dtl" translate="Common.Other">Others</th>
 				<th translate="Common.Operations">Operations</th>
 			</tr>
@@ -40,7 +40,7 @@
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
 				<td><a ng-href="#/home/lib/book/display/{{row.ID}}"> {{row.ID}} </a></td>
-				<td>{{row.Name}}</td>
+				<td>{{row.ISBN}}</td>
 				<td>{{row.Others | limitTo: 20}}</td>
 				<td>
 					<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">

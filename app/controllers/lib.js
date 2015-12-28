@@ -117,6 +117,16 @@
                     templateUrl: 'app/views/lib/book.html',
                     controller: 'LibBookController'
                 })
+                .state("home.lib.book.display", {
+                    url: "/display/:id",
+                    templateUrl: 'app/views/lib/book.html',
+                    controller: 'LibBookController'
+                })
+                .state("home.lib.book.maintain", {
+                    url: "/maintain/:id",
+                    templateUrl: 'app/views/lib/book.html',
+                    controller: 'LibBookController'
+                })
 			;
 		}])
 
@@ -608,14 +618,16 @@
 
 					utils.readLibBookQ(parseInt($stateParams.id))
 						.then(function (response) {
-							$.each($rootScope.arLibLocation, function (idx, obj) {
+							$.each($rootScope.arLibBook, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
-									$scope.LocationObject = angular.copy(obj);
+									$scope.BookObject = angular.copy(obj);
+                                    $scope.NamesCollection = [].concat(obj.Names);
+                                    $scope.LangsCollection = [].concat(obj.Languages);
 									return false;
 								}
 							});
 						}, function (reason) {
-							// Errors!
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
 
 				} else {
