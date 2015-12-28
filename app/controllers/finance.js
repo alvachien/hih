@@ -1739,8 +1739,7 @@
 				case hih.Constants.DownpayRepeatType_PerMonth:
 					ntimes = Math.floor(ndays / 30);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						var nDate = new Date($scope.AccountObject.StartDate);
 						nDate.setMonth(nDate.getMonth() + i);
 						arDays.push(nDate);
 					}
@@ -1749,8 +1748,8 @@
 				case hih.Constants.DownpayRepeatType_PerFortnight:
 					ntimes = Math.floor(ndays / 14);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 14 * i);
+						var nDate = new Date($scope.AccountObject.StartDate);
+						nDate.setDate(nDate.getDate() + 14 * i);
 						arDays.push(nDate);
 					}
 				break;
@@ -1758,8 +1757,8 @@
 				case hih.Constants.DownpayRepeatType_PerWeek:
 					ntimes = Math.floor(ndays / 7);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + 7 * i);
+						var nDate = new Date($scope.AccountObject.StartDate);
+						nDate.setDate(nDate.getDate() + 7 * i);
 						arDays.push(nDate);
 					}
 				break;
@@ -1767,8 +1766,8 @@
 				case hih.Constants.DownpayRepeatType_PerDay:
 					ntimes = ndays;
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate() + i);
+						var nDate = new Date($scope.AccountObject.StartDate);
+						nDate.setDate(nDate.getDate() + i);
 						arDays.push(nDate);
 					}
 				break;
@@ -1776,8 +1775,7 @@
 				case hih.Constants.DownpayRepeatType_PerQuarter:
 					ntimes = Math.floor(ndays / 91);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						var nDate = new Date($scope.AccountObject.StartDate);
 						nDate.setMonth(nDate.getMonth() + 3 * (i + 1));
 						arDays.push(nDate);
 					}
@@ -1786,8 +1784,7 @@
 				case hih.Constants.DownPayRepeatType_PerHalfYear:
 					ntimes = Math.floor(ndays / 182);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						var nDate = new Date($scope.AccountObject.StartDate);
 						nDate.setMonth(nDate.getMonth() + 6 * (i + 1));
 						arDays.push(nDate);
 					}
@@ -1796,8 +1793,7 @@
 				case hih.Constants.DownPayRepeatType_PerYear:
 					ntimes = Math.floor(ndays / 365);
 					for(i = 0; i < ntimes; i ++) {
-						var nDate = new Date();
-						nDate.setDate($scope.AccountObject.StartDate.getDate());
+						var nDate = new Date($scope.AccountObject.StartDate);
 						nDate.setYear(nDate.getYear() + i);
 						arDays.push(nDate);
 					}

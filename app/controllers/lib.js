@@ -700,24 +700,6 @@
                 };
                 $scope.LangActivity = "Common.Create";
                 $scope.LangActivityID = hih.Constants.UIMode_Create;
-                $scope.nextLangID = 0;
-                $scope.updateNextLangID = function () {
-                    if (angular.isArray($scope.LangsCollection) && $scope.LangsCollection.length > 0) {
-                        $scope.nextLangID = 0;
-                        
-                        $.each($scope.nameColl, function (idx, obj) {
-                            var nLangID = parseInt(obj.LangID);
-                                
-                            if ($scope.nextLangID < nLangID) {
-                                $scope.nextLangID = nLangID;
-                            }
-                        });
-                        
-                        $scope.nextLangID++;
-                    } else {
-                        $scope.nextLangID = 1;
-                    }
-                };
                 $scope.saveCurrentLang = function() {
                     $scope.cleanReportMessages();
                     
@@ -735,9 +717,7 @@
                     // }
                     
                     // Next lang ID
-                    if ($scope.SelectedLangObject.LangID === -1) {
-                        $scope.updateNextLangID();
-                        $scope.SelectedLangObject.LangID = $scope.nextLangID;				
+                    if ($scope.LangActivityID === hih.Constants.UIMode_Create) {
                         $scope.LangsCollection.push($scope.SelectedLangObject);
                     } else {
                         // Update the selected one
@@ -765,6 +745,12 @@
 					// 	});
 					// 	return;
 					// }
+					
+					$scope.BookObject.Names = [];
+					$scope.BookObject.Langs = [];
+					// Names
+					
+					// Languages
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {

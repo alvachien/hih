@@ -105,39 +105,33 @@
             <div class="panel-heading">{{'Common.Language' | translate}}</div>
             <div class="panel-body">
                 <!-- Tables -->
-                <table st-table="langColl" st-saft-src="BookLangCollection" class="table table-striped table-hover">
+                <table st-table="LangsCollection" st-saft-src="BookObject.Langs" class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th st-sort="id" translate="Common.ID">ID</th>
                             <th st-sort="lang" translate="Common.Language">Lang ID</th>
                             <th st-sort="langtxt" translate="Common.Language">Language</th>
                             <th translate="Common.Operations">Operations</th>
                         </tr>
                         <tr>
-                            <th colspan="4">
+                            <th colspan="3">
                                 <input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text" />
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in BookLangCollection">
-                            <td>{{row.ID}}</td>
+                        <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in LangsCollection">
                             <td>{{row.Lang}}</td>
-                            <td>{{row.LangName }}</td>
+                            <td>{{row.LangName}}</td>
                             <td>
-                                <button type="button" class="btn btn-sm" ng-click="displayParticipant(row)">
+                                <button type="button" class="btn btn-sm" ng-click="displayLang(row)">
                                     <i class="glyphicon glyphicon-share">
                                     </i>
                                 </button>
-                                <button type="button" class="btn btn-sm" ng-click="editParticipant(row)">
+                                <button type="button" class="btn btn-sm" ng-click="editLang(row)">
                                     <i class="glyphicon glyphicon-edit">
                                     </i>
                                 </button>
-                                <button type="button" class="btn btn-sm" ng-click="showComparison(row)">
-                                    <i class="glyphicon glyphicon-adjust">
-                                    </i>
-                                </button>
-                                <button type="button" ng-click="removeParticipant(row)" class="btn btn-sm btn-danger">
+                                <button type="button" ng-click="removeLang(row)" class="btn btn-sm btn-danger">
                                     <i class="glyphicon glyphicon-remove-circle">
                                     </i>
                                 </button>
@@ -149,13 +143,22 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Language</div>
+                    <div class="panel-heading">Current Language | <span>{{LangActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="iptDetail" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="iptDetail" ng-readonly="ActivityID == 3"
-                                        placeholder="{{'Common.Detail' | translate}}" ng-model="LocationObject.Detail" required>
+                                <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Lang"
+                                        ng-disabled="ActivityID == 3" required="required"></selectize>
+                            </div>
+                        </div>
+
+                        <!-- Button group -->
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <button class="btn btn-default btn-primary" ng-click="saveCurrentLang()" ng-hide="ActivityID == 3"
+                                    translate="Finance.SaveCurrentItem">Save Item</button>
+                                <button class="btn btn-danger" ng-click="cancelCurrentLang()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
