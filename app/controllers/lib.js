@@ -894,24 +894,6 @@
                 };
                 $scope.LocationActivity = "Common.Create";
                 $scope.LocationActivityID = hih.Constants.UIMode_Create;
-                $scope.nextLocationID = 0;
-                $scope.updateNextLocationID = function () {
-                    if (angular.isArray($scope.LocationsCollection) && $scope.LocationsCollection.length > 0) {
-                        $scope.nextLocationID = 0;
-                        
-                        $.each($scope.LocationsCollection, function (idx, obj) {
-                            var nLocationID = parseInt(obj.ID);
-                                
-                            if ($scope.nextLocationID < nLocationID) {
-                                $scope.nextLocationID = nLocationID;
-                            }
-                        });
-                        
-                        $scope.nextLocationID++;
-                    } else {
-                        $scope.nextLocationID = 1;
-                    }
-                };
                 $scope.saveCurrentLocation = function() {
                     $scope.cleanReportMessages();
                     
@@ -929,9 +911,7 @@
                     // }
                     
                     // Next item ID
-                    if ($scope.SelectedLocationObject.NameID === -1) {
-                        $scope.updateNextLocationID();
-                        $scope.SelectedLocationObject.ID = $scope.nextLocationID;				
+                    if ($scope.AuthorActivityID === hih.Constants.UIMode_Create) {
                         $scope.LocationsCollection.push($scope.SelectedLocationObject);
                     } else {
                         // Update the selected one
@@ -962,6 +942,9 @@
 					
 					$scope.BookObject.Names = [];
 					$scope.BookObject.Languages = [];
+                    $scope.BookObject.Authors = [];
+                    $scope.BookObject.Presses = [];
+                    $scope.BookObject.Locations = [];
 					// Names
 					if ($scope.NamesCollection.length <= 0) return;
 					$.each($scope.NamesCollection, function(idx, obj) {
@@ -971,6 +954,18 @@
 					if ($scope.LangsCollection.length <= 0) return;
 					$.each($scope.LangsCollection, function(idx, obj) {
 						$scope.BookObject.Languages.push(obj);
+					});
+                    // Authors
+					$.each($scope.AuthorsCollection, function(idx, obj) {
+						$scope.BookObject.Authors.push(obj);
+					});
+                    // Presses
+					$.each($scope.PressesCollection, function(idx, obj) {
+						$scope.BookObject.Presses.push(obj);
+					});
+                    // Locations
+					$.each($scope.LocationsCollection, function(idx, obj) {
+						$scope.BookObject.Locations.push(obj);
 					});
 				 
 					// Now, submit to the server

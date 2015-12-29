@@ -1203,6 +1203,84 @@ class HIHLibBookLang {
     }
 }
 
+class HIHLibBookAuthor {
+	// Properties
+	public $BookID;
+	public $PersonID;
+    public $TranFlag;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->PersonID )) {
+				return "Person is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
+class HIHLibBookPress {
+	// Properties
+	public $BookID;
+	public $PressID;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->PressID )) {
+				return "Press is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
+class HIHLibBookLocation {
+	// Properties
+	public $BookID;
+	public $LocID;
+    public $Media;
+    public $Comment;
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+		if (isset ( $this )) {
+			if (! isset ( $this->LocID )) {
+				return "Location is mandatory!";
+			}
+		}
+		
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
 class HIHLibBook {
     // Properties
     public $ID;
@@ -1213,6 +1291,12 @@ class HIHLibBook {
     public $NameArray = array();
     // Langauges
     public $LangArray = array();
+    // Authors
+    public $AuthorArray = array();
+    // Presses
+    public $PressArray = array();
+    // Locations
+    public $LocationArray = array();
 
 	// Function
 	public function __construct($json = false) {
@@ -1257,6 +1341,39 @@ class HIHLibBook {
 					}
 				}
 				break;
+                
+                case "Authors": {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLibBookAuthor( $value[ $i ] );
+							$this->AuthorArray [$di->PersonID] = $di;
+						}
+					}
+                }
+                break;
+                
+                case "Presses": {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLibBookPress( $value[ $i ] );
+							$this->PressArray [$di->PressID] = $di;
+						}
+					}
+                }
+                break;
+                
+                case "Locations": {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = new HIHLibBookLocation( $value[ $i ] );
+							$this->LocationArray [$di->LocID] = $di;
+						}
+					}
+                }
+                break;
                 
                 default:
                 break;
