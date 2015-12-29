@@ -77,10 +77,10 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Name | <span>{{NameActivity | translate}}</span></div>
+                    <div class="panel-heading"><span translate="Common.Name"> </span> | <span>{{NameActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="iptcurNameLang" translate="Common.Language">Language</label>
+                            <label class="control-label col-sm-2" translate="Common.Language">Language</label>
                             <div class="col-sm-10">
                                 <selectize placeholder='Pick language...' options='arLibLang' config="nameLangConfig" ng-model="SelectedNameObject.Lang"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
@@ -97,7 +97,7 @@
 
                         <!-- Button group -->
                         <div class="form-group">
-                            <div class="col-sm-10">
+                            <div class="col-sm-offset-2 col-sm-10">
                                 <button class="btn btn-default btn-primary" ng-click="saveCurrentName()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
                                 <button class="btn btn-danger" ng-click="cancelCurrentName()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
@@ -151,10 +151,10 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Language | <span>{{LangActivity | translate}}</span></div>
+                    <div class="panel-heading"><span translate="Common.Language">Language</span> | <span>{{LangActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" translate="Common.Language">Language</label>
                             <div class="col-sm-10">
                                 <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Language"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
@@ -163,7 +163,7 @@
 
                         <!-- Button group -->
                         <div class="form-group">
-                            <div class="col-sm-10">
+                            <div class="col-sm-offset-2 col-sm-10">
                                 <button class="btn btn-default btn-primary" ng-click="saveCurrentLang()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
                                 <button class="btn btn-danger" ng-click="cancelCurrentLang()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
@@ -217,10 +217,10 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Author | <span>{{AuthorActivity | translate}}</span></div>
+                    <div class="panel-heading"><span translate="Lib.Author"></span> | <span>{{AuthorActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" translate="Lib.Author">Author</label>
                             <div class="col-sm-10">
                                 <selectize placeholder='Pick author...' options='arLibPerson' config="personConfig" ng-model="SelectedAuthorObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
@@ -229,7 +229,7 @@
 
                         <!-- Button group -->
                         <div class="form-group">
-                            <div class="col-sm-10">
+                            <div class="col-sm-offset-2 col-sm-10">
                                 <button class="btn btn-default btn-primary" ng-click="saveCurrentAuthor()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
                                 <button class="btn btn-danger" ng-click="cancelCurrentAuthor()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
@@ -283,10 +283,10 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Press | <span>{{PressActivity | translate}}</span></div>
+                    <div class="panel-heading"><span translate="Lib.Press"></span> | <span>{{PressActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" translate="Lib.Press">Press</label>
                             <div class="col-sm-10">
                                 <selectize placeholder='Pick press...' options='arLibOrganization' config="orgConfig" ng-model="SelectedPressObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
@@ -295,7 +295,7 @@
 
                         <!-- Button group -->
                         <div class="form-group">
-                            <div class="col-sm-10">
+                            <div class="col-sm-offset-2 col-sm-10">
                                 <button class="btn btn-default btn-primary" ng-click="saveCurrentPress()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
                                 <button class="btn btn-danger" ng-click="cancelCurrentPress()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
@@ -349,10 +349,10 @@
                 <br />
 
                 <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Current Author | <span>{{AuthorActivity | translate}}</span></div>
+                    <div class="panel-heading"><span translate="Lib.Location"></span> | <span>{{LocationActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" translate="Common.Detail">Detail</label>
+                            <label class="control-label col-sm-2" translate="Lib.Location">Location</label>
                             <div class="col-sm-10">
                                 <selectize placeholder='Pick location...' options='arLibLocation' config="locConfig" ng-model="SelectedLocationObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
@@ -361,7 +361,7 @@
 
                         <!-- Button group -->
                         <div class="form-group">
-                            <div class="col-sm-10">
+                            <div class="col-sm-offset-2 col-sm-10">
                                 <button class="btn btn-default btn-primary" ng-click="saveCurrentLocation()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
                                 <button class="btn btn-danger" ng-click="cancelCurrentLocation()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>

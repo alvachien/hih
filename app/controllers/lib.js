@@ -180,8 +180,8 @@
 					// ToDo
 					
 				};
-				$scope.refreshList = function () {
-					utils.loadLibLocationQ()
+				$scope.refreshList = function (bReload) {
+					utils.loadLibLocationQ(bReload)
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibLocation);
 						}, function (reason) {
@@ -189,7 +189,7 @@
 						});
 				};
 
-				$scope.refreshList();
+				$scope.refreshList(false);
 			}])
 
 		.controller('LibLocationController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
@@ -302,8 +302,8 @@
 					// ToDo					
 				};
 
-				$scope.refreshList = function () {
-					utils.loadLibPersonQ()
+				$scope.refreshList = function (bReload) {
+					utils.loadLibPersonQ(bReload)
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibPerson);
 						}, function (reason) {
@@ -311,7 +311,7 @@
 						});
 				};
 
-				$scope.refreshList();
+				$scope.refreshList(false);
 			}])
 
 		.controller('LibPersonController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
@@ -421,11 +421,11 @@
 					$state.go("home.lib.org.maintain", { id: nid });
 				};
 				$scope.removeItem = function () {
-					// ToDo					
+					// ToDo
 				};
 
-				$scope.refreshList = function () {
-					utils.loadLibOrganizationQ()
+				$scope.refreshList = function (bReload) {
+					utils.loadLibOrganizationQ(bReload)
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibOrganization);
 						}, function (reason) {
@@ -433,7 +433,7 @@
 						});
 				};
 
-				$scope.refreshList();
+				$scope.refreshList(false);
 			}])
 
 		.controller('LibOrganizationController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
@@ -505,8 +505,8 @@
 				};
 			}])
 
-		.controller('LibBookListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
-			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+		.controller('LibBookListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', '$q', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, $q, utils) {
 				$scope.dispList = [];
 
 				$scope.newItem = function () {
@@ -530,7 +530,11 @@
 						}
 					}
 
-                    utils.loadLibLanguageQ()
+					var q1 = utils.loadLibLanguageQ();
+					var q2 = utils.loadLibPersonQ();
+					var q3 = utils.loadLibOrganizationQ();
+					var q4 = utils.loadLibLocationQ();
+					$q.all([q1, q2, q3, q4])
                         .then(function(response) {
                             $state.go("home.lib.book.display", { id: nid });                            
                         }, function(reason) {
@@ -549,18 +553,24 @@
 							}
 						}
 					}
-                    utils.loadLibLanguageQ()
-                    .then(function(response) {
-                        $state.go("home.lib.book.maintain", { id: nid });
-                    }, function(reason) {
-                        $rootScope.$broadcast("ShowMessage", "Error", reason);
-                    });					
+					
+					var q1 = utils.loadLibLanguageQ();
+					var q2 = utils.loadLibPersonQ();
+					var q3 = utils.loadLibOrganizationQ();
+					var q4 = utils.loadLibLocationQ();
+					$q.all([q1, q2, q3, q4])
+						.then(function(response) {
+							$state.go("home.lib.book.maintain", { id: nid });
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});					
 				};
 				$scope.removeItem = function () {
 					// ToDo					
 				};
-				$scope.refreshList = function () {
-					utils.loadLibBookQ()
+				
+				$scope.refreshList = function (bReload) {
+					utils.loadLibBookQ(bReload)
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibBook);
 						}, function (reason) {
@@ -568,7 +578,7 @@
 						});
 				};
 
-				$scope.refreshList();
+				$scope.refreshList(false);
 			}])
 
 		.controller('LibBookController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', '$log', 'utils',
@@ -827,6 +837,7 @@
                     $scope.AuthorActivity = "Common.Create";
                     $scope.AuthorActivityID = hih.Constants.UIMode_Create;
                 };
+				
                 // Presses
                 $scope.displayPress = function(row) {
                     
@@ -870,6 +881,7 @@
                     $scope.PressActivity = "Common.Create";
                     $scope.PressActivityID = hih.Constants.UIMode_Create;
                 };
+				
                 // Locations
                 $scope.displayLocation = function(row) {
                     

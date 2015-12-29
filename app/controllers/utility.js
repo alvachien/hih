@@ -2043,10 +2043,10 @@
 // Libraries part
 ////////////////////////////////////////////////////////////////////
                         // Language
-                        rtnObj.loadLibLanguageQ = function() {
+                        rtnObj.loadLibLanguageQ = function(bForceReload) {
 							var deferred = $q.defer();
                             
-                            if ($rootScope.arLibLang && $rootScope.arLibLang.length > 0) {
+                            if ($rootScope.arLibLang && $rootScope.arLibLang.length > 0 && !bForceReload) {
                                 deferred.resolve(true);
                             } else {
                                 $rootScope.arLibLang = [];
@@ -2070,25 +2070,30 @@
 							return deferred.promise;
                         };
 						// Locations
-						rtnObj.loadLibLocationQ = function() {
+						rtnObj.loadLibLocationQ = function(bForceReload) {
 							var deferred = $q.defer();
-							$rootScope.arLibLocation = [];
 							
-							$http.post(
-								'script/hihsrv.php',
-								{ objecttype : 'GETLIBLOCLIST' })
-								.then(function(response) {									
-									if ($.isArray(response.data) && response.data.length > 0) {
-										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibLocation();
-											bs.setContent(obj);
-											$rootScope.arLibLocation.push(bs);
-										});
-									}
-									deferred.resolve(true);
-								}, function(response) {
-									deferred.reject(response.data.Message);
-								});
+                            if ($rootScope.arLibLocation && $rootScope.arLibLocation.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+								$rootScope.arLibLocation = [];
+								
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLIBLOCLIST' })
+									.then(function(response) {									
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var bs = new hih.LibLocation();
+												bs.setContent(obj);
+												$rootScope.arLibLocation.push(bs);
+											});
+										}
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
 							return deferred.promise;
 						};
 						rtnObj.readLibLocationQ = function(nID) {
@@ -2171,25 +2176,31 @@
 							return deferred.promise;
 						};
 						// Person
-						rtnObj.loadLibPersonQ = function() {
+						rtnObj.loadLibPersonQ = function(bForceReload) {
 							var deferred = $q.defer();
-							$rootScope.arLibPerson = [];
 							
-							$http.post(
-								'script/hihsrv.php',
-								{ objecttype : 'GETLIBPERSONLIST' })
-								.then(function(response) {									
-									if ($.isArray(response.data) && response.data.length > 0) {
-										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibPerson();
-											bs.setContent(obj);
-											$rootScope.arLibPerson.push(bs);
-										});
-									}
-									deferred.resolve(true);
-								}, function(response) {
-									deferred.reject(response.data.Message);
-								});
+                            if ($rootScope.arLibPerson && $rootScope.arLibPerson.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+								$rootScope.arLibPerson = [];
+								
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLIBPERSONLIST' })
+									.then(function(response) {									
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var bs = new hih.LibPerson();
+												bs.setContent(obj);
+												$rootScope.arLibPerson.push(bs);
+											});
+										}
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							
 							return deferred.promise;
 						};
 						rtnObj.readLibPersonQ = function(nID) {
@@ -2271,26 +2282,33 @@
 								});
 							return deferred.promise;
 						};
+						
 						// Organization
-						rtnObj.loadLibOrganizationQ = function() {
+						rtnObj.loadLibOrganizationQ = function(bForceReload) {
 							var deferred = $q.defer();
-							$rootScope.arLibOrganization = [];
 							
-							$http.post(
-								'script/hihsrv.php',
-								{ objecttype : 'GETLIBORGLIST' })
-								.then(function(response) {									
-									if ($.isArray(response.data) && response.data.length > 0) {
-										$.each(response.data, function(idx, obj) {
-											var bs = new hih.LibOrganization();
-											bs.setContent(obj);
-											$rootScope.arLibOrganization.push(bs);
-										});
-									}
-									deferred.resolve(true);
-								}, function(response) {
-									deferred.reject(response.data.Message);
-								});
+                            if ($rootScope.arLibOrganization && $rootScope.arLibOrganization.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+								$rootScope.arLibOrganization = [];
+								
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLIBORGLIST' })
+									.then(function(response) {									
+										if ($.isArray(response.data) && response.data.length > 0) {
+											$.each(response.data, function(idx, obj) {
+												var bs = new hih.LibOrganization();
+												bs.setContent(obj);
+												$rootScope.arLibOrganization.push(bs);
+											});
+										}
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
+							
 							return deferred.promise;
 						};
 						rtnObj.readLibOrganizationQ = function(nID) {
@@ -2372,86 +2390,92 @@
 								});
 							return deferred.promise;
 						};
+						
                         // Books
-                        rtnObj.loadLibBookQ = function() {
+                        rtnObj.loadLibBookQ = function(bForceReload) {
 							var deferred = $q.defer();
-							$rootScope.arLibBook = [];
 							
-							$http.post(
-								'script/hihsrv.php',
-								{ objecttype : 'GETLIBBOOKLIST' })
-								.then(function(response) {
-									if ($.isArray(response.data) && response.data.length === 6) {
-                                        // response.data[1] - Book language
-                                        // response.data[2] - Book name
-                                        // response.data[3] - Book author
-                                        // response.data[4] - Book press
-                                        // response.data[5] - Book location
-                                        
-                                        // 0. Book
-										$.each(response.data[0], function(idx, obj) {
-											var bs = new hih.LibBook();
-											bs.setContent(obj);
-											$rootScope.arLibBook.push(bs);
-										});
-                                        var arLang = [];
-                                        var arName = [];
-                                        var arAuthor = [];
-                                        var arPress = [];
-                                        var arLocation = [];
-                                        // 1. Language
-										$.each(response.data[1], function(idx, obj) {
-											var bs = new hih.LibBookLang();
-											bs.setContent(obj);
-											arLang.push(bs);
-										});
-                                        // 2. Name
-										$.each(response.data[2], function(idx, obj) {
-											var bs = new hih.LibBookName();
-											bs.setContent(obj);
-											arName.push(bs);
-										});
-                                        // 3. Author
-										$.each(response.data[3], function(idx, obj) {
-											var bs = new hih.LibBookAuthor();
-											bs.setContent(obj);
-											arAuthor.push(bs);
-										});
-                                        // 4. Press
-										$.each(response.data[4], function(idx, obj) {
-											var bs = new hih.LibBookPress();
-											bs.setContent(obj);
-											arPress.push(bs);
-										});
-                                        // 5. Location
-										$.each(response.data[5], function(idx, obj) {
-											var bs = new hih.LibBookLocation();
-											bs.setContent(obj);
-											arLocation.push(bs);
-										});
-                                        
-                                        $.each($rootScope.arLibBook, function(idx, obj) {
-                                           if (arName.length > 0) {
-                                               for(var i = 0; i < arName.length; i ++) {
-                                                   if (arName[i].BookID === obj.ID) {
-                                                       obj.Names.push(arName[i]);
-                                                   }
-                                               }
-                                           }
-                                           
-                                           if (arLang.length > 0) {
-                                               for(var i = 0; i < arLang.length; i ++) {
-                                                   if (arLang[i].BookID === obj.ID) {
-                                                       obj.Languages.push(arLang[i]);
-                                                   }
-                                               }                                               
-                                           } 
-                                        });
-									}
-									deferred.resolve(true);
-								}, function(response) {
-									deferred.reject(response.data.Message);
-								});
+                            if ($rootScope.arLibBook && $rootScope.arLibBook.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+								$rootScope.arLibBook = [];
+								
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLIBBOOKLIST' })
+									.then(function(response) {
+										if ($.isArray(response.data) && response.data.length === 6) {
+											// response.data[1] - Book language
+											// response.data[2] - Book name
+											// response.data[3] - Book author
+											// response.data[4] - Book press
+											// response.data[5] - Book location
+											
+											// 0. Book
+											$.each(response.data[0], function(idx, obj) {
+												var bs = new hih.LibBook();
+												bs.setContent(obj);
+												$rootScope.arLibBook.push(bs);
+											});
+											var arLang = [];
+											var arName = [];
+											var arAuthor = [];
+											var arPress = [];
+											var arLocation = [];
+											// 1. Language
+											$.each(response.data[1], function(idx, obj) {
+												var bs = new hih.LibBookLang();
+												bs.setContent(obj);
+												arLang.push(bs);
+											});
+											// 2. Name
+											$.each(response.data[2], function(idx, obj) {
+												var bs = new hih.LibBookName();
+												bs.setContent(obj);
+												arName.push(bs);
+											});
+											// 3. Author
+											$.each(response.data[3], function(idx, obj) {
+												var bs = new hih.LibBookAuthor();
+												bs.setContent(obj);
+												arAuthor.push(bs);
+											});
+											// 4. Press
+											$.each(response.data[4], function(idx, obj) {
+												var bs = new hih.LibBookPress();
+												bs.setContent(obj);
+												arPress.push(bs);
+											});
+											// 5. Location
+											$.each(response.data[5], function(idx, obj) {
+												var bs = new hih.LibBookLocation();
+												bs.setContent(obj);
+												arLocation.push(bs);
+											});
+											
+											$.each($rootScope.arLibBook, function(idx, obj) {
+											if (arName.length > 0) {
+												for(var i = 0; i < arName.length; i ++) {
+													if (arName[i].BookID === obj.ID) {
+														obj.Names.push(arName[i]);
+													}
+												}
+											}
+											
+											if (arLang.length > 0) {
+												for(var i = 0; i < arLang.length; i ++) {
+													if (arLang[i].BookID === obj.ID) {
+														obj.Languages.push(arLang[i]);
+													}
+												}                                               
+											} 
+											});
+										}
+										deferred.resolve(true);
+									}, function(response) {
+										deferred.reject(response.data.Message);
+									});
+							}
 							return deferred.promise;
                         };
                         rtnObj.readLibBookQ = function(nBookID) {

@@ -2279,10 +2279,9 @@
         
         this.Authors = []; // Authors
         this.Languages = []; // Languages
-        this.Authors = [];
         this.Presses = []; // Presses
         this.Names = []; // Names
-        this.Locations = [];
+        this.Locations = []; // Locations
     };
     hih.extend(hih.LibBook, hih.Model);
     hih.LibBook.prototype.setContent = function(obj) {
@@ -2317,8 +2316,23 @@
 		}
 		
 		// Authors
+		for(var j = 0 ; j < this.Authors.length; ++j) {
+			if (!$.isArray(forJSON.Authors)) forJSON.Authors = [];
+			var jsonAuthor = this.Authors[j].ToJSONObject();
+			forJSON.Authors.push(jsonAuthor);
+		}
 		// Presses
+		for(var j = 0 ; j < this.Presses.length; ++j) {
+			if (!$.isArray(forJSON.Presses)) forJSON.Presses = [];
+			var jsonPress = this.Presses[j].ToJSONObject();
+			forJSON.Presses.push(jsonPress);
+		}
 		// Locations
+		for(var j = 0 ; j < this.Locations.length; ++j) {
+			if (!$.isArray(forJSON.Locations)) forJSON.Locations = [];
+			var jsonLoc = this.Locations[j].ToJSONObject();
+			forJSON.Locations.push(jsonLoc);
+		}
 		
         return forJSON;
     };
