@@ -530,10 +530,10 @@
 						}
 					}
 
-					var q1 = utils.loadLibLanguageQ();
-					var q2 = utils.loadLibPersonQ();
-					var q3 = utils.loadLibOrganizationQ();
-					var q4 = utils.loadLibLocationQ();
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
 					$q.all([q1, q2, q3, q4])
                         .then(function(response) {
                             $state.go("home.lib.book.display", { id: nid });                            
@@ -554,10 +554,10 @@
 						}
 					}
 					
-					var q1 = utils.loadLibLanguageQ();
-					var q2 = utils.loadLibPersonQ();
-					var q3 = utils.loadLibOrganizationQ();
-					var q4 = utils.loadLibLocationQ();
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
 					$q.all([q1, q2, q3, q4])
 						.then(function(response) {
 							$state.go("home.lib.book.maintain", { id: nid });
