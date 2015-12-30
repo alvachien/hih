@@ -2233,11 +2233,14 @@
         
         this.TranslatorFlag = obj.tranflag;
         this.BookID = parseInt(obj.bookid);
+        this.ID = parseInt(obj.personid);
+        this.Name = obj.personname;
     };
     hih.LibBookAuthor.prototype.ToJSONObject = function() {
         var forJSON = hih.LibPerson.prototype.ToJSONObject.call(this);
         forJSON.BookID = this.BookID;
         forJSON.AuthorID = this.ID;
+        forJSON.TranFlag = this.TranslatorFlag;
         
         return forJSON;        
     };
@@ -2257,6 +2260,8 @@
         hih.LibOrganization.prototype.setContent.call(this, obj);
         
         this.BookID = parseInt(obj.bookid);
+        this.ID = parseInt(obj.pressid);
+        this.Name = obj.pressname;
     };
     hih.LibBookPress.prototype.ToJSONObject = function() {
         var forJSON = hih.LibOrganization.prototype.ToJSONObject.call(this);
@@ -2276,17 +2281,21 @@
     // 11e. Location
     hih.LibBookLocation = function() {
         this.BookID = -1;
+        this.Media = "";
     };
     hih.extend(hih.LibBookLocation, hih.LibLocation);
     hih.LibBookLocation.prototype.setContent = function(obj) {
         hih.LibLocation.prototype.setContent.call(this, obj);
         
         this.BookID = parseInt(obj.bookid);
+        this.ID = parseInt(obj.locid);
+        this.Media = obj.media;
     };
     hih.LibBookLocation.prototype.ToJSONObject = function() {
         var forJSON = hih.LibLocation.prototype.ToJSONObject.call(this);
         forJSON.BookID = this.BookID;
         forJSON.LocID = this.ID;
+        forJSON.Media = this.Media;
         //delete forJSON.ID;
         
         return forJSON;        

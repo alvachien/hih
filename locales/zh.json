@@ -29,6 +29,7 @@
         "Value":  "值",
 		"Search":  "搜索",
 		"Warning": "警告",
+        "Activities": "活动",
 
 		"ID": "ID",
 		"Category": "类别",
@@ -78,7 +79,8 @@
     	"DisplayAs": "显示为",
     	"ConfirmedPassword": "确认密码",
     	"Male": "男",
-    	"Female": "女"    	
+    	"Female": "女",
+        "LastLogin": "最近一次登陆"
  	},
  	
  	"Nav": {

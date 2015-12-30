@@ -2629,7 +2629,7 @@ CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('EN','English', 'English');
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('ZH','Simp. Chinese', '简体中文');
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese', '繁體中文');
-INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日文');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日本語');
 
 /* ======================================================
     Delta parts on 2016.01.01+

@@ -29,6 +29,7 @@
         "Value": "Value",
         "Search":  "Search",
 		"Warning": "Warning",
+        "Activities": "Activities",
 		
 		"ID": "ID",
 		"Category": "Category",
@@ -78,7 +79,8 @@
     	"DisplayAs": "Display As",
     	"ConfirmedPassword": "Confirm Password",
     	"Male": "Male",
-    	"Female": "Female"    	
+    	"Female": "Female",
+        "LastLogin": "Last Login"
  	},
  	
  	"Nav": {

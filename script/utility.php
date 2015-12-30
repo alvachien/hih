@@ -5228,7 +5228,6 @@ function lib_book_listread($nbookid) {
 	);   
 }
 function lib_book_create($objBook) {
-    var_dump($objBook);
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -5294,7 +5293,73 @@ function lib_book_create($objBook) {
 		$query = "INSERT INTO t_lib_booklang (`BOOKID`, `LANG`) VALUES (?, ?);";	
 		foreach ( $objBook->LangArray as $objlang ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
-				$newstmt->bind_param ( "is", $nNewID, $objlang->Lang );
+				$newstmt->bind_param ( "is", $nNewID, $objlang->Language );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Insert on authors */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookauthor (`BOOKID`, `PERSONID`, `TRANFLAG`) VALUES (?, ?, ?);";	
+		foreach ( $objBook->AuthorArray as $objauthor ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iii", $nNewID, $objauthor->AuthorID, $objauthor->TranFlag );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Insert on presses */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookpress (`BOOKID`, `PRESSID`) VALUES (?, ?);";	
+		foreach ( $objBook->PressArray as $objpress ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ii", $nNewID, $objpress->PressID );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Insert on locations */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookloc (`BOOKID`, `LOCID`, `MEDIA`, `COMMENT`) VALUES (?, ?, ?, ?);";
+		foreach ( $objBook->LocationArray as $objloc ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiss", $nNewID, $objloc->LocID, $objloc->Media, $objloc->Comment );
 				
 				/* Execute the statement */
 				if ($newstmt->execute ()) {

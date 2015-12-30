@@ -972,12 +972,6 @@
 						$scope.BookObject.Locations.push(obj);
 					});
                     
-                    // For testing purpose
-                    var jsonString = $scope.BookObject.ToJSON();
-                    console.log(jsonString);
-                    return;
-                    // End testing purpose
-				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
 					 	utils.createLibBookQ($scope.BookObject)

@@ -1181,7 +1181,7 @@ class HIHLibBookName {
 class HIHLibBookLang {
 	// Properties
 	public $BookID;
-	public $Lang;
+	public $Language;
 
 	// Function
 	public function __construct($json = false) {
@@ -1189,7 +1189,7 @@ class HIHLibBookLang {
     }
 	public function CheckValid() {
 		if (isset ( $this )) {
-			if (! isset ( $this->Lang )) {
+			if (! isset ( $this->Language )) {
 				return "Lang is mandatory!";
 			}
 		}
