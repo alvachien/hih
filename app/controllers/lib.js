@@ -606,6 +606,7 @@
                 $scope.AuthorsCollection = [];
                 $scope.PressesCollection = [];
                 $scope.LocationsCollection = [];
+                
                 $scope.nameLangConfig = {
                     create: false,
                     onChange: function(value){
@@ -691,13 +692,17 @@
                 
                 // Name related methods
                 $scope.displayName = function(row) {
-                    
+                    $scope.SelectedNameObject = row;
+                    $scope.NameActivity = "Common.Display";
+                    $scope.NameActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editName = function(row) {
-                    
+                    $scope.SelectedNameObject = row;
+                    $scope.NameActivity = "Common.Edit";
+                    $scope.NameActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeName = function(row) {
-                    
+                    // To-Do
                 };
                 $scope.NameActivity = "Common.Create";
                 $scope.NameActivityID = hih.Constants.UIMode_Create;
@@ -756,13 +761,17 @@
                 
                 // Language related methods
                 $scope.displayLang = function(row) {
-                    
+                    $scope.SelectedLangObject = row;
+                    $scope.LangActivity = "Common.Display";
+                    $scope.LangActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editLang = function(row) {
-                    
+                    $scope.SelectedLangObject = row;
+                    $scope.LangActivity = "Common.Edit";
+                    $scope.LangActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeLang = function(row) {
-                    
+                    // ToDo
                 };
                 $scope.LangActivity = "Common.Create";
                 $scope.LangActivityID = hih.Constants.UIMode_Create;
@@ -800,13 +809,17 @@
                 };
                 // Authors
                 $scope.displayAuthor = function(row) {
-                    
+                    $scope.SelectedAuthorObject = row;
+                    $scope.AuthorActivity = "Common.Display";
+                    $scope.AuthorActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editAuthor = function(row) {
-                    
+                    $scope.SelectedAuthorObject = row;
+                    $scope.AuthorActivity = "Common.Edit";
+                    $scope.AuthorActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeAuthor = function(row) {
-                    
+                    // ToDo
                 };
                 $scope.AuthorActivity = "Common.Create";
                 $scope.AuthorActivityID = hih.Constants.UIMode_Create;
@@ -844,10 +857,14 @@
 				
                 // Presses
                 $scope.displayPress = function(row) {
-                    
+                    $scope.SelectedPressObject = row;
+                    $scope.PressActivity = "Common.Display";
+                    $scope.PressActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editPress = function(row) {
-                    
+                    $scope.SelectedPressObject = row;
+                    $scope.PressActivity = "Common.Edit";
+                    $scope.PressActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removePress = function(row) {
                     
@@ -888,13 +905,17 @@
 				
                 // Locations
                 $scope.displayLocation = function(row) {
-                    
+                    $scope.SelectedLocationObject = row;
+                    $scope.LocationActivity = "Common.Display";
+                    $scope.LocationActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editLocation = function(row) {
-                    
+                    $scope.SelectedLocationObject = row;
+                    $scope.LocationActivity = "Common.Edit";
+                    $scope.LocationActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeLocation = function(row) {
-                    
+                    // To-Do
                 };
                 $scope.LocationActivity = "Common.Create";
                 $scope.LocationActivityID = hih.Constants.UIMode_Create;
@@ -931,6 +952,7 @@
                     $scope.LocationActivityID = hih.Constants.UIMode_Create;
                 };
 
+                // Sumbit the whole object
 				$scope.submit = function () {
 					// Verify it!
 					// var msgTab = $scope.CategoryObject.Verify();

@@ -30,6 +30,7 @@
 		"Search":  "搜索",
 		"Warning": "警告",
         "Activities": "活动",
+        "Module": "模块",
 
 		"ID": "ID",
 		"Category": "类别",
@@ -140,7 +141,8 @@
  	},
 
   	"Mainpage": {
-  		"WelcomeBack": "欢迎回来"
+  		"WelcomeBack": "欢迎回来",
+        "ActivitiesIn2Weeks": "接下来两周的活动"
   	},
   	
   	"Finance": {

@@ -552,6 +552,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function_1Param( 'finance_documentitem_listread', $docid );
 		}
 		break;
+        
+        case "GETLFINANCEDOCUMENTDETAIL": {
+            $docid = escape ( $realParamArr ['docid'] );
+            HIHSrv_Function_1Param( 'finance_document_listread', $docid );
+        }
+        break;
 		
 		case "GETFINANCEDOCUMENTITEMLIST_BYACCNT": {
 			$acntid = escape ( $realParamArr ['accountid'] );

@@ -30,6 +30,7 @@
         "Search":  "Search",
 		"Warning": "Warning",
         "Activities": "Activities",
+        "Module": "Module",
 		
 		"ID": "ID",
 		"Category": "Category",
@@ -140,7 +141,8 @@
   	},
   	
   	"Mainpage": {
-  		"WelcomeBack": "Welcome Back"
+  		"WelcomeBack": "Welcome Back",
+        "ActivitiesIn2Weeks": "Activities in 2 weeks"
   	},
   	
   	"Finance": {

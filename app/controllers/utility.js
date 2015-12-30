@@ -1482,6 +1482,75 @@
 								});
 							return deferred.promise;
 						};
+                        rtnObj.readFinanceDocumentQ = function(docid) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'GETLFINANCEDOCUMENTDETAIL', docid: docid })
+								.then(function(response) {									
+									if ($.isArray(response.data) && response.data.length > 0 && response.data[0].length > 0)  {
+                                        
+                                        // 0. Book
+										var book = new hih.LibBook();
+        								book.setContent(response.data[0][0]);
+                                        
+                                        // 1. Language
+										$.each(response.data[1], function(idx, obj) {
+											var bs = new hih.LibBookLang();
+											bs.setContent(obj);
+											book.Languages.push(bs);
+										});
+                                        // 2. Name
+										$.each(response.data[2], function(idx, obj) {
+											var bs = new hih.LibBookName();
+											bs.setContent(obj);
+											book.Names.push(bs);
+										});
+                                        // 3. Author
+										$.each(response.data[3], function(idx, obj) {
+											var bs = new hih.LibBookAuthor();
+											bs.setContent(obj);
+											book.Authors.push(bs);
+										});
+                                        // 4. Press
+										$.each(response.data[4], function(idx, obj) {
+											var bs = new hih.LibBookPress();
+											bs.setContent(obj);
+											book.Presses.push(bs);
+										});
+                                        // 5. Location
+										$.each(response.data[5], function(idx, obj) {
+											var bs = new hih.LibBookLocation();
+											bs.setContent(obj);
+											book.Locations.push(bs);
+										});
+                                        
+                                        // Find out the elder one and replace it.
+                                        if ( !$rootScope.arLibBook) {
+                                            $rootScope.arLibBook = [];
+                                            $rootScope.arLibBook.push(book);
+                                        } else {
+                                            var realidx = -1;
+                                            for(var i = 0; i < $rootScope.arLibBook.length; i ++ ) {
+                                                if ($rootScope.arLibBook[i].ID === nBookID) {
+                                                    realidx = i;
+                                                    break;
+                                                }
+                                            }
+                                            if (realidx !== -1) {
+                                                $rootScope.arLibBook[realidx] = book;
+                                            } else {
+                                                $rootScope.arLibBook.push(book);
+                                            }
+                                        }
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+                        };
 						rtnObj.loadFinanceDocumentItemsQ = function(docid) {
 							var deferred = $q.defer();
 							var docObject;
