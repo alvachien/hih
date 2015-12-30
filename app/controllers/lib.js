@@ -510,12 +510,16 @@
 				$scope.dispList = [];
 
 				$scope.newItem = function () {
-                utils.loadLibLanguageQ()
-                    .then(function(response) {
-                        $state.go("home.lib.book.create");
-                    }, function(reason) {
-                        $rootScope.$broadcast("ShowMessage", "Error", reason);
-                    });					
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
+					$q.all([q1, q2, q3, q4])
+                        .then(function(response) {
+                            $state.go("home.lib.book.create");
+                        }, function(reason) {
+                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        });					
 				};
 				$scope.displayItem = function (row) {
 					var nid = null;
@@ -967,6 +971,12 @@
 					$.each($scope.LocationsCollection, function(idx, obj) {
 						$scope.BookObject.Locations.push(obj);
 					});
+                    
+                    // For testing purpose
+                    var jsonString = $scope.BookObject.ToJSON();
+                    console.log(jsonString);
+                    return;
+                    // End testing purpose
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {

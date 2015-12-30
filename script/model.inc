@@ -1206,7 +1206,7 @@ class HIHLibBookLang {
 class HIHLibBookAuthor {
 	// Properties
 	public $BookID;
-	public $PersonID;
+	public $AuthorID;
     public $TranFlag;
 
 	// Function
@@ -1215,7 +1215,7 @@ class HIHLibBookAuthor {
     }
 	public function CheckValid() {
 		if (isset ( $this )) {
-			if (! isset ( $this->PersonID )) {
+			if (! isset ( $this->AuthorID )) {
 				return "Person is mandatory!";
 			}
 		}
