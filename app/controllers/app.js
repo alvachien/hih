@@ -259,7 +259,7 @@
 				// 	{ Module: 'Downpayment Temp Docs', Detail: 0 },
 				// ];
 			}, function(reason) {
-				
+				// Do nothing.
 			});
 			
 		$scope.goDetail = function(row) {
@@ -298,10 +298,10 @@
 		$scope.listCurUserLogList = [];
 		
 		$scope.displayedCollection = [
-			{userobj: 'ID', 		usercont: $scope.CurrentUser.userid},
-			{userobj: 'Display As', usercont: $scope.CurrentUser.userdisplayas},
-			{userobj: 'Gender',		usercont: utils.genderFormatter($scope.CurrentUser.usergender)},
-			{userobj: 'Created On', usercont: $scope.CurrentUser.usercreatedon}
+			{userobj: 'Common.ID', 		usercont: $scope.CurrentUser.userid},
+			{userobj: 'Login.DisplayAs', usercont: $scope.CurrentUser.userdisplayas},
+			{userobj: 'Login.Gender',		usercont: utils.genderFormatter($scope.CurrentUser.usergender)},
+			{userobj: 'Login.RegisterDate', usercont: $scope.CurrentUser.usercreatedon}
 			];
 		
 		$scope.logout = function() {

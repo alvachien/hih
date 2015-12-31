@@ -166,8 +166,8 @@
 						};
 						rtnObj.genderFormatter = function(gender) {
 							var nGen = parseInt(gender);
-							if (nGen === 1) return "Male";
-							return "Female";
+							if (nGen === 1) return "Login.Male";
+							return "Login.Female";
 						};
 						rtnObj.dateformatter = function (date) {
 							var y = date.getFullYear();
@@ -1526,6 +1526,10 @@
                                             } else {
                                                 $rootScope.arFinanceDocument.push(docobj);
                                             }
+                                            
+                                            $rootScope.arFinanceDocument = $rootScope.arFinanceDocument.sort(function(a,b){
+                                                return a.TranDate.getTime() - b.TranDate.getTime();
+                                            });
                                         }
 									}
 									deferred.resolve(true);

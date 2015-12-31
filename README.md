@@ -32,7 +32,7 @@ For version 0.5, it supports the Finance Traces and Learning Traces. The detail 
 - [x] **Learn Plan (with Comparison to real learn history)**, setup a plan, and execute it with comparison;
 
 ### Library trace (to do)
-- [ ] Books, stores books information, including the paper book edition, Kindle edition, or other e-book part;
+- [X] Books, stores books information, including the paper book edition, Kindle edition, or other e-book part;
 - [ ] Videos, stores the video part;
 - [ ] Software, stores the available software information;
 
@@ -47,6 +47,10 @@ In that case, HIH provides the opportunity to share the information among the in
 Please check out the following link detail:
 [Installation] (https://github.com/alvachien/hih/wiki/Installation)
 
+## What's the design?
+The design page indicates the thoughts which I put into HIH.
+[Design] (https://github.com/alvachien/hih/wiki/Design)
+
 ## Development History
 Current Version: Web 0.5.*;
 
@@ -59,6 +63,7 @@ Built with JavaScript Frontend(AngularJS, Bootstrap, Angular UI, TinyMCE, etc) a
 4. Version 0.5.2 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5.2), with Finance Report ready, released on Oct 10 2015;
 5. Version 0.5.3 [Link] (https://github.com/alvachien/hih/releases/tag/0.5.3), with Learn Plan ready, released on Nov 3 2015;
 6. Version 0.5.4 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5.4), with Down Payment ready, released on Dec 18 2015;
+7. Version 0.5.5 [Link] (https://github.com/alvachien/hih/releases/tag/V0.5.5), with Lib/Book ready, released on Dec 31 2015;
 
 ### HIH, Desktop Version
 1. Version 1.0, named as PIH, built with MFC, Visual C++;

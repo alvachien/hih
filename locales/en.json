@@ -34,6 +34,7 @@
 		
 		"ID": "ID",
 		"Category": "Category",
+        "Type": "Type",
 		"Name": "Name",
 		"Content": "Content",
 		"Comment": "Comment",
@@ -82,7 +83,8 @@
     	"Male": "Male",
     	"Female": "Female",
         "LastLogin": "Last Login",
-        "SeqNo": "Seq. No"
+        "SeqNo": "Seq. No",
+        "RegisterDate": "Register Date"
  	},
  	
  	"Nav": {

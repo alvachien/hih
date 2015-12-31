@@ -34,6 +34,7 @@
 
 		"ID": "ID",
 		"Category": "类别",
+        "Type": "类型",
 		"Name": "名称",
 		"Content": "内容",
 		"Comment": "备注",
@@ -82,7 +83,8 @@
     	"Male": "男",
     	"Female": "女",
         "LastLogin": "最近一次登陆",
-        "SeqNo": "序号"
+        "SeqNo": "序号",
+        "RegisterDate": "注册日期"
  	},
  	
  	"Nav": {

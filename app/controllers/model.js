@@ -2347,9 +2347,18 @@
                 errMsgs.push("Message.InvalidLearnObject");
             }
         }
-        // Authors
-        // Presses
-        // Locations
+        // Authors - Check duplicates
+        if (this.Authors.length > 0) {
+            
+        }
+        // Presses - Check duplicaties
+        if (this.Presses.length > 0) {
+            
+        }
+        // Locations - Check duplicates
+        if (this.Locations.length > 0) {
+            
+        }
         
 		return errMsgs;
     };
