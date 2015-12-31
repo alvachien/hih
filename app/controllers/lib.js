@@ -1003,12 +1003,12 @@
 					 			$rootScope.$broadcast("ShowMessage", "Error", reason);
 					 		});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-					// 	utils.updateLibBookQ($scope.BookObject)
-					// 		.then(function (response) {
-					// 			$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
-					// 		}, function (reason) {
-					// 			$rootScope.$broadcast("ShowMessage", "Error", reason);
-					// 		});
+						utils.updateLibBookQ($scope.BookObject)
+							.then(function (response) {
+								$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
+							}, function (reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", reason);
+							});
 					 }
 				};
 

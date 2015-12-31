@@ -231,7 +231,14 @@
         "Organization": "Organization",
         "NativeName": "Native Name",
         "Author": "Author",
-        "Press": "Press"
+        "Press": "Press",
+        "Media": "Media",
+        "PickAuthor": "Pick an Author",
+        "PickPress": "Pick a Press",
+        "PickLanguage": "Pick a Language",
+        "PickLocation": "Pick a Location",
+        "Translator": "Translator",
+        "ISBN": "ISBN"
     },
 	
 	"Message": {

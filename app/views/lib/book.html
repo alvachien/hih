@@ -7,7 +7,7 @@
 
 	<div class="form-horizontal" role="form" name="frmObj">
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID</label>
+			<label class="control-label col-sm-2" for="iptID" translate="Common.ID"></label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptID"
 					readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="BookObject.ID">
@@ -15,10 +15,10 @@
 		</div>
 		
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="iptISBN" >ISBN</label>
+			<label class="control-label col-sm-2" for="iptISBN" translate="Lib.ISBN"></label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptISBN"
-					placeholder="ISBN" ng-model="BookObject.ISBN">
+					placeholder="{{'Lib.ISBN' | translate}}" ng-model="BookObject.ISBN">
 			</div>
 		</div>
 
@@ -82,7 +82,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Common.Language">Language</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick language...' options='arLibLang' config="nameLangConfig" ng-model="SelectedNameObject.Lang"
+                                <selectize options='arLibLang' config="nameLangConfig" ng-model="SelectedNameObject.Lang"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -98,9 +98,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentName()" ng-hide="ActivityID == 3"
+                                <button class="btn btn-default" ng-click="saveCurrentName()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentName()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn" ng-click="cancelCurrentName()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Common.Language">Language</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick language...' options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Language"
+                                <selectize options='arLibLang' config="langLangConfig" ng-model="SelectedLangObject.Language"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -164,9 +164,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentLang()" ng-hide="ActivityID == 3"
+                                <button class="btn btn-default" ng-click="saveCurrentLang()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentLang()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn" ng-click="cancelCurrentLang()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
@@ -220,15 +220,15 @@
                     <div class="panel-heading"><span translate="Lib.Author"></span> | <span>{{AuthorActivity | translate}}</span></div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" translate="Lib.Author">Author</label>
+                            <label class="control-label col-sm-2" translate="Lib.Author"></label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick author...' options='arLibPerson' config="personConfig" ng-model="SelectedAuthorObject.ID"
+                                <selectize options='arLibPerson' config="personConfig" ng-model="SelectedAuthorObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="control-label col-sm-2">Translator</label>
+                            <label class="control-label col-sm-2" translate="Lib.Translator"></label>
                             <div class="col-sm-10">
                                 <input type="checkbox" aria-label="..." ng-model="SelectedAuthorObject.TranslatorFlag" >
                             </div>
@@ -237,9 +237,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentAuthor()" ng-hide="ActivityID == 3"
-                                    translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentAuthor()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn btn-default" ng-click="saveCurrentAuthor()" ng-hide="ActivityID == 3"
+                                        translate="Finance.SaveCurrentItem">Save Item</button>
+                                <button class="btn" ng-click="cancelCurrentAuthor()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
@@ -295,7 +295,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Lib.Press">Press</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick press...' options='arLibOrganization' config="orgConfig" ng-model="SelectedPressObject.ID"
+                                <selectize options='arLibOrganization' config="orgConfig" ng-model="SelectedPressObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -303,9 +303,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentPress()" ng-hide="ActivityID == 3"
+                                <button class="btn btn-default" ng-click="saveCurrentPress()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentPress()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn" ng-click="cancelCurrentPress()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>
@@ -365,15 +365,15 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Lib.Location">Location</label>
                             <div class="col-sm-10">
-                                <selectize placeholder='Pick location...' options='arLibLocation' config="locConfig" ng-model="SelectedLocationObject.ID"
+                                <selectize options='arLibLocation' config="locConfig" ng-model="SelectedLocationObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="control-label col-sm-2">Media</label>
+                            <label class="control-label col-sm-2" translate="Lib.Media"></label>
                             <div class="col-sm-10">
-                                <input type="text" placeholder='Media...' ng-model="SelectedLocationObject.Media"
+                                <input type="text" placeholder="{{ 'Lib.Media' | translate }}" ng-model="SelectedLocationObject.Media"
                                         ng-readonly="ActivityID == 3">
                             </div>
                         </div>
@@ -381,7 +381,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Common.Comment">Comment</label>
                             <div class="col-sm-10">
-                                <input type="text" placeholder='Media...' ng-model="SelectedLocationObject.Comment"
+                                <input type="text" placeholder="{{ 'Common.Comment' | translate }}" ng-model="SelectedLocationObject.Comment"
                                         ng-readonly="ActivityID == 3">
                             </div>
                         </div>
@@ -389,9 +389,9 @@
                         <!-- Button group -->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button class="btn btn-default btn-primary" ng-click="saveCurrentLocation()" ng-hide="ActivityID == 3"
+                                <button class="btn btn-default" ng-click="saveCurrentLocation()" ng-hide="ActivityID == 3"
                                     translate="Finance.SaveCurrentItem">Save Item</button>
-                                <button class="btn btn-danger" ng-click="cancelCurrentLocation()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
+                                <button class="btn" ng-click="cancelCurrentLocation()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                             </div>
                         </div>
                     </div>

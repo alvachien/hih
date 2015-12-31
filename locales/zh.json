@@ -230,7 +230,14 @@
         "Organization": "组织",
         "NativeName": "本土名称",
         "Author": "作者",
-        "Press": "出版社"
+        "Press": "出版社",
+        "Media": "媒介信息",
+        "PickAuthor": "选择一位作者",
+        "PickPress": "选择一个出版社",
+        "PickLanguage": "选择一种语言",
+        "PickLocation": "选择一个位置",
+        "Translator": "译者",
+        "ISBN": "ISBN"
     },
 	  
 	"Message": {
