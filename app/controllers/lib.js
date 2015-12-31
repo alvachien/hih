@@ -692,17 +692,36 @@
                 
                 // Name related methods
                 $scope.displayName = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedNameObject = row;
                     $scope.NameActivity = "Common.Display";
                     $scope.NameActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editName = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedNameObject = row;
                     $scope.NameActivity = "Common.Edit";
                     $scope.NameActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeName = function(row) {
-                    // To-Do
+                    $scope.cleanReportMessages();
+                    
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            if ($scope.SelectedNameObject.NameID === row.NameID) {
+                                $scope.cancelCurrentName();
+                            }
+                                    
+                            for(var i = 0; i < $scope.NamesCollection.length; i ++) {
+                                if ($scope.NamesCollection[i].NameID === row.NameID) {
+                                    $scope.NamesCollection.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            
+                            $scope.$apply();
+                    });
                 };
                 $scope.NameActivity = "Common.Create";
                 $scope.NameActivityID = hih.Constants.UIMode_Create;
@@ -728,7 +747,7 @@
                     $scope.cleanReportMessages();
                     
                     // Perform the check
-                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    var rptMsgs = $scope.SelectedNameObject.Verify($translate);
                     // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
                     //     $q.all(rptMsgs)
                     //         .then(function(response) {
@@ -740,7 +759,7 @@
                     //     return;
                     // }
                     
-                    // Next item ID
+                    // Next name ID
                     if ($scope.SelectedNameObject.NameID === -1) {
                         $scope.updateNextNameID();
                         $scope.SelectedNameObject.NameID = $scope.nextNameID;				
@@ -754,6 +773,7 @@
                     $scope.cancelCurrentName();
                 };
                 $scope.cancelCurrentName = function() {
+                    $scope.cleanReportMessages();
                     $scope.SelectedNameObject = new hih.LibBookName();
                     $scope.NameActivity = "Common.Create";
                     $scope.NameActivityID = hih.Constants.UIMode_Create;
@@ -761,17 +781,36 @@
                 
                 // Language related methods
                 $scope.displayLang = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedLangObject = row;
                     $scope.LangActivity = "Common.Display";
                     $scope.LangActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editLang = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedLangObject = row;
                     $scope.LangActivity = "Common.Edit";
                     $scope.LangActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeLang = function(row) {
-                    // ToDo
+                    $scope.cleanReportMessages();
+                    
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            if ($scope.SelectedLangObject.Language === row.Language) {
+                                $scope.cancelCurrentLang();
+                            }
+                                    
+                            for(var i = 0; i < $scope.LangsCollection.length; i ++) {
+                                if ($scope.LangsCollection[i].Language === row.Language) {
+                                    $scope.LangsCollection.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            
+                            $scope.$apply();
+                    });
                 };
                 $scope.LangActivity = "Common.Create";
                 $scope.LangActivityID = hih.Constants.UIMode_Create;
@@ -803,23 +842,44 @@
                     $scope.cancelCurrentLang();
                 };
                 $scope.cancelCurrentLang = function() {
+                    $scope.cleanReportMessages();
                     $scope.SelectedLangObject = new hih.LibBookLang();
                     $scope.LangActivity = "Common.Create";
                     $scope.LangActivityID = hih.Constants.UIMode_Create;
                 };
                 // Authors
                 $scope.displayAuthor = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedAuthorObject = row;
                     $scope.AuthorActivity = "Common.Display";
                     $scope.AuthorActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editAuthor = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedAuthorObject = row;
                     $scope.AuthorActivity = "Common.Edit";
                     $scope.AuthorActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeAuthor = function(row) {
-                    // ToDo
+                    $scope.cleanReportMessages();
+                    
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            var nID = parseInt(row.ID);
+                            if ($scope.SelectedAuthorObject.ID === nID) {
+                                $scope.cancelCurrentAuthor();
+                            }
+                                    
+                            for(var i = 0; i < $scope.AuthorsCollection.length; i ++) {
+                                if ($scope.AuthorsCollection[i].ID === nID) {
+                                    $scope.AuthorsCollection.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            
+                            $scope.$apply();
+                    });
                 };
                 $scope.AuthorActivity = "Common.Create";
                 $scope.AuthorActivityID = hih.Constants.UIMode_Create;
@@ -850,6 +910,7 @@
                     $scope.cancelCurrentAuthor();
                 };
                 $scope.cancelCurrentAuthor = function() {
+                    $scope.cleanReportMessages();
                     $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                     $scope.AuthorActivity = "Common.Create";
                     $scope.AuthorActivityID = hih.Constants.UIMode_Create;
@@ -857,17 +918,37 @@
 				
                 // Presses
                 $scope.displayPress = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedPressObject = row;
                     $scope.PressActivity = "Common.Display";
                     $scope.PressActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editPress = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedPressObject = row;
                     $scope.PressActivity = "Common.Edit";
                     $scope.PressActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removePress = function(row) {
+                    $scope.cleanReportMessages();
                     
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            var nID = parseInt(row.ID);
+                            if ($scope.SelectedPressObject.ID === nID) {
+                                $scope.cancelCurrentPress();
+                            }
+                                    
+                            for(var i = 0; i < $scope.PressesCollection.length; i ++) {
+                                if ($scope.PressesCollection[i].ID === nID) {
+                                    $scope.PressesCollection.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            
+                            $scope.$apply();
+                    });
                 };
                 $scope.PressActivity = "Common.Create";
                 $scope.PressActivityID = hih.Constants.UIMode_Create;
@@ -875,7 +956,7 @@
                     $scope.cleanReportMessages();
                     
                     // Perform the check
-                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
+                    // var rptMsgs = $scope.SelectedPressObject.Verify($translate);
                     // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
                     //     $q.all(rptMsgs)
                     //         .then(function(response) {
@@ -898,6 +979,7 @@
                     $scope.cancelCurrentPress();
                 };
                 $scope.cancelCurrentPress = function() {
+                    $scope.cleanReportMessages();
                     $scope.SelectedPressObject = new hih.LibBookPress();
                     $scope.PressActivity = "Common.Create";
                     $scope.PressActivityID = hih.Constants.UIMode_Create;
@@ -905,17 +987,37 @@
 				
                 // Locations
                 $scope.displayLocation = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedLocationObject = row;
                     $scope.LocationActivity = "Common.Display";
                     $scope.LocationActivityID = hih.Constants.UIMode_Display;
                 };
                 $scope.editLocation = function(row) {
+                    $scope.cleanReportMessages();
                     $scope.SelectedLocationObject = row;
                     $scope.LocationActivity = "Common.Edit";
                     $scope.LocationActivityID = hih.Constants.UIMode_Change;
                 };
                 $scope.removeLocation = function(row) {
-                    // To-Do
+                    $scope.cleanReportMessages();
+                    
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            var nID = parseInt(row.ID);
+                            if ($scope.SelectedLocationObject.ID === nID) {
+                                $scope.cancelCurrentLocation();
+                            }
+                                    
+                            for(var i = 0; i < $scope.LocationsCollection.length; i ++) {
+                                if ($scope.LocationsCollection[i].ID === nID) {
+                                    $scope.LocationsCollection.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            
+                            $scope.$apply();
+                    });
                 };
                 $scope.LocationActivity = "Common.Create";
                 $scope.LocationActivityID = hih.Constants.UIMode_Create;
@@ -954,6 +1056,8 @@
 
                 // Sumbit the whole object
 				$scope.submit = function () {
+                    $scope.clearReportMessages();
+                    
 					// Verify it!
 					// var msgTab = $scope.CategoryObject.Verify();
 					// if (msgTab && msgTab.length > 0) {
@@ -1003,12 +1107,12 @@
 					 			$rootScope.$broadcast("ShowMessage", "Error", reason);
 					 		});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-						utils.updateLibBookQ($scope.BookObject)
-							.then(function (response) {
-								$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
-							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
-							});
+						// utils.updateLibBookQ($scope.BookObject)
+						// 	.then(function (response) {
+						// 		$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
+						// 	}, function (reason) {
+						// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
+						// 	});
 					 }
 				};
 

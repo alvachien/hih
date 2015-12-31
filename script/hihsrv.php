@@ -555,7 +555,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         
         case "GETLFINANCEDOCUMENTDETAIL": {
             $docid = escape ( $realParamArr ['docid'] );
-            HIHSrv_Function_1Param( 'finance_document_listread', $docid );
+            HIHSrv_Function_1Param( 'finance_document_read', $docid );
         }
         break;
 		

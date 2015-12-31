@@ -2193,6 +2193,9 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
+    hih.LibBookName.prototype.Verify = function($translate) {
+        
+    };
     // 11b. Languages
     hih.LibBookLang = function() {
         this.BookID = -1;
@@ -2325,8 +2328,30 @@
         this.ISBN = obj.isbn;
         this.Others = obj.others;
     };
-    hih.LibBook.prototype.Verify = function() {
+    hih.LibBook.prototype.Verify = function($translate) {
+		var errMsgs = [];
+
+        // Names
+        if (this.Names.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.InvalidLearnObject"));
+            } else {
+                errMsgs.push("Message.InvalidLearnObject");
+            }
+        }
+        // Languages
+        if (this.Languages.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.InvalidLearnObject"));
+            } else {
+                errMsgs.push("Message.InvalidLearnObject");
+            }
+        }
+        // Authors
+        // Presses
+        // Locations
         
+		return errMsgs;
     };
     hih.LibBook.prototype.ToJSONObject = function() {
         var forJSON = {};

@@ -2632,7 +2632,7 @@ INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese',
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日本語');
 
 /* ======================================================
-    Delta parts on 2016.01.01+
+    Delta parts on 2016.07.01+
    ====================================================== */
 
 -- Table Creation: Asset account

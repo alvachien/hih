@@ -3031,6 +3031,83 @@ function finance_document_curexg_listread() {
 			$rsttable 
 	);	
 }
+function finance_document_read($docid) {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return "Connect failed: %s\n" . mysqli_connect_error ();
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+    $headertable = array();
+    $itemtable = array();
+ 
+    // Header table
+	$query = "SELECT * FROM " . HIHConstants::DV_FinDocument . " WHERE id = ". $docid;	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$headertable [] = array (
+				"docid" => $row [0],
+				"doctype" => $row [1],
+				"trandate" => $row [2],
+				"trancurr" => $row [3],	
+				"desp" => $row [4],
+				"exgrate" => $row[5],
+				"exgrate_plan" => $row[6],
+				"trancurr2" => $row [7],	
+				"exgrate2" => $row[8],
+				"exgrate_plan2" => $row[9],
+				"tranamount" => $row [10] 
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: ". $query. " ; Error: " . mysqli_error($link);
+	}
+
+    // Item table
+    if (empty($sError)) {
+        $query = "SELECT * FROM " . HIHConstants::DV_FinDocumentItem . " WHERE docid = '" . $docid . "';";
+        
+        if ($result = mysqli_query ( $link, $query )) {
+            /* fetch associative array */
+            while ( $row = mysqli_fetch_row ( $result ) ) {
+                $itemtable [] = array (
+                    "docid" => $row [0],
+                    "itemid" => $row [1],
+                    "accountid" => $row [2],
+                    "trantype" => $row [3],
+                    "usecurr2" => $row[4],
+                    "trancurr" => $row [5],
+                    "tranamount_org" => $row [6],
+                    "tranamount" => $row [7],
+                    "tranamount_lc" => $row [8],
+                    "controlcenterid" => $row [9],
+                    "orderid" => $row [10],
+                    "desp" => $row [11],
+                );
+            }
+            
+            /* free result set */
+            mysqli_free_result ( $result );
+        } else {
+            $sError = "Failed to execute query: ". $query . " ; Error: " . mysqli_error($link);
+        }
+    }
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array ( $sError, array($headertable, $itemtable) );
+}
 function finance_dpaccount_listread_tdate($tdate) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

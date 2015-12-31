@@ -81,7 +81,8 @@
     	"ConfirmedPassword": "Confirm Password",
     	"Male": "Male",
     	"Female": "Female",
-        "LastLogin": "Last Login"
+        "LastLogin": "Last Login",
+        "SeqNo": "Seq. No"
  	},
  	
  	"Nav": {

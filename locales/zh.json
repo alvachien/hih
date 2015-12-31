@@ -81,7 +81,8 @@
     	"ConfirmedPassword": "确认密码",
     	"Male": "男",
     	"Female": "女",
-        "LastLogin": "最近一次登陆"
+        "LastLogin": "最近一次登陆",
+        "SeqNo": "序号"
  	},
  	
  	"Nav": {

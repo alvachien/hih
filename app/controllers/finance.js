@@ -2442,16 +2442,20 @@
 						.then(function(response) {
 							// Take a look at the response
 							if (response) {
-								$scope.DocumentObject.buildRelationship(
-									$rootScope.arFinanceDocumentType,
-									$rootScope.arCurrency
-								);
-								// Document ID
-								$scope.DocumentObject.DocID = parseInt(response);
-								$rootScope.arFinanceDocument.push($scope.DocumentObject);
-								
-								// Now navigate to display
-								$state.go("home.finance.document.display",  { docid : response });
+                                var nNewDocID = parseInt(response);
+                                utils.readFinanceDocumentQ(nNewDocID)
+                                    .then(function(response2){
+                                        $state.go("home.finance.document.display",  { docid : nNewDocID });
+                                    }, function(reason2) {
+                                        $rootScope.$broadcast("ShowMessage", "Error", reason2);
+                                    });
+								// $scope.DocumentObject.buildRelationship(
+								// 	$rootScope.arFinanceDocumentType,
+								// 	$rootScope.arCurrency
+								// );
+								// // Document ID
+								// $scope.DocumentObject.DocID = parseInt(response);
+								// $rootScope.arFinanceDocument.push($scope.DocumentObject);
 							}
 						}, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
