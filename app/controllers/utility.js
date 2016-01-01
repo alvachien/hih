@@ -1528,7 +1528,7 @@
                                             }
                                             
                                             $rootScope.arFinanceDocument = $rootScope.arFinanceDocument.sort(function(a,b){
-                                                return a.TranDate.getTime() - b.TranDate.getTime();
+                                                return b.TranDate.getTime() - a.TranDate.getTime();
                                             });
                                         }
 									}
