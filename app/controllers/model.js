@@ -2334,17 +2334,17 @@
         // Names
         if (this.Names.length <= 0) {
             if ($translate) {
-                errMsgs.push($translate("Message.InvalidLearnObject"));
+                errMsgs.push($translate("Message.MissingName"));
             } else {
-                errMsgs.push("Message.InvalidLearnObject");
+                errMsgs.push("Missing Name");
             }
         }
         // Languages
         if (this.Languages.length <= 0) {
             if ($translate) {
-                errMsgs.push($translate("Message.InvalidLearnObject"));
+                errMsgs.push($translate("Message.MissingLanguage"));
             } else {
-                errMsgs.push("Message.InvalidLearnObject");
+                errMsgs.push("Missing Language");
             }
         }
         // Authors - Check duplicates

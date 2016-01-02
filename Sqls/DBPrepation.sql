@@ -2632,6 +2632,16 @@ INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese',
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日本語');
 
 /* ======================================================
+    Delta parts on 2016.01.04
+   ====================================================== */
+
+ALTER TABLE `t_lib_person`
+ADD COLUMN `TAGS` VARCHAR(100) NULL AFTER `OTHERS`;
+
+ALTER TABLE `t_lib_org` 
+ADD COLUMN `TAGS` VARCHAR(100) NULL AFTER `OTHERS`;
+
+/* ======================================================
     Delta parts on 2016.07.01+
    ====================================================== */
 

@@ -275,6 +275,8 @@
 		"InvalidPassword": "Invalid password",
 		"InvalidConfirmedPassword": "Difference exists between Password and Confirmed password",
 		"InvalidMailbox": "Invalid mailbox",
-		"InvalidScore": "Invalid score"
+		"InvalidScore": "Invalid score",
+        "MissingName": "Missing name",
+        "MissingLanguage": "Missing language"
 	}
  }

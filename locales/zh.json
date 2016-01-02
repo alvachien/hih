@@ -274,6 +274,8 @@
 		"InvalidPassword": "不合法的密码",
 		"InvalidConfirmedPassword": "确认密码与原密码不符",
 		"InvalidMailbox": "不合法的邮箱地址",
-		"InvalidScore": "不合法的分数"
+		"InvalidScore": "不合法的分数",
+        "MissingName": "缺少名字",
+        "MissingLanguage": "缺少语言"
 	}
 }
