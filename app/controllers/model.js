@@ -2071,6 +2071,7 @@
 		this.ID = -1;
 		this.Name = "";
 		this.Others = "";
+        this.Tags = [];
     };
     hih.extend(hih.LibPerson, hih.Model);
     hih.LibPerson.prototype.setContent = function(obj) {
@@ -2100,6 +2101,7 @@
 		this.ID = -1;
 		this.Name = "";
 		this.Others = "";
+        this.Tags = [];
     };
     hih.extend(hih.LibOrganization, hih.Model);
     hih.LibOrganization.prototype.setContent = function(obj) {
