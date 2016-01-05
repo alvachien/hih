@@ -4963,7 +4963,7 @@ function lib_person_listread($npersonid = false) {
 	
 	// Perform the query
 	$rsttable = array ();
-	$query = "SELECT * FROM t_lib_person";
+	$query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_person";
 	if ($npersonid) {
 		$query = $query . " WHERE ID = ". $npersonid;
 	}
@@ -4974,7 +4974,8 @@ function lib_person_listread($npersonid = false) {
 			$rsttable [] = array (
 				"id" => $row [0],
 				"name" => $row [1],
-				"others" => $row [2] 
+				"others" => $row [2],
+                "tags" => $row[3]
 			);
 		}
 		
@@ -5011,10 +5012,10 @@ function lib_person_create($objPerson) {
 	$nNewID = -1;
 	
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_person(NAME, OTHERS) VALUES(?, ?)";
+	$query = "INSERT INTO t_lib_person(NAME, OTHERS, TAGS) VALUES(?, ?, ?)";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "ss", $objPerson->Name, $objPerson->Others );
+		$stmt->bind_param ( "sss", $objPerson->Name, $objPerson->Others, $objPerson->Tags );
 
 		/* Execute the statement */
 		if ($stmt->execute ()) {
@@ -5057,7 +5058,7 @@ function lib_org_listread($norgid = false) {
 	
 	// Perform the query
 	$rsttable = array ();
-	$query = "SELECT * FROM t_lib_org";
+	$query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_org";
 	if ($norgid) {
 		$query = $query . " WHERE ID = ". $norgid;
 	}
@@ -5068,7 +5069,8 @@ function lib_org_listread($norgid = false) {
 			$rsttable [] = array (
 				"id" => $row [0],
 				"name" => $row [1],
-				"others" => $row [2] 
+				"others" => $row [2],
+                "tags" => $row[3]
 			);
 		}
 		
@@ -5105,10 +5107,10 @@ function lib_org_create($objOrg) {
 	$nNewID = -1;
 	
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_org(NAME, OTHERS) VALUES(?, ?)";
+	$query = "INSERT INTO t_lib_org(NAME, OTHERS, TAGS) VALUES(?, ?, ?)";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "ss", $objOrg->Name, $objOrg->Others );
+		$stmt->bind_param ( "sss", $objOrg->Name, $objOrg->Others, $objOrg->Tags );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			$nNewID = $mysqli->insert_id;

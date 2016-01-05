@@ -1104,6 +1104,7 @@ class HIHLibPerson {
 	public $ID;
 	public $Name;
 	public $Others;
+    public $Tags;
 
 	// Function
 	public function __construct($json = false) {
@@ -1130,6 +1131,7 @@ class HIHLibOrganization {
 	public $ID;
 	public $Name;
 	public $Others;
+    public $Tags;
 
 	// Function
 	public function __construct($json = false) {

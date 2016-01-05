@@ -63,6 +63,10 @@
 		UserHistType_ChangePassword: 3,
 		UserHistType_ResetPassword: 4,
 		UserHistType_Delete: 5,
+        
+        // Lib Setting
+        LibSet_BookAuthorTag: "BOOKAUTHOR",
+        LibSet_BookPressTag: "BOOKPRESS",
 		
 		// Downpayment direction
 		DownpaymentDir_Outgoing: 0,
@@ -2037,6 +2041,12 @@
 	// =========================================================
 	// Library part
 	// =========================================================
+    // 0. Lib Setting
+    hih.LibSetting = function LibSetting() {
+        this.BookAuthorTags = [];
+        this.BookPressTags = [];
+    };
+    hih.extend(hih.LibSetting, hih.Model);
     // 1. Lib Language
     hih.LibLanguage = function LibLanguage () {
         this.Language = "";
@@ -2078,15 +2088,21 @@
 		this.ID = parseInt(obj.id);
 		this.Name = obj.name;
 		this.Others = obj.others;
+        if (obj.tags && obj.tags.length > 0) {
+            this.Tags = JSON && JSON.parse(obj.tags) || $.parseJSON(obj.tags);
+        } else {
+            this.Tags = [];
+        }        
 	};
 	hih.LibPerson.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i)) 
+			if (!this.hasOwnProperty(i) || i === "Tags") 
 				continue;
 			
-			forJSON[i] = this[i];	
+			forJSON[i] = this[i];
 		}
+        forJSON["Tags"] = JSON && JSON.stringify(this.Tags) || $.toJSON(this.Tags);
 		return forJSON;
 	};
 	hih.LibPerson.prototype.ToJSON = function() {
@@ -2096,6 +2112,20 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
+    hih.LibPerson.prototype.Verify = function($translate) {
+		var errMsgs = [];
+
+        // Names
+        if (this.Names.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.MissingName"));
+            } else {
+                errMsgs.push("Missing Name");
+            }
+        }
+        
+        return errMsgs;
+    };
     // 3. Lib Organization
     hih.LibOrganization = function LibOrganization() {
 		this.ID = -1;
@@ -2108,15 +2138,21 @@
 		this.ID = parseInt(obj.id);
 		this.Name = obj.name;
 		this.Others = obj.others;
+        if (obj.tags && obj.tags.length > 0) {
+            this.Tags = JSON && JSON.parse(obj.tags) || $.parseJSON(obj.tags);
+        } else {
+            this.Tags = [];
+        }
 	};
 	hih.LibOrganization.prototype.ToJSONObject = function() {
 		var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i)) 
+			if (!this.hasOwnProperty(i) || i === "Tags") 
 				continue;
 			
-			forJSON[i] = this[i];	
+			forJSON[i] = this[i];
 		}
+        forJSON["Tags"] = JSON && JSON.stringify(this.Tags) || $.toJSON(this.Tags);
 		return forJSON;
 	};
 	hih.LibOrganization.prototype.ToJSON = function() {
@@ -2126,6 +2162,20 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
+    hih.LibOrganization.prototype.Verify = function($translate) {
+		var errMsgs = [];
+
+        // Names
+        if (this.Names.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.MissingName"));
+            } else {
+                errMsgs.push("Missing Name");
+            }
+        }
+        
+        return errMsgs;
+    };
     // 4. Lib Location
 	hih.LibLocation = function LibLocation() {
 		this.ID = -1;
@@ -2157,9 +2207,22 @@
 		}
 		return JSON && JSON.stringify(this) || $.toJSON(this);
 	};
+    hih.LibLocation.prototype.Verify = function($translate) {
+		var errMsgs = [];
+
+        // Names
+        if (this.Names.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.MissingName"));
+            } else {
+                errMsgs.push("Missing Name");
+            }
+        }
+        return errMsgs;
+    };
     // 11. Lib Books
     // 11a. Name
-    hih.LibBookName = function() {
+    hih.LibBookName = function LibBookName() {
         this.BookID = -1;
         this.NameID = -1;
         this.Lang = "";
@@ -2196,10 +2259,20 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     hih.LibBookName.prototype.Verify = function($translate) {
-        
+		var errMsgs = [];
+
+        // Names
+        if (this.Names.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.MissingName"));
+            } else {
+                errMsgs.push("Missing Name");
+            }
+        }
+        return errMsgs;
     };
     // 11b. Languages
-    hih.LibBookLang = function() {
+    hih.LibBookLang = function LibBookLang() {
         this.BookID = -1;
     };
     hih.extend(hih.LibBookLang, hih.LibLanguage);
@@ -2228,7 +2301,7 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11c. Authors
-    hih.LibBookAuthor = function() {
+    hih.LibBookAuthor = function LibBookAuthor() {
         this.BookID = -1;
         this.TranslatorFlag = false;
     };
@@ -2257,7 +2330,7 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11d. Presses
-    hih.LibBookPress = function() {
+    hih.LibBookPress = function LibBookPress() {
         this.BookID = -1;
     };
     hih.extend(hih.LibBookPress, hih.LibOrganization);
@@ -2284,7 +2357,7 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11e. Location
-    hih.LibBookLocation = function() {
+    hih.LibBookLocation = function LibBookLocation() {
         this.BookID = -1;
         this.Media = "";
     };
@@ -2313,7 +2386,7 @@
 		return JSON && JSON.stringify(this) || $.toJSON(this);
     };
     // 11f. Books
-    hih.LibBook = function() {
+    hih.LibBook = function LibBook() {
         this.ID = -1;
         this.ISBN = "";
         this.Others = "";

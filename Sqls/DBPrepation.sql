@@ -2632,14 +2632,28 @@ INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese',
 INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日本語');
 
 /* ======================================================
-    Delta parts on 2016.01.04
+    Delta parts on 2016.01.05
    ====================================================== */
 
+-- Change table t_lib_person
 ALTER TABLE `t_lib_person`
 ADD COLUMN `TAGS` VARCHAR(100) NULL AFTER `OTHERS`;
 
+-- Change table t_lib_org
 ALTER TABLE `t_lib_org` 
 ADD COLUMN `TAGS` VARCHAR(100) NULL AFTER `OTHERS`;
+
+-- Table create: t_lib_setting
+CREATE TABLE IF NOT EXISTS `t_lib_setting` (
+  `SETNAME` varchar(20) NOT NULL,
+  `SETDESP` varchar(50),
+  `SETVALUE` varchar(100) NOT NULL,
+  PRIMARY KEY (`SETNAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lib setting';
+
+-- Pre-deliver content
+INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKAUTHOR', 'Tags for Authors in Book', '["Writer"]');
+INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKPRESS', 'Tags for Presses in Book', '["Press"]');
 
 /* ======================================================
     Delta parts on 2016.07.01+

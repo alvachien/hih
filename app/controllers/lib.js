@@ -314,12 +314,18 @@
 				$scope.refreshList(false);
 			}])
 
-		.controller('LibPersonController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
-			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
+		.controller('LibPersonController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', '$log', 'utils',
+			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
 				$scope.Activity = "";
 				$scope.ActivityID = hih.Constants.UIMode_Create;
-
+                
 				$scope.PersonObject = new hih.LibPerson();
+                $scope.tagsConfig = {
+                    create: true, // Allow create!
+                    onChange: function(value){
+                        $log.info('LibPersonController, tags control, event onChange, ', value);
+                    }
+                };
 
 				if (angular.isDefined($stateParams.id)) {
 					if ($state.current.name === "home.lib.person.maintain") {
