@@ -25,8 +25,8 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptDetail" translate="Common.Detail">Detail</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptDetail" ng-readonly="ActivityID == 3"
-						placeholder="{{'Common.Detail' | translate}}" ng-model="LocationObject.Detail" required>
+                <textarea class="form-control" rows="5" id="iptDetail" 
+                        ng-model="LocationObject.Detail" ng-readonly="ActivityID == 3"></textarea>
 			</div>
 		</div>
 

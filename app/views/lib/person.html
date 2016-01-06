@@ -25,8 +25,8 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptOthers" translate="Common.Other">Other</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="iptOthers" ng-readonly="ActivityID == 3"
-						placeholder="{{'Common.Other' | translate}}" ng-model="PersonObject.Others" required>
+                <textarea class="form-control" rows="5" id="iptOthers" 
+                        ng-model="PersonObject.Others" ng-readonly="ActivityID == 3"></textarea>
 			</div>
 		</div>
 

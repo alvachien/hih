@@ -298,8 +298,29 @@
 					}
 					$state.go("home.lib.person.maintain", { id: nid });
 				};
-				$scope.removeItem = function () {
-					// ToDo					
+				$scope.removeItem = function (row) {
+					var nid = null;
+					if (row) {
+						nid = row.ID;
+					} else {
+						for (var i = 0; i < $scope.dispList.length; i++) {
+							if ($scope.dispList[i].isSelected) {
+								nid = $scope.dispList[i].ID;
+								break;
+							}
+						}
+					}
+
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            utils.deleteLibPersonQ(nid)
+                                .then(function(response) {
+                                    $scope.refreshList(true);
+                                }, function(reason) {
+                                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                                });
+                    });
 				};
 
 				$scope.refreshList = function (bReload) {
@@ -318,12 +339,23 @@
 			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
 				$scope.Activity = "";
 				$scope.ActivityID = hih.Constants.UIMode_Create;
+                // Error messges
+                $scope.ReportedMessages = [];
+                $scope.cleanReportMessages = function() {
+                    $scope.ReportedMessages = [];
+                };
                 
 				$scope.PersonObject = new hih.LibPerson();
+                $scope.TagControlInstance = null;
                 $scope.tagsConfig = {
                     create: true, // Allow create!
+                    delimiter: '|',
+                    maxItems: 10,
                     onChange: function(value){
                         $log.info('LibPersonController, tags control, event onChange, ', value);
+                    },
+                    onInitialize: function(objselectize){
+                        $scope.TagControlInstance = objselectize;
                     }
                 };
 
@@ -341,6 +373,9 @@
 							$.each($rootScope.arLibPerson, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.PersonObject = angular.copy(obj);
+                                    $.each($scope.PersonObject.Tags, function(idx, obj) {
+                                        $scope.TagControlInstance.createItem(obj); 
+                                    });
 									return false;
 								}
 							});
@@ -354,18 +389,19 @@
 				};
 
 				$scope.submit = function () {
-					// // Verify it!
-					// var msgTab = $scope.CategoryObject.Verify();
-					// if (msgTab && msgTab.length > 0) {
-					// 	$translate(msgTab).then(function (translations) {
-					// 		// Show errors
-					// 		$.each(translations, function (idx, obj) {
-					// 			$rootScope.$broadcast("ShowMessage", "Error", obj);
-					// 		});
-					// 	});
-					// 	return;
-					// }
-				 
+                    $scope.cleanReportMessages();
+					// Verify it!
+					var msgTab = $scope.PersonObject.Verify($translate);
+					if (msgTab && msgTab.length > 0) {
+						$q.all(msgTab).then(function (translations) {
+							// Show errors
+							$.each(translations, function (idx, obj) {
+								$rootScope.$broadcast("ShowMessage", "Error", obj);
+							});
+						});
+						return;
+					}
+ 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
 						utils.createLibPersonQ($scope.PersonObject)
@@ -426,8 +462,29 @@
 					}
 					$state.go("home.lib.org.maintain", { id: nid });
 				};
-				$scope.removeItem = function () {
-					// ToDo
+				$scope.removeItem = function (row) {
+					var nid = null;
+					if (row) {
+						nid = row.ID;
+					} else {
+						for (var i = 0; i < $scope.dispList.length; i++) {
+							if ($scope.dispList[i].isSelected) {
+								nid = $scope.dispList[i].ID;
+								break;
+							}
+						}
+					}
+
+                    // Show confirm dialog
+                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                        function() {
+                            utils.deleteLibOrganizationQ(nid)
+                                .then(function(response) {
+                                    $scope.refreshList(true);
+                                }, function(reason) {
+                                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                                });
+                    });
 				};
 
 				$scope.refreshList = function (bReload) {
@@ -442,12 +499,29 @@
 				$scope.refreshList(false);
 			}])
 
-		.controller('LibOrganizationController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils',
-			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
+		.controller('LibOrganizationController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', '$log', 'utils',
+			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
 				$scope.Activity = "";
 				$scope.ActivityID = hih.Constants.UIMode_Create;
+                // Error messges
+                $scope.ReportedMessages = [];
+                $scope.cleanReportMessages = function() {
+                    $scope.ReportedMessages = [];
+                };
 
 				$scope.OrganizationObject = new hih.LibOrganization();
+                $scope.TagControlInstance = null;
+                $scope.tagsConfig = {
+                    create: true, // Allow create!
+                    delimiter: '|',
+                    maxItems: 10,
+                    onChange: function(value){
+                        $log.info('LibOrganizationController, tags control, event onChange, ', value);
+                    },
+                    onInitialize: function(objselectize){
+                        $scope.TagControlInstance = objselectize;
+                    }
+                };
 
 				if (angular.isDefined($stateParams.id)) {
 					if ($state.current.name === "home.lib.org.maintain") {
@@ -463,6 +537,9 @@
 							$.each($rootScope.arLibOrganization, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.OrganizationObject = angular.copy(obj);
+                                    $.each($scope.PersonObject.Tags, function(idx, obj) {
+                                        $scope.TagControlInstance.createItem(obj); 
+                                    });
 									return false;
 								}
 							});
@@ -476,17 +553,19 @@
 				};
 
 				$scope.submit = function () {
-					// // Verify it!
-					// var msgTab = $scope.CategoryObject.Verify();
-					// if (msgTab && msgTab.length > 0) {
-					// 	$translate(msgTab).then(function (translations) {
-					// 		// Show errors
-					// 		$.each(translations, function (idx, obj) {
-					// 			$rootScope.$broadcast("ShowMessage", "Error", obj);
-					// 		});
-					// 	});
-					// 	return;
-					// }
+                    $scope.cleanReportMessages();
+                    
+					// Verify it!
+					var msgTab = $scope.OrganizationObject.Verify($translate);
+					if (msgTab && msgTab.length > 0) {
+						$q.all(msgTab).then(function (translations) {
+							// Show errors
+							$.each(translations, function (idx, obj) {
+								$rootScope.$broadcast("ShowMessage", "Error", obj);
+							});
+						});
+						return;
+					}
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
@@ -624,13 +703,13 @@
                     required: true
                 };
                 $scope.langLangConfig = {
-                    create: false,
+                    create: true,
                     onChange: function(value){
                         $log.info('LibBookController, Lang Language control, event onChange, ', value);
                     },
                     valueField: 'Language',
                     labelField: 'NativeName',
-                    maxItems: 1,
+                    maxItems: 10,
                     required: true
                 };
                 $scope.personConfig = {

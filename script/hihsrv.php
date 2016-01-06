@@ -806,12 +806,20 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "UPDATELIBPERSON": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objPerson = new HIHLibPerson($jsondata);
+			$errMsg = $objPerson->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_person_change', $objPerson);
+			}
 		}
 		break;
 		
 		case "DELETELIBPERSON": {
-			
+			$perid = escape ( $realParamArr ['id'] );
+			HIHSrv_Function_1Param( 'lib_person_delete', $perid);
 		}
 		break;
 
@@ -839,12 +847,20 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "UPDATELIBORG": {
-			
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objOrg = new HIHLibOrganization($jsondata);
+			$errMsg = $objOrg->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_org_change', $objOrg);
+			}
 		}
 		break;
 		
 		case "DELETELIBORG": {
-			
+			$perid = escape ( $realParamArr ['id'] );
+			HIHSrv_Function_1Param( 'lib_org_delete', $perid);
 		}
 		break;
         

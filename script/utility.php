@@ -5038,6 +5038,113 @@ function lib_person_create($objPerson) {
 		$nNewID 
 	);
 }
+function lib_person_change($objPerson) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	/* Prepare an insert statement */
+	$query = "UPDATE t_lib_person SET NAME = ?, OTHERS = ?, TAGS = ? WHERE ID = ?";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "sssi", $objPerson->Name, $objPerson->Others, $objPerson->Tags, $objPerson->ID );
+
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+			// Do nothing
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		NULL 
+	);
+}
+function lib_person_delete($perid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Check the usage on that person!
+    $nUsedCount = 0;
+	$rsttable = array ();
+	$query = "SELECT count(*) FROM t_lib_bookauthor WHERE PERSONID = ". $perid;
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+            $nUsedCount = $row[0];
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+    if ($nUsedCount > 0) {
+        $sError = "Person ". $perid. " Still in use, cannot delete!";
+    }
+    
+    // Now, perform the real deletion
+    if ( empty($sError)) {
+	   $query = "DELETE FROM t_lib_person WHERE ID = ". $perid;
+        if ($stmt = $mysqli->prepare ( $query )) {
+            /* Execute the statement */
+            if ($stmt->execute ()) {
+                // Do nothing here!
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+            }
+            
+            /* close statement */
+            $stmt->close ();
+        } else {
+            $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+    }
+    
+	/* close connection */
+    $mysqli->close();
+	return array (
+		$sError,
+		NULL 
+	);    
+}
 
 function lib_org_listread($norgid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -5132,6 +5239,114 @@ function lib_org_create($objOrg) {
 		$nNewID 
 	);
 }
+function lib_org_change($objOrg) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	/* Prepare an insert statement */
+	$query = "UPDATE t_lib_org SET NAME = ?, OTHERS = ?, TAGS = ? WHERE ID = ?";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "sssi", $objOrg->Name, $objOrg->Others, $objOrg->Tags, $objOrg->ID );
+
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+            // Do nothing
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		NULL
+	);
+}
+function lib_org_delete($orgid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Check the usage on that person!
+    $nUsedCount = 0;
+	$rsttable = array ();
+	$query = "SELECT count(*) FROM t_lib_bookpress WHERE PERSONID = ". $orgid;
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+            $nUsedCount = $row[0];
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+    if ($nUsedCount > 0) {
+        $sError = "Organization ". $perid. " Still in use, cannot delete!";
+    }
+    
+    // Now, perform the real deletion
+    if ( empty($sError)) {
+	   $query = "DELETE FROM t_lib_org WHERE ID = ". $orgid;
+        if ($stmt = $mysqli->prepare ( $query )) {
+            /* Execute the statement */
+            if ($stmt->execute ()) {
+                // Do nothing here!
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+            }
+            
+            /* close statement */
+            $stmt->close ();
+        } else {
+            $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+    }
+    
+	/* close connection */
+    $mysqli->close();
+	return array (
+		$sError,
+		NULL 
+	);    
+}
+
 function lib_book_listread($nbookid) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
