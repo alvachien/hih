@@ -682,15 +682,14 @@
 
 				$scope.BookObject = new hih.LibBook();
                 $scope.SelectedNameObject = new hih.LibBookName();
-                $scope.SelectedLangObject = new hih.LibBookLang();
                 $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                 $scope.SelectedPressObject = new hih.LibBookPress();
                 $scope.SelectedLocationObject = new hih.LibBookLocation();
                 $scope.NamesCollection = [];
-                $scope.LangsCollection = [];
                 $scope.AuthorsCollection = [];
                 $scope.PressesCollection = [];
                 $scope.LocationsCollection = [];
+                $scope.LangControlInstance = null;
                 
                 $scope.nameLangConfig = {
                     create: false,
@@ -706,6 +705,9 @@
                     create: true,
                     onChange: function(value){
                         $log.info('LibBookController, Lang Language control, event onChange, ', value);
+                    },
+                    onInitialize: function(objselectize){
+                        $scope.LangControlInstance = objselectize;
                     },
                     valueField: 'Language',
                     labelField: 'NativeName',
@@ -758,7 +760,6 @@
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.BookObject = angular.copy(obj);
                                     $scope.NamesCollection = [].concat(obj.Names);
-                                    $scope.LangsCollection = [].concat(obj.Languages);
                                     $scope.AuthorsCollection = [].concat(obj.Authors);
                                     $scope.PressesCollection = [].concat(obj.Presses);
                                     $scope.LocationsCollection = [].concat(obj.Locations);
@@ -833,16 +834,15 @@
                     
                     // Perform the check
                     var rptMsgs = $scope.SelectedNameObject.Verify($translate);
-                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
-                    //     $q.all(rptMsgs)
-                    //         .then(function(response) {
-                    //             $scope.cleanReportMessages();
-                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
-                    //         }, function(reason) {
-                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
-                    //         });
-                    //     return;
-                    // }
+                    if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                        $q.all(rptMsgs)
+                            .then(function(response) {
+                                Array.prototype.push.apply($scope.ReportedMessages, response);
+                            }, function(reason) {
+                                $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                            });
+                        return;
+                    }
                     
                     // Next name ID
                     if ($scope.SelectedNameObject.NameID === -1) {
@@ -864,74 +864,6 @@
                     $scope.NameActivityID = hih.Constants.UIMode_Create;
                 };
                 
-                // Language related methods
-                $scope.displayLang = function(row) {
-                    $scope.cleanReportMessages();
-                    $scope.SelectedLangObject = row;
-                    $scope.LangActivity = "Common.Display";
-                    $scope.LangActivityID = hih.Constants.UIMode_Display;
-                };
-                $scope.editLang = function(row) {
-                    $scope.cleanReportMessages();
-                    $scope.SelectedLangObject = row;
-                    $scope.LangActivity = "Common.Edit";
-                    $scope.LangActivityID = hih.Constants.UIMode_Change;
-                };
-                $scope.removeLang = function(row) {
-                    $scope.cleanReportMessages();
-                    
-                    // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
-                        function() {
-                            if ($scope.SelectedLangObject.Language === row.Language) {
-                                $scope.cancelCurrentLang();
-                            }
-                                    
-                            for(var i = 0; i < $scope.LangsCollection.length; i ++) {
-                                if ($scope.LangsCollection[i].Language === row.Language) {
-                                    $scope.LangsCollection.splice(i, 1);
-                                    break;
-                                }
-                            }
-                            
-                            $scope.$apply();
-                    });
-                };
-                $scope.LangActivity = "Common.Create";
-                $scope.LangActivityID = hih.Constants.UIMode_Create;
-                $scope.saveCurrentLang = function() {
-                    $scope.cleanReportMessages();
-                    
-                    // Perform the check
-                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
-                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
-                    //     $q.all(rptMsgs)
-                    //         .then(function(response) {
-                    //             $scope.cleanReportMessages();
-                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
-                    //         }, function(reason) {
-                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
-                    //         });
-                    //     return;
-                    // }
-                    
-                    // Next lang ID
-                    if ($scope.LangActivityID === hih.Constants.UIMode_Create) {
-                        $scope.LangsCollection.push($scope.SelectedLangObject);
-                    } else {
-                        // Update the selected one
-                        // It is updated automatically? Yes, it is!
-                    }
-                    
-                    // Reset the selected lang
-                    $scope.cancelCurrentLang();
-                };
-                $scope.cancelCurrentLang = function() {
-                    $scope.cleanReportMessages();
-                    $scope.SelectedLangObject = new hih.LibBookLang();
-                    $scope.LangActivity = "Common.Create";
-                    $scope.LangActivityID = hih.Constants.UIMode_Create;
-                };
                 // Authors
                 $scope.displayAuthor = function(row) {
                     $scope.cleanReportMessages();
