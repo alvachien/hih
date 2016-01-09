@@ -765,6 +765,9 @@
                                     $scope.LocationsCollection = [].concat(obj.Locations);
                                     
                                     // Set the language
+                                    $.each($scope.BookObject.Languages, function(idx, obj) {
+                                        $scope.LangControlInstance.createItem(obj); 
+                                    });
                                     
 									return false;
 								}

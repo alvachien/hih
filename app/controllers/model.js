@@ -2403,6 +2403,9 @@
         this.ISBN = obj.isbn;
         this.Others = obj.others;
     };
+    hih.LibBook.prototype.buildRelationship = function(arLang) {
+        
+    };
     hih.LibBook.prototype.Verify = function($translate) {
 		var errMsgs = [];
 
