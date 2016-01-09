@@ -701,10 +701,10 @@
                     maxItems: 1,
                     required: true
                 };
-                $scope.langLangConfig = {
-                    create: true,
+                $scope.langConfig = {
+                    create: false,
                     onChange: function(value){
-                        $log.info('LibBookController, Lang Language control, event onChange, ', value);
+                        $log.info('LibBookController, Language control, event onChange, ', value);
                     },
                     onInitialize: function(objselectize){
                         $scope.LangControlInstance = objselectize;
@@ -763,6 +763,8 @@
                                     $scope.AuthorsCollection = [].concat(obj.Authors);
                                     $scope.PressesCollection = [].concat(obj.Presses);
                                     $scope.LocationsCollection = [].concat(obj.Locations);
+                                    
+                                    // Set the language
                                     
 									return false;
 								}
