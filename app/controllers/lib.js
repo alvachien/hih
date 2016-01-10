@@ -685,6 +685,7 @@
                 $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                 $scope.SelectedPressObject = new hih.LibBookPress();
                 $scope.SelectedLocationObject = new hih.LibBookLocation();
+                $scope.LangaugesCollection = [];
                 $scope.NamesCollection = [];
                 $scope.AuthorsCollection = [];
                 $scope.PressesCollection = [];
