@@ -5395,7 +5395,7 @@ function lib_book_listread($nbookid) {
 	
 	// Book language
 	if (empty($sError)) {
-		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
+		$query = "SELECT taba.BOOKID, taba.LANG, tabb.NAME as langname, tabb.NAVNAME as langnavname FROM t_lib_booklang AS taba left outer join t_language AS tabb ON taba.LANG = tabb.LANG ";
 		if ($nbookid) {
 			$query = $query . " WHERE taba.BOOKID = ". $nbookid;
 		}
@@ -5406,7 +5406,8 @@ function lib_book_listread($nbookid) {
 				$booklangtable [] = array (
 					"bookid" => $row [0],
 					"lang" => $row [1],
-					"langname" => $row [2] 
+					"langname" => $row [2],
+                    "langnavname" => $row [3] 
 				);
 			}
 			

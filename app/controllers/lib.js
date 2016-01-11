@@ -685,7 +685,7 @@
                 $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                 $scope.SelectedPressObject = new hih.LibBookPress();
                 $scope.SelectedLocationObject = new hih.LibBookLocation();
-                $scope.LangaugesCollection = [];
+                $scope.LanguagesCollection = [];
                 $scope.NamesCollection = [];
                 $scope.AuthorsCollection = [];
                 $scope.PressesCollection = [];
@@ -760,14 +760,15 @@
 							$.each($rootScope.arLibBook, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.BookObject = angular.copy(obj);
+                                    $scope.LanguagesCollection = [];
                                     $scope.NamesCollection = [].concat(obj.Names);
                                     $scope.AuthorsCollection = [].concat(obj.Authors);
                                     $scope.PressesCollection = [].concat(obj.Presses);
                                     $scope.LocationsCollection = [].concat(obj.Locations);
                                     
                                     // Set the language
-                                    $.each($scope.BookObject.Languages, function(idx, obj) {
-                                        $scope.LangControlInstance.createItem(obj); 
+                                    $.each($scope.BookObject.Languages, function(idx2, obj2) {
+                                         $scope.LanguagesCollection.push(obj2.Language); //.createItem(obj); 
                                     });
                                     
 									return false;
@@ -1079,7 +1080,7 @@
 
                 // Sumbit the whole object
 				$scope.submit = function () {
-                    $scope.clearReportMessages();
+                    $scope.cleanReportMessages();
                     
 					// Verify it!
 					// var msgTab = $scope.CategoryObject.Verify();
@@ -1104,9 +1105,11 @@
 						$scope.BookObject.Names.push(obj);
 					});
 					// Languages
-					if ($scope.LangsCollection.length <= 0) return;
-					$.each($scope.LangsCollection, function(idx, obj) {
-						$scope.BookObject.Languages.push(obj);
+					if ($scope.LanguagesCollection.length <= 0) return;
+					$.each($scope.LanguagesCollection, function(idx, obj) {
+                        var blang = new hih.LibBookLang();
+                        blang.Language = obj;
+						$scope.BookObject.Languages.push(blang);
 					});
                     // Authors
 					$.each($scope.AuthorsCollection, function(idx, obj) {

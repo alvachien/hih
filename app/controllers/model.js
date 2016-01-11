@@ -2262,7 +2262,7 @@
 		var errMsgs = [];
 
         // Names
-        if (this.Names.length <= 0) {
+        if (this.Name.length <= 0) {
             if ($translate) {
                 errMsgs.push($translate("Message.MissingName"));
             } else {
@@ -2280,6 +2280,7 @@
         hih.LibLanguage.prototype.setContent.call(this, obj);
         
         this.Name = obj.langname;
+        this.NativeName = obj.langnavname;
         this.BookID = parseInt(obj.bookid);
     };
     hih.LibBookLang.prototype.ToJSONObject = function() {

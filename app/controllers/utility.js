@@ -2510,21 +2510,21 @@
 											});
 											
 											$.each($rootScope.arLibBook, function(idx, obj) {
-											if (arName.length > 0) {
-												for(var i = 0; i < arName.length; i ++) {
-													if (arName[i].BookID === obj.ID) {
-														obj.Names.push(arName[i]);
-													}
-												}
-											}
-											
-											if (arLang.length > 0) {
-												for(var i = 0; i < arLang.length; i ++) {
-													if (arLang[i].BookID === obj.ID) {
-														obj.Languages.push(arLang[i]);
-													}
-												}                                               
-											} 
+                                                if (arName.length > 0) {
+                                                    for(var i = 0; i < arName.length; i ++) {
+                                                        if (arName[i].BookID === obj.ID) {
+                                                            obj.Names.push(arName[i]);
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                if (arLang.length > 0) {
+                                                    for(var i = 0; i < arLang.length; i ++) {
+                                                        if (arLang[i].BookID === obj.ID) {
+                                                            obj.Languages.push(arLang[i]);
+                                                        }
+                                                    }                                               
+                                                } 
 											});
 										}
 										deferred.resolve(true);
