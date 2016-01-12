@@ -1,10 +1,10 @@
-<div id="viewFinSetting">
+<div id="viewLibSetting">
 	<div class="page-header">
 		<h2>
-            <span translate="Nav.Finance">Finance</span><small> {{'Common.Setting' | translate}}</small>
+            <span translate="Nav.Libraries">Librararies</span><small> {{'Common.Setting' | translate}}</small>
 		</h2>
 	</div>
-    
+
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
@@ -15,7 +15,7 @@
 		<tbody>
 			<tr ng-repeat="row in displayedCollection">
 				<td>{{row.Name}}</td>
-				<td>{{row.Value}}</td>
+				<td>{{row.Value | json}}</td>
 			</tr>
 		</tbody>
 	</table>

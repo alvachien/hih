@@ -736,6 +736,10 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		// ===========================================================================================
 		// Libraries
 		// ===========================================================================================
+		case "GETLIBSETTING": {
+			HIHSrv_Function( 'lib_setting_listread' );
+		}
+		break;
 		
         case "GETLIBLANG": {
             HIHSrv_Function( 'lib_lang_listread' );

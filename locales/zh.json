@@ -60,6 +60,7 @@
 		"Others": "其他",
         "Tags": "标签",
         "Tag": "标签",
+        "Setting": "设置",
 		
 		"DeleteConfirmation" : "确认删除操作",
 		"ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",

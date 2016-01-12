@@ -13,6 +13,11 @@
 					abstract: true,
 					template: '<div ui-view></div>'
 				})
+                .state("home.lib.setting", {
+                    url: "/setting",
+                    templateUrl: 'app/views/lib/setting.html',
+                    controller: 'LibSettingController'
+                })
 				.state("home.lib.language", {
 					url: "/language",
 					abstract: true,
@@ -129,6 +134,23 @@
                 })
 			;
 		}])
+
+        .controller('LibSettingController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', '$translate', 'utils', 
+            function($scope, $rootScope, $state, $http, $log, $q, $translate, utils) {
+                $scope.displayedCollection = [];
+                
+                if ($rootScope.objLibSetting) {
+                    // Local currency
+                    $scope.displayedCollection.push({
+                        "Name": $rootScope.objLibSetting.BookAuthorDesp,
+                        "Value": $rootScope.objLibSetting.BookAuthorTags
+                    });
+                    $scope.displayedCollection.push({
+                        "Name": $rootScope.objLibSetting.BookPressDesp,
+                        "Value": $rootScope.objLibSetting.BookPressTags
+                    });
+                }
+            }])		
 
 		.controller('LibLanguageListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
 			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {

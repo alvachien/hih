@@ -197,14 +197,19 @@
 				// Do nothing here~~~
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
-			});
+			});            
 		utils.loadFinanceExchangeRateInfoQ()
 			.then(function(response) {
 				// Do nothing here~~~
 			}, function(reason) {
 				$rootScope.$broadcast("ShowMessage", "Error", reason);
 			});
-			
+		utils.loadLibSettingQ()
+			.then(function(response) {
+				// Do nothing here~~~
+			}, function(reason) {
+				$rootScope.$broadcast("ShowMessage", "Error", reason);
+			});            
 		// Welcome page
 		$scope.listUsrAct = [];	
 		utils.loadUserLogListQ()

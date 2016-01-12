@@ -4805,6 +4805,47 @@ function build_financecontrolcenter_tree_int($ctgytable, $parhavechld) {
 }
 
 /* Libraries */
+function lib_setting_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM t_lib_setting";
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"setname" => $row [0],
+				"setdesp" => $row [1],
+				"setvalue" => $row [2]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array ( $sError, $rsttable );	
+}
 function lib_lang_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

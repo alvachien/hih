@@ -1338,7 +1338,7 @@ class HIHLibBook {
 						$count = count($value);
 						for ($i = 0; $i < $count; $i++) {
 							$di = new HIHLibBookLang( $value[ $i ] );
-							$this->LangArray [$di->Lang] = $di;
+							$this->LangArray [$di->Language] = $di;
 						}
 					}
 				}

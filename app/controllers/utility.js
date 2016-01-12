@@ -2098,6 +2098,24 @@
 ////////////////////////////////////////////////////////////////////
 // Libraries part
 ////////////////////////////////////////////////////////////////////
+
+// Libraries part: Setting
+						rtnObj.loadLibSettingQ = function() {
+							// Load lib setting with $q supports
+							var deferred = $q.defer();
+							$http.post('script/hihsrv.php', { objecttype : 'GETLIBSETTING' })
+								.then(function(response) {
+									if ($.isArray(response.data) && response.data.length > 0) {
+										var fs = new hih.LibSetting();
+										fs.setContent(response.data);
+										$rootScope.objLibSetting = fs;
+									}
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+						};
                         // Language
                         rtnObj.loadLibLanguageQ = function(bForceReload) {
 							var deferred = $q.defer();

@@ -2044,9 +2044,33 @@
     // 0. Lib Setting
     hih.LibSetting = function LibSetting() {
         this.BookAuthorTags = [];
+        this.BookAuthorDesp = "";
         this.BookPressTags = [];
+        this.BookPressDesp = "";
     };
     hih.extend(hih.LibSetting, hih.Model);
+    hih.LibSetting.prototype.setContent = function(arData) {
+		var that = this;
+		if (arData && $.isArray(arData) && arData.length > 0) {
+			$.each(arData, function(idx, obj) {
+				if (obj.setname === hih.Constants.LibSet_BookAuthorTag) {												
+					that.BookAuthorDesp = obj.setdesp;
+                    if (obj.setvalue && obj.setvalue.length > 0) {
+                        that.BookAuthorTags = JSON && JSON.parse(obj.setvalue) || $.parseJSON(obj.setvalue);
+                    } else {
+                        that.BookAuthorTags = [];
+                    }        
+				} else if (obj.setname === hih.Constants.LibSet_BookPressTag) {
+					that.BookPressDesp = obj.setdesp;
+                    if (obj.setvalue && obj.setvalue.length > 0) {
+                        that.BookPressTags = JSON && JSON.parse(obj.setvalue) || $.parseJSON(obj.setvalue);
+                    } else {
+                        that.BookPressTags = [];
+                    }        
+				}
+			});
+		}
+    };
     // 1. Lib Language
     hih.LibLanguage = function LibLanguage () {
         this.Language = "";
