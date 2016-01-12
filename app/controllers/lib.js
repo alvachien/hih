@@ -674,6 +674,7 @@
 			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
 				$scope.Activity = "";
 				$scope.ActivityID = hih.Constants.UIMode_Create;
+                
                 // Error messges
                 $scope.ReportedMessages = [];
                 $scope.cleanReportMessages = function() {
@@ -703,7 +704,7 @@
                     required: true
                 };
                 $scope.langConfig = {
-                    create: false,
+                    create: true,
                     onChange: function(value){
                         $log.info('LibBookController, Language control, event onChange, ', value);
                     },
@@ -769,6 +770,7 @@
                                     // Set the language
                                     $.each($scope.BookObject.Languages, function(idx2, obj2) {
                                          $scope.LanguagesCollection.push(obj2.Language); //.createItem(obj); 
+                                         //$scope.LangControlInstance.createItem(obj2.Language);
                                     });
                                     
 									return false;
