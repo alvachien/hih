@@ -719,6 +719,31 @@
                 $scope.arAuthors = [];
                 $scope.arPresses = [];
                 
+                utils.loadLibAuthorQ()
+                    .then(function(response) {
+                        if ($.isArray(response) && response.length > 0) {
+                            $.each(response, function(idx, obj) {
+                                var bs = new hih.LibPerson();
+                                bs.setContent(obj);
+                                $scope.arAuthors.push(bs);
+                            });
+                        }                        
+                    }, function(reason) {
+                        $log.error(reason);
+                    });
+                utils.loadLibPressQ()
+                    .then(function(response) {
+                        if ($.isArray(response) && response.length > 0) {
+                            $.each(response, function(idx, obj) {
+                                var bs = new hih.LibOrganization();
+                                bs.setContent(obj);
+                                $scope.arPresses.push(bs);
+                            });
+                        }                        
+                    }, function(reason) {
+                        $log.error(reason);
+                    });
+                    
                 $scope.nameLangConfig = {
                     create: false,
                     onChange: function(value){

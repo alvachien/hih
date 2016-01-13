@@ -5057,7 +5057,7 @@ function lib_person_authorlistread() {
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
-            $authortag = $row[0];
+            $authortag = json_decode($row[0], true);
 		}
 		
 		/* free result set */
@@ -5067,9 +5067,18 @@ function lib_person_authorlistread() {
 	}
     
     // Parse the tags
-    
-	$query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_person";
-	
+    $query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_person";
+    $tagscount = count($authortag);
+    if ($tagscount > 0) {
+        $query = $query. " WHERE TAGS LIKE '%";
+        for($i = 0; $i < $tagscount; $i ++) {
+            $query = $query . $authortag[$i] . "%' ";
+            if ($i > $tagscount - 1) {
+                $query = $query . " AND TAGS LIKE '%";
+            }
+        }
+    }
+
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
@@ -5248,6 +5257,76 @@ function lib_person_delete($perid) {
 	);    
 }
 
+function lib_org_presslistread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+    $presstag = "";
+	$query = "SELECT setvalue FROM t_lib_setting WHERE setname = 'BOOKPRESS'";
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+            $presstag = json_decode($row[0], true);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+    
+    // Parse the tags
+    $query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_org";
+    $tagscount = count($presstag);
+    if ($tagscount > 0) {
+        $query = $query. " WHERE TAGS LIKE '%";
+        for($i = 0; $i < $tagscount; $i ++) {
+            $query = $query . $presstag[$i] . "%' ";
+            if ($i > $tagscount - 1) {
+                $query = $query . " AND TAGS LIKE '%";
+            }
+        }
+    }
+
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"id" => $row [0],
+				"name" => $row [1],
+				"others" => $row [2],
+                "tags" => $row[3]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+		$sError,
+		$rsttable 
+	);   
+}
 function lib_org_listread($norgid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

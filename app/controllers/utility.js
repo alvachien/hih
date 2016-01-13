@@ -2371,6 +2371,19 @@
 						};
 						
 						// Organization
+                        rtnObj.loadLibPressQ = function() {
+							var deferred = $q.defer();
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'GETLIBPRESSLIST' })
+                                .then(function(response) {
+                                    deferred.resolve(response.data);
+                                }, function(response) {
+                                    deferred.reject(response.data.Message);
+                                });
+                        
+                            return deferred.promise;
+                        };
 						rtnObj.loadLibOrganizationQ = function(bForceReload) {
 							var deferred = $q.defer();
 							

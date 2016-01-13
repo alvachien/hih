@@ -832,6 +832,11 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		}
 		break;
 
+        case "GETLIBPRESSLIST": {
+            HIHSrv_Function( 'lib_org_presslistread' );
+        }
+        break;
+        
 		case "GETLIBORGLIST": {
 			HIHSrv_Function( 'lib_org_listread' );
 		}
