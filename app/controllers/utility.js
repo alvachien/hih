@@ -1192,7 +1192,7 @@
 						};
 						rtnObj.changeFinanceAccountQ = function(objAcnt) {
 							var deferred = $q.defer();
-							var strJSON = JSON && JSON.stringify(objAcnt) || $.toJSON(objAcnt);
+							var strJSON = JSON && JSON.stringify(objAcnt);
 							$http.post(
 								'script/hihsrv.php',
 								{ objecttype: 'CHANGEFINANCEACCOUNT',

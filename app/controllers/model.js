@@ -335,9 +335,9 @@
 	hih.UserRegistration.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};	
 	
 	/* Method 2: changing the prototype */
@@ -418,9 +418,9 @@
 	hih.LearnObject.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};	
 	
 	/* Method 3: using the prototype of superclass directly in children class */
@@ -590,9 +590,9 @@
 		_toJSON: function() {
 			var forJSON = this.toJSONObject();
 			if (forJSON) {
-				return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+				return JSON && JSON.stringify(forJSON);
 			}
-			return JSON && JSON.stringify(this) || $.toJSON(this);
+			return JSON && JSON.stringify(this);
 		},
 		_Verify: function() {
 			var errMsgs = [];
@@ -714,9 +714,9 @@
 	hih.LearnAward.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	
 	/* Learn Plan Detail */
@@ -780,9 +780,9 @@
 	hih.LearnPlanDetail.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	
 	/* Learn Plan Participant */
@@ -855,9 +855,9 @@
 	hih.LearnPlanParticipant.prototype.ToJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	
 	/* Learn Plan Header */
@@ -934,9 +934,9 @@
 	hih.LearnPlan.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};	
 
 
@@ -1099,9 +1099,9 @@
 	hih.FinanceAccount.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);		
+		return JSON && JSON.stringify(this);		
 	};
 	// 4a. Account additional data for down payment
 	hih.FinanceAccountDownpayment = function() {
@@ -1151,9 +1151,9 @@
 	hih.FinanceAccountDownpayment.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);		
+		return JSON && JSON.stringify(this);		
 	};
 	// 5. Controlling Center
 	hih.FinanceControlCenter = function FinanceControlCenter() {
@@ -1274,9 +1274,9 @@
 	hih.FinanceOrderSettlementRule.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	// 5b. Internal Order
 	hih.FinanceOrder = function FinanceOrder() {
@@ -1349,7 +1349,7 @@
 			forJSON.SRules.push(this.SRules[j].toJSONObject());
 		}
 		
-		return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+		return JSON && JSON.stringify(forJSON);
 	};
 	// 6. Transaction type
 	hih.FinanceTransactionType = function FinanceTransactionType() {
@@ -1543,7 +1543,7 @@
 		if (forJSON) {
 			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	// 7a. Document Item for Display
 	hih.FinanceDocumentItemForDisp = function FinanceDocumentItemForDisp () {
@@ -1849,9 +1849,9 @@
 	hih.FinanceDocument.prototype.toJSON = function() {
 		var forJSON = this.toJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	// 8a. Finance temp document for downpayment
 	hih.FinanceDPTempDoc = function FinanceDPTempDoc() {
@@ -1915,9 +1915,9 @@
 	hih.FinanceDPTempDoc.prototype.toJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
 	// 9. Balance sheet report
 	hih.FinanceReportBalanceSheet = function FinanceReportBalanceSheet() {
@@ -2122,9 +2122,9 @@
 	hih.LibLanguage.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
     // 2. Lib Person
     hih.LibPerson = function LibPerson() {
@@ -2152,21 +2152,21 @@
 			
 			forJSON[i] = this[i];
 		}
-        forJSON["Tags"] = JSON && JSON.stringify(this.Tags) || $.toJSON(this.Tags);
+        forJSON["Tags"] = JSON && JSON.stringify(this.Tags);
 		return forJSON;
 	};
 	hih.LibPerson.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
     hih.LibPerson.prototype.Verify = function($translate) {
 		var errMsgs = [];
 
         // Names
-        if (this.Names.length <= 0) {
+        if (this.Name.length <= 0) {
             if ($translate) {
                 errMsgs.push($translate("Message.MissingName"));
             } else {
@@ -2202,21 +2202,21 @@
 			
 			forJSON[i] = this[i];
 		}
-        forJSON["Tags"] = JSON && JSON.stringify(this.Tags) || $.toJSON(this.Tags);
+        forJSON["Tags"] = JSON && JSON.stringify(this.Tags);
 		return forJSON;
 	};
 	hih.LibOrganization.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
     hih.LibOrganization.prototype.Verify = function($translate) {
 		var errMsgs = [];
 
         // Names
-        if (this.Names.length <= 0) {
+        if (this.Name.length <= 0) {
             if ($translate) {
                 errMsgs.push($translate("Message.MissingName"));
             } else {
@@ -2253,15 +2253,15 @@
 	hih.LibLocation.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
 	};
     hih.LibLocation.prototype.Verify = function($translate) {
 		var errMsgs = [];
 
         // Names
-        if (this.Names.length <= 0) {
+        if (this.Name.length <= 0) {
             if ($translate) {
                 errMsgs.push($translate("Message.MissingName"));
             } else {
@@ -2304,9 +2304,9 @@
     hih.LibBookName.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
     hih.LibBookName.prototype.Verify = function($translate) {
 		var errMsgs = [];
@@ -2347,9 +2347,9 @@
     hih.LibBookLang.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
     // 11c. Authors
     hih.LibBookAuthor = function LibBookAuthor() {
@@ -2376,9 +2376,9 @@
     hih.LibBookAuthor.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
     // 11d. Presses
     hih.LibBookPress = function LibBookPress() {
@@ -2403,9 +2403,9 @@
     hih.LibBookPress.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
     // 11e. Location
     hih.LibBookLocation = function LibBookLocation() {
@@ -2432,9 +2432,9 @@
     hih.LibBookLocation.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
     // 11f. Books
     hih.LibBook = function LibBook() {
@@ -2538,9 +2538,9 @@
     hih.LibBook.prototype.ToJSON = function() {
         var forJSON = this.ToJSONObject();
 		if (forJSON) {
-			return JSON && JSON.stringify(forJSON) || $.toJSON(forJSON);
+			return JSON && JSON.stringify(forJSON);
 		}
-		return JSON && JSON.stringify(this) || $.toJSON(this);
+		return JSON && JSON.stringify(this);
     };
 }());
 

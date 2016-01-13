@@ -566,7 +566,7 @@
 			}
 			
 			// Now submit to the server side
-			var strJSON = JSON && JSON.stringify($scope.AccountObject) || $.toJSON($scope.AccountObject);
+			var strJSON = JSON && JSON.stringify($scope.AccountObject);
 			if (strJSON) {
 				if (this.ActivityID === hih.Constants.UIMode_Create) {
 					utils.createFinanceAccountQ(strJSON)
@@ -1192,7 +1192,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject);
 			if (strJSON) {
 				if ($scope.DocumentObject.DocID === -1) {
 					utils.createFinanceDocumentQ(strJSON)
@@ -1486,7 +1486,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject);
 			if (strJSON) {
 				if ($scope.DocumentObject.DocID === -1) {
 					utils.createFinanceDocumentQ(strJSON)
@@ -1957,10 +1957,10 @@
 				obj.Desp = $scope.DocumentObject.Desp + " | " + (idx + 1).toString() + " / " + $scope.DPItems.length.toString() + " | " + hih.ModelUtility.DateFormatter(obj.TranDate);
 			});
 			
-			var json1 = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var json1 = JSON && JSON.stringify($scope.DocumentObject);
 			var json2 = objAccount.toJSON();
 			var json3 = $scope.AccountObject.ToJSON();
-			var json4 = JSON && JSON.stringify($scope.DPItems) || $.toJSON($scope.DPItems);
+			var json4 = JSON && JSON.stringify($scope.DPItems);
 			
 			utils.createFinanceDPDocumentQ(json1, json2, json3, json4)
 				.then(function(response) {
@@ -2090,7 +2090,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject);
 			if (strJSON) {
 				utils.createFinanceDocumentFromDPTmpQ(strJSON, $scope.DPTmpDocID)
 					.then(function(response) {
@@ -2435,7 +2435,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.DocumentObject) || $.toJSON($scope.DocumentObject);
+			var strJSON = JSON && JSON.stringify($scope.DocumentObject);
 			if (strJSON) {
 				if ($scope.DocumentObject.DocID === -1) {
 					utils.createFinanceDocumentQ(strJSON)
@@ -3194,7 +3194,7 @@
 			}
 			
 			// Now, ready for submit!
-			var strJSON = JSON && JSON.stringify($scope.OrderObject) || $.toJSON($scope.OrderObject);
+			var strJSON = JSON && JSON.stringify($scope.OrderObject);
 			if (strJSON) {
 				if ($scope.ActivityID === hih.Constants.UIMode_Create) {
 					// Create order

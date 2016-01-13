@@ -227,6 +227,95 @@ CREATE TABLE IF NOT EXISTS `t_user_hist` (
   PRIMARY KEY (`USERID`, `SEQNO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User history';
 
+CREATE TABLE IF NOT EXISTS `t_lib_loc` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(25) NOT NULL,
+  `DETAILS` varchar(200) NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lib location';
+
+-- Table Create, t_language
+CREATE TABLE IF NOT EXISTS `t_language` (
+  `LANG` varchar(3) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `NAVNAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`LANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Language';
+
+-- Table Create, t_lib_book, book
+CREATE TABLE IF NOT EXISTS `t_lib_book` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ISBN` varchar(25) DEFAULT NULL,
+  `OTHERS` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book';
+
+-- Table create, t_lib_booklang
+CREATE TABLE IF NOT EXISTS `t_lib_booklang` (
+  `BOOKID` int(11) NOT NULL,
+  `LANG` varchar(3) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `LANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book language';
+
+-- Table create, t_lib_bookname
+CREATE TABLE IF NOT EXISTS `t_lib_bookname` (
+  `BOOKID` int(11) NOT NULL,
+  `NAMEID` int(11) NOT NULL,
+  `LANG` varchar(3) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `NAMEID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book name';
+
+-- Table create, t_lib_person
+CREATE TABLE IF NOT EXISTS `t_lib_person` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(100) DEFAULT NULL,
+  `TAGS` VARCHAR(100) NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Person';
+
+-- Table create, t_lib_bookauthor
+CREATE TABLE IF NOT EXISTS `t_lib_bookauthor` (
+  `BOOKID` int(11) NOT NULL,
+  `PERSONID` int(11) NOT NULL,
+  `TRANFLAG` tinyint DEFAULT NULL,
+  PRIMARY KEY (`BOOKID`, `PERSONID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book author';
+
+-- Table create, t_lib_org
+CREATE TABLE IF NOT EXISTS `t_lib_org` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(100) DEFAULT NULL,
+  `TAGS` VARCHAR(100) NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Organization';
+
+-- Table create, t_lib_bookpress
+CREATE TABLE IF NOT EXISTS `t_lib_bookpress` (
+  `BOOKID` int(11) NOT NULL,
+  `PRESSID` int(11) NOT NULL,
+  PRIMARY KEY (`BOOKID`, `PRESSID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book press';
+
+-- Table Create, t_lib_bookloc, location of book
+CREATE TABLE IF NOT EXISTS `t_lib_bookloc` (
+  `BOOKID` int(11) NOT NULL,
+  `LOCID` int(11) NOT NULL,
+  `MEDIA` varchar(25) NOT NULL,
+  `COMMENT` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`BOOKID`, `LOCID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book location';
+
+CREATE TABLE IF NOT EXISTS `t_lib_setting` (
+  `SETNAME` varchar(20) NOT NULL,
+  `SETDESP` varchar(50),
+  `SETVALUE` varchar(100) NOT NULL,
+  PRIMARY KEY (`SETNAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lib setting';
+
 /*======================================================
     Views 
   ====================================================== */
@@ -1695,6 +1784,16 @@ INSERT INTO `t_learn_ctg` (`ID`,`PARENT_ID`,`NAME`,`COMMENT`) VALUES (15,13,'语
 -- Default content for setting
 INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('LocalCurrency','CNY','本币');
 INSERT INTO `t_fin_setting` (`SETID`,`SETVALUE`,`COMMENT`) VALUES ('CurryExgToilence','2','货币兑换容错');
+
+-- Default content for language
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('EN','English', 'English');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('ZH','Simp. Chinese', '简体中文');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('TW','Trad. Chinese', '繁體中文');
+INSERT INTO `t_language` (`LANG`,`NAME`,`NAVNAME`) VALUES ('JP','Japanese', '日本語');
+
+-- Default content for lib setting
+INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKAUTHOR', 'Tags for Authors in Book', '["Writer"]');
+INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKPRESS', 'Tags for Presses in Book', '["Press"]');
 
 
 /* The End */ 

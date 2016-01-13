@@ -414,6 +414,7 @@
 
 				$scope.submit = function () {
                     $scope.cleanReportMessages();
+                    
 					// Verify it!
 					var msgTab = $scope.PersonObject.Verify($translate);
 					if (msgTab && msgTab.length > 0) {
@@ -561,14 +562,14 @@
 							$.each($rootScope.arLibOrganization, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.OrganizationObject = angular.copy(obj);
-                                    $.each($scope.PersonObject.Tags, function(idx, obj) {
+                                    $.each($scope.OrganizationObject.Tags, function(idx, obj) {
                                         $scope.TagControlInstance.createItem(obj); 
                                     });
 									return false;
 								}
 							});
 						}, function (reason) {
-							// Errors!
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
 
 				} else {
@@ -748,6 +749,7 @@
                     create: false,
                     onChange: function(value){
                         $log.info('LibBookController, Name Language control, event onChange, ', value);
+                        $scope.SelectedNameObject.LangName = this.options[value].NativeName;
                     },
                     valueField: 'Language',
                     labelField: 'NativeName',
@@ -771,6 +773,7 @@
                     create: false,
                     onChange: function(value){
                         $log.info('LibBookController, Person control, event onChange, ', value);
+                        $scope.SelectedAuthorObject.Name = this.options[value].Name;
                     },
                     valueField: 'ID',
                     labelField: 'Name',
@@ -781,6 +784,7 @@
                     create: false,
                     onChange: function(value){
                         $log.info('LibBookController, Press control, event onChange, ', value);
+                        $scope.SelectedPressObject.Name = this.options[value].Name;
                     },
                     valueField: 'ID',
                     labelField: 'Name',
@@ -791,6 +795,7 @@
                     create: false,
                     onChange: function(value){
                         $log.info('LibBookController, Location control, event onChange, ', value);
+                        $scope.SelectedLocationObject.Name = this.options[value].Name;
                     },
                     valueField: 'ID',
                     labelField: 'Name',
@@ -963,18 +968,7 @@
                 $scope.saveCurrentAuthor = function() {
                     $scope.cleanReportMessages();
                     
-                    // Perform the check
-                    // var rptMsgs = $scope.SelectedNameObject.Verify($translate);
-                    // if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
-                    //     $q.all(rptMsgs)
-                    //         .then(function(response) {
-                    //             $scope.cleanReportMessages();
-                    //             Array.prototype.push.apply($scope.ReportedMessages, response);
-                    //         }, function(reason) {
-                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
-                    //         });
-                    //     return;
-                    // }
+                    // Checks? to-do
                     
                     if ($scope.AuthorActivityID === hih.Constants.UIMode_Create) {
                         $scope.AuthorsCollection.push($scope.SelectedAuthorObject);
