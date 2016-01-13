@@ -143,11 +143,13 @@
                     // Local currency
                     $scope.displayedCollection.push({
                         "Name": $rootScope.objLibSetting.BookAuthorDesp,
-                        "Value": $rootScope.objLibSetting.BookAuthorTags
+                        "Value": $rootScope.objLibSetting.BookAuthorTags,
+                        "Others": $rootScope.objLibSetting.BookAuthorSelectSQL
                     });
                     $scope.displayedCollection.push({
                         "Name": $rootScope.objLibSetting.BookPressDesp,
-                        "Value": $rootScope.objLibSetting.BookPressTags
+                        "Value": $rootScope.objLibSetting.BookPressTags,
+                        "Others": $rootScope.objLibSetting.BookPressSelectSQL
                     });
                 }
             }])		
@@ -713,7 +715,9 @@
                 $scope.AuthorsCollection = [];
                 $scope.PressesCollection = [];
                 $scope.LocationsCollection = [];
-                $scope.LangControlInstance = null;
+                //$scope.LangControlInstance = null;
+                $scope.arAuthors = [];
+                $scope.arPresses = [];
                 
                 $scope.nameLangConfig = {
                     create: false,
@@ -731,7 +735,7 @@
                         $log.info('LibBookController, Language control, event onChange, ', value);
                     },
                     onInitialize: function(objselectize){
-                        $scope.LangControlInstance = objselectize;
+                        //$scope.LangControlInstance = objselectize;
                     },
                     valueField: 'Language',
                     labelField: 'NativeName',

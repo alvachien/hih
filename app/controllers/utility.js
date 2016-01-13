@@ -2250,6 +2250,19 @@
 							return deferred.promise;
 						};
 						// Person
+                        rtnObj.loadLibAuthorQ = function() {
+							var deferred = $q.defer();
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'GETLIBAUTHORLIST' })
+                                .then(function(response) {
+                                    deferred.resolve(response.data);
+                                }, function(response) {
+                                    deferred.reject(response.data.Message);
+                                });
+                        
+                            return deferred.promise;
+                        };
 						rtnObj.loadLibPersonQ = function(bForceReload) {
 							var deferred = $q.defer();
 							

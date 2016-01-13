@@ -5033,6 +5033,67 @@ function lib_person_listread($npersonid = false) {
 		$rsttable 
 	);   
 }
+function lib_person_authorlistread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+    $authortag = "";
+	$query = "SELECT setvalue FROM t_lib_setting WHERE setname = 'BOOKAUTHOR'";
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+            $authortag = $row[0];
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+    
+    // Parse the tags
+    
+	$query = "SELECT ID, NAME, OTHERS, TAGS FROM t_lib_person";
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"id" => $row [0],
+				"name" => $row [1],
+				"others" => $row [2],
+                "tags" => $row[3]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+		$sError,
+		$rsttable 
+	);   
+}
 function lib_person_create($objPerson) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

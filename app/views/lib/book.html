@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Lib.Author"></label>
                             <div class="col-sm-10">
-                                <selectize options='arLibPerson' config="personConfig" ng-model="SelectedAuthorObject.ID"
+                                <selectize options='arAuthors' config="personConfig" ng-model="SelectedAuthorObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>
@@ -237,7 +237,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2" translate="Lib.Press">Press</label>
                             <div class="col-sm-10">
-                                <selectize options='arLibOrganization' config="orgConfig" ng-model="SelectedPressObject.ID"
+                                <selectize options='arPresses' config="orgConfig" ng-model="SelectedPressObject.ID"
                                         ng-disabled="ActivityID == 3" required="required"></selectize>
                             </div>
                         </div>

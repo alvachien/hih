@@ -2045,8 +2045,10 @@
     hih.LibSetting = function LibSetting() {
         this.BookAuthorTags = [];
         this.BookAuthorDesp = "";
+        this.BookAuthorSelectSQL = "";
         this.BookPressTags = [];
         this.BookPressDesp = "";
+        this.BookPressSelectSQL = "";
     };
     hih.extend(hih.LibSetting, hih.Model);
     hih.LibSetting.prototype.setContent = function(arData) {
@@ -2059,14 +2061,38 @@
                         that.BookAuthorTags = JSON && JSON.parse(obj.setvalue) || $.parseJSON(obj.setvalue);
                     } else {
                         that.BookAuthorTags = [];
-                    }        
+                    }
+                    
+                    that.BookAuthorSelectSQL = "";
+                    if (that.BookAuthorTags.length > 0) {
+                        that.BookAuthorSelectSQL = "WHERE setvalue LIKE ";
+                        for(var i = 0; i < that.BookAuthorTags.length; i ++) {
+                            that.BookAuthorSelectSQL = that.BookAuthorSelectSQL.concat("%" + that.BookAuthorTags[i] + "%");
+                            
+                            if (i !== that.BookAuthorTags.length - 1) {
+                                that.BookAuthorSelectSQL = that.BookAuthorSelectSQL.concat(" AND setvalue LIKE ");
+                            }
+                        }
+                    }
 				} else if (obj.setname === hih.Constants.LibSet_BookPressTag) {
 					that.BookPressDesp = obj.setdesp;
                     if (obj.setvalue && obj.setvalue.length > 0) {
                         that.BookPressTags = JSON && JSON.parse(obj.setvalue) || $.parseJSON(obj.setvalue);
                     } else {
                         that.BookPressTags = [];
-                    }        
+                    }
+                    
+                    that.BookPressSelectSQL = "";
+                    if (that.BookPressTags.length > 0) {
+                        that.BookPressSelectSQL = "WHERE setvalue LIKE ";
+                        for(var i = 0; i < that.BookPressTags.length; i ++) {
+                            that.BookPressSelectSQL = that.BookPressSelectSQL.concat("%" + that.BookPressTags[i] + "%");
+                            
+                            if (i !== that.BookPressTags.length - 1) {
+                                that.BookPressSelectSQL = that.BookPressSelectSQL.concat(" AND setvalue LIKE ");
+                            }
+                        }
+                    }
 				}
 			});
 		}

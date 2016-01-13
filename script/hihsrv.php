@@ -790,6 +790,11 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			HIHSrv_Function( 'lib_person_listread' );
 		}
 		break;
+        
+        case "GETLIBAUTHORLIST": {
+            HIHSrv_Function( 'lib_person_authorlistread' );
+        }
+        break;
 		
 		case "GETLIBPERSONDETAIL": {
 			$nid = escape( $realParamArr['id'] );

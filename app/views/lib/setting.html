@@ -10,12 +10,14 @@
 			<tr>
 				<th translate="Common.Object">Object</th>
 				<th translate="Common.Content">Content</th>
+                <th translate="Common.Others">Others</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="row in displayedCollection">
 				<td>{{row.Name}}</td>
 				<td>{{row.Value | json}}</td>
+                <td>{{row.Others}}</td>
 			</tr>
 		</tbody>
 	</table>
