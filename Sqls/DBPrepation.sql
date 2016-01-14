@@ -2656,6 +2656,35 @@ INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKAUTH
 INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKPRESS', 'Tags for Presses in Book', '["Press"]');
 
 /* ======================================================
+    Delta parts on 2016.01.14
+   ====================================================== */
+
+-- Table create: t_lib_booktype
+CREATE TABLE IF NOT EXISTS `t_lib_booktype` (
+  `ID` smallint(6) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(50) DEFAULT NULL,
+  `PARID` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book type';
+
+-- Table create: t_lib_bookgroup
+CREATE TABLE IF NOT EXISTS `t_lib_bookgroup` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `OTHERS` varchar(50) DEFAULT NULL,
+  `PARID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book group';
+
+-- Table create: t_lib_bookgroup_cont
+CREATE TABLE IF NOT EXISTS `t_lib_bookgroup_cont` (
+  `GRPID` int(11) NOT NULL,
+  `BOOKID` int(11) NOT NULL,
+  PRIMARY KEY (`GRPID`, `BOOKID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book group content';
+
+/* ======================================================
     Delta parts on 2016.07.01+
    ====================================================== */
 
