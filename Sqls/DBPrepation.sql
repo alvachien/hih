@@ -2656,7 +2656,7 @@ INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKAUTH
 INSERT INTO `t_lib_setting` (`SETNAME`, `SETDESP`, `SETVALUE`) VALUES ('BOOKPRESS', 'Tags for Presses in Book', '["Press"]');
 
 /* ======================================================
-    Delta parts on 2016.01.14
+    Delta parts on 2016.01.15
    ====================================================== */
 
 -- Table create: t_lib_booktype
@@ -2696,11 +2696,63 @@ INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 8, '历�
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 9, '社会类', '社会类小说', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 10, '职场类', '职场类小说', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 11, '奇幻玄幻类', '奇幻玄幻类小说', 1 );
-INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 12, '财经类', '财经类小说', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 13, '中国古典小说类', '中国古典小说', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 14, '世界名著类', '世界名著类', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 15, '古典小说类', '古典小说', 1 );
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 21, '文学', '文学类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 22, '散文/随笔/书信', '散文/随笔/书信', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 23, '诗歌词曲', '诗歌和词曲', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 24, '中国文学', '中国文学', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 25, '外国文学', '外国文学', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 26, '纪实文学', '纪实文学类', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 27, '文学理论和文学史', '文学理论和文学史', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 28, '校园青春文学', '校园文学和青春文学', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 29, '儿童文学', '认同文学类', 21);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 41, '艺术类', '艺术类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 42, '绘画', '绘画类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 43, '摄影', '摄影类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 44, '书法与篆刻', '书法与篆刻类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 45, '艺术理论与艺术史', '艺术理论与历史类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 46, '建筑', '建筑', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 47, '戏剧', '戏剧类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 48, '舞蹈', '舞蹈类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 49, '音乐', '音乐类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 50, '其他艺术', '其他艺术类', 41);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 61, '励志与成功类', '励志与成功类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 62, '演讲与口才', '演讲与口才类', 61);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 63, '人际与社交', '人际与社交类', 61);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 64, '心灵鸡汤', '心灵鸡汤类', 61);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 71, '经济与管理', '经济与管理类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 72, '经济学理论', '经济学理论类', 71);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 73, '会计与审计', '会计与审计类', 71);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 74, '管理学理论', '管理学理论类', 71);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 75, '金融证券类', '金融与证券类', 71);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 81, '旅游与地图', '旅游与地图类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 82, '烹饪与美食', '烹饪与美食类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 83, '时尚与美妆', '时尚与美妆类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 84, '家居与装修', '家居与装修类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 85, '健身与保健', '健身与保健类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 86, '漫画', '漫画类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 87, '历史', '历史类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 88, '政治与军事', '政治与军事类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 89, '法律', '法律类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 91, '教材与工具书', '教材与工具书类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 92, '小学教材', '小学教材类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 93, '初中教材', '初中教材类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 94, '高中教材', '高中教材类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 95, '大学教材', '大学教材类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 96, '考试教材', '考试教材类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 97, '工具书', '工具书类', 91);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 101, '计算机与互联网', '计算机与互联网类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 102, '编程语言与程序设计', '编程语言与程序设计类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 103, '软件工程', '软件工程类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 104, '数据库', '数据库类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 105, '操作系统', '操作系统类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 106, '网络与通信', '网络与通信类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 107, '图形图像与视频', '图形图像与视频类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 108, '办公软件', '办公软件类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 109, '计算机理论', '计算机理论类', 101);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 110, 'ERP软件', 'ERP软件类', 101);
 
 /* ======================================================
     Delta parts on 2016.07.01+

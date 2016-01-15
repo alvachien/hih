@@ -4892,10 +4892,100 @@ function lib_lang_listread() {
 }
 
 function lib_booktype_listread($nid) {
-    
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM t_lib_booktype";
+	if ($nid) {
+		$query = $query . " WHERE ID = ". $nid;
+	}
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"id" => $row [0],
+				"name" => $row [1],
+				"others" => $row [2],
+				"parid" => $row [3]
+			);
+		}
+	
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+			$sError,
+			$rsttable
+	);
 }
 function lib_bookgroup_listread($nid) {
-    
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+				"Connect failed: %s\n" . mysqli_connect_error (),
+				null
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "SELECT * FROM t_lib_bookgroup";
+	if ($nid) {
+		$query = $query . " WHERE ID = ". $nid;
+	}
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+					"id" => $row [0],
+					"name" => $row [1],
+					"others" => $row [2],
+					"parid" => $row [3]
+			);
+		}
+	
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+			$sError,
+			$rsttable
+	);
 }
 function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

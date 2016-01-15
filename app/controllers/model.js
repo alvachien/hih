@@ -2270,6 +2270,26 @@
         }
         return errMsgs;
     };
+    // 5. Lib book type
+    hih.LibBookType = function LibBookType() {
+    	this.ID = -1;
+    	this.ParentID = -1;
+    	this.Name = "";
+    	this.Others = "";
+    };
+    hih.extend(hih.LibBookType, hih.Model);
+    hih.LibBookType.prototype.setContent = function(obj) {
+    	this.ID = parseInt(obj.id);
+		if (!obj.parent) {
+			this.ParentID = -1;
+		} else {
+			if (typeof obj.parent === "string" && obj.parent === "#") {
+				this.ParentID = -1; // Root node!
+			} else {
+				this.ParentID = parseInt(obj.parent);
+			}			
+		}
+    };
     // 11. Lib Books
     // 11a. Name
     hih.LibBookName = function LibBookName() {
