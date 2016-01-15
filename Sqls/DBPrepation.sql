@@ -2684,6 +2684,24 @@ CREATE TABLE IF NOT EXISTS `t_lib_bookgroup_cont` (
   PRIMARY KEY (`GRPID`, `BOOKID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book group content';
 
+-- Pre-deliver content
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 1, '小说', '小说类', NULL);
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 2, '悬疑推理类', '悬疑推理类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 3, '言情类', '言情类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 4, '恐怖惊悚类', '恐怖惊悚类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 5, '官场类', '官场类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 6, '武侠类', '武侠类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 7, '科幻类', '科幻类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 8, '历史类', '历史类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 9, '社会类', '社会类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 10, '职场类', '职场类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 11, '奇幻玄幻类', '奇幻玄幻类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 12, '财经类', '财经类小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 13, '中国古典小说类', '中国古典小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 14, '世界名著类', '世界名著类', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 15, '古典小说类', '古典小说', 1 );
+INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 21, '文学', '文学类', NULL);
+
 /* ======================================================
     Delta parts on 2016.07.01+
    ====================================================== */

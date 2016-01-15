@@ -745,6 +745,27 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
             HIHSrv_Function( 'lib_lang_listread' );
         }
         break;
+        
+        case "GETLIBBOOKTYPELIST": {
+			HIHSrv_Function( 'lib_booktype_listread' );
+            
+        }
+        break;
+        
+        case "CREATELIBBOOKTYPE": {
+            
+        }
+        break;
+        
+        case "GETLIBBOOKGROUPLIST": {
+			HIHSrv_Function( 'lib_bookgroup_listread' );            
+        }
+        break;
+        
+        case "CREATELIBBOOKGROUP": {
+            
+        }
+        break;
 		
 		case "GETLIBLOCLIST": {
 			HIHSrv_Function( 'lib_loc_listread' );

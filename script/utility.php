@@ -4891,6 +4891,12 @@ function lib_lang_listread() {
 	);   
 }
 
+function lib_booktype_listread($nid) {
+    
+}
+function lib_bookgroup_listread($nid) {
+    
+}
 function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
