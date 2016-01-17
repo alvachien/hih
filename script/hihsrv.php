@@ -747,8 +747,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         break;
         
         case "GETLIBBOOKTYPELIST": {
-			HIHSrv_Function( 'lib_booktype_listread' );
-            
+			HIHSrv_Function( 'lib_booktype_listread' );            
         }
         break;
         

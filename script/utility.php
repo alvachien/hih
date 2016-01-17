@@ -5660,7 +5660,8 @@ function lib_book_listread($nbookid) {
 			$booktable [] = array (
 				"id" => $row [0],
 				"isbn" => $row [1],
-				"others" => $row [2] 
+				"types" => $row [2],
+				"others" => $row [3] 
 			);
 		}
 		
@@ -5821,10 +5822,10 @@ function lib_book_create($objBook) {
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
-	$query = "INSERT INTO t_lib_book(ISBN, OTHERS) VALUES(?, ?)";
+	$query = "INSERT INTO t_lib_book(ISBN, TYPES, OTHERS) VALUES(?, ?, ?)";
 	 
 	if ($stmt = $mysqli->prepare ( $query )) {
-	 	$stmt->bind_param ( "ss", $objBook->ISBN, $objBook->Others );
+	 	$stmt->bind_param ( "ss", $objBook->ISBN, $objBook->Types, $objBook->Others );
 	 	/* Execute the statement */
 	 	if ($stmt->execute ()) {
 	 		$nNewID = $mysqli->insert_id;

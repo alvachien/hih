@@ -31,6 +31,14 @@
 		</div>
 
 		<div class="form-group">
+			<label class="control-label col-sm-2" translate="Common.Type">Type</label>
+			<div class="col-sm-10">
+               <selectize options='arLibBookType' config="typeConfig" ng-model="BookTypesCollection"
+                            ng-disabled="ActivityID == 3" required="required"></selectize>
+			</div>
+		</div>
+
+		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptOther" translate="Common.Other">Other</label>
 			<div class="col-sm-10">
 				<input type="text" class="form-control" id="iptOther" ng-readonly="ActivityID == 3"

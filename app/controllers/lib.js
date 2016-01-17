@@ -29,6 +29,17 @@
 					controller: 'LibLanguageListController'
 				})
 				
+				.state("home.lib.booktype", {
+					url: "/booktype",
+					abstract: true,
+					template: '<div ui-view></div>'
+				})
+				.state("home.lib.booktype.list", {
+					url: "",
+					templateUrl: 'app/views/lib/booktypelist.html',
+					controller: 'LibBookTypeListController'
+				})
+				
 				.state("home.lib.person", {
 					url: "/person",
 					abstract: true,
@@ -162,6 +173,18 @@
 					}, function (reason) {
 						$rootScope.$broadcast("ShowMessage", "Error", reason);
 					});
+			}])
+
+		.controller('LibBookTypeListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
+			$scope.dispList = [];
+			
+			utils.loadLibBookTypeQ()
+				.then(function (response) {
+					$scope.dispList = [].concat($rootScope.arLibBookType);
+				}, function (reason) {
+					$rootScope.$broadcast("ShowMessage", "Error", reason);
+				});
 			}])
 
 		.controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
@@ -648,7 +671,8 @@
 					var q2 = utils.loadLibPersonQ(false);
 					var q3 = utils.loadLibOrganizationQ(false);
 					var q4 = utils.loadLibLocationQ(false);
-					$q.all([q1, q2, q3, q4])
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
                         .then(function(response) {
                             $state.go("home.lib.book.display", { id: nid });                            
                         }, function(reason) {
@@ -672,7 +696,8 @@
 					var q2 = utils.loadLibPersonQ(false);
 					var q3 = utils.loadLibOrganizationQ(false);
 					var q4 = utils.loadLibLocationQ(false);
-					$q.all([q1, q2, q3, q4])
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
 						.then(function(response) {
 							$state.go("home.lib.book.maintain", { id: nid });
 						}, function(reason) {
@@ -711,6 +736,7 @@
                 $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                 $scope.SelectedPressObject = new hih.LibBookPress();
                 $scope.SelectedLocationObject = new hih.LibBookLocation();
+                $scope.BookTypesCollection = [];
                 $scope.LanguagesCollection = [];
                 $scope.NamesCollection = [];
                 $scope.AuthorsCollection = [];
@@ -768,6 +794,18 @@
                     labelField: 'NativeName',
                     maxItems: 10,
                     required: true
+                };
+                $scope.typeConfig = {
+                    create: true,
+                    onChange: function(value){
+                        $log.info('LibBookController, Type control, event onChange, ', value);
+                    },
+                    onInitialize: function(objselectize){
+                        //$scope.LangControlInstance = objselectize;
+                    },
+                    valueField: 'ID',
+                    labelField: 'FullDisplayName',
+                    maxItems: 10
                 };
                 $scope.personConfig = {
                     create: false,

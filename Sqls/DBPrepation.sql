@@ -2684,6 +2684,10 @@ CREATE TABLE IF NOT EXISTS `t_lib_bookgroup_cont` (
   PRIMARY KEY (`GRPID`, `BOOKID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book group content';
 
+-- Alter table
+ALTER TABLE `t_lib_book` 
+ADD COLUMN `TYPES` VARCHAR(50) NULL AFTER `ISBN`;
+
 -- Pre-deliver content
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 1, '小说', '小说类', NULL);
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 2, '悬疑推理类', '悬疑推理类小说', 1 );

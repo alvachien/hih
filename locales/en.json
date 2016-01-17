@@ -244,7 +244,9 @@
         "PickLanguage": "Pick a Language",
         "PickLocation": "Pick a Location",
         "Translator": "Translator",
-        "ISBN": "ISBN"
+        "ISBN": "ISBN",
+        "BookType": "Book Type",
+        "BookGroup": "Book Group"
     },
 	
 	"Message": {

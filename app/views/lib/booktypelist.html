@@ -1,0 +1,40 @@
+<div id="viewLibBookTypeList">
+	<div class="page-header">
+		<h2>
+			<span translate="Lib.BookType">Book Type</span> <small translate="Common.ListView"> List View </small>
+		</h2>
+	</div>
+
+	<table st-table="dispList" st-safe-src="arLibBookType" class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th st-sort="id" translate="Common.ID">ID</th>
+				<th st-sort="name" translate="Common.Name">Name</th>
+				<th st-sort="par" translate="Common.Parent">Parent</th>
+				<th st-sort="dtl" translate="Common.Other">Others</th>				
+			</tr>
+			<tr>
+				<th colspan="4">
+					<input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" />
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in dispList">
+				<td>{{row.ID}}</td>
+				<td>{{row.Name}}</td>
+				<td>{{row.ParentID}}</td>
+				<td>{{row.Others | limitTo: 20}}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="1" class="text-center">
+					<cst-count></cst-count>
+				</td>
+				<td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
+				</td>
+			</tr>
+		</tfoot>
+	</table>	
+</div>

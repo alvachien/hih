@@ -243,7 +243,9 @@
         "PickLanguage": "选择一种语言",
         "PickLocation": "选择一个位置",
         "Translator": "译者",
-        "ISBN": "ISBN"
+        "ISBN": "ISBN",
+        "BookType": "书籍类别",
+        "BookGroup": "书籍套装"
     },
 	  
 	"Message": {

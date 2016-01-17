@@ -1287,6 +1287,7 @@ class HIHLibBook {
     // Properties
     public $ID;
     public $ISBN;
+    public $Types; 
     public $Others;
     
     // Names 
@@ -1317,6 +1318,7 @@ class HIHLibBook {
             switch ($key) {
                 case "ID":
                 case "ISBN":
+                case "Types":
                 case "Others":
                 $this->{$key} = $value; 
                 break;

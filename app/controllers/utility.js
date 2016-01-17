@@ -2116,6 +2116,37 @@
 								});
 							return deferred.promise;
 						};
+						// Book type
+						rtnObj.loadLibBookTypeQ = function(bForceReload) {
+							var deferred = $q.defer();
+                            
+                            if ($rootScope.arLibBookType && $rootScope.arLibBookType.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+                                $rootScope.arLibBookType = [];
+                                
+                                $http.post(
+                                    'script/hihsrv.php',
+                                    { objecttype : 'GETLIBBOOKTYPELIST' })
+                                    .then(function(response) {									
+                                        if ($.isArray(response.data) && response.data.length > 0) {
+                                            $.each(response.data, function(idx, obj) {
+                                                var bs = new hih.LibBookType();
+                                                bs.setContent(obj);
+                                                $rootScope.arLibBookType.push(bs);
+                                            });
+    										$.each($rootScope.arLibBookType, function(idx, obj) {
+    											obj.buildParentInfo($rootScope.arLibBookType);
+    											obj.buildFullName();
+    										});
+                                        }
+                                        deferred.resolve(true);
+                                    }, function(response) {
+                                        deferred.reject(response.data.Message);
+                                    });
+                            }
+							return deferred.promise;
+						};
                         // Language
                         rtnObj.loadLibLanguageQ = function(bForceReload) {
 							var deferred = $q.defer();

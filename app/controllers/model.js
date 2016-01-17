@@ -14,6 +14,7 @@
 		IDSplitChar: ",",
 		DateSplitChar: '-',
 		FinanceTranTypeSplitChar: " > ",
+		LibBookTypeSplitChar: " > ",
 		
 		FinSetting_LocalCurrency: "LocalCurrency",
 		FinSetting_CurrencyExchangeToilence: "CurryExgToilence",
@@ -2276,20 +2277,48 @@
     	this.ParentID = -1;
     	this.Name = "";
     	this.Others = "";
+    	
+    	// Runtime information
+    	this.ParentObject = null;
+    	this.FullDisplayName = "";
     };
     hih.extend(hih.LibBookType, hih.Model);
     hih.LibBookType.prototype.setContent = function(obj) {
     	this.ID = parseInt(obj.id);
-		if (!obj.parent) {
+		if (!obj.parid) {
 			this.ParentID = -1;
 		} else {
-			if (typeof obj.parent === "string" && obj.parent === "#") {
-				this.ParentID = -1; // Root node!
-			} else {
-				this.ParentID = parseInt(obj.parent);
+			this.ParentID = parseInt(obj.parid);
+		}
+		this.Name = obj.name;
+		this.Others = obj.others;
+    };
+	hih.LibBookType.prototype.buildParentInfo = function(arBookType) {
+		if (this.ParentID === -1) {
+			this.ParentObject = null;
+		} else {
+			if ($.isArray(arBookType) && arBookType.length > 0) {
+				var that = this;
+				$.each(arBookType, function(idx, obj){
+					if (that.ParentID === obj.ID) {
+						that.ParentObject = arBookType[idx];
+						return false;
+					}
+				});
 			}			
 		}
-    };
+	};
+	hih.LibBookType.prototype.buildFullName = function() {
+		if (this.ParentID === -1) {
+			// Root type
+			this.FullDisplayName = this.Name;
+		} else {
+			if (this.Parent) {
+				this.FullDisplayName = this.Parent.buildFullName().concat(hih.Constants.LibBookTypeSplitChar, this.Name);				 
+			}
+		}
+		return this.FullDisplayName;
+	};
     // 11. Lib Books
     // 11a. Name
     hih.LibBookName = function LibBookName() {
@@ -2462,6 +2491,7 @@
         this.ISBN = "";
         this.Others = "";
         
+        this.Types = [];
         this.Authors = []; // Authors
         this.Languages = []; // Languages
         this.Presses = []; // Presses
@@ -2473,6 +2503,11 @@
         this.ID = parseInt(obj.id);
         this.ISBN = obj.isbn;
         this.Others = obj.others;
+        if (obj.types && obj.types.length > 0) {
+            this.Types = JSON && JSON.parse(obj.types) || $.parseJSON(obj.types);
+        } else {
+            this.Types = [];
+        }        
     };
     hih.LibBook.prototype.buildRelationship = function(arLang) {
         
@@ -2496,6 +2531,10 @@
                 errMsgs.push("Missing Language");
             }
         }
+        // Types
+        if (this.Types.length <= 0) {
+        	
+        }
         // Authors - Check duplicates
         if (this.Authors.length > 0) {
             
@@ -2515,12 +2554,14 @@
         var forJSON = {};
 		for(var i in this) {
 			if (!this.hasOwnProperty(i) || i === "Authors" || i === "Languages"
-				|| i === "Presses" || i === "Names" || i === "Locations") 
+				|| i === "Presses" || i === "Names" || i === "Locations" || i === "Types") 
 				continue;
 			
 			forJSON[i] = this[i];	
 		}
 		
+		// Types
+        forJSON["Types"] = JSON && JSON.stringify(this.Types);
 		// Names
 		for(var j = 0 ; j < this.Names.length; ++j) {
 			if (!$.isArray(forJSON.Names)) forJSON.Names = [];
