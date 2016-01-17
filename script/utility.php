@@ -5825,7 +5825,7 @@ function lib_book_create($objBook) {
 	$query = "INSERT INTO t_lib_book(ISBN, TYPES, OTHERS) VALUES(?, ?, ?)";
 	 
 	if ($stmt = $mysqli->prepare ( $query )) {
-	 	$stmt->bind_param ( "ss", $objBook->ISBN, $objBook->Types, $objBook->Others );
+	 	$stmt->bind_param ( "sss", $objBook->ISBN, $objBook->Types, $objBook->Others );
 	 	/* Execute the statement */
 	 	if ($stmt->execute ()) {
 	 		$nNewID = $mysqli->insert_id;

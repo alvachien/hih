@@ -2522,6 +2522,35 @@
 							return deferred.promise;
 						};
 						
+                        // Book group
+                        rtnObj.loadLibBookGroupQ = function(bForceReload) {
+							var deferred = $q.defer();
+							
+                            if ($rootScope.arLibBookGroup && $rootScope.arLibBookGroup.length > 0 && !bForceReload) {
+                                deferred.resolve(true);
+                            } else {
+								$rootScope.arLibBookGroup = [];
+								
+								$http.post(
+									'script/hihsrv.php',
+									{ objecttype : 'GETLIBBOOKGROUPLIST' })
+									.then(function(response) {
+										if ($.isArray(response.data) && response.data.length === 2) {
+                                            // Group header
+											$.each(response.data[0], function(idx, obj) {
+												var bs = new hih.LibBook();
+												bs.setContent(obj);
+												$rootScope.arLibBook.push(bs);
+											});
+                                        }
+                                    }, function(reason) {
+									deferred.reject(reason.data.Message);
+								});
+                            }
+                            
+                            return deferred.promise;
+                        };
+                        
                         // Books
                         rtnObj.loadLibBookQ = function(bForceReload) {
 							var deferred = $q.defer();

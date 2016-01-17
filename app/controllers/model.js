@@ -2313,12 +2313,23 @@
 			// Root type
 			this.FullDisplayName = this.Name;
 		} else {
-			if (this.Parent) {
-				this.FullDisplayName = this.Parent.buildFullName().concat(hih.Constants.LibBookTypeSplitChar, this.Name);				 
+			if (this.ParentObject) {
+				this.FullDisplayName = this.ParentObject.buildFullName().concat(hih.Constants.LibBookTypeSplitChar, this.Name);				 
 			}
 		}
 		return this.FullDisplayName;
 	};
+    // 10. Lib Book Group
+    hih.LibBookGroup = function LibBookGroup() {
+        this.ID = -1;
+        this.Name = "";
+        this.Others = "";
+        this.Books = [];
+    };
+    hih.extend(hih.LibBookGroup, hih.Model);
+    hih.LibBookGroup.prototype.setContent = function(obj) {
+        
+    };
     // 11. Lib Books
     // 11a. Name
     hih.LibBookName = function LibBookName() {

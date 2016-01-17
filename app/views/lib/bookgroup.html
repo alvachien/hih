@@ -1,0 +1,89 @@
+<div id="viewLibBookGroup">
+	<div class="page-header">
+		<h2>
+            <span translate="Lib.BookGroup">Book Group</span><small> {{Activity | translate}}</small>
+		</h2>
+	</div>
+
+	<div class="form-horizontal" role="form" name="frmObj">
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptID" translate="Common.ID"></label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptID"
+					   readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="BookGroupObject.ID">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptName" translate="Common.Name"></label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
+					placeholder="{{'Common.Name' | translate}}" ng-model="BookGroupObject.Name">
+			</div>
+		</div>
+        
+        <!-- Book -->
+        <div class="panel panel-default" style="margin: 30px, 10px;">
+            <div class="panel-heading">{{'Lib.Book' | translate}}</div>
+            <div class="panel-body">
+                <!-- Tables -->
+                <table st-table="dispList" st-safe-src="arLibBook" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th st-sort="id" translate="Common.ID">ID</th>
+                            <th st-sort="isbn">ISBN</th>
+                            <th st-sort="oth" translate="Common.Other">Others</th>
+                            <th translate="Common.Operations">Operations</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5">
+                                <input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in dispList">
+                            <td cs-select="row"></td>
+                            <td><a ng-href="#/home/lib/book/display/{{row.ID}}"> {{row.ID}} </a></td>
+                            <td>{{row.ISBN}}</td>
+                            <td>{{row.Others | limitTo: 20}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
+                                    <i class="glyphicon glyphicon-share">
+                                    </i>
+                                </button>
+                                <button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
+                                    <i class="glyphicon glyphicon-edit">
+                                    </i>
+                                </button>
+                                <button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger" tooltip="{{'Common.Delete' | translate}}">
+                                    <i class="glyphicon glyphicon-remove-circle">
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                <cst-count></cst-count>
+                            </td>
+                            <td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>	
+            </div>
+        </div>
+
+        <!-- Button row -->        
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"
+					translate="Common.Submit">Submit</button>
+				<button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1381,8 +1381,7 @@ class HIHLibBook {
                 
                 default:
                 break;
-            }
-			
+            }			
 		}
 	}
 }

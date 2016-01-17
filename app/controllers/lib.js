@@ -143,6 +143,26 @@
                     templateUrl: 'app/views/lib/book.html',
                     controller: 'LibBookController'
                 })
+				.state("home.lib.bookgroup.list", {
+					url: "",
+					templateUrl: 'app/views/lib/bookgrouplist.html',
+					controller: 'LibBookGroupListController'
+				})
+                .state("home.lib.bookgroup.create", {
+                    url: "/create",
+                    templateUrl: 'app/views/lib/bookgroup.html',
+                    controller: 'LibBookGroupController'
+                })
+                .state("home.lib.book.display", {
+                    url: "/display/:id",
+                    templateUrl: 'app/views/lib/bookgroup.html',
+                    controller: 'LibBookGroupController'
+                })
+                .state("home.lib.book.maintain", {
+                    url: "/maintain/:id",
+                    templateUrl: 'app/views/lib/bookgroup.html',
+                    controller: 'LibBookGroupController'
+                })
 			;
 		}])
 
@@ -637,6 +657,181 @@
 					$state.go("home.lib.org.list");
 				};
 			}])
+            
+		.controller('LibBookGroupListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', '$q', 'utils',
+			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, $q, utils) {
+				$scope.dispList = [];
+
+				$scope.newItem = function () {
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
+                        .then(function(response) {
+                            $state.go("home.lib.bookgroup.create");
+                        }, function(reason) {
+                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        });					
+				};
+				$scope.displayItem = function (row) {
+					var nid = null;
+					if (row) {
+						nid = row.ID;
+					} else {
+						for (var i = 0; i < $scope.dispList.length; i++) {
+							if ($scope.dispList[i].isSelected) {
+								nid = $scope.dispList[i].ID;
+								break;
+							}
+						}
+					}
+
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
+                        .then(function(response) {
+                            $state.go("home.lib.bookgroup.display", { id: nid });                            
+                        }, function(reason) {
+                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        });					
+				};
+				$scope.editItem = function (row) {
+					var nid = null;
+					if (row) {
+						nid = row.ID;
+					} else {
+						for (var i = 0; i < $scope.dispList.length; i++) {
+							if ($scope.dispList[i].isSelected) {
+								nid = $scope.dispList[i].ID;
+								break;
+							}
+						}
+					}
+					
+					var q1 = utils.loadLibLanguageQ(false);
+					var q2 = utils.loadLibPersonQ(false);
+					var q3 = utils.loadLibOrganizationQ(false);
+					var q4 = utils.loadLibLocationQ(false);
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
+						.then(function(response) {
+							$state.go("home.lib.bookgroup.maintain", { id: nid });
+						}, function(reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});					
+				};
+				$scope.removeItem = function () {
+					// ToDo					
+				};
+				
+				$scope.refreshList = function (bReload) {
+					utils.loadLibBookGroupQ(bReload)
+						.then(function (response) {
+							$scope.dispList = [].concat($rootScope.arLibBook);
+						}, function (reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
+				};
+
+				$scope.refreshList(false);
+			}])
+
+		.controller('LibBookGroupController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', '$log', 'utils',
+			function ($scope, $rootScope, $state, $stateParams, $http, $translate, $q, $log, utils) {
+				$scope.Activity = "";
+				$scope.ActivityID = hih.Constants.UIMode_Create;
+                
+                // Error messges
+                $scope.ReportedMessages = [];
+                $scope.cleanReportMessages = function() {
+                    $scope.ReportedMessages = [];
+                };
+
+				$scope.BookGroupObject = new hih.LibBookGroup();
+                $scope.TagControlInstance = null;
+                $scope.tagsConfig = {
+                    create: true, // Allow create!
+                    delimiter: '|',
+                    maxItems: 10,
+                    onChange: function(value){
+                        $log.info('LibOrganizationController, tags control, event onChange, ', value);
+                    },
+                    onInitialize: function(objselectize){
+                        $scope.TagControlInstance = objselectize;
+                    }
+                };
+
+				if (angular.isDefined($stateParams.id)) {
+					if ($state.current.name === "home.lib.org.maintain") {
+						$scope.Activity = "Common.Edit";
+						$scope.ActivityID = hih.Constants.UIMode_Change;
+					} else if ($state.current.name === "home.lib.org.display") {
+						$scope.Activity = "Common.Display";
+						$scope.ActivityID = hih.Constants.UIMode_Display;
+					}
+
+					utils.readLibOrganizationQ(parseInt($stateParams.id))
+						.then(function (response) {
+							$.each($rootScope.arLibOrganization, function (idx, obj) {
+								if (obj.ID === parseInt($stateParams.id)) {
+									$scope.OrganizationObject = angular.copy(obj);
+                                    $.each($scope.OrganizationObject.Tags, function(idx, obj) {
+                                        $scope.TagControlInstance.createItem(obj); 
+                                    });
+									return false;
+								}
+							});
+						}, function (reason) {
+							$rootScope.$broadcast("ShowMessage", "Error", reason);
+						});
+
+				} else {
+					$scope.Activity = "Common.Create";
+					$scope.ActivityID = hih.Constants.UIMode_Create;
+				};
+
+				$scope.submit = function () {
+                    $scope.cleanReportMessages();
+                    
+					// Verify it!
+					var msgTab = $scope.OrganizationObject.Verify($translate);
+					if (msgTab && msgTab.length > 0) {
+						$q.all(msgTab).then(function (translations) {
+							// Show errors
+							$.each(translations, function (idx, obj) {
+								$rootScope.$broadcast("ShowMessage", "Error", obj);
+							});
+						});
+						return;
+					}
+				 
+					// Now, submit to the server
+					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
+						utils.createLibOrganizationQ($scope.OrganizationObject)
+							.then(function (response) {
+								$state.go("home.lib.org.display", { id: response });
+							}, function (reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", reason);
+							});
+					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
+						utils.updateLibOrganizationQ($scope.OrganizationObject)
+							.then(function (response) {
+								$state.go("home.lib.org.maintain", { id: $scope.OrganizationObject.ID });
+							}, function (reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", reason);
+							});
+					}
+				};
+
+				$scope.close = function () {
+					$state.go("home.lib.org.list");
+				};
+			}])
 
 		.controller('LibBookListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', '$q', 'utils',
 			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, $q, utils) {
@@ -647,7 +842,8 @@
 					var q2 = utils.loadLibPersonQ(false);
 					var q3 = utils.loadLibOrganizationQ(false);
 					var q4 = utils.loadLibLocationQ(false);
-					$q.all([q1, q2, q3, q4])
+					var q5 = utils.loadLibBookTypeQ(false);
+					$q.all([q1, q2, q3, q4, q5])
                         .then(function(response) {
                             $state.go("home.lib.book.create");
                         }, function(reason) {
@@ -736,7 +932,6 @@
                 $scope.SelectedAuthorObject = new hih.LibBookAuthor();
                 $scope.SelectedPressObject = new hih.LibBookPress();
                 $scope.SelectedLocationObject = new hih.LibBookLocation();
-                $scope.BookTypesCollection = [];
                 $scope.LanguagesCollection = [];
                 $scope.NamesCollection = [];
                 $scope.AuthorsCollection = [];
@@ -866,6 +1061,10 @@
                                          $scope.LanguagesCollection.push(obj2.Language); //.createItem(obj); 
                                          //$scope.LangControlInstance.createItem(obj2.Language);
                                     });
+                                    // // Set the type
+                                    // $.each($scope.BookObject.Types, function(idx2, obj2) {
+                                    //      $scope.BookTypesCollection.push(obj2.ID); //.createItem(obj); 
+                                    // });
                                     
 									return false;
 								}
