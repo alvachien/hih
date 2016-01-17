@@ -143,6 +143,11 @@
                     templateUrl: 'app/views/lib/book.html',
                     controller: 'LibBookController'
                 })
+				.state("home.lib.bookgroup", {
+					url: "/bookgroup",
+					abstract: true,
+					template: '<div ui-view></div>'
+				})
 				.state("home.lib.bookgroup.list", {
 					url: "",
 					templateUrl: 'app/views/lib/bookgrouplist.html',
@@ -153,12 +158,12 @@
                     templateUrl: 'app/views/lib/bookgroup.html',
                     controller: 'LibBookGroupController'
                 })
-                .state("home.lib.book.display", {
+                .state("home.lib.bookgroup.display", {
                     url: "/display/:id",
                     templateUrl: 'app/views/lib/bookgroup.html',
                     controller: 'LibBookGroupController'
                 })
-                .state("home.lib.book.maintain", {
+                .state("home.lib.bookgroup.maintain", {
                     url: "/maintain/:id",
                     templateUrl: 'app/views/lib/bookgroup.html',
                     controller: 'LibBookGroupController'
