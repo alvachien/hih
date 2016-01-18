@@ -22,7 +22,15 @@
 			</div>
 		</div>
         
-        <!-- Book -->
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="iptOthers" translate="Common.Other">Other</label>
+			<div class="col-sm-10">
+                <textarea class="form-control" rows="5" id="iptOthers" 
+                        ng-model="BookGroupObject.Others" ng-readonly="ActivityID == 3"></textarea>
+			</div>
+		</div>
+        
+        <!-- Books -->
         <div class="panel panel-default" style="margin: 30px, 10px;">
             <div class="panel-heading">{{'Lib.Book' | translate}}</div>
             <div class="panel-body">
