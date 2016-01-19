@@ -758,36 +758,21 @@
                 };
 
 				$scope.BookGroupObject = new hih.LibBookGroup();
-                $scope.TagControlInstance = null;
-                $scope.tagsConfig = {
-                    create: true, // Allow create!
-                    delimiter: '|',
-                    maxItems: 10,
-                    onChange: function(value){
-                        $log.info('LibOrganizationController, tags control, event onChange, ', value);
-                    },
-                    onInitialize: function(objselectize){
-                        $scope.TagControlInstance = objselectize;
-                    }
-                };
 
 				if (angular.isDefined($stateParams.id)) {
-					if ($state.current.name === "home.lib.org.maintain") {
+					if ($state.current.name === "home.lib.bookgroup.maintain") {
 						$scope.Activity = "Common.Edit";
 						$scope.ActivityID = hih.Constants.UIMode_Change;
-					} else if ($state.current.name === "home.lib.org.display") {
+					} else if ($state.current.name === "home.lib.bookgroup.display") {
 						$scope.Activity = "Common.Display";
 						$scope.ActivityID = hih.Constants.UIMode_Display;
 					}
 
-					utils.readLibOrganizationQ(parseInt($stateParams.id))
+					utils.readLibBookGroupQ(parseInt($stateParams.id))
 						.then(function (response) {
-							$.each($rootScope.arLibOrganization, function (idx, obj) {
+							$.each($rootScope.arLibBookGroup, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
-									$scope.OrganizationObject = angular.copy(obj);
-                                    $.each($scope.OrganizationObject.Tags, function(idx, obj) {
-                                        $scope.TagControlInstance.createItem(obj); 
-                                    });
+									$scope.BookGroupObject = angular.copy(obj);
 									return false;
 								}
 							});
@@ -804,7 +789,7 @@
                     $scope.cleanReportMessages();
                     
 					// Verify it!
-					var msgTab = $scope.OrganizationObject.Verify($translate);
+					var msgTab = $scope.BookGroupObject.Verify($translate);
 					if (msgTab && msgTab.length > 0) {
 						$q.all(msgTab).then(function (translations) {
 							// Show errors
@@ -817,16 +802,16 @@
 				 
 					// Now, submit to the server
 					if ($scope.ActivityID === hih.Constants.UIMode_Create) {
-						utils.createLibOrganizationQ($scope.OrganizationObject)
+						utils.createLibBookGroupQ($scope.BookGroupObject)
 							.then(function (response) {
-								$state.go("home.lib.org.display", { id: response });
+								$state.go("home.lib.bookgroup.display", { id: response });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-						utils.updateLibOrganizationQ($scope.OrganizationObject)
+						utils.updateLibBookGroupQ($scope.BookGroupObject)
 							.then(function (response) {
-								$state.go("home.lib.org.maintain", { id: $scope.OrganizationObject.ID });
+								$state.go("home.lib.bookgroup.maintain", { id: $scope.BookGroupObject.ID });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
@@ -834,7 +819,7 @@
 				};
 
 				$scope.close = function () {
-					$state.go("home.lib.org.list");
+					$state.go("home.lib.bookgroup.list");
 				};
 			}])
 

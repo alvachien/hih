@@ -761,6 +761,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         }
         break;
         
+        case "GETLIBBOOKGROUPDETAIL": {
+			$nid = escape( $realParamArr['id'] );
+            HIHSrv_Function_1Param( 'lib_bookgroup_listread', $nid );    
+        }
+        break;
+        
         case "CREATELIBBOOKGROUP": {
             
         }

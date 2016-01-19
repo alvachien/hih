@@ -4958,7 +4958,8 @@ function lib_bookgroup_listread($nid) {
 	
 	// Perform the query
 	$rsttable = array ();
-	$query = "SELECT * FROM t_lib_bookgroup";
+    $grpbooktable = array();
+	$query = "SELECT ID, NAME, OTHERS FROM t_lib_bookgroup";
 	if ($nid) {
 		$query = $query . " WHERE ID = ". $nid;
 	}
@@ -4967,10 +4968,9 @@ function lib_bookgroup_listread($nid) {
 		/* fetch associative array */
 		while ( $row = mysqli_fetch_row ( $result ) ) {
 			$rsttable [] = array (
-					"id" => $row [0],
-					"name" => $row [1],
-					"others" => $row [2],
-					"parid" => $row [3]
+				"id" => $row [0],
+				"name" => $row [1],
+				"others" => $row [2]
 			);
 		}
 	
@@ -4979,12 +4979,37 @@ function lib_bookgroup_listread($nid) {
 	} else {
 		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
+
+	// Books
+	if (empty($sError)) {
+		$query = "SELECT taba.GRPID, taba.BOOKID, tabb.ISBN FROM t_lib_bookgroup_cont AS taba left outer join t_lib_book AS tabb ON taba.BOOKID = tabb.ID ";
+        // Using GROUP_CONCAT method?
+		if ($nbookid) {
+			$query = $query . " WHERE taba.GRPID = ". $nid;
+		}
+		
+		if ($result = mysqli_query ( $link, $query )) {
+			/* fetch associative array */
+			while ( $row = mysqli_fetch_row ( $result ) ) {
+				$grpbooktable [] = array (
+					"grpid" => $row [0],
+					"bookid" => $row [1],
+					"isbn" => $row [2]
+				);
+			}
+			
+			/* free result set */
+			mysqli_free_result ( $result );
+		} else {
+			$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+		}
+	}
 	
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
 			$sError,
-			$rsttable
+			array($rsttable, $grpbooktable)
 	);
 }
 function lib_loc_listread($nlocid = false) {
