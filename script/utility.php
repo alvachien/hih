@@ -5012,6 +5012,9 @@ function lib_bookgroup_listread($nid) {
 			array($rsttable, $grpbooktable)
 	);
 }
+function lib_bookgroup_create($objGrp) {
+    
+}
 function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

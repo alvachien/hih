@@ -2324,11 +2324,23 @@
         this.ID = -1;
         this.Name = "";
         this.Others = "";
+        this.ParentID = -1;
+        
         this.Books = [];
     };
     hih.extend(hih.LibBookGroup, hih.Model);
     hih.LibBookGroup.prototype.setContent = function(obj) {
         
+    };
+    hih.LibBookGroup.prototype.ToJSONObject = function() {
+        
+    };
+    hih.LibBookGroup.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON);
+		}
+		return JSON && JSON.stringify(this);
     };
     // 11. Lib Books
     // 11a. Name

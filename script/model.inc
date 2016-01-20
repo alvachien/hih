@@ -1283,6 +1283,52 @@ class HIHLibBookLocation {
     }
 }
 
+class HIHLibBookGroup {
+	// Properties
+	public $ID;
+	public $Name;
+    public $Others;
+    public $ParentID;
+    
+    public $BookArray = array();
+
+	// Function
+	public function __construct($json = false) {
+        if ($json) $this->fromJSON($json);
+    }
+	public function CheckValid() {
+	
+		return null;
+	}
+	public function fromJSON($jsonData) {
+		foreach ($jsonData as $key => $value) {
+            switch($key) {
+                case "ID":
+                case "Name":
+                case "Others":
+                case "ParentID":
+                $this->{$key} = $value;
+                break;                
+                
+                case "Books":
+                {
+					if (is_array($value)) {
+						$count = count($value);
+						for ($i = 0; $i < $count; $i++) {
+							$di = intval( $value[ $i ] );
+							$this->BookArray [$di] = $di;
+						}
+					}
+                }
+                break;
+                
+                default:
+                break;
+            }            
+        }
+    }
+}
+
 class HIHLibBook {
     // Properties
     public $ID;
