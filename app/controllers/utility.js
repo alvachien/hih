@@ -2572,7 +2572,25 @@
                             return deferred.promise;
                         };
                         rtnObj.createLibBookGroupQ = function(objBookGroup) {
+                            var deferred = $q.defer();
                             
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'GETLIBBOOKGROUPDETAIL', id: nID })
+                                .then(function(response) {
+                                    if ($.isArray(response.data) && response.data.length === 2) {
+                                        // Group header
+                                        $.each(response.data[0], function(idx, obj) {
+                                            var bs = new hih.LibBook();
+                                            bs.setContent(obj);
+                                            $rootScope.arLibBook.push(bs);
+                                        });
+                                    }
+                                }, function(reason) {
+                                deferred.reject(reason.data.Message);
+                            });
+                            
+                            return deferred.promise;
                         };
                         
                         // Books
