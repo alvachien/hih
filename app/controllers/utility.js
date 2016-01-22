@@ -2538,7 +2538,7 @@
 										if ($.isArray(response.data) && response.data.length === 2) {
                                             // Group header
 											$.each(response.data[0], function(idx, obj) {
-												var bs = new hih.LibBook();
+												var bs = new hih.LibBookGroup();
 												bs.setContent(obj);
 												$rootScope.arLibBook.push(bs);
 											});
@@ -2581,9 +2581,9 @@
                                     if ($.isArray(response.data) && response.data.length === 2) {
                                         // Group header
                                         $.each(response.data[0], function(idx, obj) {
-                                            var bs = new hih.LibBook();
+                                            var bs = new hih.LibBookGroup();
                                             bs.setContent(obj);
-                                            $rootScope.arLibBook.push(bs);
+                                            $rootScope.arLibBookGroup.push(bs);
                                         });
                                     }
                                 }, function(reason) {

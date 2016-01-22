@@ -5013,7 +5013,84 @@ function lib_bookgroup_listread($nid) {
 	);
 }
 function lib_bookgroup_create($objGrp) {
-    
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = -1;
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* Prepare an insert statement */
+	$query = "INSERT INTO t_lib_bookgroup(NAME, OTHERS, PARID) VALUES(?, ?, ?)";
+	 
+	if ($stmt = $mysqli->prepare ( $query )) {
+	 	$stmt->bind_param ( "ssi", $objGrp->Name, $objGrp->Others, $objGrp->ParentID );
+	 	/* Execute the statement */
+	 	if ($stmt->execute ()) {
+	 		$nNewID = $mysqli->insert_id;
+	 	} else {
+	 		$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	 	}
+	 	
+	 	/* close statement */
+	 	$stmt->close ();
+	} else {
+	 	$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* Insert on content */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookgroup_cont (`GRPID`, `BOOKID`) VALUES (?, ?);";
+		foreach ( $objBook->BookArray as $bookid ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ii", $nNewID, $bookid );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nNewID 
+	);
 }
 function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

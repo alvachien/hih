@@ -2330,10 +2330,21 @@
     };
     hih.extend(hih.LibBookGroup, hih.Model);
     hih.LibBookGroup.prototype.setContent = function(obj) {
-        
+        this.ID = parseInt(obj.id);
+        this.Name = obj.name;
+        this.Others = obj.others;
     };
     hih.LibBookGroup.prototype.ToJSONObject = function() {
+        var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "Books" ) 
+				continue;
+			
+			forJSON[i] = this[i];
+		}
         
+        forJSON["Books"] = JSON && JSON.stringify(this.Books);
+        return forJSON;
     };
     hih.LibBookGroup.prototype.ToJSON = function() {
 		var forJSON = this.ToJSONObject();
