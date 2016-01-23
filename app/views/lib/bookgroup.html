@@ -38,38 +38,16 @@
                 <table st-table="dispList" st-safe-src="BookGroupObject.Books" class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th></th>
                             <th st-sort="id" translate="Common.ID">ID</th>
-                            <th st-sort="isbn">ISBN</th>
-                            <th st-sort="oth" translate="Common.Other">Others</th>
-                            <th translate="Common.Operations">Operations</th>
-                        </tr>
-                        <tr>
-                            <th colspan="5">
-                                <input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" />
-                            </th>
+                            <th st-sort="name">Name</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="row in dispList">
-                            <td cs-select="row"></td>
-                            <td><a ng-href="#/home/lib/book/display/{{row.ID}}"> {{row.ID}} </a></td>
-                            <td>{{row.ISBN}}</td>
-                            <td>{{row.Others | limitTo: 20}}</td>
                             <td>
-                                <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
-                                    <i class="glyphicon glyphicon-share">
-                                    </i>
-                                </button>
-                                <button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
-                                    <i class="glyphicon glyphicon-edit">
-                                    </i>
-                                </button>
-                                <button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger" tooltip="{{'Common.Delete' | translate}}">
-                                    <i class="glyphicon glyphicon-remove-circle">
-                                    </i>
-                                </button>
+                                <a ng-href="#/home/lib/book/display/{{row.ID}}"> {{row.ID}} </a>
                             </td>
+                            <td>{{row.Names_RT}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -77,19 +55,9 @@
                             <td colspan="2" class="text-center">
                                 <cst-count></cst-count>
                             </td>
-                            <td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
-                            </td>
                         </tr>
                     </tfoot>
                 </table>
-                
-                <br />
-
-                <div class="panel panel-default" style="margin: 30px, 10px;">
-                    <div class="panel-heading">Add new book</div>
-                    <div class="panel-body">
-                    </div>
-                </div>
             </div>
         </div>
 
