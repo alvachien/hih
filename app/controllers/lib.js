@@ -756,8 +756,9 @@
                 $scope.cleanReportMessages = function() {
                     $scope.ReportedMessages = [];
                 };
-
+    
 				$scope.BookGroupObject = new hih.LibBookGroup();
+                $scope.bookList = [];
 
 				if (angular.isDefined($stateParams.id)) {
 					if ($state.current.name === "home.lib.bookgroup.maintain") {
@@ -784,7 +785,41 @@
 					$scope.Activity = "Common.Create";
 					$scope.ActivityID = hih.Constants.UIMode_Create;
 				};
-
+                
+                $scope.addItem = function() {
+                    var objNew = {};
+                    objNew.isEditing = true;
+                    objNew.ID = -1;
+                    objNew.Names_RT= "N/A";
+                    $scope.bookList.push(objNew);
+                };
+                
+                $scope.saveItem = function(row) {
+                    $scope.cleanReportMessages();
+                    
+                };
+                
+                $scope.editItem = function(row) {
+                    row.isEditing = true;
+                    //$scope.$apply();
+                };
+                
+                $scope.cancelEditItem = function(row) {
+                    row.isEditing = false;
+                    //$scope.$apply();
+                    
+                    // var realidx = -1;
+                    // $.each($scope.bookList, function(idx, obj) {
+                    //    if (obj.$$hashkey === row.$$hashkey) {
+                    //        realidx = idx;
+                    //        return false;
+                    //    } 
+                    // });
+                    // if (realidx != -1) {
+                    //     $scope.bookList[realidx].isEditing = false;
+                    // }
+                };
+                
 				$scope.submit = function () {
                     $scope.cleanReportMessages();
                     

@@ -91,3 +91,16 @@ to prevent collapsing during animation*/
 .amountcell { text-align: right; }
 .trantypeexpense { color: red; font-weight: bold; }
 .trantypenonexpense { color: yellowgreen; font-weight: bold; }
+
+/* For smart-table */
+.st-sort-ascent:before{
+  content: '\25B2';
+}
+
+.st-sort-descent:before{
+  content: '\25BC';
+}
+.st-selected { 
+  background: #216ebf !important;
+  color: white !important;
+}
