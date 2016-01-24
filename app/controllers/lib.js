@@ -668,12 +668,7 @@
 				$scope.dispList = [];
 
 				$scope.newItem = function () {
-					var q1 = utils.loadLibLanguageQ(false);
-					var q2 = utils.loadLibPersonQ(false);
-					var q3 = utils.loadLibOrganizationQ(false);
-					var q4 = utils.loadLibLocationQ(false);
-					var q5 = utils.loadLibBookTypeQ(false);
-					$q.all([q1, q2, q3, q4, q5])
+					utils.loadLibBookForGroupQ()
                         .then(function(response) {
                             $state.go("home.lib.bookgroup.create");
                         }, function(reason) {
@@ -693,12 +688,7 @@
 						}
 					}
 
-					var q1 = utils.loadLibLanguageQ(false);
-					var q2 = utils.loadLibPersonQ(false);
-					var q3 = utils.loadLibOrganizationQ(false);
-					var q4 = utils.loadLibLocationQ(false);
-					var q5 = utils.loadLibBookTypeQ(false);
-					$q.all([q1, q2, q3, q4, q5])
+					utils.loadLibBookForGroupQ()
                         .then(function(response) {
                             $state.go("home.lib.bookgroup.display", { id: nid });                            
                         }, function(reason) {
@@ -718,12 +708,7 @@
 						}
 					}
 					
-					var q1 = utils.loadLibLanguageQ(false);
-					var q2 = utils.loadLibPersonQ(false);
-					var q3 = utils.loadLibOrganizationQ(false);
-					var q4 = utils.loadLibLocationQ(false);
-					var q5 = utils.loadLibBookTypeQ(false);
-					$q.all([q1, q2, q3, q4, q5])
+					utils.loadLibBookForGroupQ()
 						.then(function(response) {
 							$state.go("home.lib.bookgroup.maintain", { id: nid });
 						}, function(reason) {
@@ -737,7 +722,7 @@
 				$scope.refreshList = function (bReload) {
 					utils.loadLibBookGroupQ(bReload)
 						.then(function (response) {
-							$scope.dispList = [].concat($rootScope.arLibBook);
+							$scope.dispList = [].concat($rootScope.arLibBookGroup);
 						}, function (reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});
@@ -774,6 +759,24 @@
 							$.each($rootScope.arLibBookGroup, function (idx, obj) {
 								if (obj.ID === parseInt($stateParams.id)) {
 									$scope.BookGroupObject = angular.copy(obj);
+                                    
+                                    // bookList
+                                    if (obj.Books && obj.Books.length > 0) {
+                                        for(var i = 0; i < obj.Books.length; i ++) {
+                                            var objNew = {};
+                                            objNew.isEditing = false;
+                                            objNew.ID = parseInt(obj.Books[i]);
+                                            
+                                            $.each($rootScope.arLibBookBrief, function(idx3, obj3) {
+                                                if (parseInt(obj3.id) === objNew.ID) {
+                                                    objNew.Names_RT = obj3.name;
+                                                    return false;
+                                                } 
+                                            });
+                                            $scope.bookList.push(objNew);
+                                        }
+                                    }
+                                    
 									return false;
 								}
 							});
@@ -787,6 +790,8 @@
 				};
                 
                 $scope.addItem = function() {
+                    $scope.cleanReportMessages();
+                    
                     var objNew = {};
                     objNew.isEditing = true;
                     objNew.ID = -1;
@@ -797,31 +802,54 @@
                 $scope.saveItem = function(row) {
                     $scope.cleanReportMessages();
                     
+                    var bExist = false;
+                    var nRowID = parseInt(row.ID);
+                    
+                    // Check the ID
+                    if (isNaN(nRowID) || nRowID === -1) {                        
+                    } else {
+                        $.each($rootScope.arLibBookBrief, function(idx, obj) {
+                            if (parseInt(obj.id) === nRowID) {
+                                row.Names_RT = obj.name;
+                                bExist = true;
+                                return false;
+                            } 
+                        });
+                    }
+                    
+                    if (!bExist) {
+                        row.Names_RT = "Invalid Book ID";
+                    } else {
+                        row.isEditing = false;
+                    }
                 };
                 
                 $scope.editItem = function(row) {
+                    $scope.cleanReportMessages();
                     row.isEditing = true;
-                    //$scope.$apply();
                 };
                 
                 $scope.cancelEditItem = function(row) {
+                    $scope.cleanReportMessages();
                     row.isEditing = false;
-                    //$scope.$apply();
+                };
+                
+                $scope.removeItem = function(row) {
+                    $scope.cleanReportMessages();
                     
-                    // var realidx = -1;
-                    // $.each($scope.bookList, function(idx, obj) {
-                    //    if (obj.$$hashkey === row.$$hashkey) {
-                    //        realidx = idx;
-                    //        return false;
-                    //    } 
-                    // });
-                    // if (realidx != -1) {
-                    //     $scope.bookList[realidx].isEditing = false;
-                    // }
+                    //var index = $scope.bookList.indexOf(row);
+                    if (this.$index !== -1) {
+                        $scope.bookList.splice(this.$index, 1);
+                    }
                 };
                 
 				$scope.submit = function () {
                     $scope.cleanReportMessages();
+                    
+                    $scope.BookGroupObject.Books = [];
+                    $.each($scope.bookList, function(idx, obj) {
+                       $scope.BookGroupObject.Books.push(obj.ID); 
+                    });
                     
 					// Verify it!
 					var msgTab = $scope.BookGroupObject.Verify($translate);

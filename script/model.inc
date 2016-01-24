@@ -1300,7 +1300,9 @@ class HIHLibBookGroup {
 	
 		return null;
 	}
-	public function fromJSON($jsonData) {
+	public function fromJSON($jsonData) {        
+        $this->BookArray = array();
+        
 		foreach ($jsonData as $key => $value) {
             switch($key) {
                 case "ID":
@@ -1316,7 +1318,7 @@ class HIHLibBookGroup {
 						$count = count($value);
 						for ($i = 0; $i < $count; $i++) {
 							$di = intval( $value[ $i ] );
-							$this->BookArray [$di] = $di;
+							$this->BookArray[] = $di;
 						}
 					}
                 }
@@ -1360,6 +1362,9 @@ class HIHLibBook {
 	public function fromJSON($jsonData) {
 		$this->NameArray = array();
         $this->LangArray = array();
+        $this->AuthorArray = array();
+        $this->PressArray = array();
+        $this->LocationArray = array();
 		foreach ($jsonData AS $key => $value) {
             switch ($key) {
                 case "ID":

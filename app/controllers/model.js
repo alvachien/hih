@@ -211,7 +211,17 @@
 
 	    return pass_level;
 	};
-
+    hih.ModelUtility.hasDuplicatesInStringArray = function (strarray) {
+        var valuesSoFar = Object.create(null);
+        for (var i = 0; i < strarray.length; ++i) {
+            var value = strarray[i];
+            if (value in valuesSoFar) {
+                return true;
+            }
+            valuesSoFar[value] = true;
+        }
+        return false;
+    };
 
 
 
@@ -2334,16 +2344,46 @@
         this.Name = obj.name;
         this.Others = obj.others;
     };
+    hih.LibBookGroup.prototype.Verify = function($translate) {
+		var errMsgs = [];
+
+        // Names
+        if (this.Name.length <= 0) {
+            if ($translate) {
+                errMsgs.push($translate("Message.MissingName"));
+            } else {
+                errMsgs.push("Missing Name");
+            }
+        }
+        
+        if (this.Books.length > 0) {
+            var strArr = [];
+            $.each(this.Books, function(idx, obj) {
+                strArr.push(obj.toString());
+            })
+            if (hih.ModelUtility.hasDuplicatesInStringArray(strArr)) {
+                // Throw errors
+                if ($translate) {
+                    errMsgs.push($translate("Message.DuplicateControlCenterInSRule"));
+                } else {
+                    errMsgs.push("Dupliate books");
+                }
+            }     
+        }
+        
+        // Books
+        return errMsgs;
+    };
     hih.LibBookGroup.prototype.ToJSONObject = function() {
         var forJSON = {};
 		for(var i in this) {
-			if (!this.hasOwnProperty(i) || i === "Books" ) 
+			if (!this.hasOwnProperty(i) ) 
 				continue;
 			
 			forJSON[i] = this[i];
 		}
         
-        forJSON["Books"] = JSON && JSON.stringify(this.Books);
+        //forJSON["Books"] = JSON && JSON.stringify(this.Books);
         return forJSON;
     };
     hih.LibBookGroup.prototype.ToJSON = function() {

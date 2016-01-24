@@ -35,7 +35,7 @@
             <div class="panel-heading">{{'Lib.Book' | translate}}</div>
             <div class="panel-body">
                 <!-- Tables -->
-                <table st-table="bookList" st-safe-src="BookGroupObject.Books" class="table table-striped table-hover">
+                <table st-table="bookList" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th translate="Common.ID">ID</th>
@@ -71,17 +71,17 @@
                                         </i>
                                     </button>
                                     <button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger" tooltip="{{'Common.Delete' | translate}}">
-                                        <i class="glyphicon glyphicon-remove-circle">
+                                        <i class="glyphicon glyphicon-minus">
                                         </i>
                                     </button>
                                 </div>
                                 <div ng-show="row.isEditing">
                                     <button type="button" class="btn btn-sm" ng-click="saveItem(row)" tooltip="{{'Common.Save' | translate}}">
-                                        <i class="glyphicon glyphicon-save">
+                                        <i class="glyphicon glyphicon-ok">
                                         </i>
                                     </button>
                                     <button type="button" class="btn btn-sm" ng-click="cancelEditItem(row)" tooltip="{{'Common.Cancel' | translate}}">
-                                        <i class="glyphicon glyphicon-refresh">
+                                        <i class="glyphicon glyphicon-remove">
                                         </i>
                                     </button>
                                 </div>

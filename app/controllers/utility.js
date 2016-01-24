@@ -2540,9 +2540,16 @@
 											$.each(response.data[0], function(idx, obj) {
 												var bs = new hih.LibBookGroup();
 												bs.setContent(obj);
-												$rootScope.arLibBook.push(bs);
+                                                // Books
+                                                $.each(response.data[1], function(idx2, obj2) {
+                                                    if (parseInt(obj2.grpid) === bs.ID) {
+                                                        bs.Books.push(parseInt(obj2.bookid));
+                                                    }
+                                                });
+												$rootScope.arLibBookGroup.push(bs);
 											});
                                         }
+                                        deferred.resolve(true);
                                     }, function(reason) {
 									deferred.reject(reason.data.Message);
 								});
@@ -2558,13 +2565,35 @@
                                 { objecttype : 'GETLIBBOOKGROUPDETAIL', id: nID })
                                 .then(function(response) {
                                     if ($.isArray(response.data) && response.data.length === 2) {
-                                        // Group header
                                         $.each(response.data[0], function(idx, obj) {
-                                            var bs = new hih.LibBook();
+                                            var bs = new hih.LibBookGroup();
                                             bs.setContent(obj);
-                                            $rootScope.arLibBook.push(bs);
+                                            // Books
+                                            $.each(response.data[1], function(idx2, obj2) {
+                                                bs.Books.push(parseInt(obj2.bookid));
+                                            });
+                                            
+                                            // Find out the elder one and replace it.
+                                            if ( !$rootScope.arLibBookGroup) {
+                                                $rootScope.arLibBookGroup = [];
+                                                $rootScope.arLibBookGroup.push(bs);
+                                            } else {
+                                                var realidx = -1;
+                                                for(var i = 0; i < $rootScope.arLibBookGroup.length; i ++ ) {
+                                                    if ($rootScope.arLibBookGroup[i].ID === bs.ID) {
+                                                        realidx = i;
+                                                        break;
+                                                    }
+                                                }
+                                                if (realidx !== -1) {
+                                                    $rootScope.arLibBookGroup[realidx] = bs;
+                                                } else {
+                                                    $rootScope.arLibBookGroup.push(bs);
+                                                }
+                                            }
                                         });
                                     }
+                                    deferred.resolve(true);
                                 }, function(reason) {
                                 deferred.reject(reason.data.Message);
                             });
@@ -2574,18 +2603,65 @@
                         rtnObj.createLibBookGroupQ = function(objBookGroup) {
                             var deferred = $q.defer();
                             
+                            var jsonData = objBookGroup.ToJSON();
                             $http.post(
                                 'script/hihsrv.php',
-                                { objecttype : 'GETLIBBOOKGROUPDETAIL', id: nID })
+                                { objecttype : 'CREATELIBBOOKGROUP', data: jsonData })
                                 .then(function(response) {
-                                    if ($.isArray(response.data) && response.data.length === 2) {
+                                    // return the ID
+                                    deferred.resolve(response.data);
+                                }, function(reason) {
+                                deferred.reject(reason.data.Message);
+                            });
+                            
+                            return deferred.promise;
+                        };
+                        rtnObj.updateLibBookGroupQ = function(objBookGroup) {
+                            var deferred = $q.defer();
+                            
+                            var jsonData = objBookGroup.ToJSON();
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'UPDATELIBBOOKGROUP', data: jsonData })
+                                .then(function(response) {
+                                    // return the ID
+                                    deferred.resolve(true);
+                                }, function(reason) {
+                                deferred.reject(reason.data.Message);
+                            });
+                            
+                            return deferred.promise;
+                        };
+                        rtnObj.deleteLibBookGroupQ = function(nGroupID) {
+                            var deferred = $q.defer();
+                            
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'DELETELIBBOOKGROUP', id: nGroupID })
+                                .then(function(response) {
+                                    // return the ID
+                                    deferred.resolve(true);
+                                }, function(reason) {
+                                deferred.reject(reason.data.Message);
+                            });
+                            
+                            return deferred.promise;
+                        };
+                        rtnObj.loadLibBookForGroupQ = function() {
+                            var deferred = $q.defer();
+                            $rootScope.arLibBookBrief = [];
+                            
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'GETLIBBOOKBRIEF' })
+                                .then(function(response) {
+                                    if ($.isArray(response.data)) {
                                         // Group header
-                                        $.each(response.data[0], function(idx, obj) {
-                                            var bs = new hih.LibBookGroup();
-                                            bs.setContent(obj);
-                                            $rootScope.arLibBookGroup.push(bs);
+                                        $.each(response.data, function(idx, obj) {
+                                            $rootScope.arLibBookBrief.push(obj);
                                         });
                                     }
+                                    deferred.resolve(true);
                                 }, function(reason) {
                                 deferred.reject(reason.data.Message);
                             });

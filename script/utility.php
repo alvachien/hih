@@ -4982,10 +4982,10 @@ function lib_bookgroup_listread($nid) {
 
 	// Books
 	if (empty($sError)) {
-		$query = "SELECT taba.GRPID, taba.BOOKID, tabb.ISBN FROM t_lib_bookgroup_cont AS taba left outer join t_lib_book AS tabb ON taba.BOOKID = tabb.ID ";
+		$query = "SELECT GRPID, BOOKID FROM t_lib_bookgroup_cont ";
         // Using GROUP_CONCAT method?
-		if ($nbookid) {
-			$query = $query . " WHERE taba.GRPID = ". $nid;
+		if ($nid) {
+			$query = $query . " WHERE GRPID = ". $nid;
 		}
 		
 		if ($result = mysqli_query ( $link, $query )) {
@@ -4993,8 +4993,7 @@ function lib_bookgroup_listread($nid) {
 			while ( $row = mysqli_fetch_row ( $result ) ) {
 				$grpbooktable [] = array (
 					"grpid" => $row [0],
-					"bookid" => $row [1],
-					"isbn" => $row [2]
+					"bookid" => $row [1]
 				);
 			}
 			
@@ -5008,8 +5007,8 @@ function lib_bookgroup_listread($nid) {
 	/* close connection */
 	mysqli_close ( $link );
 	return array (
-			$sError,
-			array($rsttable, $grpbooktable)
+		$sError,
+		array($rsttable, $grpbooktable)
 	);
 }
 function lib_bookgroup_create($objGrp) {
@@ -5054,7 +5053,7 @@ function lib_bookgroup_create($objGrp) {
 	/* Insert on content */
 	if (empty ( $sError )) {
 		$query = "INSERT INTO t_lib_bookgroup_cont (`GRPID`, `BOOKID`) VALUES (?, ?);";
-		foreach ( $objBook->BookArray as $bookid ) {
+		foreach ( $objGrp->BookArray as $bookid ) {
 			if ($newstmt = $mysqli->prepare ( $query )) {
 				$newstmt->bind_param ( "ii", $nNewID, $bookid );
 				
@@ -5091,6 +5090,221 @@ function lib_bookgroup_create($objGrp) {
 		$sError,
 		$nNewID 
 	);
+}
+function lib_bookgroup_change($objGrp) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* Prepare an insert statement */
+	$query = "UPDATE t_lib_bookgroup SET NAME = ?, OTHERS = ?, PARID =? WHERE ID = ?";
+	 
+	if ($stmt = $mysqli->prepare ( $query )) {
+	 	$stmt->bind_param ( "ssii", $objGrp->Name, $objGrp->Others, $objGrp->ParentID, $objGrp->ID );
+	 	/* Execute the statement */
+	 	if ($stmt->execute ()) {
+	 	} else {
+	 		$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	 	}
+	 	
+	 	/* close statement */
+	 	$stmt->close ();
+	} else {
+	 	$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+    
+	/* Delete the content */
+	if (empty ( $sError )) {
+	   $query = "DELETE FROM t_lib_bookgroup_cont WHERE GRPID = ?";
+       if ($stmt = $mysqli->prepare ( $query )) {
+           $stmt->bind_param ( "i", $objGrp->ID );
+
+           /* Execute the statement */
+           if ($stmt->execute ()) {
+           } else {
+               $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+           }
+            
+           /* close statement */
+           $stmt->close ();
+       } else {
+           $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+       }
+    }
+	
+	/* Insert on content */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookgroup_cont (`GRPID`, `BOOKID`) VALUES (?, ?);";
+		foreach ( $objGrp->BookArray as $bookid ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ii", $objGrp->ID, $bookid );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
+	);
+}
+function lib_bookgroup_delete($grpid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* Prepare an insert statement */
+	$query = "DELETE FROM t_lib_bookgroup WHERE ID = ?";
+	 
+	if ($stmt = $mysqli->prepare ( $query )) {
+	 	$stmt->bind_param ( "i", $grpid );
+	 	/* Execute the statement */
+	 	if ($stmt->execute ()) {
+	 	} else {
+	 		$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	 	}
+	 	
+	 	/* close statement */
+	 	$stmt->close ();
+	} else {
+	 	$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+    
+	/* Delete the content */
+	if (empty ( $sError )) {
+	   $query = "DELETE FROM t_lib_bookgroup_cont WHERE GRPID = ?";
+       if ($stmt = $mysqli->prepare ( $query )) {
+           $stmt->bind_param ( "i", $grpid );
+
+           /* Execute the statement */
+           if ($stmt->execute ()) {
+           } else {
+               $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+           }
+            
+           /* close statement */
+           $stmt->close ();
+       } else {
+           $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+       }
+    }
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
+	);
+}
+function lib_bookgroup_bookbrief_listread() {
+	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	$sError = "";
+	
+	// Set language
+	mysqli_query($link, "SET NAMES 'UTF8'");
+	mysqli_query($link, "SET CHARACTER SET UTF8");
+	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
+	
+	// Perform the query
+	$rsttable = array ();
+	$query = "select taba.id, GROUP_CONCAT(tabb.Name) from t_lib_book as taba left outer join t_lib_bookname as tabb on taba.id = tabb.bookid group by taba.id";
+	
+	if ($result = mysqli_query ( $link, $query )) {
+		/* fetch associative array */
+		while ( $row = mysqli_fetch_row ( $result ) ) {
+			$rsttable [] = array (
+				"id" => $row [0],
+				"name" => $row [1]
+			);
+		}
+		
+		/* free result set */
+		mysqli_free_result ( $result );
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+	/* close connection */
+	mysqli_close ( $link );
+	return array (
+		$sError,
+		$rsttable 
+	);   
 }
 function lib_loc_listread($nlocid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -5186,6 +5400,91 @@ function lib_loc_create($objLoc) {
 		$nNewID 
 	);
 }
+function lib_loc_update($objLoc) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$query = "UPDATE t_lib_loc SET NAME = ?, DETAILS = ?, COMMENT = ? WHERE ID = ?";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "sssi", $objLoc->Name, $objLoc->Detail, $objLoc->Comment, $objLoc->ID );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
+	);
+}
+function lib_loc_delete($id) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$query = "DELETE FROM t_lib_loc WHERE ID = ?";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $id );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
+	);
+}
+
 function lib_person_listread($npersonid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	

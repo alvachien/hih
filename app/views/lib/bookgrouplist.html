@@ -40,7 +40,7 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td><a ng-href="#/home/lib/loc/display/{{row.ID}}"> {{row.ID}} </a></td>
+				<td><a ng-click="displayItem(row)"> {{row.ID}} </a></td>
 				<td>{{row.Name}}</td>
 				<td>{{row.Detail | limitTo: 20}}</td>
 				<td>{{row.Comment}}</td>

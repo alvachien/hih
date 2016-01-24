@@ -768,7 +768,37 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         break;
         
         case "CREATELIBBOOKGROUP": {
-            
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objGrp = new HIHLibBookGroup($jsondata);
+			$errMsg = $objGrp->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_bookgroup_create', $objGrp);
+			}
+        }
+        break;
+        
+        case "UPDATELIBBOOKGROUP": {
+			$jsondata = json_decode($realParamArr ['data'] );
+			$objGrp = new HIHLibBookGroup($jsondata);
+			$errMsg = $objGrp->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_bookgroup_change', $objGrp);
+			}
+        }
+        break;
+        
+        case "DELETELIBBOOKGROUP": {
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_bookgroup_delete', $nid );
+        }
+        break;
+        
+        case "GETLIBBOOKBRIEF": {
+            HIHSrv_Function( 'lib_bookgroup_bookbrief_listread' );
         }
         break;
 		
@@ -808,7 +838,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		break;
 		
 		case "DELETELIBLOC": {
-			
+			$nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_loc_delete', $nid );
 		}
 		break;
 
