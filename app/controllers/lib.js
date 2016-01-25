@@ -734,7 +734,7 @@
                     }
                     
                     // Popup dialog for confirm
-                    $rootScope.$broadcast('ShowMessage', $rootScope.DeletionDialogTitle, $rootScope.DeletionDialogMsg, "warning", function() {
+                    $rootScope.$broadcast('ShowMessage', "Delete", "Will delete the selected item!", "warning", function() {
                         $http.post(
                                 'script/hihsrv.php',
                                 {

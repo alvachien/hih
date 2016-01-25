@@ -146,7 +146,8 @@
 			console.log('HIH: ShowMessage event occurred');
 			
 			if (conf_func && angular.isFunction(conf_func)) {
-				window.swal({ title: msgHeader,   
+				window.swal({ 
+                    title: msgHeader,   
 					text: msgDetail,   
 					type: msgType || "warning", 
 					showCancelButton: true, 
@@ -154,9 +155,6 @@
 					confirmButtonText: "Yes, delete it!", 
 					closeOnConfirm: true }, 
 					conf_func
-					// function() { 
-					// 	window.swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
-					// }
 					);
 			} else {
 				window.swal(msgHeader, msgDetail, msgType || "error");
