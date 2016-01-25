@@ -231,12 +231,11 @@
 							var urlcss1 = "app/3rdparty/bootswatch-3.3.6-1/";
 							var urlcss2 = "/bootstrap.min.css";
 							
+							arCSS.push(urlcss1.concat(theme, urlcss2));
 							if (theme !== "default") {
-								arCSS.push(urlcss1.concat(theme, urlcss2));
 								arCSS.push("app/css/empty.css"); 
 							} else {
-								arCSS.push("app/3rdparty/bootstrap/css/bootstrap.min.css");
-								arCSS.push("app/3rdparty/bootstrap/css/bootstrap-theme.min.css");
+								arCSS.push(urlcss1.concat(theme, "/bootstrap-theme.min.css"));
 							}
 							
 							return arCSS;

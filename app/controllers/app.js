@@ -124,7 +124,7 @@
 	}])
 	
 	.controller('MainController', ['$scope', '$rootScope', '$log', '$translate', 'utils', function($scope, $rootScope, $log, $translate, utils) {
-		$scope.currentTheme = "readable"; // Default theme: lumen
+		$scope.currentTheme = "lumen"; // Default theme: , readable
 		
 		var arCSS = utils.getThemeCSSPath($scope.currentTheme);
 		$scope.bootstrapcss = arCSS[0];
