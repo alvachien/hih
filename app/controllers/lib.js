@@ -715,8 +715,41 @@
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});					
 				};
-				$scope.removeItem = function () {
-					// ToDo					
+				$scope.removeItem = function (row) {
+                    var nID = -1;
+                    if (row) {
+                        nID = row.ID;
+                    } else {
+                        var nSelectedCount = 0;
+                        for(var i = 0; i < $scope.dispList.length; i ++) {
+                            if ($scope.dispList[i].isSelected) {
+                                nID = $scope.dispList[i].ID;
+                                nSelectedCount ++;
+                            }
+                        }
+                        if (nSelectedCount !== 1) {
+                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            return;
+                        }
+                    }
+                    
+                    // Popup dialog for confirm
+                    $rootScope.$broadcast('ShowMessage', $rootScope.DeletionDialogTitle, $rootScope.DeletionDialogMsg, "warning", function() {
+                        $http.post(
+                                'script/hihsrv.php',
+                                {
+                                    objecttype : 'DELETELIBBOOKGROUP',
+                                    id: nID
+                                })
+                            .success(
+                                function(data, status, headers, config) {
+                                    $scope.refreshList(true);
+                                })
+                            .error(
+                                function(data, status, headers, config) {
+                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                });
+                    });
 				};
 				
 				$scope.refreshList = function (bReload) {
@@ -874,7 +907,8 @@
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibBookGroupQ($scope.BookGroupObject)
 							.then(function (response) {
-								$state.go("home.lib.bookgroup.maintain", { id: $scope.BookGroupObject.ID });
+                                // Refresh it!
+								$state.go("home.lib.bookgroup.display", { id: $scope.BookGroupObject.ID });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
