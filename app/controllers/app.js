@@ -6,7 +6,7 @@
 	
 	angular.module('hihApp', ["ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'hihApp.Lib', 'ui.bootstrap', 'ngSanitize', 
 		'hihApp.Finance', 'pascalprecht.translate', 'ngJsTree', 'ngTouch', 'selectize', 'chart.js'])
-		.run(['$rootScope', '$state', '$stateParams', '$modal', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $modal, $timeout, $log) {
+		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $timeout, $log) {
 			 $rootScope.$state = $state;
 			 $rootScope.$stateParams = $stateParams;
 			    
