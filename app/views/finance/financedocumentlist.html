@@ -1,97 +1,91 @@
 <div id="viewFinanceDocumentList">
 
-	<div class="page-header">
-		<h2>
+    <div class="page-header">
+        <h2>
 			<span translate="Finance.Documents">Finance Document</span><small translate="Common.ListView"> List View </small>
 		</h2>
 
-		<div class="btn-toolbar" role="toolbar" aria-label="...">
-		  <div class="btn-group" role="group" aria-label="operation">
-			<div class="btn-group" role="group">
-            	<div class="dropdown" dropdown>
-	                <button role="button" class="btn-group btn-default dropdown-toggle" dropdown-toggle><span translate="Common.New">New</span><b class="caret"></b></button>
-	                <ul class="dropdown-menu">
-						<li><a ui-sref="home.finance.document.create"><span translate="Finance.NormalDocument">Normal Document</span></a></li>
-						<li><a ui-sref="home.finance.document.create_tran"><span translate="Finance.TransferDocument">Transfer Document</span></a></li>
-						<li><a ui-sref="home.finance.document.create_currexg"><span translate="Finance.CurrencyExchangeDocument">Currency Exchange Document</span></a></li>
-						<li><a ui-sref="home.finance.document.create_instal"><span translate="Finance.InstallmentDocument">Installment</span></a></li>
-						<li><a ui-sref="home.finance.document.create_downpay"><span translate="Finance.DownPaymentDocument">Down Payment</span></a></li>
- 					</ul>
-                </div>
-			</div>
-			<button type="button" class="btn-group btn-primary" tooltip="{{'Common.Refresh' | translate}}"
-				ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
-		  </div>
-		  
-		  <div class="btn-group" role="group" aria-label="">
-  			<button type="button" ng-click="displayItem()"
-					class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
-					translate="Common.Display">					
-			</button>
-			<button type="button" ng-click="editItem()"
-					class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
-					translate="Common.Edit">
-			</button>
-			<button type="button" ng-click="removeItem()"
-					class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
-					translate="Common.Delete">
-			</button>
-		  </div>
-		</div>
-	</div>
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+            <div class="btn-group" role="group" aria-label="operation" uib-dropdown>
+                <button type="button" class="btn btn-primary btn-xs" uib-dropdown-toggle><span translate="Common.New">New</span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
+                    <li role="menuitem"><a ui-sref="home.finance.document.create"><span translate="Finance.NormalDocument">Normal Document</span></a></li>
+                    <li role="menuitem"><a ui-sref="home.finance.document.create_tran"><span translate="Finance.TransferDocument">Transfer Document</span></a></li>
+                    <li role="menuitem"><a ui-sref="home.finance.document.create_currexg"><span translate="Finance.CurrencyExchangeDocument">Currency Exchange Document</span></a></li>
+                    <li role="menuitem"><a ui-sref="home.finance.document.create_downpay"><span translate="Finance.DownPaymentDocument">Down Payment</span></a></li>
+                    <li class="divider"></li>
+                    <li role="menuitem"><a ui-sref="home.finance.document.create_instal"><span translate="Finance.InstallmentDocument">Installment</span></a></li>
+                </ul>
+            </div>
 
-	<table st-table="docCollection" st-safe-src="arFinanceDocument" class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th></th>
-				<th st-sort="docid" translate="Common.ID">ID</th>
-				<th st-sort="doctypename" translate="Finance.DocumentType">Doc Type</th>
-				<th st-sort="trandate" translate="Common.Date">Tran Data</th>
-				<th st-sort="trancurrname" translate="Common.Precent">Currency</th>
-				<th st-sort="tranamount" translate="Finance.Amount">Amount</th>
-				<th st-sort="desp" translate="Common.Comment">Comment</th>
-				<th translate="Common.Operations">Operations</th>
-			</tr>
-			<tr>
-				<th colspan="8"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="row in docCollection">
-				<td cs-select="row"></td>
-				<td>{{row.DocID}}</td>
-				<td>{{row.DocTypeObject.Name}}</td>
-				<td>{{row.TranDate | date:'yyyy.MM.dd'}}</td>
-				<td>{{row.TranCurrencyObject.Name}}</td>
-				<td>{{row.TranAmount | currency: '￥'}}</td>
-				<td>{{row.Desp}}</td>
-				<td>
-					<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
-						<i class="glyphicon glyphicon-share">
+            <div class="btn-group" role="group" aria-label="">
+                <button type="button" class="btn-group btn-primary" tooltip="{{'Common.Refresh' | translate}}" ng-click="refreshList()" translate="Common.Refresh">Refresh</button>
+                <button type="button" ng-click="displayItem()" class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}" translate="Common.Display">
+                </button>
+                <button type="button" ng-click="editItem()" class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}" translate="Common.Edit">
+                </button>
+                <button type="button" ng-click="removeItem()" class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}" translate="Common.Delete">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <table st-table="docCollection" st-safe-src="arFinanceDocument" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th st-sort="docid" translate="Common.ID">ID</th>
+                <th st-sort="doctypename" translate="Finance.DocumentType">Doc Type</th>
+                <th st-sort="trandate" translate="Common.Date">Tran Data</th>
+                <th st-sort="trancurrname" translate="Common.Precent">Currency</th>
+                <th st-sort="tranamount" translate="Finance.Amount">Amount</th>
+                <th st-sort="desp" translate="Common.Comment">Comment</th>
+                <th translate="Common.Operations">Operations</th>
+            </tr>
+            <tr>
+                <th colspan="8">
+                    <input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"
+                    />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in docCollection">
+                <td cs-select="row"></td>
+                <td>{{row.DocID}}</td>
+                <td>{{row.DocTypeObject.Name}}</td>
+                <td>{{row.TranDate | date:'yyyy.MM.dd'}}</td>
+                <td>{{row.TranCurrencyObject.Name}}</td>
+                <td>{{row.TranAmount | currency: '￥'}}</td>
+                <td>{{row.Desp}}</td>
+                <td>
+                    <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
+                        <i class="glyphicon glyphicon-share">
 						</i>
-					</button>
-					<button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
-						<i class="glyphicon glyphicon-edit">
+                    </button>
+                    <button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
+                        <i class="glyphicon glyphicon-edit">
 						</i>
-					</button>
-					<button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row)" tooltip="{{'Common.Delete' | translate}}">
-						<i class="glyphicon glyphicon-remove-circle">
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row)" tooltip="{{'Common.Delete' | translate}}">
+                        <i class="glyphicon glyphicon-remove-circle">
 						</i>
-					</button>
-				</td>
-			</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="2" class="text-center">
-					<cst-count></cst-count>
-				</td>
-				<td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
-				</td>
-				<td colspan="3" class="text-center">
-					<cst-sum columnname="TranAmount"></cst-sum>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <cst-count></cst-count>
+                </td>
+                <td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
+                </td>
+                <td colspan="3" class="text-center">
+                    <cst-sum columnname="TranAmount"></cst-sum>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
 </div>

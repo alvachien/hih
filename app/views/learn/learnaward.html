@@ -19,10 +19,12 @@
 			<label class="control-label col-sm-2" for="iptDate" translate="Common.Date">Date</label>
 			<div class="col-sm-10">
 				<div class="input-group">
-					<input type="text" datepicker-popup="{{DateFormat}}" ng-model="CurrentLearnAward.AwardDate" is-open="isDateOpened"
+					<input type="text" class="form-control" uib-datepicker-popup="{{DateFormat}}" ng-model="CurrentLearnAward.AwardDate" is-open="isDateOpened"
 							datepicker-options="dateOptions" ng-required="true" ng-readonly="ActivityID == 3" close-text="{{'Common.Close' | translate }}" />
-					<button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>					
-				</div>
+					<span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>					
+					</span>
+                </div>
 			</div>
 		</div>
 		

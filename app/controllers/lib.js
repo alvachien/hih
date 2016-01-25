@@ -248,9 +248,41 @@
 					}
 					$state.go("home.lib.loc.maintain", { id: nid });
 				};
-				$scope.removeItem = function () {
-					// ToDo
-					
+				$scope.removeItem = function (row) {
+                    var nID = -1;
+                    if (row) {
+                        nID = row.ID;
+                    } else {
+                        var nSelectedCount = 0;
+                        for(var i = 0; i < $scope.dispList.length; i ++) {
+                            if ($scope.dispList[i].isSelected) {
+                                nID = $scope.dispList[i].ID;
+                                nSelectedCount ++;
+                            }
+                        }
+                        if (nSelectedCount !== 1) {
+                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            return;
+                        }
+                    }
+                    
+                    // Popup dialog for confirm
+                    $rootScope.$broadcast('ShowMessage', "Delete", "Will delete the selected item!", "warning", function() {
+                        $http.post(
+                                'script/hihsrv.php',
+                                {
+                                    objecttype : 'DELETELIBLOC',
+                                    id: nID
+                                })
+                            .success(
+                                function(data, status, headers, config) {
+                                    $scope.refreshList(true);
+                                })
+                            .error(
+                                function(data, status, headers, config) {
+                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                });
+                    });
 				};
 				$scope.refreshList = function (bReload) {
 					utils.loadLibLocationQ(bReload)
@@ -321,7 +353,7 @@
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibLocationQ($scope.LocationObject)
 							.then(function (response) {
-								$state.go("home.lib.loc.maintain", { id: $scope.LocationObject.ID });
+								$state.go("home.lib.loc.display", { id: $scope.LocationObject.ID });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
@@ -486,7 +518,7 @@
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibPersonQ($scope.PersonObject)
 							.then(function (response) {
-								$state.go("home.lib.person.maintain", { id: $scope.PersonObject.ID });
+								$state.go("home.lib.person.display", { id: $scope.PersonObject.ID });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
@@ -651,7 +683,7 @@
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibOrganizationQ($scope.OrganizationObject)
 							.then(function (response) {
-								$state.go("home.lib.org.maintain", { id: $scope.OrganizationObject.ID });
+								$state.go("home.lib.org.display", { id: $scope.OrganizationObject.ID });
 							}, function (reason) {
 								$rootScope.$broadcast("ShowMessage", "Error", reason);
 							});
@@ -987,8 +1019,41 @@
 							$rootScope.$broadcast("ShowMessage", "Error", reason);
 						});					
 				};
-				$scope.removeItem = function () {
-					// ToDo					
+				$scope.removeItem = function (row) {
+                    var nID = -1;
+                    if (row) {
+                        nID = row.ID;
+                    } else {
+                        var nSelectedCount = 0;
+                        for(var i = 0; i < $scope.dispList.length; i ++) {
+                            if ($scope.dispList[i].isSelected) {
+                                nID = $scope.dispList[i].ID;
+                                nSelectedCount ++;
+                            }
+                        }
+                        if (nSelectedCount !== 1) {
+                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            return;
+                        }
+                    }
+                    
+                    // Popup dialog for confirm
+                    $rootScope.$broadcast('ShowMessage', "Delete", "Will delete the selected item!", "warning", function() {
+                        $http.post(
+                                'script/hihsrv.php',
+                                {
+                                    objecttype : 'DELETELIBBOOK',
+                                    id: nID
+                                })
+                            .success(
+                                function(data, status, headers, config) {
+                                    $scope.refreshList(true);
+                                })
+                            .error(
+                                function(data, status, headers, config) {
+                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                });
+                    });
 				};
 				
 				$scope.refreshList = function (bReload) {
@@ -1504,12 +1569,12 @@
 					 			$rootScope.$broadcast("ShowMessage", "Error", reason);
 					 		});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
-						// utils.updateLibBookQ($scope.BookObject)
-						// 	.then(function (response) {
-						// 		$state.go("home.lib.book.maintain", { id: $scope.LocationObject.ID });
-						// 	}, function (reason) {
-						// 		$rootScope.$broadcast("ShowMessage", "Error", reason);
-						// 	});
+						utils.updateLibBookQ($scope.BookObject)
+							.then(function (response) {
+								$state.go("home.lib.book.display", { id: $scope.BookObject.ID });
+							}, function (reason) {
+								$rootScope.$broadcast("ShowMessage", "Error", reason);
+							});
 					 }
 				};
 

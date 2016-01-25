@@ -5459,22 +5459,45 @@ function lib_loc_delete($id) {
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 		
 	$sError = "";
+    $nUsedCount = 0;
+    
+    // Check the usage first
+	$query = "SELECT count(*) FROM t_lib_bookloc WHERE LOCID = ". $id;
 	
-	$query = "DELETE FROM t_lib_loc WHERE ID = ?";
-	
-	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "i", $id );
-		/* Execute the statement */
-		if ($stmt->execute ()) {
-		} else {
-			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+            $nUsedCount = $row[0];
 		}
 		
-		/* close statement */
-		$stmt->close ();
+		/* free result set */
+		$result->close ();
 	} else {
-		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
 	}
+	
+    if ($nUsedCount > 0) {
+        $sError = "Location ". $perid. " still in use, cannot delete!";
+    }
+	
+    // Then, delete
+    if (empty($sError)) {
+        $query = "DELETE FROM t_lib_loc WHERE ID = ?";
+        
+        if ($stmt = $mysqli->prepare ( $query )) {
+            $stmt->bind_param ( "i", $id );
+            /* Execute the statement */
+            if ($stmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+            }
+            
+            /* close statement */
+            $stmt->close ();
+        } else {
+            $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+    }
 	
 	/* close connection */
 	$mysqli->close ();
@@ -5712,7 +5735,6 @@ function lib_person_delete($perid) {
 	
 	// Check the usage on that person!
     $nUsedCount = 0;
-	$rsttable = array ();
 	$query = "SELECT count(*) FROM t_lib_bookauthor WHERE PERSONID = ". $perid;
 	
 	if ($result = $mysqli->query ( $query )) {
@@ -5728,7 +5750,7 @@ function lib_person_delete($perid) {
 	}
 	
     if ($nUsedCount > 0) {
-        $sError = "Person ". $perid. " Still in use, cannot delete!";
+        $sError = "Person ". $perid. " still in use, cannot delete!";
     }
     
     // Now, perform the real deletion
@@ -5981,10 +6003,9 @@ function lib_org_delete($orgid) {
 	$mysqli->query("SET CHARACTER SET UTF8");
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	// Check the usage on that person!
+	// Check the usage!
     $nUsedCount = 0;
-	$rsttable = array ();
-	$query = "SELECT count(*) FROM t_lib_bookpress WHERE PERSONID = ". $orgid;
+	$query = "SELECT count(*) FROM t_lib_bookpress WHERE PRESSID = ". $orgid;
 	
 	if ($result = $mysqli->query ( $query )) {
 		/* fetch associative array */
@@ -5999,7 +6020,7 @@ function lib_org_delete($orgid) {
 	}
 	
     if ($nUsedCount > 0) {
-        $sError = "Organization ". $perid. " Still in use, cannot delete!";
+        $sError = "Organization ". $perid. " still in use, cannot delete!";
     }
     
     // Now, perform the real deletion
@@ -6370,6 +6391,444 @@ function lib_book_create($objBook) {
 	return array (
 		$sError,
 		$nNewID 
+	);
+}
+function lib_book_change($objBook) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	
+	/* Prepare an insert statement */
+	$query = "UPDATE t_lib_book SET ISBN = ?, TYPES = ?, OTHERS = ? WHERE ID = ?";
+	 
+	if ($stmt = $mysqli->prepare ( $query )) {
+	 	$stmt->bind_param ( "sssi", $objBook->ISBN, $objBook->Types, $objBook->Others, $objBook->ID );
+	 	/* Execute the statement */
+	 	if ($stmt->execute ()) {
+	 	} else {
+	 		$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+	 	}
+	 	
+	 	/* close statement */
+	 	$stmt->close ();
+	} else {
+	 	$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* Deletion on names */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookname WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $objBook->ID );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+	}
+	/* Insert on names */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookname (`BOOKID`, `NAMEID`, `LANG`, `NAME`) VALUES (?, ?, ?, ?);";	
+		foreach ( $objBook->NameArray as $objname ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiss", $objBook->ID, $objname->NameID, $objname->Lang, $objname->Name );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Deletion on languages */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_booklang WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $objBook->ID );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+	/* Insert on languages */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_booklang (`BOOKID`, `LANG`) VALUES (?, ?);";	
+		foreach ( $objBook->LangArray as $objlang ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "is", $objBook->ID, $objlang->Language );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Deletion on authors */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookauthor WHERE `BOOKID` = ?;";
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $objBook->ID );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+	/* Insert on authors */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookauthor (`BOOKID`, `PERSONID`, `TRANFLAG`) VALUES (?, ?, ?);";	
+		foreach ( $objBook->AuthorArray as $objauthor ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iii", $objBook->ID, $objauthor->AuthorID, $objauthor->TranFlag );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Deletion on presses */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookpress WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $objBook->ID );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+	/* Insert on presses */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookpress (`BOOKID`, `PRESSID`) VALUES (?, ?);";	
+		foreach ( $objBook->PressArray as $objpress ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "ii", $objBook->ID, $objpress->PressID );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	/* Deletion on locations */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookloc WHERE `BOOKID` = ?;";
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $objBook->ID );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+	/* Insert on locations */
+	if (empty ( $sError )) {
+		$query = "INSERT INTO t_lib_bookloc (`BOOKID`, `LOCID`, `MEDIA`, `COMMENT`) VALUES (?, ?, ?, ?);";
+		foreach ( $objBook->LocationArray as $objloc ) {
+			if ($newstmt = $mysqli->prepare ( $query )) {
+				$newstmt->bind_param ( "iiss", $objBook->ID, $objloc->LocID, $objloc->Media, $objloc->Comment );
+				
+				/* Execute the statement */
+				if ($newstmt->execute ()) {
+				} else {
+					$sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+					break;
+				}
+
+				/* close statement */
+				$newstmt->close ();
+			} else {
+				$sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+			}
+		}
+	}
+
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
+	);
+}
+function lib_book_delete($bookid) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+	
+    // Checks on usage 
+	$sError = "";
+    $nUsedCount = 0;
+    $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    
+	$query = "SELECT count(*) FROM t_lib_bookgroup WHERE BOOKID = ". $bookid;
+	
+	if ($result = $mysqli->query ( $query )) {
+		/* fetch associative array */
+		while ( $row = $result->fetch_row () ) {
+            $nUsedCount = $row[0];
+		}
+		
+		/* free result set */
+		$result->close ();
+	} else {
+		$sError = "Failed to execute query: " .$query. " ; Error: " . mysqli_error($link);
+	}
+	
+    if ($nUsedCount > 0) {
+        $sError = "Book ". $perid. " still in use, cannot delete!";
+    }
+	
+	/* Deletion on names */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookname WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $bookid );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+	}
+
+	/* Deletion on languages */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_booklang WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $bookid );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+
+	/* Deletion on authors */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookauthor WHERE `BOOKID` = ?;";
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $bookid );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+
+	/* Deletion on presses */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookpress WHERE `BOOKID` = ?;";	
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $bookid );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+
+	/* Deletion on locations */
+	if (empty ( $sError )) {
+		$query = "DELETE FROM t_lib_bookloc WHERE `BOOKID` = ?;";
+        if ($newstmt = $mysqli->prepare ( $query )) {
+            $newstmt->bind_param ( "i", $bookid );
+            
+            /* Execute the statement */
+            if ($newstmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. "; Error: " . $mysqli->error;
+                break;
+            }
+
+            /* close statement */
+            $newstmt->close ();
+        } else {
+            $sError = "Failed to prepare statement: " . $query. "; Error: " . $mysqli->error;
+        }
+	}
+
+    if (empty($sError)) {
+        /* Prepare an deletion statement */
+        $query = "DELETE FROM t_lib_book WHERE ID = ?;";
+        
+        if ($stmt = $mysqli->prepare ( $query )) {
+            $stmt->bind_param ( "i", $bookid );
+            /* Execute the statement */
+            if ($stmt->execute ()) {
+            } else {
+                $sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+            }
+            
+            /* close statement */
+            $stmt->close ();
+        } else {
+            $sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+        }
+    }
+	
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		null 
 	);
 }
 

@@ -2838,6 +2838,33 @@
 								});
 							return deferred.promise;
                         };
+                        rtnObj.updateLibBookQ = function(objBook) {
+							var deferred = $q.defer();
+							var jsonBook = objBook.ToJSON();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'UPDATELIBBOOK', data: jsonBook })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+                        };
+                        rtnObj.deleteLibBookQ = function(nBookID) {
+							var deferred = $q.defer();
+							
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype : 'DELETELIBBOOK', id: nBookID })
+								.then(function(response) {
+									deferred.resolve(true);
+								}, function(response) {
+									deferred.reject(response.data.Message);
+								});
+							return deferred.promise;
+                        };
 
 ////////////////////////////////////////////////////////////////////
 // Others

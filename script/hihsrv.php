@@ -948,10 +948,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
         
         case "CREATELIBBOOK": {			
             $jsondata = json_decode($realParamArr ['data'] );
-			//var_dump($jsondata);
-			
 			$objBook = new HIHLibBook($jsondata);
-			//var_dump($objBook);
 			
 			$errMsg = $objBook->CheckValid();
 			if (!empty($errMsg)) {
@@ -959,6 +956,25 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 			} else {
 				HIHSrv_Function_1Param( 'lib_book_create', $objBook);
 			}
+        }
+        break;
+
+        case "UPDATELIBBOOK": {			
+            $jsondata = json_decode($realParamArr ['data'] );
+			$objBook = new HIHLibBook($jsondata);
+			
+			$errMsg = $objBook->CheckValid();
+			if (!empty($errMsg)) {
+				export_error ( $errMsg );
+			} else {
+				HIHSrv_Function_1Param( 'lib_book_change', $objBook);
+			}
+        }
+        break;
+
+        case "DELETELIBBOOK": {			
+            $nid = escape( $realParamArr['id'] );
+			HIHSrv_Function_1Param( 'lib_book_delete', $nid);
         }
         break;
         
