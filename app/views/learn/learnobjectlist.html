@@ -49,7 +49,7 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/learn/object/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.CategoryObject.FullDisplayText}}</td>
 				<td>{{row.Name}}</td>
 				<td>{{row.Content | limitTo: 20}}</td>

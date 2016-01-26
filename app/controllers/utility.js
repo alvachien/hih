@@ -35,7 +35,7 @@
 
 		.filter('idTostring', function() {
 			return function(inputval) {
-                console.log(inputval);
+                //console.log(inputval);
                 if (inputval === -1) return "";
                 return inputval; 
 			};
@@ -504,19 +504,51 @@
 											});
 							}
 						};
+                        rtnObj.readLearnObjectQ = function(nObjID) {
+							var deferred = $q.defer();
+                            $http.post(
+                                'script/hihsrv.php',
+                                { objecttype : 'GETLEARNOBJECTDETAIL', id: nObjID })
+                                .then(function(response) {
+                                    if ($.isArray(response.data) && response.data.length > 0) {
+                                        $.each(response.data, function(idx, obj1) {
+                                            var lrnobj = new hih.LearnObject();
+                                            lrnobj.setContent(obj1);
+                                            lrnobj.buildRelationship($rootScope.arLearnCategory);
+                                            
+                                            // Find out the elder one and replace it.
+                                            if ( !$rootScope.arLearnObject) {
+                                                $rootScope.arLearnObject = [];
+                                                $rootScope.arLearnObject.push(lrnobj);
+                                            } else {
+                                                var realidx = -1;
+                                                for(var i = 0; i < $rootScope.arLearnObject.length; i ++ ) {
+                                                    if ($rootScope.arLearnObject[i].ID === lrnobj.ID) {
+                                                        realidx = i;
+                                                        break;
+                                                    }
+                                                }
+                                                if (realidx !== -1) {
+                                                    $rootScope.arLearnObject[realidx] = lrnobj;
+                                                } else {
+                                                    $rootScope.arLearnObject.push(lrnobj);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    deferred.resolve(true);
+                                }, function(response) {
+                                    deferred.reject(response.data.Message);
+                                });
+							
+							return deferred.promise;
+                        };
 						rtnObj.createLearnObjectQ = function(objLearnObj) {
 							var deferred = $q.defer();
 							var jsonData = objLearnObj.toJSON();
 							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNOBJECT2', jsonData: jsonData } )
 									.then(function(response) {
-										if ($.isArray(response.data) && response.data.length >= 1) {
-											var lrnobj = new hih.LearnObject();
-											lrnobj.setContent(response.data[0]);
-											lrnobj.buildRelationship($rootScope.arLearnCategory);
-											$rootScope.arLearnObject.push(lrnobj);
-	
-											deferred.resolve(lrnobj.ID);											
-										}
+                                        deferred.resolve(response.data);
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});
@@ -527,22 +559,7 @@
 							var jsonData = objLearnObj.toJSON();
 							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNOBJECT', jsonData: jsonData } )
 									.then(function(response) {
-										// The response here without any information.
-										var oldidx = -1;
-										for(var idx = 0; idx < $rootScope.arLearnObject.length; idx ++) {
-											if ($rootScope.arLearnObject[idx].ID === objLearnObj.ID) {
-												oldidx = idx;
-												break;
-											}
-										}
-										if (oldidx !== -1 ) {
-											$rootScope.arLearnObject.splice(oldidx, 1);
-										}
-										
-										objLearnObj.buildRelationship($rootScope.arLearnCategory);
-										$rootScope.arLearnObject.push(objLearnObj);
-										
-										deferred.resolve(objLearnObj.ID);
+										deferred.resolve(true);
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});
@@ -977,7 +994,6 @@
 									'script/hihsrv.php',
 									{ objecttype : 'GETLEARNCATEGORYLIST' })
 									.then(function(response) {
-										// The response object has these properties:
 										$rootScope.arLearnCategory = [];
 										if ($.isArray(response.data) && response.data.length > 0) {
 											$.each(response.data, function(idx, obj) {
@@ -1002,43 +1018,42 @@
 						};
 						rtnObj.createLearnCategoryQ = function(objLearnCtgy) {
 							var deferred = $q.defer();
-							var jsonData = objLearnCtgy.toJSON();
+							var jsonData = objLearnCtgy.ToJSON();
 							$http.post('script/hihsrv.php', { objecttype: 'CREATELEARNCATEGORY', jsonData: jsonData } )
 									.then(function(response) {
 										if ($.isArray(response.data) && response.data.length >= 1) {
-											var lrnobj = new hih.LearnObject();
-											lrnobj.setContent(response.data[0]);
-											lrnobj.buildRelationship($rootScope.arLearnCategory);
-											$rootScope.arLearnObject.push(lrnobj);
+											var lrnctgy = new hih.LearnCategory();
+											lrnctgy.setContent(response.data[0]);
+											$rootScope.arLearnCategory.push(lrnctgy);
 	
-											deferred.resolve(lrnobj.ID);											
+											deferred.resolve(lrnctgy.ID);
 										}
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});
 							return deferred.promise;							
 						};
-						rtnObj.changeLearnCategoryQ = function(objLearnObj) {
+						rtnObj.changeLearnCategoryQ = function(objLearnCtgy) {
 							var deferred = $q.defer();
-							var jsonData = objLearnObj.toJSON();
-							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNOBJECT', jsonData: jsonData } )
+							var jsonData = objLearnCtgy.ToJSON();
+							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNCATEGORY', jsonData: jsonData } )
 									.then(function(response) {
 										// The response here without any information.
 										var oldidx = -1;
-										for(var idx = 0; idx < $rootScope.arLearnObject.length; idx ++) {
-											if ($rootScope.arLearnObject[idx].ID === objLearnObj.ID) {
+										for(var idx = 0; idx < $rootScope.arLearnCategory.length; idx ++) {
+											if ($rootScope.arLearnCategory[idx].ID === objLearnCtgy.ID) {
 												oldidx = idx;
 												break;
 											}
 										}
 										if (oldidx !== -1 ) {
-											$rootScope.arLearnObject.splice(oldidx, 1);
+											$rootScope.arLearnCategory.splice(oldidx, 1);
 										}
 										
-										objLearnObj.buildRelationship($rootScope.arLearnCategory);
-										$rootScope.arLearnObject.push(objLearnObj);
+										objLearnCtgy.buildRelationship($rootScope.arLearnCategory);
+										$rootScope.arLearnCategory.push(objLearnCtgy);
 										
-										deferred.resolve(objLearnObj.ID);
+										deferred.resolve(objLearnCtgy.ID);
 									}, function(response) {
 										deferred.reject(response.data.Message);
 									});

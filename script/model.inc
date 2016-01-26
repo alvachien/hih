@@ -205,7 +205,15 @@ class HIHLearnCategory {
 	public function fromJSON($jsonData) {
 		// jsonData contains ID, CategoryID, Name, Comment
 		foreach ($jsonData AS $key => $value) {
-			$this->{$key} = $value;
+			switch ($key) {
+				case "Text":
+				$this->Name = $value;
+				break;
+                
+                default:
+                $this->{$key} = $value;
+                break;
+            }			
 		}
 	}
 	

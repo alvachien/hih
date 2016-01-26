@@ -32,27 +32,29 @@
 				// Then, real logon
 				$http.post('script/hihsrv.php', { objecttype: 'USERLOGIN', loginuser:$scope.credentials.username, loginpassword: $scope.credentials.password } ).
 				  success(function(data, status, headers, config) {
-				    // this callback will be called asynchronously when the response is available
-					  $rootScope.isLogin = true;
-					  $rootScope.CurrentUser = {
-						userid:data.UserID,
-						userdisplayas: data.UserDisplayAs,
-						usercreatedon: data.UserCreatedOn,
-						usergender: data.UserGender
-					  };
-					  
-					  // Navigate to the home page					  
-					  $rootScope.$state.go("home.welcome");
-					  // The both statements below are not working!
-					  //$state.go('home');
-					  //$state.transitionTo('home');
+                      if (data.UserID && data.UserID.length > 0) {
+                        // this callback will be called asynchronously when the response is available
+                        $rootScope.isLogin = true;
+                        $rootScope.CurrentUser = {
+                            userid:data.UserID,
+                            userdisplayas: data.UserDisplayAs,
+                            usercreatedon: data.UserCreatedOn,
+                            usergender: data.UserGender
+                        };
+                        
+                        // Navigate to the home page					  
+                        $rootScope.$state.go("home.welcome");
+                        // The both statements below are not working!
+                        //$state.go('home');
+                        //$state.transitionTo('home');
+                      } else {
+					       $rootScope.$broadcast("ShowMessage", "Error", "Unexpected system response, no logon allowed so far!");
+                      }
 				  }).
 				  error(function(data, status, headers, config) {
 					  // called asynchronously if an error occurs or server returns response with an error status.
 					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
 				  });
-				
-				// Go to some other page?
 			};
 			
 			$scope.register = function() {

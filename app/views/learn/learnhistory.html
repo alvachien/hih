@@ -9,7 +9,7 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptUser" translate="Login.User">User:</label>
 			<div class="col-sm-10">
-				<select id="iptUser" ng-model="CurrentLearnHistory.UserID" ng-disabled="ActivityID != 1"
+				<select class="form-control" id="iptUser" ng-model="CurrentLearnHistory.UserID" ng-disabled="ActivityID != 1"
 					ng-options="usr.UserID as usr.DisplayAs for usr in arUserList">
 					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
       					  Example 2: usertype.value as usertype.text for usertype in userTypes 

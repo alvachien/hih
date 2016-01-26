@@ -50,7 +50,7 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/finance/account/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.CategoryObject.Name}}</td>
 				<td>{{row.Name}}</td>
 				<td><span ng-class="row.CategoryObject.AssetFlag ? 'accountasset' : 'accountnotasset'" >{{row.CategoryObject.AssetFlag}}</span></td>

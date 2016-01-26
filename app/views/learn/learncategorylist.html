@@ -33,23 +33,40 @@
 	<table st-table="dispList" st-safe-src="arLearnCategory" class="table table-striped table-hover">
 		<thead>
 			<tr>
+				<th></th>
 				<th st-sort="id" translate="Common.ID">ID</th>
 				<th st-sort="parent" translate="Common.Parent">Parent</th>
 				<th st-sort="text" translate="Common.Text">Text</th>
 				<th st-sort="fulltext" translate="Common.Text">Text</th>
 				<th st-sort="comment" translate="Common.Comment">Comment</th>
+				<th translate="Common.Operations">Operations</th>
 			</tr>
 			<tr>
-				<th colspan="5"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
+				<th colspan="7"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text"/></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="row in dispList">
-				<td>{{row.ID}}</td>
-				<td>{{row.ParentID | idTostring}}</td>
+				<td cs-select="row"></td>
+				<td><a ng-href="#/home/learn/category/display/{{row.ID}}">{{row.ID}}</a></td>
+				<td><a ng-href="#/home/learn/category/display/{{row.ParentID}}">{{row.ParentID | idTostring}}</a></td>
 				<td>{{row.Text}}</td>
 				<td>{{row.FullDisplayText}}</td>
 				<td>{{row.Comment}}</td>
+				<td>
+					<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
+						<i class="glyphicon glyphicon-share">
+						</i>
+					</button>
+					<button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
+						<i class="glyphicon glyphicon-edit">
+						</i>
+					</button>
+					<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger" tooltip="{{'Common.Delete' | translate}}">
+						<i class="glyphicon glyphicon-remove-circle">
+						</i>
+					</button>
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>
@@ -57,7 +74,7 @@
 				<td colspan="2" class="text-center">
 					<cst-count></cst-count>
 				</td>
-				<td colspan="3" class="text-center" st-pagination="" st-items-by-page="20">
+				<td colspan="5" class="text-center" st-pagination="" st-items-by-page="20">
 				</td>
 			</tr>
 		</tfoot>

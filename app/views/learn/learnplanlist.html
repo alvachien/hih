@@ -45,9 +45,9 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/learn/plan/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.Name}}</td>
-				<td>{{row.Comment}}</td>
+				<td>{{row.Comment | limitTo: 20}}</td>
 				<td>
 					<button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
 						<i class="glyphicon glyphicon-share">

@@ -47,7 +47,7 @@
 		<tbody>
 			<tr ng-repeat="row in ccList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/finance/controlcenter/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.Name}}</td>
 				<td>{{row.ParentObject.Name}}</td>
 				<td>{{row.Comment}}</td>

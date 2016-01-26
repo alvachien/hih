@@ -110,6 +110,7 @@
 		        suffix: '.json'
 		    }]
 		});
+        
 		// Enable escaping of HTML
   		$translateProvider.useSanitizeValueStrategy('escaped');		
 		$translateProvider.registerAvailableLanguageKeys(['en', 'zh'], {
@@ -119,7 +120,7 @@
 			'zh-CN': 'zh'
 		  })
 		  .determinePreferredLanguage()
-		  //.preferredLanguage('en')
+		  //.preferredLanguage('zh')
 		  .fallbackLanguage('en');		
 	}])
 	
@@ -144,6 +145,7 @@
 		
 		$scope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType, conf_func) {
 			console.log('HIH: ShowMessage event occurred');
+            console.log("HIH Show message: header: " + msgHeader + "; detail: " + msgDetail);
 			
 			if (conf_func && angular.isFunction(conf_func)) {
 				window.swal({ 
@@ -162,7 +164,8 @@
 		});
 		
 		$scope.$on('ShowMessageNeedTranslate', function (oEvent, msgHeaderStr, msgDetailStr, msgType, conf_func) {
-			console.log('HIH: ShowMessage event occurred');
+			console.log('HIH: ShowMessageNeedTranslate event occurred');
+            console.log("HIH Show message: header: " + msgHeaderStr + "; detail: " + msgDetailStr);
 			
 			$translate([msgHeaderStr, msgDetailStr]).then(function (translations) {
 				var hdr = translations[msgHeaderStr];
@@ -280,7 +283,6 @@
 			
 			utils.getAccountListForDownPaymentQ()
 				.then(function(response) {
-					
 					for(var i = 0; i < response.length; i++) {
 						var modinfo = {
 							Module: 'FI Downpayment',
@@ -411,15 +413,15 @@
 	}])	
 	
 	.controller('AboutController', ['$scope', '$rootScope', function($scope, $rootScope) {
-		$scope.myInterval = 5000;
-		
-		var slides = $scope.slides = [];
-		$scope.addSlide = function(url, infotxt) {
-		    slides.push({
-		    	image: url,
-		    	text: infotxt
-		    });
-		 };
+		// $scope.myInterval = 5000;
+		// 
+		// var slides = $scope.slides = [];
+		// $scope.addSlide = function(url, infotxt) {
+		//     slides.push({
+		//     	image: url,
+		//     	text: infotxt
+		//     });
+		//  };
 		 
 		//$scope.addSlide('app/img/Duoduo2013.jpg', 'Duoduo @ 2013');
 		//$scope.addSlide('app/img/JiaotongUniversity.jpg', 'Jiaotong University');

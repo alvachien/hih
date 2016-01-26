@@ -17,7 +17,7 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptCtgy" translate="Common.Category">Category:</label>
 			<div class="col-sm-10">
-				<select id="iptCtgy" ng-model="objLearnObject.CategoryID" ng-disabled="isReadonly"
+				<select id="iptCtgy" class="form-control" ng-model="objLearnObject.CategoryID" ng-disabled="isReadonly"
 					ng-options="ctgy.ID as ctgy.FullDisplayText for ctgy in CategoryIDs">
 					<!-- Example 1:  color.name group by color.shade disable when color.notAnOption for color in colors
       					Example 2: usertype.value as usertype.text for usertype in userTypes 
@@ -51,4 +51,3 @@
 		</div>
 	</form>
 </div>
-

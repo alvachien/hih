@@ -48,7 +48,7 @@
 		<tbody>
 			<tr ng-repeat="row in dispList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/learn/award/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.UserID}}</td>
 				<td>{{row.UserDisplayAs}}</td>
 				<td>{{row.AwardDate | date: 'yyyy.MM.dd'}}</td>

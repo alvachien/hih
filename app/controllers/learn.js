@@ -274,7 +274,7 @@
 	                     //worker : true,
 	    				 themes: {
 	                     	name: 'default-dark',
-	    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
+	    					url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
 	    					responsive: true,
 	    					stripes: true
 	                	}
@@ -330,7 +330,7 @@
 					 
 					// Re-create the hierarchy
 					$scope.treeConfig.version++;
-				}			
+				}
 			 });			
 		}])
 		
@@ -355,12 +355,18 @@
 				}
  				
 				var nObjID = parseInt($stateParams.objid);
-				$.each($rootScope.arLearnObject, function(idx, obj) {
-                    if (obj.ID === nObjID) {
-						$scope.objLearnObject = angular.copy(obj);
-						return false;
-					}
-				});
+                utils.readLearnObjectQ(nObjID)
+                    .then(function(response) {
+                        $.each($rootScope.arLearnObject, function(idx, obj) {
+                            if (obj.ID === nObjID) {
+                                $scope.objLearnObject = angular.copy(obj);
+                                return false;
+                            }
+                        });
+                    }, function(reason) {
+                        $scope.ActivityID = hih.Constants.UIMode_Invalid;
+                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                    });
 			} else {
 			    $scope.Activity = "Common.Create";
 			    $scope.ActivityID = hih.Constants.UIMode_Create;
@@ -405,7 +411,7 @@
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnObjectQ($scope.objLearnObject)
 					 	.then(function(response) {
-							 $state.go("home.learn.object.display", { objid : response });
+							 $state.go("home.learn.object.display", { objid : $scope.objLearnObject.ID });
 						 }, function(reason) {
 							$rootScope.$broadcast("ShowMessage", "Error", reason); 
 						 });
@@ -648,8 +654,7 @@
 						});					
 				}, function(reason) {
 					$rootScope.$broadcast("ShowMessage", "Error", reason);
-				});			
-		  
+				});
 		    
 			// Remove to the real data holder
 			$scope.removeItem = function removeItem(row) {
@@ -691,7 +696,7 @@
 			
 			 // Display
 			 $scope.displayItem = function (row) {
-				var nID = 0;
+				var nID = -1;
 				if (row) {
 					nID = row.ID;
 				} else {
@@ -703,7 +708,9 @@
 					}
 				}
 				
-				$state.go("home.learn.plan.display",   { id : nID });
+                if (nID !== -1) {
+                    $state.go("home.learn.plan.display",   { id : nID });
+                }				
 			 };
 			
 			 // Edit
@@ -720,7 +727,9 @@
 					}
 				}
 
-				$state.go("home.learn.plan.maintain",  { id : nID });
+                if (nID !== -1) {
+				    $state.go("home.learn.plan.maintain",  { id : nID });
+                }
 			 };
 			
 			 // Create
@@ -1353,67 +1362,72 @@
 			 };
 		}])
 		
-	.controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', function($scope, $rootScope, $state, $http, $log, $q, utils) {
-		utils.loadLearnCategoriesQ()
-			.then(function(response) {
-				if (angular.isArray($rootScope.arLearnCategory ) && $rootScope.arLearnCategory.length > 0) {					
-					//$.each($rootScope.arLearnCategory, function(idx, obj) {
-					//});			  
-				};				
-			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
-			});
+     .controller('LearnCategoryListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils', function ($scope, $rootScope, $state, $http, $log, $q, utils) {
+            utils.loadLearnCategoriesQ()
+                .then(function (response) {
+                    if (angular.isArray($rootScope.arLearnCategory) && $rootScope.arLearnCategory.length > 0) {					
+                        //$.each($rootScope.arLearnCategory, function(idx, obj) {
+                        //});			  
+                    };
+                }, function (reason) {
+                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                });
 			
-			// Display
-			$scope.displayItem = function (row) {
-				var nID = 0;
-				if (row) {
-					nID = row.ID;
-				} else {
-					for(var i = 0; i < $scope.dispList.length; i ++) {
-						if ($scope.dispList[i].isSelected) {
-							nID = $scope.dispList[i].ID;
-							break;
-						}
-					}
-				}
-				
-				$state.go("home.learn.category.display",  { id : nID });
-			};
+            // Display
+            $scope.displayItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.ID;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].ID;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.category.display", { id: nID });
+            };
 			
-			// Edit
-			$scope.editItem = function (row) {
-				var nID = 0;
-				if (row) {
-					nID = row.ID;
-				} else {
-					for(var i = 0; i < $scope.dispList.length; i ++) {
-						if ($scope.dispList[i].isSelected) {
-							nID = $scope.dispList[i].ID;
-							break;
-						}
-					}
-				}
-				
-				$state.go("home.learn.category.maintain",  { id : nID });
-			};
+            // Edit
+            $scope.editItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.ID;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].ID;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.category.maintain", { id: nID });
+            };
+            
+            // Delete
+            $scope.removeItem = function(row) {
+                
+            };
 			
-			// Create
-			$scope.newItem = function() {
-				$state.go('home.learn.category.create');
-			};
+            // Create
+            $scope.newItem = function () {
+                $state.go('home.learn.category.create');
+            };
 			
-			// Refresh list
-			$scope.refreshList = function() {
-				// Reload the whole list
-				utils.loadLearnCategoriesQ(true)
-					.then(function(response) {
-						// Do nothing
-					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
-					});
-			};
-	}])
+            // Refresh list
+            $scope.refreshList = function () {
+                // Reload the whole list
+                utils.loadLearnCategoriesQ(true)
+                    .then(function (response) {
+                        // Do nothing
+                    }, function (reason) {
+                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                    });
+            };
+        }])
 
 	.controller('LearnCategoryController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$translate', '$q', 'utils', function($scope, $rootScope, $state, $stateParams, $http, $translate, $q, utils) {
 			$scope.Activity = "";
@@ -1496,7 +1510,7 @@
                      worker : true,
     				 themes: {
                     	name: 'default-dark',
-    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
+    					url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
     					responsive: true,
     					stripes: true
                 	}

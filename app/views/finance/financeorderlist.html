@@ -47,7 +47,7 @@
 		<tbody>
 			<tr ng-repeat="row in orderList">
 				<td cs-select="row"></td>
-				<td>{{row.ID}}</td>
+				<td><a ng-href="#/home/finance/order/display/{{row.ID}}">{{row.ID}}</a></td>
 				<td>{{row.Name}}</td>
 				<td>{{row.ValidFrom | date: 'yyyy.MM.dd'}}</td>
 				<td>{{row.ValidTo | date: 'yyyy.MM.dd'}}</td>

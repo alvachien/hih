@@ -365,7 +365,7 @@ function user_combo() {
 	);
 }
 // 1.2 Learn category
-function learn_category_read() {
+function learn_category_listread($nid = false) {
 	// NOTE:
 	// This method reserved for using jstree
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -384,6 +384,9 @@ function learn_category_read() {
 	// Read catregory
 	$ctgytable = array ();
 	$query = "SELECT ID, PARENT_ID, NAME, COMMENT FROM " . HIHConstants::DT_LearnCategory;
+    if ($nid) {
+		$query = $query . " WHERE ID = ". $nid;
+	}
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -482,12 +485,11 @@ function learn_category_create($parctgy, $name, $comment) {
 	$nNewid = 0;
 	$sMsg = "";
 	
-	// Create award: return code, message and last insert id
 	/* Prepare an insert statement */
 	$query = "CALL " . HIHConstants::DP_CreateLearnCategory . "(?, ?, ?);";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "iss", $parctgy, $name, $content );
+		$stmt->bind_param ( "iss", $parctgy, $name, $comment );
 		/* Execute the statement */
 		if ($stmt->execute ()) {
 			/* bind variables to prepared statement */
@@ -581,7 +583,7 @@ function learn_category_delete($ctgyid) {
 	);
 }
 // 1.3 Learn object
-function learn_object_listread() {
+function learn_object_listread($nid = false) {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
 	/* check connection */
@@ -601,6 +603,9 @@ function learn_object_listread() {
 	// Check existence of the User ID
 	$objtable = array ();
 	$query = "SELECT ID, CATEGORY_ID, CATEGORY_NAME, NAME, CONTENT FROM " . HIHConstants::DV_LearnObjectList;
+    if ($nid) {
+		$query = $query . " WHERE ID = ". $nid;
+	}
 	
 	if ($result = mysqli_query ( $link, $query )) {
 		/* fetch associative array */
@@ -703,7 +708,44 @@ function learn_object_create($ctgyid, $name, $content) {
 	return array ( $sError, $rsttable );
 }
 function learn_object_create2($loObj) {
-	return learn_object_create($loObj->CategoryID, $loObj->Name, $loObj->Content);
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	$nNewID = 0;
+	
+	/* Prepare an insert statement */
+	$query = "INSERT INTO `t_learn_obj` (`CATEGORY`, `NAME`, `CONTENT`) VALUES (?,  ?, ?);";
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "iss", $loObj->CategoryID, $loObj->Name, $loObj->Content );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+            $nNewID = $mysqli->insert_id;
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+	
+	/* close connection */
+	$mysqli->close ();
+	return array ( $sError, $nNewID );
 }
 function learn_object_change($id, $ctgyid, $name, $content) {
 	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
@@ -6675,7 +6717,7 @@ function lib_book_delete($bookid) {
     $nUsedCount = 0;
     $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
     
-	$query = "SELECT count(*) FROM t_lib_bookgroup WHERE BOOKID = ". $bookid;
+	$query = "SELECT count(*) FROM t_lib_bookgroup_cont WHERE BOOKID = ". $bookid;
 	
 	if ($result = $mysqli->query ( $query )) {
 		/* fetch associative array */

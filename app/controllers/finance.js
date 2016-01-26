@@ -437,7 +437,7 @@
                      worker : true,
     				 themes: {
                      	name: 'default',
-    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
+    					url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
@@ -754,12 +754,12 @@
 					worker : true,
 					themes: {
 						//name: 'default-dark',
-						//url: "//cdn.bootcss.com/jstree/3.2.1/themes/default-dark/style.min.css",
+						//url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
 						//responsive: true,
 						//stripes: true,
 						//variant : "large"
 						name: 'default',
-						url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
+						url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
 						responsive: true,
 						stripes: true
 					}
@@ -2504,7 +2504,7 @@
                      worker : true,
     				 themes: {
                      	name: 'default',
-    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
+    					url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
@@ -2712,7 +2712,7 @@
                      worker : true,
     				 themes: {
                      	name: 'default',
-    					url: "//cdn.bootcss.com/jstree/3.2.1/themes/default/style.min.css",
+    					url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
     					responsive: true,
     					stripes: true
                 	}

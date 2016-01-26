@@ -130,6 +130,12 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function( 'learn_object_listread' );
 			}
 			break;
+            
+       case "GETLEARNOBJECTDETAIL": {
+           $id = escape ($realParamArr ["id"]);
+           HIHSrv_Function_1Param( 'learn_object_listread', $id);
+       }
+       break;
 			
 		case "GETLEARNOBJECTHIERARCHY": 
 			{
@@ -161,15 +167,23 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 		
 		case "GETLEARNCATEGORYLIST" :
 			{
-				HIHSrv_Function( 'learn_category_read' );
+				HIHSrv_Function( 'learn_category_listread' );
 			}
 			break;
+            
+        case "GETLEARNCATEGORYDETAIL": {
+            $nID = escape ($realParamArr ["id"]);
+            HIHSrv_Function_1Param( 'learn_category_listread', $nID);
+        }
+        break;
 
 		case "CREATELEARNCATEGORY": 
 			{
 				// For JSON-based parameter, can NOT escape it directly!
 				$jsondata = json_decode( $realParamArr ['jsonData'] );
+                var_dump($jsondata);
 				$loCtgy = new HIHLearnCategory($jsondata);
+                var_dump($loCtgy);
 				$errCodes = $loCtgy->CheckValid();
 				if (!empty($errCodes)) {
 					export_error ( implode( ';', $errCodes) );

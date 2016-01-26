@@ -23,6 +23,7 @@
 		UIMode_Create: 1,
 		UIMode_Change: 2,
 		UIMode_Display: 3,
+        UIMode_Invalid: 4, // Invalid status
 		
 		UI_DateFormat: "yyyy.MM.dd",
 		
@@ -523,8 +524,25 @@
 		return treenode;
 	};
 	hih.LearnCategory.prototype.Verify = function() {
-		
+		return [];
 	};
+    hih.LearnCategory.prototype.ToJSONObject = function() {
+		var forJSON = {};
+		for(var i in this) {
+			if (!this.hasOwnProperty(i) || i === "ParentForJsTree" || i === "Parent" || i === "FullDisplayText") 
+				continue;
+			
+			forJSON[i] = this[i];
+		}
+		return forJSON;
+    };
+    hih.LearnCategory.prototype.ToJSON = function() {
+		var forJSON = this.ToJSONObject();
+		if (forJSON) {
+			return JSON && JSON.stringify(forJSON);
+		}
+		return JSON && JSON.stringify(this);
+    };
 	
 	/* Method 5: Using the copying all properties from superclass to childclass  */
 	/* Just two methods provided. */
