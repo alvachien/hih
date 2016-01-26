@@ -6,17 +6,37 @@
 	
 	angular.module('hihApp', ["ui.router", "ngAnimate", "hihApp.Login", "hihApp.Utility", 'hihApp.Learn', 'hihApp.Lib', 'ui.bootstrap', 'ngSanitize', 
 		'hihApp.Finance', 'pascalprecht.translate', 'ngJsTree', 'ngTouch', 'selectize', 'chart.js'])
-		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$log', function ($rootScope,   $state,   $stateParams, $timeout, $log) {
+        
+		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$http', '$log', 
+            function ($rootScope, $state, $stateParams, $timeout, $http, $log) {
 			 $rootScope.$state = $state;
 			 $rootScope.$stateParams = $stateParams;
-			    
-			 $rootScope.$on('$stateChangeStart', 
+             
+             $.ajax({  
+                async: false,  
+                type: "GET",  
+                url:  "script/hihsrv.php",  
+                data: { objecttype : 'GETCURRENTUSER' },  
+                success: function(response){
+                    if (response.type === "S" && response.UserID.length > 0) {
+                        $rootScope.isLogin = true;
+                        $rootScope.CurrentUser = {
+                            userid          : response.UserID,
+                            userdisplayas   : response.UserDisplayAs,
+                            usercreatedon   : response.UserCreatedOn,
+                            usergender      : response.UserGender
+                        };
+                    }
+                }  
+                });  
+
+			    $rootScope.$on('$stateChangeStart', 
 		    		function(event, toState, toParams, fromState, fromParams) {
-		    			console.log('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
+		    			$log.info('HIH: state change start, target url is ' + toState.url + "; state is " + toState.name);
 		    			
 		    			if (toState.name === 'login' || toState.name === 'register') {
 		    				if (angular.isDefined($rootScope.isLogin) && $rootScope.isLogin) {
-		    					console.log('HIH: state change failed: already login but ask for login page, redirect to home page...');
+		    					$log.info('HIH: state change failed: already login but ask for login page, redirect to home page...');
 		    					event.preventDefault();
 		    					$state.go("home.welcome");
 		    				} 
@@ -27,7 +47,7 @@
 		    				return;
 		    			}
 
-		    			console.log('HIH: state change failed: not login, redirect to login page...');
+		    			$log.info('HIH: state change failed: not login, redirect to login page...');
 	    		    	event.preventDefault();
 	    		    	$state.go("login");
 			    	}

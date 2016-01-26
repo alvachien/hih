@@ -11,7 +11,33 @@ session_start ();
 
 require_once 'utility.php';
 
-if ($_SERVER ["REQUEST_METHOD"] === "POST") {
+if ($_SERVER ["REQUEST_METHOD"] === "GET") {
+    header ( 'Content-type: application/json; charset=utf-8' );
+    $sGetUser = escape( $_GET['objecttype'] );
+    
+    if ($sGetUser == "GETCURRENTUSER") {
+        if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
+            
+            $objUsr = unserialize($_SESSION ['HIH_CurrentUser']);
+            echo json_encode ( array (
+                    'type' => 'S',
+                    'UserID' => $objUsr->ID,
+                    'UserDisplayAs' => $objUsr->DisplayAs,
+                    'UserCreatedOn' => $objUsr->CreatedOn,
+                    'UserGender' => $objUsr->Gender 
+            ) );
+        } else {
+            echo json_encode ( array (
+                    'type' => 'E',
+                    'UserID' => NULL,
+                    'UserDisplayAs' => NULL,
+                    'UserCreatedOn' => NULL,
+                    'UserGender' => NULL 
+            ) );                
+        }
+    }
+}
+else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 	
 	header ( 'Content-type: application/json; charset=utf-8' );
 	
@@ -60,7 +86,7 @@ if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				}
 			}
 			break;
-		
+            
 		case "USERLOGOUT" :
 			{
 				if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
