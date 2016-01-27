@@ -25,7 +25,7 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="iptParent" translate="Common.Parent">Parent:</label>
 			<div class="col-sm-10">
-				<select class="form-control" id="iptParent" ng-model="CategoryObject.ParentID" ng-disabled="ActivityID == 3"
+				<select class="form-control" id="iptParent" ng-model="CategoryObject.ParentID" ng-disabled="ActivityID != 1"
 					ng-options="usr.ID as usr.FullDisplayText for usr in arLearnCategory">
 				</select>
 			</div>

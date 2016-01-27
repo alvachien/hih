@@ -1038,7 +1038,6 @@
 							var jsonData = objLearnCtgy.ToJSON();
 							$http.post('script/hihsrv.php', { objecttype: 'CHANGELEARNCATEGORY', jsonData: jsonData } )
 									.then(function(response) {
-										// The response here without any information.
 										var oldidx = -1;
 										for(var idx = 0; idx < $rootScope.arLearnCategory.length; idx ++) {
 											if ($rootScope.arLearnCategory[idx].ID === objLearnCtgy.ID) {
@@ -1050,7 +1049,7 @@
 											$rootScope.arLearnCategory.splice(oldidx, 1);
 										}
 										
-										objLearnCtgy.buildRelationship($rootScope.arLearnCategory);
+										//objLearnCtgy.buildRelationship($rootScope.arLearnCategory);
 										$rootScope.arLearnCategory.push(objLearnCtgy);
 										
 										deferred.resolve(objLearnCtgy.ID);
@@ -1061,7 +1060,7 @@
 						};
 						rtnObj.checkLearnCategoryUsageQ = function(strIDs) {
 							var deferred = $q.defer();
-							$http.post('script/hihsrv.php', { objecttype: 'CHECKLEARNOBJECTSUSAGE', ids: strIDs } )
+							$http.post('script/hihsrv.php', { objecttype: 'CHECKLEARNCTGYSUSAGE', ids: strIDs } )
 									.then(function(response) {
 										deferred.resolve(parseInt(response.data));											
 									}, function(response) {

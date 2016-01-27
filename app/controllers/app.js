@@ -144,7 +144,21 @@
 		  .fallbackLanguage('en');		
 	}])
 	
-	.controller('MainController', ['$scope', '$rootScope', '$log', '$translate', 'utils', function($scope, $rootScope, $log, $translate, utils) {
+    .controller('PopupDialogController',  ['$scope', '$rootScope', '$log', '$translate', '$uibModalInstance', 'TitleStr', 'Details', 
+        function($scope, $rootScope, $log, $translate, $uibModalInstance, TitleStr, Details) {
+            $scope.TitleStr = TitleStr;
+            $scope.DetailList = Details;
+            
+            $scope.ok = function() {
+                $uibModalInstance.close();
+            };
+            $scope.cancel = function() {
+                $uibModalInstance.dismiss('cancel');
+            };
+        }])
+        
+	.controller('MainController', ['$scope', '$rootScope', '$log', '$translate', '$uibModal', 'utils', 
+        function($scope, $rootScope, $log, $translate, $uibModal, utils) {
 		$scope.currentTheme = "lumen"; // Default theme: , readable
 		
 		var arCSS = utils.getThemeCSSPath($scope.currentTheme);
@@ -164,8 +178,8 @@
 		});
 		
 		$scope.$on('ShowMessage', function (oEvent, msgHeader, msgDetail, msgType, conf_func) {
-			console.log('HIH: ShowMessage event occurred');
-            console.log("HIH Show message: header: " + msgHeader + "; detail: " + msgDetail);
+			$log.info('HIH: ShowMessage event occurred');
+            $log.info("HIH Show message: header: " + msgHeader + "; detail: " + msgDetail);
 			
 			if (conf_func && angular.isFunction(conf_func)) {
 				window.swal({ 
@@ -184,8 +198,8 @@
 		});
 		
 		$scope.$on('ShowMessageNeedTranslate', function (oEvent, msgHeaderStr, msgDetailStr, msgType, conf_func) {
-			console.log('HIH: ShowMessageNeedTranslate event occurred');
-            console.log("HIH Show message: header: " + msgHeaderStr + "; detail: " + msgDetailStr);
+			$log.info('HIH: ShowMessageNeedTranslate event occurred');
+            $log.info("HIH Show message: header: " + msgHeaderStr + "; detail: " + msgDetailStr);
 			
 			$translate([msgHeaderStr, msgDetailStr]).then(function (translations) {
 				var hdr = translations[msgHeaderStr];
@@ -206,6 +220,25 @@
 				}
 			});
 		});
+        
+        $scope.$on('ShowMessageEx', function(oEvent, TitleStr, Details) {
+            var modalInstance = $uibModal.open({
+                //animation: true,
+                templateUrl: 'app/views/modaldlg.html',
+                controller: 'PopupDialogController',
+                size: '',
+                resolve: {
+                    TitleStr: function() { return TitleStr; },
+                    Details: function() { return Details; }
+                }
+            });
+            
+            modalInstance.result.then(function(){
+               $log.info("HIH Modal: closed at: " + new Date()); 
+            }, function() {
+               $log.info("HIH Modal: dismissed at: " + new Date()); 
+            });
+        });
 	}])
 	
 	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams','$http', '$log', '$translate', 'utils', 
@@ -344,9 +377,10 @@
 				
 				for(var prop in $rootScope) {
 				    if($rootScope.hasOwnProperty(prop)) {
-						console.log("Logout:" + prop);
+						$log.log("HIH Logout: " + prop);
 						if (prop.charAt(0) !== "$" ){
 							delete $rootScope[prop];
+                            $log.log("HIH Logout: " + prop + " removed");
 						}			
 					}						
 				}
