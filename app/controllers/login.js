@@ -26,6 +26,9 @@
 	  		};
 	  			
 			$scope.login = function() {
+                $rootScope.$broadcast("ShowMessageEx", "Error", ["data.Message"]);
+                return;
+                
 				// Verify the inputs first!
 				// To-Do
 				

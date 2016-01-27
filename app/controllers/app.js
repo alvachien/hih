@@ -223,10 +223,11 @@
         
         $scope.$on('ShowMessageEx', function(oEvent, TitleStr, Details) {
             var modalInstance = $uibModal.open({
-                //animation: true,
+                animation: true,
                 templateUrl: 'app/views/modaldlg.html',
                 controller: 'PopupDialogController',
-                size: '',
+                size: 'lg',
+                backdrop: 'static',
                 resolve: {
                     TitleStr: function() { return TitleStr; },
                     Details: function() { return Details; }
@@ -427,44 +428,6 @@
 				$rootScope.$broadcast('ShowMessage', 'Error', reason);
 			});
 	}])
-	
-	.controller('MessageBoxController', ['$scope', '$rootScope','$modalInstance', function($scope, $rootScope, $modalInstance) {
-		$scope.MessageHeader = $rootScope.MessageHeader;
-		$scope.MessageDetail = $rootScope.MessageDetail;
-		
-		$scope.ok = function () {
-		    $modalInstance.close();
-		  };
-        $scope.cancel = function () {
-		    $modalInstance.dismiss('cancel');
-		  };
-		  
-//		$scope.$on("ShowMessage",function (oEvent, msgHeader, msgDetail) {
-//			console.log('HIH MessageBox Controller: ShowMessage event occurred');
-//			$scope.MessageHeader = msgHeader;
-//			$scope.MessageDetail = msgDetail;
-//
-//			var modalInstance = $modal.open({
-//			      animation: true,
-//			      templateUrl: 'hihMessageDialog.html',
-//			      resolve: {
-//			          msgHeader: $scope.msgHeader,
-//			          msgDetail: $scope.msgDetail			          
-//			        }
-//		      });
-//		
-//			modalInstance.result.then(function () {
-//		      //$scope.selected = selectedItem;
-//		    }, function () {
-//		      $log.info('HIH: Message dialog dismissed at: ' + new Date());
-//		    });			
-//			
-//			$('#dlgMessage').modal('hide');
-//			var dlg = $('#dlgMessage');
-//			if (dlg)
-//				dlg.modal('show');
-//		});
-	}])	
 	
 	.controller('AboutController', ['$scope', '$rootScope', function($scope, $rootScope) {
 		// $scope.myInterval = 5000;
