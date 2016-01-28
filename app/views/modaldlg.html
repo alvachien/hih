@@ -2,10 +2,7 @@
     <h3 class="modal-title">{{TitleStr}}</h3>
 </div>
 <div class="modal-body">
-    <ul>
-        <li ng-repeat="Detail in DetailList">
-        </li>
-    </ul>
+    <uib-alert ng-repeat="detail in Details" type="{{detail.Type}}">{{detail.Message}}</uib-alert>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

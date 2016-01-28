@@ -26,9 +26,6 @@
 	  		};
 	  			
 			$scope.login = function() {
-                $rootScope.$broadcast("ShowMessageEx", "Error", ["data.Message"]);
-                return;
-                
 				// Verify the inputs first!
 				// To-Do
 				
@@ -51,12 +48,13 @@
                         //$state.go('home');
                         //$state.transitionTo('home');
                       } else {
-					       $rootScope.$broadcast("ShowMessage", "Error", "Unexpected system response, no logon allowed so far!");
+					       $rootScope.$broadcast("ShowMessageEx", "Error", 
+                            [{Type: 'danger', Message: "Unexpected system response, no logon allowed so far!"}]);
                       }
 				  }).
 				  error(function(data, status, headers, config) {
 					  // called asynchronously if an error occurs or server returns response with an error status.
-					  $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+					  $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 				  });
 			};
 			
@@ -101,18 +99,18 @@
 				
 				var msgs = $scope.registerInfo.Verify();
 				if ($.isArray(msgs) && msgs.length > 0) {
-					// To-Do
-					// 
-					$.each(msgs, function(idx, objMsg) {
-						$rootScope.$broadcast('ShowMessageNeedTranslate', objMsg, 'Common.Error', 'error');
-					})
+                    var msgTable = [];
+                    $.each(msgs, function(idx, objMsg) {
+                        msgTable.push({Type: 'danger', Message: objMsg});
+                    });
+                    $rootScope.$broadcast('ShowMessageEx', "Error",  msgTable);
 					return;	
 				} else {
 					utils.registerUserQ($scope.registerInfo)
 						.then(function(response) {
 							$state.go("login");
 						}, function(reason) {
-							$rootScope.$broadcast('ShowMessage', "Error", reason);
+							$rootScope.$broadcast('ShowMessageEx', "Error", [{Type: 'danger', Message: reason}]);
 						});
 				}
 			};

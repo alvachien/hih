@@ -147,10 +147,10 @@
     .controller('PopupDialogController',  ['$scope', '$rootScope', '$log', '$translate', '$uibModalInstance', 'TitleStr', 'Details', 
         function($scope, $rootScope, $log, $translate, $uibModalInstance, TitleStr, Details) {
             $scope.TitleStr = TitleStr;
-            $scope.DetailList = Details;
+            $scope.Details = Details;
             
             $scope.ok = function() {
-                $uibModalInstance.close();
+                $uibModalInstance.close(true);
             };
             $scope.cancel = function() {
                 $uibModalInstance.dismiss('cancel');
@@ -221,7 +221,7 @@
 			});
 		});
         
-        $scope.$on('ShowMessageEx', function(oEvent, TitleStr, Details) {
+        $scope.$on('ShowMessageEx', function(oEvent, TitleStr, Details, AfterProcFunc) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/views/modaldlg.html',
@@ -234,10 +234,14 @@
                 }
             });
             
-            modalInstance.result.then(function(){
-               $log.info("HIH Modal: closed at: " + new Date()); 
-            }, function() {
-               $log.info("HIH Modal: dismissed at: " + new Date()); 
+            modalInstance.result.then(function (bOK) {
+                $log.info("HIH Modal: closed by OK button: " + new Date());
+                if (AfterProcFunc && angular.isFunction(AfterProcFunc)) {
+                    $log.info("HIH Popup: running AfterProcFunc ....");
+                    AfterProcFunc();
+                }
+            }, function () {
+                $log.info("HIH Modal: dismissed by Cancel button: " + new Date());
             });
         });
 	}])
@@ -252,21 +256,21 @@
 				// Do nothing here~~~
 			}, function(reason) {
                 $log.error(reason);
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});            
 		utils.loadFinanceExchangeRateInfoQ()
 			.then(function(response) {
 				// Do nothing here~~~
 			}, function(reason) {
                 $log.error(reason);
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 		utils.loadLibSettingQ()
 			.then(function(response) {
 				// Do nothing here~~~
 			}, function(reason) {
                 $log.error(reason);
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			}); 
                        
 		// Welcome page
@@ -325,6 +329,12 @@
 			}, function(reason) {
 				// Do nothing.
 			});
+        utils.getLearnPlanActListQ()
+            .then(function(response) {
+                
+            }, function(reason) {
+                
+            });  
 			
 		$scope.goDetail = function(row) {
 			if (row.AccountID) {
@@ -390,7 +400,7 @@
 				$state.go('login');
 			}, function(data, status, headers, config) {
 				// Throw out error message				
-				$rootScope.$broadcast('ShowMessage', 'Error', 'Failed to logout!');
+				$rootScope.$broadcast('ShowMessageEx', 'Error', [{Type: 'danger', Message: 'Unknown reason for logging out!'}]);
 			});
 		};
 		
@@ -425,7 +435,7 @@
 			.then(function(response) {
 				// Do nothing
 			}, function(reason) {
-				$rootScope.$broadcast('ShowMessage', 'Error', reason);
+				$rootScope.$broadcast('ShowMessageEx', 'Error', [{Type: 'danger', Message: reason}]);
 			});
 	}])
 	

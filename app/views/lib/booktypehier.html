@@ -1,0 +1,14 @@
+<div id="viewBookTypeHier">
+
+	<div class="page-header">
+		<h2>
+			<span translate="Lib.BookType">Book Type</span> <small translate="Common.HierarchyView"> Hierarchy View </small>
+		</h2>
+		<!--<button type="button" class="btn btn-primary" ng-click="newItem()" translate="Common.Create">New</button>-->
+		<button type="button" class="btn btn-primary" ng-click="refreshHierarchy()" translate="Common.Refresh">Refresh</button>
+	</div>
+	
+	<div class="panel-body">
+		<div js-tree="treeConfig" ng-model="treeData" tree="treeInstance" should-apply="ignoreModelChanges()"></div>
+	</div>
+</div>

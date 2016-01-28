@@ -294,9 +294,9 @@
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
 												$rootScope.$broadcast(
-														"ShowMessage",
+														"ShowMessageEx",
 														"Error",
-														data.Message);
+														[{Type: 'danger', Message: data.Message}]);
 											});
 							}							
 						};
@@ -396,7 +396,7 @@
 										.error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+												$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 											});
 							}
 						};
@@ -500,7 +500,7 @@
 										.error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast( "ShowMessage", "Error", data.Message);
+												$rootScope.$broadcast( "ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 											});
 							}
 						};
@@ -611,7 +611,7 @@
 											})
 									 .error(
 											function(data, status, headers, config) {
-												$rootScope.$broadcast("ShowMessage","Error",data.Message);
+												$rootScope.$broadcast("ShowMessageEx","Error", [{Type: 'danger', Message: data.Message}]);
 											});
 							}
 						};
@@ -868,7 +868,7 @@
 									.error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast("ShowMessage", "Error",data.Message);
+												$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 											});
 							}
 						};
@@ -981,7 +981,7 @@
 									})
 									.error(function(data, status, headers, config) {
 										// called asynchronously if an error occurs or server returns response with an error status.
-										$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+										$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 									});
 							}
 						};
@@ -1078,6 +1078,23 @@
 									});
 							return deferred.promise;
 						};
+                        // Get the plans displayed in welcome page
+                        rtnObj.getLearnPlanActListQ = function() {
+							var todate = new Date();
+							todate.setDate(todate.getDate() + 15);
+							var todate2 = hih.ModelUtility.DatabaseDateFormatter(todate);
+							
+							var deferred = $q.defer();
+							$http.post(
+								'script/hihsrv.php',
+								{ objecttype: 'GETLEANPLAN_ACTLIST', tdate: todate2})
+							.then(function(response) {
+								deferred.resolve(response.data);
+							}, function(response){
+								deferred.reject(response.data.Message);
+							});
+							return deferred.promise;
+                        };
 
 ////////////////////////////////////////////////////////////////////
 // Finance part
@@ -1148,9 +1165,9 @@
 												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
-															"ShowMessage",
+															"ShowMessageEx",
 															"Error",
-															data.Message);
+															[{Type: 'danger', Message: data.Message}]);
 												});
 							}							
 						};
@@ -1341,9 +1358,9 @@
 												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
-															"ShowMessage",
+															"ShowMessageEx",
 															"Error",
-															data.Message);
+															[{Type: 'danger', Message: data.Message}]);
 												});
 							}							
 						};
@@ -1380,9 +1397,9 @@
 												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
-															"ShowMessage",
+															"ShowMessageEx",
 															"Error",
-															data.Message);
+															[{Type: 'danger', Message: data.Message}]);
 												});
 							}							
 						};
@@ -1439,9 +1456,9 @@
 												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
-															"ShowMessage",
+															"ShowMessageEx",
 															"Error",
-															data.Message);
+															[{Type: 'danger', Message: data.Message}]);
 												});
 							}							
 						};
@@ -1692,7 +1709,7 @@
 							}, function(response){
 								deferred.reject(response.data.Message);
 							});
-							return deferred.promise;							
+							return deferred.promise;
 						};
 						rtnObj.getFinanceDPDocumentQ = function(docid) {
 							var deferred = $q.defer();
@@ -1771,9 +1788,9 @@
 												function(data, status, headers, config) {
 													// called asynchronously if an error occurs or server returns response with an error status.
 													$rootScope.$broadcast(
-															"ShowMessage",
+															"ShowMessageEx",
 															"Error",
-															data.Message);
+															[{Type: 'danger', Message: data.Message}]);
 												});
 							}							
 						};
@@ -1833,7 +1850,7 @@
 									 .error(
 											function(data, status, headers, config) {
 												// called asynchronously if an error occurs or server returns response with an error status.
-												$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+												$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 										});
 							}
 						};

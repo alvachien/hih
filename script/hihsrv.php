@@ -35,6 +35,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "GET") {
                     'UserGender' => NULL 
             ) );                
         }
+    } else {
+        export_error ( "HIH Unsupoorted command" . $sGetUser . " with request method: " . $_SERVER ["REQUEST_METHOD"] );
     }
 }
 else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
@@ -484,6 +486,12 @@ else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				HIHSrv_Function_1Param( 'learn_plan_delete', $nID );				
 			}
 			break;
+            
+        case "GETLEANPLAN_ACTLIST": {
+			$tdate = escape ( $realParamArr ['tdate'] );
+			HIHSrv_Function_1Param( 'learn_plan_actlist_tdate', $tdate);
+        }
+        break;
 			
 		// ===========================================================================================
 		// Finance Part

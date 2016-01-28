@@ -39,6 +39,11 @@
 					templateUrl: 'app/views/lib/booktypelist.html',
 					controller: 'LibBookTypeListController'
 				})
+                .state("home.lib.booktype.hierarchy", {
+                    url: "/hierarchy",
+                    templateUrl: 'app/views/lib/booktypehier.html',
+                    controller: 'LibBookTypeHierController'
+                })
 				
 				.state("home.lib.person", {
 					url: "/person",
@@ -196,7 +201,7 @@
 					.then(function (response) {
 						// Do nothing....
 					}, function (reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			}])
 
@@ -208,9 +213,47 @@
 				.then(function (response) {
 					$scope.dispList = [].concat($rootScope.arLibBookType);
 				}, function (reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 			}])
+        
+        .controller('LibBookTypeHierController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils', 
+            function($scope, $rootScope, $state, $http, $log, utils) {
+                
+            $scope.treeData = [];
+            $scope.ignoreModelChanges = function() { return false; };
+            
+            utils.loadLibBookTypeQ()
+                .then(function (response) {
+                    $scope.treeData = [];
+                    $.each($rootScope.arLibBookType, function (idx, obj) {
+                        var treenode = obj.getJsTreeNode();
+                        $scope.treeData.push(treenode);
+                    });
+            	}, function (reason) {
+                    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: reason }]);
+                });
+            
+            $scope.treeConfig = {
+                    core : {
+                        multiple : false,
+                        animation: true,
+                        error : function(error) {
+                            $log.error('treeCtrl: error from js tree - ' + angular.toJson(error));
+                        },
+                        check_callback : true,
+                        worker : true,
+                        themes: {
+                            name: 'default-dark',
+                            url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
+                            responsive: true,
+                            stripes: true
+                        }
+                    },
+                    version : 1,
+                    plugins : [ 'wholerow' ]
+                };
+        }])
 
 		.controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
 			function ($scope, $rootScope, $state, $http, $interval, $translate, $log, utils) {
@@ -261,7 +304,7 @@
                             }
                         }
                         if (nSelectedCount !== 1) {
-                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type:'danger', Message: "Select only one group to delete!"}]);
                             return;
                         }
                     }
@@ -280,7 +323,7 @@
                                 })
                             .error(
                                 function(data, status, headers, config) {
-                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
                                 });
                     });
 				};
@@ -289,7 +332,7 @@
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibLocation);
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				};
 
@@ -335,9 +378,11 @@
 					// if (msgTab && msgTab.length > 0) {
 					// 	$translate(msgTab).then(function (translations) {
 					// 		// Show errors
-					// 		$.each(translations, function (idx, obj) {
-					// 			$rootScope.$broadcast("ShowMessage", "Error", obj);
-					// 		});
+                        // var msgTab2 = [];
+						// $.foreach(translations, function(idx, obj) {
+                        //     msgTab2.push({Type:'danger', Message: obj});
+						// });
+                        // $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
 					// 	});
 					// 	return;
 					// }
@@ -348,14 +393,14 @@
 							.then(function (response) {
 								$state.go("home.lib.loc.display", { id: response });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibLocationQ($scope.LocationObject)
 							.then(function (response) {
 								$state.go("home.lib.loc.display", { id: $scope.LocationObject.ID });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					}
 				};
@@ -416,13 +461,13 @@
 					}
 
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             utils.deleteLibPersonQ(nid)
                                 .then(function(response) {
                                     $scope.refreshList(true);
                                 }, function(reason) {
-                                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                                 });
                     });
 				};
@@ -432,7 +477,7 @@
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibPerson);
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				};
 
@@ -500,9 +545,11 @@
 					if (msgTab && msgTab.length > 0) {
 						$q.all(msgTab).then(function (translations) {
 							// Show errors
-							$.each(translations, function (idx, obj) {
-								$rootScope.$broadcast("ShowMessage", "Error", obj);
-							});
+                            var msgTab2 = [];
+                            $.foreach(translations, function(idx, obj) {
+                                msgTab2.push({Type:'danger', Message: obj});
+                            });
+                            $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
 						});
 						return;
 					}
@@ -513,14 +560,14 @@
 							.then(function (response) {
 								$state.go("home.lib.person.display", { id: response });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibPersonQ($scope.PersonObject)
 							.then(function (response) {
 								$state.go("home.lib.person.display", { id: $scope.PersonObject.ID });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					}
 				};
@@ -581,13 +628,13 @@
 					}
 
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             utils.deleteLibOrganizationQ(nid)
                                 .then(function(response) {
                                     $scope.refreshList(true);
                                 }, function(reason) {
-                                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                                 });
                     });
 				};
@@ -597,7 +644,7 @@
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibOrganization);
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				};
 
@@ -649,7 +696,7 @@
 								}
 							});
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 
 				} else {
@@ -665,9 +712,11 @@
 					if (msgTab && msgTab.length > 0) {
 						$q.all(msgTab).then(function (translations) {
 							// Show errors
-							$.each(translations, function (idx, obj) {
-								$rootScope.$broadcast("ShowMessage", "Error", obj);
-							});
+                            var msgTab2 = [];
+                            $.foreach(translations, function(idx, obj) {
+                                msgTab2.push({Type:'danger', Message: obj});
+                            });
+                            $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
 						});
 						return;
 					}
@@ -678,14 +727,14 @@
 							.then(function (response) {
 								$state.go("home.lib.org.display", { id: response });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibOrganizationQ($scope.OrganizationObject)
 							.then(function (response) {
 								$state.go("home.lib.org.display", { id: $scope.OrganizationObject.ID });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					}
 				};
@@ -704,7 +753,7 @@
                         .then(function(response) {
                             $state.go("home.lib.bookgroup.create");
                         }, function(reason) {
-                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                         });					
 				};
 				$scope.displayItem = function (row) {
@@ -724,7 +773,7 @@
                         .then(function(response) {
                             $state.go("home.lib.bookgroup.display", { id: nid });                            
                         }, function(reason) {
-                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                         });					
 				};
 				$scope.editItem = function (row) {
@@ -744,7 +793,7 @@
 						.then(function(response) {
 							$state.go("home.lib.bookgroup.maintain", { id: nid });
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});					
 				};
 				$scope.removeItem = function (row) {
@@ -760,7 +809,7 @@
                             }
                         }
                         if (nSelectedCount !== 1) {
-                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type:'danger', Message: "Select only one group to delete"}]);
                             return;
                         }
                     }
@@ -779,7 +828,7 @@
                                 })
                             .error(
                                 function(data, status, headers, config) {
-                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
                                 });
                     });
 				};
@@ -789,7 +838,7 @@
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibBookGroup);
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				};
 
@@ -846,7 +895,7 @@
 								}
 							});
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 
 				} else {
@@ -921,9 +970,11 @@
 					if (msgTab && msgTab.length > 0) {
 						$q.all(msgTab).then(function (translations) {
 							// Show errors
-							$.each(translations, function (idx, obj) {
-								$rootScope.$broadcast("ShowMessage", "Error", obj);
-							});
+                            var msgTab2 = [];
+                            $.foreach(translations, function(idx, obj) {
+                                msgTab2.push({Type:'danger', Message: obj});
+                            });
+                            $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
 						});
 						return;
 					}
@@ -934,7 +985,7 @@
 							.then(function (response) {
 								$state.go("home.lib.bookgroup.display", { id: response });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibBookGroupQ($scope.BookGroupObject)
@@ -942,7 +993,7 @@
                                 // Refresh it!
 								$state.go("home.lib.bookgroup.display", { id: $scope.BookGroupObject.ID });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					}
 				};
@@ -966,7 +1017,7 @@
                         .then(function(response) {
                             $state.go("home.lib.book.create");
                         }, function(reason) {
-                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                         });					
 				};
 				$scope.displayItem = function (row) {
@@ -991,7 +1042,7 @@
                         .then(function(response) {
                             $state.go("home.lib.book.display", { id: nid });                            
                         }, function(reason) {
-                            $rootScope.$broadcast("ShowMessage", "Error", reason);
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                         });					
 				};
 				$scope.editItem = function (row) {
@@ -1016,7 +1067,7 @@
 						.then(function(response) {
 							$state.go("home.lib.book.maintain", { id: nid });
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});					
 				};
 				$scope.removeItem = function (row) {
@@ -1032,7 +1083,7 @@
                             }
                         }
                         if (nSelectedCount !== 1) {
-                            $rootScope.$broadcast("ShowMessage", "Error", "Select only one group to delete!");
+                            $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Select only one group to delete."}]);
                             return;
                         }
                     }
@@ -1051,7 +1102,7 @@
                                 })
                             .error(
                                 function(data, status, headers, config) {
-                                    $rootScope.$broadcast("ShowMessage", "Error", data.Message);
+                                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
                                 });
                     });
 				};
@@ -1061,7 +1112,7 @@
 						.then(function (response) {
 							$scope.dispList = [].concat($rootScope.arLibBook);
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				};
 
@@ -1222,7 +1273,7 @@
 								}
 							});
 						}, function (reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 
 				} else {
@@ -1247,7 +1298,7 @@
                     $scope.cleanReportMessages();
                     
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             if ($scope.SelectedNameObject.NameID === row.NameID) {
                                 $scope.cancelCurrentName();
@@ -1293,7 +1344,7 @@
                             .then(function(response) {
                                 Array.prototype.push.apply($scope.ReportedMessages, response);
                             }, function(reason) {
-                                $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                                $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
                             });
                         return;
                     }
@@ -1335,7 +1386,7 @@
                     $scope.cleanReportMessages();
                     
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             var nID = parseInt(row.ID);
                             if ($scope.SelectedAuthorObject.ID === nID) {
@@ -1393,7 +1444,7 @@
                     $scope.cleanReportMessages();
                     
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             var nID = parseInt(row.ID);
                             if ($scope.SelectedPressObject.ID === nID) {
@@ -1423,7 +1474,7 @@
                     //             $scope.cleanReportMessages();
                     //             Array.prototype.push.apply($scope.ReportedMessages, response);
                     //         }, function(reason) {
-                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //             $rootScope.$broadcast("ShowMessageEx", "Error", "Fatal error on loading texts!");
                     //         });
                     //     return;
                     // }
@@ -1462,7 +1513,7 @@
                     $scope.cleanReportMessages();
                     
                     // Show confirm dialog
-                    $rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+                    $rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
                         function() {
                             var nID = parseInt(row.ID);
                             if ($scope.SelectedLocationObject.ID === nID) {
@@ -1492,7 +1543,7 @@
                     //             $scope.cleanReportMessages();
                     //             Array.prototype.push.apply($scope.ReportedMessages, response);
                     //         }, function(reason) {
-                    //             $rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+                    //             $rootScope.$broadcast("ShowMessageEx", "Error", "Fatal error on loading texts!");
                     //         });
                     //     return;
                     // }
@@ -1524,7 +1575,7 @@
 					// 	$translate(msgTab).then(function (translations) {
 					// 		// Show errors
 					// 		$.each(translations, function (idx, obj) {
-					// 			$rootScope.$broadcast("ShowMessage", "Error", obj);
+					// 			$rootScope.$broadcast("ShowMessageEx", "Error", obj);
 					// 		});
 					// 	});
 					// 	return;
@@ -1566,14 +1617,14 @@
 					 		.then(function (response) {
 					 			$state.go("home.lib.book.display", { id: response });
 					 		}, function (reason) {
-					 			$rootScope.$broadcast("ShowMessage", "Error", reason);
+					 			$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					 		});
 					} else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 						utils.updateLibBookQ($scope.BookObject)
 							.then(function (response) {
 								$state.go("home.lib.book.display", { id: $scope.BookObject.ID });
 							}, function (reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							});
 					 }
 				};

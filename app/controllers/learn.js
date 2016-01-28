@@ -162,10 +162,10 @@
 						then(function(response2) {
 							// Do nothing
 						}, function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						} );
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		  
             // Remove to the real data holder
@@ -189,20 +189,21 @@
 					.then(function(response) {
 							if (response > 0) {
 								// Message.LearnObjectStillInUse
-								$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Message.LearnObjectStillInUse', 'error');
+								$rootScope.$broadcast('ShowMessageEx', 'Error', [{Type: 'danger', Message: "Object cannot delete, it still in using"}]);
 							} else {
 								// Popup dialog for confirm
-								$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+								$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
+                                    function() {
 									utils.deleteLearnObjectsQ(strIDs)
 										.then(function(response2) {
 											$scope.refreshList();
 										}, function(reason2) {
-											$rootScope.$broadcast("ShowMessage", "Error", reason2);
+											$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 										});							
 								});
 							}
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);						
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);						
 					});
 			};
 			
@@ -253,7 +254,7 @@
 					.then(function(response) {
 						// Do nothing
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			};
 		}])
@@ -365,7 +366,7 @@
                         });
                     }, function(reason) {
                         $scope.ActivityID = hih.Constants.UIMode_Invalid;
-                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                     });
 			} else {
 			    $scope.Activity = "Common.Create";
@@ -393,9 +394,11 @@
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
 						// Show errors
+                        var msgTab2 = [];
 						$.foreach(translations, function(idx, obj) {
-							$rootScope.$broadcast("ShowMessage", "Error", obj);
+                            msgTab2.push({Type:'danger', Message: obj});
 						});
+                        $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
   					});	
 				 	return;
 				 }
@@ -406,14 +409,14 @@
 					 	.then(function(response) {
 							 $state.go("home.learn.object.display", { objid : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnObjectQ($scope.objLearnObject)
 					 	.then(function(response) {
 							 $state.go("home.learn.object.display", { objid : $scope.objLearnObject.ID });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 }
 			 };
@@ -438,14 +441,14 @@
 								.then(function(response3) {
 									// Do nothing...
 								}, function(reason3) {
-									$rootScope.$broadcast("ShowMessage", "Error", reason3);
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason3}]);
 								});							
 						}, function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						});
 					
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});			
 		  
 			// Remove to the real data holder
@@ -466,25 +469,25 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 							}
 						);
 					return;				
 				}
 				
-				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+				$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}],
+                    function() {
 					utils.deleteLearnHistoryQ(realRow)
 						.then(function(response) {
 							// Just refresh it!
 							$scope.refreshList();
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				});
-				
 			 };
 			
 			 // Display
@@ -534,7 +537,7 @@
 					.then(function(response2) {
 						// Do nothing!
 					}, function(reason2) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 					});					
 			 };
 		}])
@@ -603,9 +606,11 @@
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
 						// Show errors
+                        var msgTab2 = [];
 						$.foreach(translations, function(idx, obj) {
-							$rootScope.$broadcast("ShowMessage", "Error", obj);
+                            msgTab2.push({Type:'danger', Message: obj});
 						});
+                        $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
   					});	
 				 	return;
 				 }
@@ -616,14 +621,14 @@
 					 	.then(function(response) {
 							 $state.go("home.learn.history.display", { histid : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnHistoryQ($scope.CurrentLearnHistory)
 					 	.then(function(response) {
 							 $state.go("home.learn.history.display", { histid : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 }
 			 };
@@ -647,13 +652,13 @@
 								.then(function(response3) {
 									// Do nothing.
 								}, function(reason3) {
-									$rootScope.$broadcast("ShowMessage", "Error", reason3);
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason3}]);
 								});
 						}, function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						});					
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		    
 			// Remove to the real data holder
@@ -673,23 +678,24 @@
 						$translate('Message.SelectSingleItemForDeletion')
 							.then(
 								function(response) {
-									$rootScope.$broadcast("ShowMessage", "Error", response);
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 								},
 								function(reason) {
-									$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal Error!"}]);
 								}
 							);
 						return;				
 					}
 				}
 				
-				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+				$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}],
+                    function() {
 					utils.deleteLearnPlanQ(nID)
 						.then(function(response) {
 							// Just refresh it!
 							$scope.refreshList();
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				});
 			 };
@@ -745,7 +751,7 @@
 					.then(function(response2) {
 						// Do nothing!
 					}, function(reason2) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 					});					
 			 };
 		}])
@@ -868,7 +874,7 @@
 				$scope.cleanReportMessages();
 				
 				// Show confirm dialog
-				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+				$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
 					function() {
 						if ($scope.SelectedPlanDetail.ObjectID === row.ObjectID) {
 							// New detail
@@ -901,7 +907,7 @@
 							$scope.cleanReportMessages();
 							Array.prototype.push.apply($scope.ReportedMessages, response);
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type:'danger', Message: "Fatal error on loading texts!"}]);
 						});
 					return;
 				}
@@ -942,7 +948,7 @@
 				$scope.cleanReportMessages(); 
 				
 				// Show confirm dialog
-				$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+				$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
 					function() {
 						if ($scope.SelectedPlanParticipant.UserID === row.UserID
 							&& $scope.SelectedPlanParticipant.StartDate === row.StartDate ) {
@@ -976,7 +982,7 @@
 				 			$scope.cleanReportMessages();
 				 			Array.prototype.push.apply($scope.ReportedMessages, response);
 				 		}, function(reason) {
-				 			$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+				 			$rootScope.$broadcast("ShowMessageEx", "Error", [{Type:'danger', Message: "Fatal error on loading texts!"}]);
 				 		});
 				 	return;
 				}
@@ -1014,11 +1020,11 @@
 				 var msgTab = $scope.CurrentLearnPlan.Verify($translate);
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
-						// ToDo: change the multiple error string handling behavior. Combining the error into a longer one
-						// Show errors
+                        var msgTab2 = [];
 						$.foreach(translations, function(idx, obj) {
-							$rootScope.$broadcast("ShowMessage", "Error", obj);
+                            msgTab2.push({Type:'danger', Message: obj});
 						});
+                        $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
   					});	
 				 	return;
 				 }
@@ -1029,14 +1035,14 @@
 					 	.then(function(response) {
 							 $state.go("home.learn.plan.display", { id : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnPlanQ($scope.CurrentLearnPlan)
 					 	.then(function(response) {
 							 $state.go("home.learn.plan.display", { id : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 }
 			 };
@@ -1162,7 +1168,7 @@
 						 
 						 $scope.isCompare = true;						 
 					 }, function(reason) {
-						 $rootScope.$broadcast("ShowMessage", "Error", reason);
+						 $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					 });
 			 };
 			 $scope.hideComparison = function() {
@@ -1184,10 +1190,10 @@
 						.then(function(response2) {
 							// Do nothing
 						}, function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						});
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		  
 			if (!$rootScope.DeletionDialogTitle || !$rootScope.DeletionDialogMsg) {
@@ -1228,7 +1234,7 @@
 							})
 						.error(
 							function(data, status, headers, config) {
-								$rootScope.$broadcast("ShowMessage", "Error", data.Message);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: data.Message}]);
 							});
 				});
 			 };
@@ -1330,9 +1336,11 @@
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
 						// Show errors
-						$.each(translations, function(idx, obj) {
-							$rootScope.$broadcast("ShowMessage", "Error", obj);
+                        var msgTab2 = [];
+						$.foreach(translations, function(idx, obj) {
+                            msgTab2.push({Type:'danger', Message: obj});
 						});
+                        $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
   					});	
 				 	return;
 				 }
@@ -1343,14 +1351,14 @@
 					 	.then(function(response) {
 							 $state.go("home.learn.award.display", { objid : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnAwardQ($scope.CurrentLearnAward)
 					 	.then(function(response) {
 							 $state.go("home.learn.award.display", { objid : $scope.CurrentLearnAward.ID });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 }
 			 };
@@ -1370,7 +1378,7 @@
                         //});			  
                     };
                 }, function (reason) {
-                    $rootScope.$broadcast("ShowMessage", "Error", reason);
+                    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                 });
 			
             // Display
@@ -1424,7 +1432,7 @@
                     .then(function (response) {
                         // Do nothing
                     }, function (reason) {
-                        $rootScope.$broadcast("ShowMessage", "Error", reason);
+                        $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
                     });
             };
         }])
@@ -1464,9 +1472,11 @@
 				 if (msgTab && msgTab.length > 0) {
 					$translate(msgTab).then(function (translations) {
 						// Show errors
-						$.each(translations, function(idx, obj) {
-							$rootScope.$broadcast("ShowMessage", "Error", obj);
+                        var msgTab2 = [];
+						$.foreach(translations, function(idx, obj) {
+                            msgTab2.push({Type:'danger', Message: obj});
 						});
+                        $rootScope.$broadcast("ShowMessageEx", "Error", msgTab2);
   					});	
 				 	return;
 				 }
@@ -1477,14 +1487,14 @@
 					 	.then(function(response) {
 							 $state.go("home.learn.category.display", { id : response });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 } else if ($scope.ActivityID === hih.Constants.UIMode_Change) {
 					 utils.changeLearnCategoryQ($scope.CategoryObject)
 					 	.then(function(response) {
 							 $state.go("home.learn.category.display", { objid : $scope.CategoryObject.ID });
 						 }, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason); 
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]); 
 						 });
 				 }
 			 };

@@ -2759,6 +2759,57 @@ INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 109, '�
 INSERT INTO `t_lib_booktype` (`ID`, `NAME`, `OTHERS`, `PARID`) VALUES ( 110, 'ERP软件', 'ERP软件类', 101);
 
 /* ======================================================
+    Delta parts on 2016.01.28
+   ====================================================== */
+   
+-- Table create: t_lib_booktype
+CREATE TABLE IF NOT EXISTS `t_learn_recurtypedates` (
+  `ID` smallint(6) NOT NULL,
+  `DEFDAYS` int(11) NOT NULL,
+  PRIMARY KEY (`ID`, `DEFDAYS`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Recur type dates';
+
+-- Predliver content [0, 1, 2, 4, 7, 15, 30]
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 1, 0 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 0 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 1 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 2 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 4 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 7 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 15 );
+INSERT INTO `t_learn_recurtypedates` (`ID`, `DEFDAYS`) VALUES ( 2, 30 );
+
+-- Table create: Module
+CREATE TABLE IF NOT EXISTS `t_module` (
+  `MODULE` varchar(3) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`MODULE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Module';
+
+-- Predliver content for Module
+INSERT INTO `t_module` (`MODULE`, `NAME`) VALUES ( 'USR', 'User registeration' );
+INSERT INTO `t_module` (`MODULE`, `NAME`) VALUES ( 'LRN', 'Learning Trace' );
+INSERT INTO `t_module` (`MODULE`, `NAME`) VALUES ( 'FIN', 'Finance Trace' );
+INSERT INTO `t_module` (`MODULE`, `NAME`) VALUES ( 'LIB', 'Library' );
+
+-- Table create: t_user_prof
+CREATE TABLE IF NOT EXISTS `t_user_prof` (
+  `USERID` varchar(25) NOT NULL,
+  `MODULE` varchar(3) NOT NULL,
+  `READFLAG` tinyint(4) DEFAULT 0,
+  `CREATEFLAG` tinyint(4) DEFAULT 0,
+  `UPDATEFLAG` tinyint(4) DEFAULT 0,
+  `FULLCTRLFLAG` tinyint(4) DEFAULT 0,
+  PRIMARY KEY (`USERID`, `MODULE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User Profile';
+
+-- Predliver content for default user profile
+INSERT INTO `t_user_prof` (`USERID`, `MODULE`, `READFLAG`, `CREATEFLAG`, `UPDATEFLAG`, `FULLCTRLFLAG`) VALUES ( '', 'USR', 1, 1, 0, 0 );
+INSERT INTO `t_user_prof` (`USERID`, `MODULE`, `READFLAG`, `CREATEFLAG`, `UPDATEFLAG`, `FULLCTRLFLAG`) VALUES ( '', 'LRN', 1, 1, 0, 0 );
+INSERT INTO `t_user_prof` (`USERID`, `MODULE`, `READFLAG`, `CREATEFLAG`, `UPDATEFLAG`, `FULLCTRLFLAG`) VALUES ( '', 'FIN', 0, 0, 0, 0 );
+INSERT INTO `t_user_prof` (`USERID`, `MODULE`, `READFLAG`, `CREATEFLAG`, `UPDATEFLAG`, `FULLCTRLFLAG`) VALUES ( '', 'LIB', 1, 1, 0, 0 );
+
+/* ======================================================
     Delta parts on 2016.07.01+
    ====================================================== */
 

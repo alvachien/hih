@@ -1779,6 +1779,62 @@ function learn_plan_delete($nPlanID) {
 		$nPlanID 
 	);	
 }
+function learn_plan_actlist_tdate($todate) {
+	$mysqli = new mysqli ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
+	
+	/* check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: %s\n" . mysqli_connect_error (),
+			null 
+		);
+	}
+	
+	// Set language
+	$mysqli->query("SET NAMES 'UTF8'");
+	$mysqli->query("SET CHARACTER SET UTF8");
+	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
+		
+	$sError = "";
+	
+    // Prepare the query
+	$query = "select taba.userid, taba.startdate, taba.comment, tabb.name, tabc.recurtype, tabc.deferredday, 
+            ADDDATE(taba.startdate, tabc.deferredday) as ExpStartDate, tabc.objectid, tabd.name as objname 
+        from t_learn_planpat as taba
+	       join t_learn_plan as tabb
+               on taba.id = tabb.id
+           left outer join t_learn_plandtl as tabc
+               on taba.id = tabc.id
+           left outer join t_learn_obj as tabd
+               on tabc.objectid = tabd.id
+           left outer join t_learn_recurtypedates as tabe
+               on tabc.recurtype = tabe.id
+	    where (taba.status != 3 and taba.status != 4)
+            and ExpStartDate <= ?
+        ORDER BY userid asc, ExpStartDate asc";
+	
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "s", $todate );
+		/* Execute the statement */
+		if ($stmt->execute ()) {
+		} else {
+			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
+		}
+		
+		/* close statement */
+		$stmt->close ();
+	} else {
+		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
+	}
+    
+	/* close connection */
+	$mysqli->close ();
+	
+	return array (
+		$sError,
+		$nPlanID 
+	);	    
+}
 // 1.5 Learn award
 function learn_award_listread() {
 	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );

@@ -2347,6 +2347,19 @@
 		}
 		return this.FullDisplayName;
 	};
+	hih.LibBookType.prototype.getJsTreeNode = function() {
+		var treenode = {};
+		treenode.id = this.ID.toString();
+		if (this.ParentID === -1)
+			treenode.parent = "#";
+		else 
+			treenode.parent = this.ParentID.toString();
+		treenode.text = this.Name;
+		treenode.state = {
+			opened: true
+		};
+		return treenode;
+	};
     // 10. Lib Book Group
     hih.LibBookGroup = function LibBookGroup() {
         this.ID = -1;
@@ -2694,6 +2707,12 @@
 			return JSON && JSON.stringify(forJSON);
 		}
 		return JSON && JSON.stringify(this);
+    };
+    
+    // Messages for popup
+    hih.MessageDetail = function() {
+        this.Message = "";
+        this.Type = ""; // success, info, warning, danger
     };
 }());
 

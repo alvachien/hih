@@ -277,7 +277,7 @@
 					
 				}
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 			
 		$scope.displayDoc = function(row) {
@@ -298,11 +298,11 @@
 						  // Do nothing...
 				    }, function(reason2) {
 					    // Error occurred
-					    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+					    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		  }, function(reason) {
 			  // Error occurred!
-			  $rootScope.$broadcast("ShowMessage", "Error", reason);
+			  $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 		});
 
 	    // Remove to the real data holder
@@ -321,24 +321,25 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal Error!"}]);
 							}
 						);
 					return;				
 				}			
 			}
 			
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}],
+                function() {
 				utils.deleteFinanceAccountQ(nAccntID)
 					.then(function(response) {
 						
 						// Just refresh it!
 						$scope.refreshList();
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			});
 	    };
@@ -389,7 +390,7 @@
 					// Do nothing!
 				}, function(reason2) {
 					// Error occurred
-					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -419,10 +420,10 @@
 								$scope.treeConfig.version++;
 							}
 						}, function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						});
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});			
 		
 			$scope.ignoreModelChanges = function() { return false; };
@@ -482,7 +483,7 @@
 						$scope.treeConfig.version++;
 					}
 				}, function(reason2) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -534,7 +535,7 @@
 									})
 								}								
 							}, function(reason){
-								$rootScope.$broadcast("ShowMessage", "Error", reason);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 							})
 					}
 					return false;
@@ -560,7 +561,7 @@
 				$q.all(errMsgs).then(function (translations) {
 					Array.prototype.push.call($scope.ReportedMessages, translations);
   				}, function(reason) {
-					  $rootScope.$broadcast("ShowMessage", "Error", reason);
+					  $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				  });				
 				return;
 			}
@@ -579,7 +580,7 @@
 							}
 						}, function(reason) {
 							// Failed, throw out error message
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				} else if (this.ActivityID === hih.Constants.UIMode_Change) {
 					utils.changeFinanceAccountQ($scope.AccountObject)
@@ -592,11 +593,11 @@
 							}
 						}, function(reason) {
 							// Failed, throw out error message
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});					
 				}
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "To-Do: reason");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "To-Do: Reason"}]);
 			}
 		};
 		
@@ -623,13 +624,13 @@
 						.then(function(response3) {
 							// Do nothing
 						}, function(reason3) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason3);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason3}]);
 						});
 				}, function(reason2) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				})
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 
 		// Remove to the real data holder
@@ -648,22 +649,23 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 							}
 						);
 					return;				
 				}
 			}
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}],
+                function() {
 				utils.deleteFinanceDocumentQ(nDocID)
 					.then(function(response) {
 						// Just refresh it!
 						$scope.refreshList();
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			});
 		 };
@@ -733,7 +735,7 @@
 					};
 				}, function(reason2) {
 				    // Error occurred
-				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -797,7 +799,7 @@
 							$scope.safedocitemColl = [].concat($rootScope.arFinanceDocumentItemByAccount);
 							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				} else if (typ === "Category") {
 					utils.loadFinanceDocumentItemsByCategoryQ(id.substring(4))
@@ -805,7 +807,7 @@
 							$scope.safedocitemColl = [].concat($rootScope.arFinanceDocumentItemByAccount);
 							$scope.docitemCollection = [].concat($rootScope.arFinanceDocumentItemByAccount);
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				} else if (typ === "Journey") {
 					//id.substring()
@@ -845,13 +847,13 @@
 								$scope.treeConfig.version++;
 							}
 						}, function(reason3) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason3);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason3}]);
 						});
 				}, function(reason2) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason2);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				})
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 
 		// Remove to the real data holder
@@ -870,23 +872,24 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 							}
 						);
 					return;				
 				}
 			}
 			
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', function() {
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}],
+                function() {
 				utils.deleteFinanceDocumentQ(nDocID)
 					.then(function(response) {
 						// Just refresh it!
 						$scope.refreshList();
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			});
 		 };
@@ -956,7 +959,7 @@
 					};
 				}, function(reason2) {
 				    // Error occurred
-				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -1135,14 +1138,14 @@
 									$scope.TargetCCID = $scope.DocumentObject.Items[i].ControlCenterID;
 									$scope.TargetOrderID = $scope.DocumentObject.Items[i].OrderID;
 								} else {
-									$rootScope.$broadcast("ShowMessage", "Error", "fatal error!");
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 								}
 							}
 							return false;
 						}
 					});	
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		} else {
 			$scope.Activity = "Common.Create";
@@ -1185,7 +1188,7 @@
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					},
 					function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts"}]);
 					}
 				);
 				return;
@@ -1214,11 +1217,11 @@
 								$state.go("home.finance.document.display_tran",  { docid : response });
 							}
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				}
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 			}
 		};
 		
@@ -1428,14 +1431,14 @@
 									$scope.TargetOrderID = $scope.DocumentObject.Items[i].OrderID;
 									$scope.TargetTranAmount = $scope.DocumentObject.Items[i].TranAmount_Org;
 								} else {
-									$rootScope.$broadcast("ShowMessage", "Error", "fatal error!");
+									$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 								}
 							}
 							return false;
 						}
 					});	
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		} else {
 			$scope.Activity = "Common.Create";
@@ -1479,7 +1482,7 @@
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					},
 					function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts"}]);
 					}	
 				);
 				return;
@@ -1504,11 +1507,11 @@
 								$state.go("home.finance.document.display_currexg",  { docid : response });
 							}
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				}
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 			}
 		};
 		$scope.close = function() {
@@ -1873,7 +1876,7 @@
 			$scope.cleanReportMessages();
 			
 			// Show confirm dialog
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
 				function() {
 					var nID = parseInt(itemid);
 					if ($scope.selectedDPItem.DocID === nID) {
@@ -1983,7 +1986,7 @@
 					}
 				}, function(reason) {
 					// Errors
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		};
 		$scope.backToList = function() {
@@ -2062,7 +2065,7 @@
 						$scope.DocumentItemObject.UseCurrency2 = false;
 					}					
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		}
 		
@@ -2083,7 +2086,7 @@
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					},
 					function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts."}]);
 					}
 				);
 				return;
@@ -2112,10 +2115,10 @@
 							$state.go("home.finance.document.display",  { docid : response });
 						}
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 			}
 		};
 		
@@ -2298,7 +2301,7 @@
 						}
 					});					
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		} else {
 			// Set the default currency to local currency
@@ -2339,7 +2342,7 @@
 			$scope.cleanReportMessages();
 			
 			// Show confirm dialog
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
 				function() {
 					var nID = parseInt(itemid);
 					if ($scope.SelectedDocumentItem.ItemID === nID) {
@@ -2375,7 +2378,7 @@
 						$scope.cleanReportMessages();
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
 					});
 				return;
 			}
@@ -2428,7 +2431,7 @@
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					},
 					function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
 					}
 				);
 				return;
@@ -2447,7 +2450,7 @@
                                     .then(function(response2){
                                         $state.go("home.finance.document.display",  { docid : nNewDocID });
                                     }, function(reason2) {
-                                        $rootScope.$broadcast("ShowMessage", "Error", reason2);
+                                        $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
                                     });
 								// $scope.DocumentObject.buildRelationship(
 								// 	$rootScope.arFinanceDocumentType,
@@ -2458,11 +2461,11 @@
 								// $rootScope.arFinanceDocument.push($scope.DocumentObject);
 							}
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				}
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 			}
 		};
 		
@@ -2483,7 +2486,7 @@
 					});	  
 				};
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 	}])
 	
@@ -2558,7 +2561,7 @@
 					});			  
 				};
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 	}])
 
@@ -2575,7 +2578,7 @@
 					});			  
 				};				
 			}, function(reason){
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 	}])	
 	
@@ -2592,7 +2595,7 @@
 					});
 				};
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 	}])	
 	
@@ -2609,7 +2612,7 @@
 				    });
 				}
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 
 		// Remove to the real data holder
@@ -2628,10 +2631,10 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 							}
 						);
 					return;				
@@ -2642,7 +2645,7 @@
 					// Just refresh it!
 					$scope.refreshList();
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 	    };
 	    
@@ -2692,7 +2695,7 @@
 					}
 				}, function(reason2) {
 				    // Error occurred
-				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -2760,7 +2763,7 @@
 						$scope.treeConfig.version++;
 					}
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 	         
 			 $scope.newItem = function() {
@@ -2796,7 +2799,7 @@
 							$scope.treeConfig.version++;
 						}
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			 };
 	}])
@@ -2860,7 +2863,7 @@
 					.then(function(response) {
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 					});
 				return;
 			}
@@ -2875,7 +2878,7 @@
 							$scope.close();
 						}
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			}
 		};
@@ -2893,7 +2896,7 @@
 			.then(function(response) {
 				// Do nothing
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 		
 		// Remove to the real data holder
@@ -2913,10 +2916,10 @@
 					$translate('Message.SelectSingleItemForDeletion')
 						.then(
 							function(response) {
-								$rootScope.$broadcast("ShowMessage", "Error", response);
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: response}]);
 							},
 							function(reason) {
-								$rootScope.$broadcast("ShowMessage", "Error", "Fatal error!");
+								$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 							}
 						);
 					return;				
@@ -2928,7 +2931,7 @@
 					// Just refresh it!
 					$scope.refreshList();
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 	    };
 	    
@@ -2978,7 +2981,7 @@
 					// Do nothing
 				}, function(reason2) {
 				    // Error occurred
-				    $rootScope.$broadcast("ShowMessage", "Error", reason2);
+				    $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 				});
 		};
 	}])
@@ -3040,14 +3043,14 @@
 							});							
 						},
 						function(reason2) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason2);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 						});
 				} else {
 					$scope.Activity = "Common.Create";
 					$scope.ActivityID = hih.Constants.UIMode_Create;
 				}
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
  		$scope.displayedCollection = [].concat($scope.RuleObjects);
 		
@@ -3113,7 +3116,7 @@
 		$scope.removeItem = function(row) {
 			$scope.cleanReportMessages();
 			
-			$rootScope.$broadcast('ShowMessageNeedTranslate', 'Common.DeleteConfirmation', 'Common.ConfirmToDeleteSelectedItem', 'warning', 
+			$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{Type: 'warning', Message: 'Confirm on deleta the selected item?'}], 
 				function() {
 					if ($scope.SelectedRuleObject.RuleID === row.RuleID) {
 						$scope.SelectedRuleObject = new hih.FinanceOrderSettlementRule();
@@ -3143,7 +3146,7 @@
 						$scope.cleanReportMessages();
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
 					});
 				return;
 			}
@@ -3187,7 +3190,7 @@
 						Array.prototype.push.apply($scope.ReportedMessages, response);
 					},
 					function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", "Fatal error on loading texts!");
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
 					}	
 				);
 				return;
@@ -3207,15 +3210,15 @@
 										// Now navigate to display
 										$state.go("home.finance.order.display",  { id : response });
 									}, function(reason2) {
-										$rootScope.$broadcast("ShowMessage", "Error", reason2);
+										$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 									});							
 							}
 						}, function(reason) {
-							$rootScope.$broadcast("ShowMessage", "Error", reason);
+							$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 						});
 				}
 			} else {
-				$rootScope.$broadcast("ShowMessage", "Error", "To-Do: reason");
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "To-Do: Reasons"}]);
 			}
 		};
 		
@@ -3244,10 +3247,10 @@
 					.then(function(response2) {						
 						$scope.displayBSContent();
 					}, function(reason2) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 					});
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 			
 		$scope.displayBSContent = function() {
@@ -3315,10 +3318,10 @@
 					.then(function(response) {
 						$scope.displayTTReport();
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 		
 		$scope.submit = function() {
@@ -3329,7 +3332,7 @@
 				.then(function(response) {
 					$scope.displayTTReport();
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		};
 		
@@ -3424,10 +3427,10 @@
 					.then(function(response) {
 						$scope.displayCCReport();
 					}, function(reason) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 					});
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 		
 		$scope.submit = function() {
@@ -3438,7 +3441,7 @@
 				.then(function(response) {
 					$scope.displayCCReport();
 				}, function(reason) {
-					$rootScope.$broadcast("ShowMessage", "Error", reason);
+					$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 				});
 		};
 		
@@ -3485,10 +3488,10 @@
 						$scope.dataReport = $rootScope.arFinanceReportOrder;
 						$scope.rptCollection = [].concat($scope.dataReport);
 					}, function(reason2) {
-						$rootScope.$broadcast("ShowMessage", "Error", reason2);
+						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
 					});
 			}, function(reason) {
-				$rootScope.$broadcast("ShowMessage", "Error", reason);
+				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
 			});
 	}])
 	;
