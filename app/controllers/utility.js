@@ -1089,7 +1089,51 @@
 								'script/hihsrv.php',
 								{ objecttype: 'GETLEANPLAN_ACTLIST', tdate: todate2})
 							.then(function(response) {
-								deferred.resolve(response.data);
+                                if ($.isArray(response.data) && response.data.length === 2) {
+                                    var arPlan = [];
+                                    var arHist = [];
+                                    var arComp = [];
+                                    $.each(response.data, function(idx, obj) {
+                                        if (idx === 0) {
+                                            $.each(response.data[idx], function(idx2, obj2) {
+                                               arPlan.push(obj2); 
+                                            });
+                                        } else if (idx === 1) {
+                                            $.each(response.data[idx], function(idx2, obj2) {
+                                               arHist.push(obj2); 
+                                            });                                            
+                                        }
+                                    });
+                                        
+                                    var bEntryFound = false;
+                                    for(var i = 0; i < arPlan.length; i ++) {
+                                        bEntryFound = false;
+                                        
+                                        var pComp = {};
+                                        pComp.UserID = arPlan[i].userid;
+                                        pComp.PlanDate = arPlan[i].expstartdate;
+                                        pComp.ObjectID = arPlan[i].objid;
+                                        pComp.ObjectName = arPlan[i].objname;
+                                        
+                                        for(var j = 0; j < arHist.length; j ++ ) {
+                                            if (arHist[j].userid !== pComp.UserID) continue;
+                                            if (bEntryFound) continue;
+                                            
+                                            if (arHist[j].objid === pComp.ObjectID) {
+                                                // Not a real compare operation, just remove the finished item. 
+                                                //pComp.HistoryDate = arHist[j].learndate;
+                                                //pComp.Difference = pComp.PlanDate.getTime() - pComp.HistoryDate.getTime();
+                                                //arComp.push(pComp);
+                                                arHist.splice(j, 1);
+                                                bEntryFound = true;;
+                                            }
+                                        }
+                                        
+                                        if (!bEntryFound)
+                                            arComp.push(pComp);
+                                    }
+                                    deferred.resolve(arComp);
+                                }
 							}, function(response){
 								deferred.reject(response.data.Message);
 							});

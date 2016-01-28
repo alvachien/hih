@@ -246,8 +246,8 @@
         });
 	}])
 	
-	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams','$http', '$log', '$translate', 'utils', 
-		function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, utils) {		
+	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams','$http', '$log', '$translate', '$q', 'utils', 
+		function($scope, $rootScope, $state, $stateParams, $http, $log, $translate, $q, utils) {
 		$scope.CurrentUser = $rootScope.CurrentUser;
 		
 		// Load the finance setting out
@@ -309,38 +309,26 @@
 				// Do nothing either!
 			});
 			
-		$scope.listModInfo = [];
-		utils.getAccountListForDownPaymentQ()
-			.then(function(response) {
-				for(var i = 0; i < response.length; i++) {
-					var modinfo = {
-						Module: 'FI Downpayment',
-						Date: response[i].trandate,
-						Detail: "Account: " + response[i].accountname + "; Amount: " + response[i].tranamount ,
-						AccountID: response[i].accountid,
-						DPTempID: response[i].tmpdocid
-					};
-					$scope.listModInfo.push(modinfo);
-				}
-				// $scope.listModInfo = [
-				// 	{ Module: 'Learn Plan Items', Detail: 0 },
-				// 	{ Module: 'Downpayment Temp Docs', Detail: 0 },
-				// ];
-			}, function(reason) {
-				// Do nothing.
-			});
-        utils.getLearnPlanActListQ()
-            .then(function(response) {
-                
-            }, function(reason) {
-                
-            });  
-			
 		$scope.goDetail = function(row) {
 			if (row.AccountID) {
 				// Go to the downpayment relevant doc
 				$state.go('home.finance.document.dptmpdoc_post', { docid: row.DPTempID });
-			}
+			} else {
+                var q1 = utils.loadUserListQ();
+                var q2 = utils.loadLearnCategoriesQ();
+                $q.all([q1, q2])
+                    .then(function(response) {
+                        utils.loadLearnObjectsQ()
+                            .then(function(response2) {
+                                $state.go('home.learn.history.create');
+                            }, function(reason2) {
+                                $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason2}]);
+                            });
+                        
+                    }, function(reason) {
+                        $rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: reason}]);
+                    });			
+            }
 		};
 		$scope.refreshTodo = function() {
 			$scope.listModInfo = [];
@@ -357,15 +345,25 @@
 						};
 						$scope.listModInfo.push(modinfo);
 					}
-					// $scope.listModInfo = [
-					// 	{ Module: 'Learn Plan Items', Detail: 0 },
-					// 	{ Module: 'Downpayment Temp Docs', Detail: 0 },
-					// ];
 				}, function(reason) {
 					// Error dialog?
 					// ToDo
 				});
+            utils.getLearnPlanActListQ()
+                .then(function(response) {
+					for(var i = 0; i < response.length; i++) {
+						var modinfo = {
+							Module: 'Learn Plan',
+							Date: response[i].PlanDate,
+							Detail: "User: "+ response[i].UserID + "; Name: " + response[i].ObjectName
+						};
+						$scope.listModInfo.push(modinfo);
+					}                    
+                }, function(reason) {
+                    // To-Do
+                });  
 		};
+        $scope.refreshTodo();
 		
 		// User detail page
 		$scope.listCurUserLogList = [];

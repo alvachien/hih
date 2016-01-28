@@ -1796,10 +1796,12 @@ function learn_plan_actlist_tdate($todate) {
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 		
 	$sError = "";
+    $rsttable1 = array();
+    $rsttable2 = array();
 	
-    // Prepare the query
-	$query = "select taba.userid, taba.startdate, taba.comment, tabb.name, tabc.recurtype, tabc.deferredday, 
-            ADDDATE(taba.startdate, tabc.deferredday) as ExpStartDate, tabc.objectid, tabd.name as objname 
+    // Prepare the query for plan detail
+	$query = "SELECT * FROM (select taba.userid, tabb.id as planid, tabb.name as planname, tabc.recurtype, tabc.deferredday, 
+            ADDDATE(taba.startdate, tabc.deferredday + tabe.defdays) as ExpStartDate, tabc.objectid, tabd.name as objname 
         from t_learn_planpat as taba
 	       join t_learn_plan as tabb
                on taba.id = tabb.id
@@ -1809,30 +1811,53 @@ function learn_plan_actlist_tdate($todate) {
                on tabc.objectid = tabd.id
            left outer join t_learn_recurtypedates as tabe
                on tabc.recurtype = tabe.id
-	    where (taba.status != 3 and taba.status != 4)
-            and ExpStartDate <= ?
-        ORDER BY userid asc, ExpStartDate asc";
+	    where (taba.status != 3 and taba.status != 4) ORDER BY userid asc, ExpStartDate asc ) as tabh where ExpStartDate <= ". $todate;
 	
-	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "s", $todate );
-		/* Execute the statement */
-		if ($stmt->execute ()) {
-		} else {
-			$sError = "Failed to execute query: " . $query. " ; Error: " . $mysqli->error;
-		}
-		
-		/* close statement */
-		$stmt->close ();
-	} else {
-		$sError = "Failed to parpare statement: " . $query. " ; Error: " . $mysqli->error;
-	}
+    if ($result = $mysqli->query ( $query )) {
+        /* fetch associative array */
+        while ( $row = $result->fetch_row () ) {
+            $rsttable1 [] = array (
+                "userid" => $row [0],
+                "planid" => $row [1],
+                "planname" => $row [2],
+                "expstartdate" => $row [5],
+                "objid" => $row [6],
+                "objname" => $row [7] 
+            );
+        }
+        /* free result set */
+        $result->close ();
+    } else {
+        $sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+    }
+
+    // Prepare the query for history
+	$query = "SELECT USERID, OBJECTID, OBJECTNAME, LEARNDATE FROM " . HIHConstants::DV_LearnHistoryList.
+	    " where LEARNDATE <= ". $todate.
+        " ORDER BY userid asc, LEARNDATE asc";
+	
+    if ($result = $mysqli->query ( $query )) {
+        /* fetch associative array */
+        while ( $row = $result->fetch_row () ) {
+            $rsttable2 [] = array (
+                "userid" => $row [0],
+                "objid" => $row [1],
+                "objname" => $row [2],
+                "learndate" => $row [3]
+            );
+        }
+        /* free result set */
+        $result->close ();
+    } else {
+        $sError = "Failed to execute query: " . $query . " ; Error: " . $mysqli->error;
+    }
     
 	/* close connection */
 	$mysqli->close ();
 	
 	return array (
 		$sError,
-		$nPlanID 
+		array($rsttable1, $rsttable2) 
 	);	    
 }
 // 1.5 Learn award
