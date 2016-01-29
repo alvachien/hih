@@ -70,20 +70,25 @@ else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				
 				// Validate the password via the database
 				$objUser = null;
+                $arProf = null;
 				if (IsNullOrEmptyString ( $sErrors )) {
 					$arRst = user_login ( $sLogin, $sPass );
 					$sErrors = $arRst [0];
 					$objUser = $arRst [1];
+                    $arProf = $arRst[2];
 				}
 				
 				if (IsNullOrEmptyString ( $sErrors )) {
-					$_SESSION ['HIH_CurrentUser'] = serialize ( $objUser );
+					$_SESSION [ HIH_CurrentUser ] = serialize ( $objUser );
+                    $_SESSION [ HIH_UserProfile ] = serialize ( $arProf );
+                    
 					echo json_encode ( array (
-							'type' => 'S',
-							'UserID' => $objUser->ID,
-							'UserDisplayAs' => $objUser->DisplayAs,
-							'UserCreatedOn' => $objUser->CreatedOn,
-							'UserGender' => $objUser->Gender 
+						'type' => 'S',
+						'UserID' => $objUser->ID,
+						'UserDisplayAs' => $objUser->DisplayAs,
+						'UserCreatedOn' => $objUser->CreatedOn,
+						'UserGender' => $objUser->Gender,
+                        'UserProfile' => json_encode($arProf)
 					) );
 				}
 			}

@@ -8,6 +8,8 @@
 define('HIH_User_ID', 'HIHUserID', false);
 define('HIH_User_Alias', 'HIHUserAlias', false);
 define('HIH_Theme', 'HIHTheme', false);
+define('HIH_UserProfile', 'HIHUserProf', false);
+define('HIH_CurrentUser', 'HIH_CurrentUser', false);
 // Debug mode
 define('HIH_DEBUGMODE_USER', false, false);
 define('HIH_DEBUGMODE_LEARN', false, false);

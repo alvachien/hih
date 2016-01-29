@@ -143,6 +143,14 @@ class HIHConstants {
 ///
 /// User
 ///
+class HIHUserAuthority {
+    public $UserID;
+    public $Module;
+    public $ReadFlag;
+    public $CreateFlag;
+    public $UpdateFlag;
+    public $FullControlFlag;
+}
 class HIHUser {
 	public $UserID;
 	public $DisplayAs;

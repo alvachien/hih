@@ -120,6 +120,7 @@ function user_login($userid, $userpwd) {
 	
 	$exist = false;
 	$objUser = null;
+    $arProf = array();
 	$sPwdHash = hash ( "sha256", $userpwd );
 	if ($result = $mysqli->query ( $query )) {
 		/* fetch object array */
@@ -158,38 +159,35 @@ function user_login($userid, $userpwd) {
 	} else {
 		$sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;
 	}
+    
+    // Get the authority relevant information
+    if (empty($sErrorString)) {
+        $query = "SELECT * FROM t_user_prof WHERE USERID = '" . $userid . "'";
+        if ($result = $mysqli->query ( $query )) {
+            /* fetch object array */
+            while ( $row = $result->fetch_row () ) {
+                $auth = new HIHUserAuthority();
+                $auth->UserID = $row[0];
+                $auth->Module = $row[1];
+                $auth->ReadFlag = $row[2];
+                $auth->CreateFlag = $row[3];
+                $auth->UpdateFlag = $row[4];
+                $auth->FullControlFlag = $row[5];
+                
+                array_push($arProf, $auth);
+            }
+        } else {
+            $sErrorString = "Failed to execute query: " .$query . " ; Error: " . $mysqli->error;
+        }
+    }
 	
 	/* close connection */
 	$mysqli->close ();
 	return array (
 		$sErrorString,
-		$objUser 
+		$objUser, 
+        $arProf 
 	);
-	
-	// Procedural style
-	// $link = mysqli_connect("localhost", "my_user", "my_password", "world");
-	
-	// /* check connection */
-	// if (mysqli_connect_errno()) {
-	// printf("Connect failed: %s\n", mysqli_connect_error());
-	// exit();
-	// }
-	
-	// $query = "SELECT Name, CountryCode FROM City ORDER by ID DESC LIMIT 50,5";
-	
-	// if ($result = mysqli_query($link, $query)) {
-	
-	// /* fetch associative array */
-	// while ($row = mysqli_fetch_row($result)) {
-	// printf ("%s (%s)\n", $row[0], $row[1]);
-	// }
-	
-	// /* free result set */
-	// mysqli_free_result($result);
-	// }
-	
-	// /* close connection */
-	// mysqli_close($link);
 }
 
 // 1.1 User and login
