@@ -223,17 +223,6 @@
             $scope.treeData = [];
             $scope.ignoreModelChanges = function() { return false; };
             
-            utils.loadLibBookTypeQ()
-                .then(function (response) {
-                    $scope.treeData = [];
-                    $.each($rootScope.arLibBookType, function (idx, obj) {
-                        var treenode = obj.getJsTreeNode();
-                        $scope.treeData.push(treenode);
-                    });
-            	}, function (reason) {
-                    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: reason }]);
-                });
-            
             $scope.treeConfig = {
                     core : {
                         multiple : false,
@@ -245,14 +234,27 @@
                         worker : true,
                         themes: {
                             name: 'default-dark',
-                            url: "app/3rdparty/jstree-3.2.1/themes/default/style.min.css",
+                            url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
                             responsive: true,
-                            stripes: true
+                            stripes: true,
+                            dots: true
                         }
                     },
                     version : 1,
                     plugins : [ 'wholerow' ]
                 };
+
+            utils.loadLibBookTypeQ()
+                .then(function (response) {
+                    $scope.treeData = [];
+                    $.each($rootScope.arLibBookType, function (idx, obj) {
+                        var treenode = obj.getJsTreeNode();
+                        $scope.treeData.push(treenode);
+                    });
+                    $scope.treeConfig.version++;
+            	}, function (reason) {
+                    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: reason }]);
+                });
         }])
 
 		.controller('LibLocationListController', ['$scope', '$rootScope', '$state', '$http', '$interval', '$translate', '$log', 'utils',
