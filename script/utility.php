@@ -192,15 +192,16 @@ function user_login($userid, $userpwd) {
 
 // 1.1 User and login
 function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
-	$link = mysqli_connect ( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );	
+    $mysqli = new mysqli( MySqlHost, MySqlUser, MySqlPwd, MySqlDB );
 	
-	/* check connection */
-	$sError = "";
-	if (!$link) {
-    	$sError = "Error: Unable to connect to MySQL." . PHP_EOL . "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
-		return $sError;
-		exit;
+	/* Check connection */
+	if (mysqli_connect_errno ()) {
+		return array (
+			"Connect failed: " . mysqli_connect_error (),
+			null 
+		);
 	}
+	$sError = "";
 	$bExist = false;
 	
 	// Set language	
@@ -211,9 +212,9 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 	// Check existence of the User ID
 	$query = "SELECT COUNT(*) FROM " . MySqlUserTabel . " WHERE USERID = '" . $userid . "'";
 	
-	if ($result = mysqli_query ( $link, $query )) {
+	if ($result = $mysqli->query ( $query )) {
 		/* fetch associative array */
-		while ( $row = mysqli_fetch_row ( $result ) ) {
+		while ( $row = $result->fetch_row () ) {
 			$cnt = ( int ) $row [0];
 			if ($cnt > 0) {
 				$bExist = true;
@@ -223,21 +224,43 @@ function user_register($userid, $userpwd, $useralias, $usergender, $useremail) {
 		}
 		
 		/* free result set */
-		mysqli_free_result ( $result );
+		$result->close ();
 	} else {
 		$sError = "Failed to execute query: " . $query . " ; Error: " . mysqli_error($link);
 	}
 	
 	// Insert it into database
+	$mysqli->autocommit ( false );
+    $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    
 	if (IsNullOrEmptyString ( $sError )) {
 		$sPwdHash = hash ( "sha256", $userpwd );
 		$query = "INSERT INTO " . MySqlUserTabel . " VALUES ('" . $userid . "', '" . $useralias . "', '" . $sPwdHash . "', now(), " . $usergender . ", '" . $useremail . "')";
-		if ($result = mysqli_query ( $link, $query )) {
-			/* free result set */
-			// mysqli_free_result($result);
+		if ($mysqli->query ( $query )) {
 		} else {
 			$sError = "Failed to execute query:". $query . " ; Error: " . mysqli_error($link);
 		}
+	}
+    
+    if (empty($sError)) {
+        $query = "insert into t_user_prof (USERID, MODULE, READFLAG, CREATEFLAG, UPDATEFLAG, FULLCTRLFLAG) 
+	       select ".  $userid. " as USERID, MODULE, READFLAG, CREATEFLAG, UPDATEFLAG, FULLCTRLFLAG FROM t_user_prof WHERE USERID = '';";
+		if ($mysqli->query ( $query )) {
+		} else {
+			$sError = "Failed to execute query:". $query . " ; Error: " . mysqli_error($link);
+		}
+    }
+    
+	/* Commit or rollback */
+	if (empty ( $sError )) {
+		if (! $mysqli->errno) {
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			$sError = $mysqli->error;
+		}
+	} else {
+		$mysqli->rollback ();		
 	}
 	
 	/* close connection */
@@ -291,7 +314,7 @@ function user_hist_getlist($userid) {
 	mysqli_query($link, "SET CHARACTER SET UTF8");
 	mysqli_query($link, "SET CHARACTER_SET_RESULTS=UTF8'");
 	
-	$query = "select * from ". HIHConstants::DT_UserHist . " WHERE userid = '". $userid. "' ORDER by seqno DESC;";
+	$query = "select * from ". HIHConstants::DT_UserHist . " WHERE userid = '". $userid. "' ORDER by seqno DESC LIMIT 100;";
 	$sError = "";
 	
 	if ($result = $mysqli->query ( $query )) {
@@ -5151,6 +5174,7 @@ function lib_bookgroup_create($objGrp) {
 	$sError = "";
 	$nNewID = -1;
 	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
@@ -5230,6 +5254,7 @@ function lib_bookgroup_change($objGrp) {
 		
 	$sError = "";
 	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
@@ -5327,6 +5352,7 @@ function lib_bookgroup_delete($grpid) {
 		
 	$sError = "";
 	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
@@ -6364,7 +6390,7 @@ function lib_book_create($objBook) {
 		
 	$sError = "";
 	$nNewID = -1;
-	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
@@ -6531,7 +6557,7 @@ function lib_book_change($objBook) {
 	$mysqli->query("SET CHARACTER_SET_RESULTS=UTF8'");
 		
 	$sError = "";
-	
+	$mysqli->autocommit ( false );
 	$mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 	
 	/* Prepare an insert statement */
@@ -6794,6 +6820,7 @@ function lib_book_delete($bookid) {
     // Checks on usage 
 	$sError = "";
     $nUsedCount = 0;
+	$mysqli->autocommit ( false );
     $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
     
 	$query = "SELECT count(*) FROM t_lib_bookgroup_cont WHERE BOOKID = ". $bookid;

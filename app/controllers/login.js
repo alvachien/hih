@@ -41,6 +41,7 @@
                             usercreatedon: data.UserCreatedOn,
                             usergender: data.UserGender
                         };
+                        $rootScope.CurrentUser.Profiles = JSON && JSON.parse(data.UserProfile);
                         
                         // Navigate to the home page					  
                         $rootScope.$state.go("home.welcome");
