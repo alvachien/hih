@@ -19,12 +19,14 @@ if ($_SERVER ["REQUEST_METHOD"] === "GET") {
         if (isset ( $_SESSION ['HIH_CurrentUser'] )) {
             
             $objUsr = unserialize($_SESSION ['HIH_CurrentUser']);
+            $arProf = unserialize($_SESSION [ HIH_UserProfile ]);
             echo json_encode ( array (
                     'type' => 'S',
                     'UserID' => $objUsr->ID,
                     'UserDisplayAs' => $objUsr->DisplayAs,
                     'UserCreatedOn' => $objUsr->CreatedOn,
-                    'UserGender' => $objUsr->Gender 
+                    'UserGender' => $objUsr->Gender,
+                    'UserProfile' => json_encode($arProf)  
             ) );
         } else {
             echo json_encode ( array (
@@ -32,7 +34,8 @@ if ($_SERVER ["REQUEST_METHOD"] === "GET") {
                     'UserID' => NULL,
                     'UserDisplayAs' => NULL,
                     'UserCreatedOn' => NULL,
-                    'UserGender' => NULL 
+                    'UserGender' => NULL,
+                    'UserProfile' => NULL
             ) );                
         }
     } else {

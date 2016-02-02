@@ -26,6 +26,7 @@
                             usercreatedon   : response.UserCreatedOn,
                             usergender      : response.UserGender
                         };
+                        $rootScope.CurrentUser.Profiles = JSON && JSON.parse(response.UserProfile);
                     }
                 }  
                 });  

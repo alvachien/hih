@@ -19,7 +19,7 @@
 	                        <a role="button" uib-dropdown-toggle><span translate="Nav.Home">Home</span><b class="caret"></b></a>
 	                        <ul uib-dropdown-menu>
 	                            <li><a ui-sref="home.userdetail"><span translate="Nav.UserDetail">User Detail</span></a></li>
-								<li><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
+								<li ng-class="{disabled: $index==selectedIndex}"><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
 								<li role="separator" class="divider"></li>
 	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
