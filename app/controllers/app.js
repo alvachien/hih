@@ -26,7 +26,20 @@
                             usercreatedon   : response.UserCreatedOn,
                             usergender      : response.UserGender
                         };
-                        $rootScope.CurrentUser.Profiles = JSON && JSON.parse(response.UserProfile);
+                        var arProfiles = JSON && JSON.parse(response.UserProfile);
+                        $rootScope.CurrentUser.Profiles = {};
+                        if ($.isArray(arProfiles) && arProfiles.length > 0) {
+                            $.each(arProfiles, function(idx, obj) {
+                                $rootScope.CurrentUser.Profiles[obj.Module] = {};
+                                $rootScope.CurrentUser.Profiles[obj.Module].ReadFlag = (parseInt(obj.ReadFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].CreateFlag = (parseInt(obj.CreateFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].UpdateFlag = (parseInt(obj.UpdateFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].FullControlFlag = (parseInt(obj.FullControlFlag) === 1);
+                            });
+                            // // For testing
+                            // $rootScope.CurrentUser.Profiles.USR.ReadFlag = false;
+                            // $rootScope.CurrentUser.Profiles.LRN.ReadFlag = false;
+                        }
                     }
                 }  
                 });  

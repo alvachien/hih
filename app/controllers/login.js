@@ -41,7 +41,19 @@
                             usercreatedon: data.UserCreatedOn,
                             usergender: data.UserGender
                         };
-                        $rootScope.CurrentUser.Profiles = JSON && JSON.parse(data.UserProfile);
+
+                        var arProfiles = JSON && JSON.parse(data.UserProfile);
+                        $rootScope.CurrentUser.Profiles = {};
+                        if ($.isArray(arProfiles) && arProfiles.length > 0) {
+                            $.each(arProfiles, function(idx, obj) {
+                                $rootScope.CurrentUser.Profiles[obj.Module] = {};
+                                $rootScope.CurrentUser.Profiles[obj.Module].ReadFlag = (parseInt(obj.ReadFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].CreateFlag = (parseInt(obj.CreateFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].UpdateFlag = (parseInt(obj.UpdateFlag) === 1);
+                                $rootScope.CurrentUser.Profiles[obj.Module].FullControlFlag = (parseInt(obj.FullControlFlag) === 1);
+                            });
+                        }
+                        console.log($rootScope.CurrentUser);
                         
                         // Navigate to the home page					  
                         $rootScope.$state.go("home.welcome");

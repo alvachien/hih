@@ -19,26 +19,26 @@
 	                        <a role="button" uib-dropdown-toggle><span translate="Nav.Home">Home</span><b class="caret"></b></a>
 	                        <ul uib-dropdown-menu>
 	                            <li><a ui-sref="home.userdetail"><span translate="Nav.UserDetail">User Detail</span></a></li>
-								<li ng-class="{disabled: $index==selectedIndex}"><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.USR.ReadFlag === false}"><a ui-sref="home.userlist"><span translate="Nav.Users">User List</span></a></li>
 								<li role="separator" class="divider"></li>
 	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
 	                    </li>
-	                    <li uib-dropdown>
+	                    <li ng-hide="CurrentUser.Profiles.LRN.ReadFlag === false" uib-dropdown>
 	                        <a role="button" uib-dropdown-toggle><span translate="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul uib-dropdown-menu>
 								<li class="dropdown-header"><span translate="Learn.LearningCategory">Learn Category</span></li>
-	                            <li><a ui-sref="home.learn.category.list"><span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.learn.category.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.category.list"><span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.category.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 								<li role="separator" class="divider"></li>
 								<li class="dropdown-header"><span translate="Learn.LearningObject">Learn Object</span></li>
-	                            <li><a ui-sref="home.learn.object.list"><span translate="Common.ListView">List View</span></a></li>
-	                            <li><a ui-sref="home.learn.object.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.object.list"><span translate="Common.ListView">List View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.object.hierarchy"><span translate="Common.HierarchyView">Hierarchy View</span></a></li>
 	                            <li role="separator" class="divider"></li>
-								<li><a ui-sref="home.learn.history.list"><span translate="Learn.LearningHistory">Learn History</span></a></li>
-								<li><a ui-sref="home.learn.plan.list"><span translate="Learn.LearningPlan">Learn Plan</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.history.list"><span translate="Learn.LearningHistory">Learn History</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.plan.list"><span translate="Learn.LearningPlan">Learn Plan</span></a></li>
 								<li role="separator" class="divider"></li>
-								<li><a ui-sref="home.learn.award.list"><span translate="Learn.LearningAward">Learn Award</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LRN.ReadFlag === false}"><a ui-sref="home.learn.award.list"><span translate="Learn.LearningAward">Learn Award</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li uib-dropdown>

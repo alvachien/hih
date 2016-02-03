@@ -84,6 +84,7 @@ else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 				if (IsNullOrEmptyString ( $sErrors )) {
 					$_SESSION [ HIH_CurrentUser ] = serialize ( $objUser );
                     $_SESSION [ HIH_UserProfile ] = serialize ( $arProf );
+                    $jsonProf = json_encode($arProf);
                     
 					echo json_encode ( array (
 						'type' => 'S',
@@ -91,7 +92,7 @@ else if ($_SERVER ["REQUEST_METHOD"] === "POST") {
 						'UserDisplayAs' => $objUser->DisplayAs,
 						'UserCreatedOn' => $objUser->CreatedOn,
 						'UserGender' => $objUser->Gender,
-                        'UserProfile' => json_encode($arProf)
+                        'UserProfile' => $jsonProf
 					) );
 				}
 			}
