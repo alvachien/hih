@@ -452,21 +452,6 @@
 	}])
 	
 	.controller('AboutController', ['$scope', '$rootScope', function($scope, $rootScope) {
-		// $scope.myInterval = 5000;
-		// 
-		// var slides = $scope.slides = [];
-		// $scope.addSlide = function(url, infotxt) {
-		//     slides.push({
-		//     	image: url,
-		//     	text: infotxt
-		//     });
-		//  };
-		 
-		//$scope.addSlide('app/img/Duoduo2013.jpg', 'Duoduo @ 2013');
-		//$scope.addSlide('app/img/JiaotongUniversity.jpg', 'Jiaotong University');
-		//$scope.addSlide('app/img/LD.jpg', 'LD @ 2013');
-		//$scope.addSlide('app/img/SpeedOfShanghai.jpg', 'Speed of Shanghai');
-		//$scope.addSlide('app/img/TheAutumn.jpg', 'The Autumn');
 	}])
 	;
 })();

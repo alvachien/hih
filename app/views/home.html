@@ -24,7 +24,7 @@
 	                            <li><a href="" ng-click="logout()"><span translate="Login.Logout">Logout</span></a></li>                            
 	                        </ul>
 	                    </li>
-	                    <li ng-hide="CurrentUser.Profiles.LRN.ReadFlag === false" uib-dropdown>
+	                    <li uib-dropdown>
 	                        <a role="button" uib-dropdown-toggle><span translate="Nav.LearningTrace">Learning</span><b class="caret"></b></a>
 	                        <ul uib-dropdown-menu>
 								<li class="dropdown-header"><span translate="Learn.LearningCategory">Learn Category</span></li>
@@ -46,25 +46,25 @@
 	                        <ul uib-dropdown-menu>
 								<li><a ui-sref="home.finance.setting"><span translate="Finance.Setting">Setting</span></a></li>
 								<li><a ui-sref="home.finance.currency.list"><span translate="Finance.Currency">Currency</span></a></li>
-	                            <li><a ui-sref="home.finance.accountcategory.list"><span translate="Finance.AccountCategory">Account Category</span></a></li>
-								<li><a ui-sref="home.finance.documenttype.list"><span translate="Finance.DocumentType">Document Type</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.accountcategory.list"><span translate="Finance.AccountCategory">Account Category</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.documenttype.list"><span translate="Finance.DocumentType">Document Type</span></a></li>
 								<li role="separator" class="divider"></li>
-	                            <li><a ui-sref="home.finance.transactiontype.list"><span translate="Finance.TransactionType"></span> - <span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.transactiontype.hierarchy"><span translate="Finance.TransactionType"></span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
-	                            <li><a ui-sref="home.finance.account.list"><span translate="Finance.Accounts"></span> - <span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.account.hierarchy"><span translate="Finance.Accounts"></span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
-	                            <li><a ui-sref="home.finance.controlcenter.list"><span translate="Finance.ControlCenter">Control Center</span> - <span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.controlcenter.hierarchy"><span translate="Finance.ControlCenter">Control Center</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
-	                            <li><a ui-sref="home.finance.order.list"><span translate="Finance.Order">Orders</span> - <span translate="Common.ListView">List View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.transactiontype.list"><span translate="Finance.TransactionType"></span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.transactiontype.hierarchy"><span translate="Finance.TransactionType"></span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.account.list"><span translate="Finance.Accounts"></span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.account.hierarchy"><span translate="Finance.Accounts"></span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.controlcenter.list"><span translate="Finance.ControlCenter">Control Center</span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.controlcenter.hierarchy"><span translate="Finance.ControlCenter">Control Center</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.order.list"><span translate="Finance.Order">Orders</span> - <span translate="Common.ListView">List View</span></a></li>
 								<li role="separator" class="divider"></li>
-	                            <li><a ui-sref="home.finance.document.list"><span translate="Finance.Documents">Finance Documents</span> - <span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.finance.document.hierarchy"><span translate="Finance.Documents">Finance Documents</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
-	                            <li><a ui-sref="home.finance.exgratelist"><span translate="Finance.ExchangeRateList">Exchange Rate List</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.document.list"><span translate="Finance.Documents">Finance Documents</span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.document.hierarchy"><span translate="Finance.Documents">Finance Documents</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.exgratelist"><span translate="Finance.ExchangeRateList">Exchange Rate List</span></a></li>
 								<li role="separator" class="divider"></li>
-	                            <li><a ui-sref="home.finance.report.balancesheet"><span translate="Finance.BalanceReport">Balance Sheet</span></a></li>
-								<li><a ui-sref="home.finance.report.trantype"><span translate="Finance.TranTypeReport">Transaction Type Report</span></a></li>
-								<li><a ui-sref="home.finance.report.ccbalance"><span translate="Finance.ControlCenterReport">Control Center Report</span></a></li>
-								<li><a ui-sref="home.finance.report.orderbalance"><span translate="Finance.OrderReport">Order Report</span></a></li>
+	                            <li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.report.balancesheet"><span translate="Finance.BalanceReport">Balance Sheet</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.report.trantype"><span translate="Finance.TranTypeReport">Transaction Type Report</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.report.ccbalance"><span translate="Finance.ControlCenterReport">Control Center Report</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.FIN.ReadFlag === false}"><a ui-sref="home.finance.report.orderbalance"><span translate="Finance.OrderReport">Order Report</span></a></li>
 	                        </ul>
 	                    </li>
 	                    <li uib-dropdown>
@@ -72,14 +72,14 @@
 	                        <ul uib-dropdown-menu>
 								<li><a ui-sref="home.lib.setting"><span translate="Common.Setting">Setting</span></a></li>
                                 <li><a ui-sref="home.lib.language.list"><span translate="Common.Language">Language</span></a></li>
-                                <li><a ui-sref="home.lib.person.list"><span translate="Lib.Person">Person</span></a></li>
-                                <li><a ui-sref="home.lib.org.list"><span translate="Lib.Organization">Organization</span></a></li>
-                                <li><a ui-sref="home.lib.loc.list"><span translate="Lib.Locations">Locations</span></a></li>
-                                <li><a ui-sref="home.lib.booktype.list"><span translate="Lib.BookType">Book Types</span> - <span translate="Common.ListView">List View</span></a></li>
-                                <li><a ui-sref="home.lib.booktype.hierarchy"><span translate="Lib.BookType">Book Types</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
+                                <li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.person.list"><span translate="Lib.Person">Person</span></a></li>
+                                <li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.org.list"><span translate="Lib.Organization">Organization</span></a></li>
+                                <li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.loc.list"><span translate="Lib.Locations">Locations</span></a></li>
+                                <li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.booktype.list"><span translate="Lib.BookType">Book Types</span> - <span translate="Common.ListView">List View</span></a></li>
+                                <li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.booktype.hierarchy"><span translate="Lib.BookType">Book Types</span> - <span translate="Common.HierarchyView">Hierarchy View</span></a></li>
                                 <li role="separator" class="divider"></li>
-								<li><a ui-sref="home.lib.bookgroup.list"><span translate="Lib.BookGroup">BookGroup</span> - <span translate="Common.ListView">List View</span></a></li>
-								<li><a ui-sref="home.lib.book.list"><span translate="Lib.Books">Books</span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.bookgroup.list"><span translate="Lib.BookGroup">BookGroup</span> - <span translate="Common.ListView">List View</span></a></li>
+								<li ng-class="{disabled: CurrentUser.Profiles.LIB.ReadFlag === false}"><a ui-sref="home.lib.book.list"><span translate="Lib.Books">Books</span> - <span translate="Common.ListView">List View</span></a></li>
 								<!--<li role="separator" class="divider"></li>-->
 								<!--<li class="dropdown-header">Movies</li>
 								<li><a ui-sref="home.lib.book.list"><span translate="Common.ListView">List View</span></a></li>-->
