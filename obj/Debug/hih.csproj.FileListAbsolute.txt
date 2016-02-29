@@ -1,0 +1,6 @@
+C:\Users\Alva\git\hih\bin\hih.dll.config
+C:\Users\Alva\git\hih\bin\hih.dll
+C:\Users\Alva\git\hih\bin\hih.pdb
+C:\Users\Alva\git\hih\obj\Debug\hih.csprojResolveAssemblyReference.cache
+C:\Users\Alva\git\hih\obj\Debug\hih.dll
+C:\Users\Alva\git\hih\obj\Debug\hih.pdb

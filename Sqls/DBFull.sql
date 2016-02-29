@@ -1632,8 +1632,7 @@ INSERT INTO t_user_hist (`USERID`, `SEQNO`, `HISTTYP`, `OTHERS`)
 
 END$$
 
-DELIMITER 
-
+DELIMITER ;
 
 /*======================================================
     Triggers 
