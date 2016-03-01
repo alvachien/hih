@@ -1,4 +1,8 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "git.path" : "C:\\Program Files (x86)\\Git\\git-cmd.exe"
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/*.js*": { "when": "$(basename).ts" }
+    }
 }
