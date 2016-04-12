@@ -2135,6 +2135,7 @@
 		$scope.showhdr = true; // Default value
 		$scope.ItemActivity = "Finance.CreateItem";
 		$scope.TranCurrencyIsLocal = true;
+        $scope.submitButtonDisabled = false;
 		
 		// Error messges
 		$scope.ReportedMessages = [];
@@ -2413,6 +2414,8 @@
 		};
 		
 		$scope.submit = function() {
+            $scope.submitButtonDisabled = true;
+            
 			// Submit the items
 			$scope.DocumentObject.Items = [];
 			for(var i = 0; i < $scope.ItemsCollection.length; i ++) {
@@ -2434,6 +2437,8 @@
 						$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error on loading texts!"}]);
 					}
 				);
+                
+                $scope.submitButtonDisabled = false;
 				return;
 			}
 			
@@ -2467,6 +2472,8 @@
 			} else {
 				$rootScope.$broadcast("ShowMessageEx", "Error", [{Type: 'danger', Message: "Fatal error!"}]);
 			}
+            
+            $scope.submitButtonDisabled = false;
 		};
 		
 		$scope.close = function() {
