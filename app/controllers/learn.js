@@ -275,7 +275,7 @@
 	                     //worker : true,
 	    				 themes: {
 	                     	name: 'default-dark',
-	    					url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
+	    					url: "app/3rdparty/jstree/themes/default-dark/style.min.css",
 	    					responsive: true,
 	    					stripes: true
 	                	}
@@ -1520,7 +1520,7 @@
                      worker : true,
     				 themes: {
                     	name: 'default-dark',
-    					url: "app/3rdparty/jstree-3.2.1/themes/default-dark/style.min.css",
+    					url: "app/3rdparty/jstree/themes/default-dark/style.min.css",
     					responsive: true,
     					stripes: true
                 	}
