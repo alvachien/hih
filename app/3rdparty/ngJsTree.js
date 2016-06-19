@@ -231,14 +231,14 @@
                             for (var i = 0; i < split.length; i++) {
                                 context = context[split[i]];
                             }
-                            scope.tree = context[tree] = elm;
+                            scope.tree = context[tree] = $(elm);
                         }
                         else {
-                            scope.tree = scope.$parent[attrs.tree] = elm;
+                            scope.tree = scope.$parent[attrs.tree] = $(elm);
                         }
 
                     } else {
-                        scope.tree = elm;
+                        scope.tree = $(elm);
                     }
                     scope.tree.jstree('destroy');
                 };
