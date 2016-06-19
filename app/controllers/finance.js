@@ -1806,7 +1806,7 @@
 					ntimes = 0;
 				break;
 				
-				others:
+				default:
 				break;
 			}
 			for(i = 0; i < ntimes; i ++) {
