@@ -1,3 +1,11 @@
+# Note
+This project is discontinued. Serveral project have been created to continues the HIH story.
+- achihui [Project] (https://github.com/alvachien/achihui) The UI layer of the application;
+- achihapi [Project] (https://github.com/alvachien/achihapi) The API layer which encapsulate the Web API for the operation inside HIH;
+- acidserver [Project] (https://github.com/alvachien/acidserver) The Identity Server which provides the authorization control used by HIH; It's a common project which also used by other project ,like AC gallery [Project] (https://github.com/alvachien/acgallery)
+
+
+
 # Home Info. Hub (Website Version)
 **Home Information Hub**, have two abbreviation terms: **HIH** or **Home Info. Hub**. **HIH** targets to build the warehouse for all necessary information among all family members. Key components are:
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
