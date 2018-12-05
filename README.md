@@ -90,6 +90,5 @@ A programmer, and a certificated Advanced Photographer.
 Contact me:
 
 1. Via mail: alvachien@163.com. Or,
-2. [Check my flickr] (http://www.flickr.com/photos/alvachien). Or,
-3. [Visit my website] (http://www.alvachien.com)
+2. [Check my flickr] (http://www.flickr.com/photos/alvachien).
  
